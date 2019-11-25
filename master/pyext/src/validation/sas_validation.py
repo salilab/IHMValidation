@@ -2,7 +2,6 @@ import pandas as pd
 import glob
 import sys,os,math
 import numpy as np
-import pandas as pd
 import validation
 import ihm
 import ihm.reader

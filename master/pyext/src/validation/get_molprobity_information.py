@@ -8,7 +8,6 @@
 # ganesans@salilab.org
 ###################################
 
-import sys
 import pandas as pd
 import glob
 import sys,os

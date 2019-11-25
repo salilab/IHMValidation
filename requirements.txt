@@ -9,4 +9,8 @@ flask
 multiprocessing
 collections
 json
-
+ihm
+bokeh
+subprocess
+pickle
+requests
