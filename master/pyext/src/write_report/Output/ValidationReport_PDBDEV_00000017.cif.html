@@ -1,0 +1,391 @@
+<!Template for writing HTML page>
+<! ganesans - Salilab - UCSF>
+<!ganesans@salilab.org>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+   <body style="font-family: Times new roman">
+      <style>
+         table#t01 {
+         font-family: Times New Roman;
+         border-collapse: collapse;
+         table-layout:fixed;
+         width: 100%;
+         word-break: keep-all;
+         overflow-wrap: break-word;
+         hyphens: auto;
+         }
+         td, th {
+         border: 1px solid;
+         text-align: center;
+         padding: 12px;
+         word-break: keep-all;
+         page-break-inside:avoid;
+         }
+         tr {
+         page-break-inside:avoid;
+         page-break-before:always;
+         page-break-inside:'always';
+         -webkit-hyphens: auto;
+         -moz-hyphens: auto;
+         -ms-hyphens: auto;
+         hyphens: auto;
+         }
+         tr:nth-child(even) {
+         background-color: ;
+         }
+         table tr th:first-child td {
+         border-top: 0;
+         }
+         table tr td th :first-child {
+         border-left: 0;
+         }
+         table tr th :last-child td {
+         border-bottom: 0;
+         }
+         table tr td th:last-child {
+         border-right: 0;
+         }
+         img {
+         display: block;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         body {
+         height: 297mm;
+         width: 210mm;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         .center {
+         text-align: center
+         }
+         .ex1 {
+         margin-top: 50px;
+         }
+         .ex2 {
+         margin-top: 30px;
+         }
+         hr {
+         width: 100%;
+         height: 2px;
+         margin-left: auto;
+         margin-right: auto;
+         background-color:#666;
+         border: 0 none;
+         margin-top: 10px;
+         margin-bottom:10px;
+         }
+         .fixed-header, .fixed-footer{
+         width: 100%;
+         position: fixed;        
+         background: #333;
+         padding: 10px 0;
+         color: #fff;
+         }
+         .fixed-header{
+         top: 0;
+         }
+         .fixed-footer{
+         bottom: 0;
+         }
+         .container{
+         width: 80%;
+         margin: 0 auto; /* Center the DIV horizontally */
+         }
+         nav a{
+         color: #fff;
+         text-decoration: none;
+         padding: 7px 25px;
+         display: inline-block;
+         }
+      </style>
+      </head>
+      <body>
+         <p class="ex1"> </p>
+         <img src="../static/images/PDB.png" alt="PDB" class="center" style="width:25%">
+         <h1 class="center">Full wwPDB Integrative Structure Validation Report</h1>
+         <h2 class="center"> November 05, 2019 --  04:07 PM</h2>
+         <div class="ex1">
+            <table id=t01>
+               <tr>
+                  <th bgcolor = 'silver' align='center'><i>PDB ID</i></th>
+                  <th bgcolor = 'silver' align='center'><i>PDBDEV00000017</i></th>
+               </tr>
+               <tr>
+                  <td>Molecule Name</td>
+                  <td>Molecular architecture of the major membrane ring component, Pom152, of the yeast nuclear pore complex </td>
+               </tr>
+               <tr>
+                  <td>Title</td>
+                  <td>Molecular Architecture of the Major Membrane Ring Component of the Nuclear Pore Complex.</td>
+               </tr>
+               <tr>
+                  <td>Authors</td>
+                  <td>Upla P;Kim SJ;Sampathkumar P;Dutta K;Cahill SM;Chemmama IE;Williams R;Bonanno JB;Rice WJ;Stokes DL;Cowburn D;Almo SC;Sali A;Rout MP;Fernandez-Martinez J</td>
+               </tr>
+            </table>
+         </div>
+         <hr class="ex1">
+         <div class="ex2 center">
+            <p><b> The following software were used in the production of this report:</b></p>
+            <ul style="list-style-type:none;">
+               <script>
+                  var s=1
+                  if (s <1) {
+                                      	var docx= "<li><em>Molprobity : Version 4.4</em></li>";
+                  document.write(docx);
+                  }
+               </script>
+               <li><em>Integrative Modeling Validation Package : Version 1.0</em></li>
+            </ul>
+         </div>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">1. Overall quality at a glance</h2>
+         <script>
+            function plot_image(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'quality_at_glance.html');
+                      img.setAttribute("width","100%");
+                      img.setAttribute("height","27%");
+                      document.body.appendChild(img);
+                      }
+              plot_image(ID= "PDBDEV00000017")
+              
+         </script>
+         <script>
+            function Write_Table(list_to_write){
+            var mytable = "<table id=t01><tr>";
+            for (var i = 0; i < list_to_write[0].length; i++) {
+            mytable += "<th bgcolor = 'silver' align='center'><i>" + list_to_write[0][i] + "</i></th>";
+            }
+            mytable += "</tr><tr>";
+            
+            for (var j=1;j<list_to_write.length;j++) {
+            for (var i=0; i<list_to_write[j].length; i++) {
+            mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
+            }
+            mytable += "</tr><tr>";
+            
+            }
+            mytable += "</tr></table>";
+            document.write(mytable);
+            }
+         </script>
+         <p class="ex2"> </p>
+         <hr>
+         <script>
+            var n=1;
+            var section='<h2 align="left">2. Ensemble information</h2>';
+            if (n<2) {
+            section+='<p class ="ex2"><i>This entry consists of '+ n +' distinct ensemble.</i></p>';
+            document.write(section);
+            } else {
+            section+='<p class ="ex2"><i>This entry consists of '+ n +' distinct ensembles.</i></p>';
+            document.write(section);
+            }	
+            if (n>0){
+            var input_list=[['Ensemble number', 'Ensemble name', 'Model ID', 'Number of models', 'Clustering method', 'Clustering feature', 'Cluster precision'], ['1', 'Cluster 0', '1', '364', 'None', 'dRMSD', '7.0']];	 
+            Write_Table(list_to_write=input_list)
+            }
+            var write1='<hr>';
+            write1+='<h2 class="ex2" align="left">3. Model composition</h2>';
+            
+            write1+='<h3 class="ex2" align="left">3.1 Summary</h3>';
+            
+            write1+='<i>This entry consists of '+ 1 + ' unique models, with '+ String (1.0) +' subunits in each model. A total of '+ 22 + ' datasets or restraints was used to build this entry. Each model is represented by ' +  String (9) +' rigid bodies and '+ String (9) + ' flexible or non-rigid units. </i>';
+            write1+='<h3 class="ex2" align="left">3.2 Entry composition</h3>';
+            document.write(write1);
+         </script>
+         <script>
+            function write_intro_1(input_variable){
+                    if (input_variable < 2) {
+            var docx="<i>There is " + input_variable + " unique type of model in this entry. </i>";
+                            document.write(docx);
+                    } else {
+            var docx="<i>There are "+ input_variable +" unique types of models in this entry.</i> ";
+            document.write(docx);
+            }
+            }        
+            
+            function write_model_name(input_variable){
+                  if (input_variable.length <2) {  
+            var docx= " <i>This model is titled "+ input_variable[0] + " respectively. </i>"
+                   document.write(docx);
+            } else {
+            var docx= "<i>These models are titled "+ input_variable.join(', ') + " respectively.</i> "
+                   document.write(docx);                  
+            }
+            }
+            
+            
+            function write_intro_2(input_variable){
+                  if (input_variable.length <2) {	
+            var docx= "<i>Model has "+ input_variable.join() + " chains respectively.</i> "
+                   document.write(docx);
+            } else {
+            var docx= "<i>Models have "+ input_variable.join() + " chains respectively.</i> "
+                   document.write(docx);		       
+            }
+            }
+            
+            write_intro_1(input_variable=1)
+            write_model_name(input_variable=['Cluster 0/None']) 
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list=[['Model ID', 'Subunit number', 'Subunit ID', 'Subunit name', 'Chain ID', 'Total residues'], [1, 1, '1', 'pom152', 'A', 1337]];
+            Write_Table(list_to_write=input_list)
+         </script>
+         <p class="ex2"> </p>
+         <h3 class="ex2" align="left">3.3 Datasets used for modeling</h3>
+         <p class="ex2"> </p>
+         <script>
+            function write_dataset(input_variable){
+                    if (input_variable < 2) {
+            var docx="<i>There is " + input_variable + " unique dataset used to build the models in this entry. </i>";
+                            document.write(docx);
+                    } else {
+            var docx="<i>There are "+ input_variable +" unique datasets used to build the models in this entry.</i> ";
+                            document.write(docx);
+            }
+            }
+            write_dataset(input_variable=22)
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list_2=[['ID', 'Dataset type', 'Database name', 'Data access code'], ['1', 'Experimental model', 'PDB', '5TVZ'], ['2', 'Comparative model', 'Not listed', 'None'], ['3', 'Comparative model', 'Not listed', 'None'], ['4', 'Comparative model', 'Not listed', 'None'], ['5', 'Comparative model', 'Not listed', 'None'], ['6', 'Comparative model', 'Not listed', 'None'], ['7', 'Comparative model', 'Not listed', 'None'], ['8', '3DEM volume', 'EMDB', 'EMD-8543'], ['9', '3DEM volume', 'Not listed', 'None'], ['10', '2DEM class average', 'Not listed', 'None'], ['11', '2DEM class average', 'Not listed', 'None'], ['12', '2DEM class average', 'Not listed', 'None'], ['13', '2DEM class average', 'Not listed', 'None'], ['14', '2DEM class average', 'Not listed', 'None'], ['15', '2DEM class average', 'Not listed', 'None'], ['16', '2DEM class average', 'Not listed', 'None'], ['17', '2DEM class average', 'Not listed', 'None'], ['18', 'SAS data', 'SASBDB', 'SASDBV9'], ['19', 'SAS data', 'SASBDB', 'SASDBW9'], ['20', 'SAS data', 'SASBDB', 'SASDBX9'], ['21', 'SAS data', 'SASBDB', 'SASDBY9'], ['22', 'SAS data', 'SASBDB', 'SASDBZ9']];
+            Write_Table(list_to_write=input_list_2)
+         </script>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">4. Representation </h2>
+         <p class ="ex2"><i>This entry has only one representation and includes 9 rigid bodies and 9 flexible units.</i></p>
+         <p class="ex2"> </p>
+         <script>
+            var input_list_3=[['Chain ID', 'Rigid bodies', 'Non-rigid segments'], ['A', '379-472:Comparative model/None, 520-611:Comparative model/None, 616-714:Comparative model/None, 722-818:Comparative model/None, 824-918:Comparative model/None, 931-1026:Comparative model/None, 1036-1141:Comparative model/None, 1150-1229:Comparative model/None, 1244-1337:Comparative model/None. ', '1-378, 473-519, 612-615, 715-721, 819-823, 919-930, 1027-1035, 1142-1149, 1230-1243. ']];
+            Write_Table(list_to_write=input_list_3)
+         </script>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">5. Methodology and software</h2>
+         <script>
+            var n=1
+            if (n<2){
+            var write_prot= "<i>This entry is a result of " + 1 +" distinct protocol.</i>";
+            document.write(write_prot);
+            }else{
+             var write_prot= "<i>This entry is a result of " + 1 +" distinct protocols.</i>";
+             document.write(write_prot);	
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list_3=[['Step number', 'Protocol ID', 'Method name', 'Method type', 'Number of computed models', 'Multi state modeling', 'Multi scale modeling'], ['1', 1, 'Replica exchange monte carlo', 'Sampling', 100000, 'False', 'True']];
+            Write_Table(list_to_write=input_list_3)
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            function write_software(software_list){
+                   if (software_list < 1) {
+            var docx="<i>Software packages used for modeling were either not reported or not used.</i> ";
+                           document.write(docx);
+                   } else if (software_list <2) {
+            var docx="<i>There is "+ software_list +" software package reported in this entry.</i> ";
+                                          document.write(docx);
+                          } else{
+             var docx="<i>There are "+ software_list +" software packages reported in this entry. </i>";
+                           document.write(docx);
+            }
+            } 
+            write_software(software_list=3)
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list=[['ID', 'Software name', 'Software version', 'Software classification'], ['1', 'Integrative Modeling Platform (IMP)', 'develop-0a5706e202', 'integrative model building'], ['2', 'IMP PMI module', '67456c0', 'integrative model building'], ['3', 'MODELLER', '9.13', 'comparative modeling']];
+            Write_Table(list_to_write=input_list)
+         </script>
+         <p class="ex2"> </p>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">6. Data quality</h2>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">7. Model quality</h2>
+         <script>
+            var sphere=1
+            if (sphere>0){
+            var ex="<h3 class= ex2 align= left>7.1 Excluded volume satisfaction</h3>";
+                                 ex+="<i> Excluded volume satisfaction for the models in the entry are listed below. </i>";
+                                 document.write(ex);
+                                 var space='<p class="ex2"> </p>';
+                                 document.write(space);
+                                 Write_Table(list_to_write=[['Models', 'Excluded Volume Satisfaction', 'Number of violations'], [1, 99.46, 2089.0]])
+                                document.write(space);
+            } 
+         </script>
+         <script>
+            if (1 <1) {
+                                       var intro="<h3 class= ex2 align= left>7.1 Standard geometry</h3>";
+                                       intro+="<i> There are " + 13530 + " bond outliers in this entry. </i>";
+                                       document.write(intro);
+                                       var space='<p class="ex2"> </p>';
+                                       document.write(space);
+                                       if ([['Bond type', 'Observed distance (&#8491)', 'Ideal distance (&#8491)', 'Number of outliers'], ['ND2--HD22', 1.008, 0.86, 109], ['N--H', 1.008, 0.86, 1609], ['NE2--HE2', 1.008, 0.86, 39], ['NH1--HH12', 1.008, 0.86, 89], ['CD2--HD2', 1.078, 0.93, 199], ['CE1--HE1', 1.078, 0.93, 199], ['CE2--HE2', 1.078, 0.93, 159], ['NH1--HH11', 1.009, 0.86, 89], ['ND2--HD21', 1.009, 0.86, 109], ['NE2--HE22', 1.009, 0.86, 99], ['CZ--HZ', 1.079, 0.93, 49], ['NH2--HH22', 1.009, 0.86, 89], ['NE2--HE21', 1.008, 0.86, 99], ['NE--HE', 1.009, 0.86, 89], ['CD1--HD1', 1.078, 0.93, 159], ['NH2--HH21', 1.009, 0.86, 89], ['CG--HG3', 1.089, 0.97, 649], ['CA--HA', 1.088, 0.97, 1659], ['CB--HB', 1.088, 0.97, 149], ['CD--HD2', 1.089, 0.97, 359], ['CB--HB2', 1.088, 0.97, 1509], ['CD2--HD22', 1.088, 0.97, 189], ['CE--HE1', 1.088, 0.97, 59], ['CB--HB3', 1.088, 0.97, 1509], ['CB--HB1', 1.088, 0.97, 189], ['CG2--HG21', 1.089, 0.97, 149], ['CA--HA2', 1.089, 0.97, 179], ['CD2--HD21', 1.088, 0.97, 189], ['CG--HG2', 1.088, 0.97, 649], ['CA--HA3', 1.089, 0.97, 179], ['CD--HD3', 1.089, 0.97, 359], ['CD1--HD11', 1.089, 0.97, 209], ['CD1--HD13', 1.088, 0.97, 209], ['NZ--HZ3', 1.009, 0.89, 49], ['CG1--HG12', 1.089, 0.97, 79], ['CG2--HG22', 1.088, 0.97, 149], ['N--H3', 1.009, 0.89, 9], ['CG2--HG23', 1.089, 0.97, 149], ['OG--HG', 0.959, 0.84, 139], ['CE--HE2', 1.089, 0.97, 109], ['CD1--HD12', 1.089, 0.97, 209], ['CG1--HG11', 1.089, 0.97, 59], ['NZ--HZ2', 1.009, 0.89, 49], ['CG1--HG13', 1.088, 0.97, 79], ['CD2--HD23', 1.089, 0.97, 189], ['OG1--HG1', 0.959, 0.84, 69], ['CE--HE3', 1.089, 0.97, 109], ['NZ--HZ1', 1.009, 0.89, 49], ['OH--HH', 0.959, 0.84, 109], ['CG--HG', 1.089, 0.97, 189], ['N--H2', 1.009, 0.89, 9], ['N--H1', 1.009, 0.89, 9]].length>0){
+                                       Write_Table(list_to_write=[['Bond type', 'Observed distance (&#8491)', 'Ideal distance (&#8491)', 'Number of outliers'], ['ND2--HD22', 1.008, 0.86, 109], ['N--H', 1.008, 0.86, 1609], ['NE2--HE2', 1.008, 0.86, 39], ['NH1--HH12', 1.008, 0.86, 89], ['CD2--HD2', 1.078, 0.93, 199], ['CE1--HE1', 1.078, 0.93, 199], ['CE2--HE2', 1.078, 0.93, 159], ['NH1--HH11', 1.009, 0.86, 89], ['ND2--HD21', 1.009, 0.86, 109], ['NE2--HE22', 1.009, 0.86, 99], ['CZ--HZ', 1.079, 0.93, 49], ['NH2--HH22', 1.009, 0.86, 89], ['NE2--HE21', 1.008, 0.86, 99], ['NE--HE', 1.009, 0.86, 89], ['CD1--HD1', 1.078, 0.93, 159], ['NH2--HH21', 1.009, 0.86, 89], ['CG--HG3', 1.089, 0.97, 649], ['CA--HA', 1.088, 0.97, 1659], ['CB--HB', 1.088, 0.97, 149], ['CD--HD2', 1.089, 0.97, 359], ['CB--HB2', 1.088, 0.97, 1509], ['CD2--HD22', 1.088, 0.97, 189], ['CE--HE1', 1.088, 0.97, 59], ['CB--HB3', 1.088, 0.97, 1509], ['CB--HB1', 1.088, 0.97, 189], ['CG2--HG21', 1.089, 0.97, 149], ['CA--HA2', 1.089, 0.97, 179], ['CD2--HD21', 1.088, 0.97, 189], ['CG--HG2', 1.088, 0.97, 649], ['CA--HA3', 1.089, 0.97, 179], ['CD--HD3', 1.089, 0.97, 359], ['CD1--HD11', 1.089, 0.97, 209], ['CD1--HD13', 1.088, 0.97, 209], ['NZ--HZ3', 1.009, 0.89, 49], ['CG1--HG12', 1.089, 0.97, 79], ['CG2--HG22', 1.088, 0.97, 149], ['N--H3', 1.009, 0.89, 9], ['CG2--HG23', 1.089, 0.97, 149], ['OG--HG', 0.959, 0.84, 139], ['CE--HE2', 1.089, 0.97, 109], ['CD1--HD12', 1.089, 0.97, 209], ['CG1--HG11', 1.089, 0.97, 59], ['NZ--HZ2', 1.009, 0.89, 49], ['CG1--HG13', 1.088, 0.97, 79], ['CD2--HD23', 1.089, 0.97, 189], ['OG1--HG1', 0.959, 0.84, 69], ['CE--HE3', 1.089, 0.97, 109], ['NZ--HZ1', 1.009, 0.89, 49], ['OH--HH', 0.959, 0.84, 109], ['CG--HG', 1.089, 0.97, 189], ['N--H2', 1.009, 0.89, 9], ['N--H1', 1.009, 0.89, 9]])
+                                               document.write(space);}
+                                       var intro2="<i> There are " + 316 + " angle outliers in this entry.  </i>";
+                                       document.write(intro2);
+                                       document.write(space);
+                                       if ([['Angle type', 'Observed angle (&#176)', 'Ideal angle (&#176)', 'Number of outliers'], ['C-N-H', 112.269, 124.3, 122], ['HG2-CG-HG3', 97.708, 110.0, 8], ['CG-CB-HB2', 120.202, 108.0, 7], ['HD22-CD2-HD23', 97.918, 110.0, 2], ['HG12-CG1-HG13', 92.282, 110.0, 0], ['HB2-CB-HB3', 97.993, 110.0, 31], ['HZ1-NZ-HZ3', 122.371, 109.0, 2], ['CA-N-H', 126.273, 114.0, 7], ['CB-OG1-HG1', 93.037, 110.0, 0], ['CB-CA-HA', 96.938, 109.0, 3], ['N-CA-HA', 97.858, 110.0, 6], ['HD21-CD2-HD22', 97.003, 110.0, 1], ['HB1-CB-HB2', 96.99, 110.0, 5], ['CG-CB-HB3', 95.827, 108.0, 7], ['HD2-CD-HD3', 122.233, 110.0, 7], ['C-CA-HA', 96.951, 109.0, 10], ['CE-NZ-HZ2', 94.864, 110.0, 0], ['CA-CB-HB3', 96.927, 109.0, 9], ['CA-CB-HB2', 121.002, 109.0, 4], ['HD12-CD1-HD13', 97.874, 110.0, 1], ['HD11-CD1-HD12', 95.703, 110.0, 0], ['HG22-CG2-HG23', 96.722, 109.0, 3], ['SD-CE-HE1', 95.744, 109.0, 1], ['HG21-CG2-HG23', 95.829, 110.0, 0], ['CB-CG-HG3', 121.179, 109.0, 2], ['CB-CG1-HG11', 122.984, 109.0, 0], ['CG-CD2-HD23', 121.251, 109.0, 1], ['NZ-CE-HE2', 121.714, 108.0, 0], ['HD21-CD2-HD23', 96.708, 110.0, 1], ['N-CA-HA2', 96.384, 110.0, 0], ['HE2-CE-HE3', 96.468, 110.0, 0], ['CB-CG-HG2', 121.139, 109.0, 2], ['CD-CG-HG2', 121.262, 108.0, 0], ['CB-CG2-HG22', 97.308, 110.0, 1], ['HG11-CG1-HG13', 97.438, 110.0, 3], ['SD-CE-HE2', 121.941, 109.0, 0], ['HE1-CE-HE3', 97.073, 110.0, 0], ['CZ-CE2-HE2', 107.364, 120.2, 0], ['HG11-CG1-HG12', 97.195, 110.0, 0], ['CZ-OH-HH', 122.334, 110.0, 1], ['HH21-NH2-HH22', 107.333, 120.0, 0], ['HB1-CB-HB3', 97.473, 110.0, 1], ['OG-CB-HB2', 121.604, 109.0, 0], ['CD-CG-HG3', 97.925, 110.0, 2], ['N-CD-HD3', 121.548, 109.0, 0], ['CG-CD1-HD12', 121.475, 109.0, 0], ['N-CD-HD2', 121.456, 109.0, 0], ['CG-CD2-HD22', 121.003, 109.0, 1], ['CD2-CG-HG', 95.7, 108.0, 0], ['CZ-NH2-HH22', 107.711, 120.0, 0], ['CG2-CB-HB', 95.715, 108.0, 0], ['HZ2-NZ-HZ3', 121.179, 109.0, 1], ['OG-CB-HB3', 96.789, 109.0, 0], ['CB-CG2-HG23', 121.082, 109.0, 1], ['CG-CD-HD3', 121.18, 109.0, 0], ['HD11-CD1-HD13', 97.867, 110.0, 0], ['C-CA-HA3', 96.869, 109.0, 0], ['HA2-CA-HA3', 96.936, 109.0, 1], ['CZ-NH1-HH11', 107.88, 120.0, 0], ['CG-ND2-HD21', 107.932, 120.0, 0], ['CA-CB-HB1', 121.049, 109.0, 0], ['NZ-CE-HE3', 120.023, 108.0, 0]].length>0){
+                                               Write_Table(list_to_write=[['Angle type', 'Observed angle (&#176)', 'Ideal angle (&#176)', 'Number of outliers'], ['C-N-H', 112.269, 124.3, 122], ['HG2-CG-HG3', 97.708, 110.0, 8], ['CG-CB-HB2', 120.202, 108.0, 7], ['HD22-CD2-HD23', 97.918, 110.0, 2], ['HG12-CG1-HG13', 92.282, 110.0, 0], ['HB2-CB-HB3', 97.993, 110.0, 31], ['HZ1-NZ-HZ3', 122.371, 109.0, 2], ['CA-N-H', 126.273, 114.0, 7], ['CB-OG1-HG1', 93.037, 110.0, 0], ['CB-CA-HA', 96.938, 109.0, 3], ['N-CA-HA', 97.858, 110.0, 6], ['HD21-CD2-HD22', 97.003, 110.0, 1], ['HB1-CB-HB2', 96.99, 110.0, 5], ['CG-CB-HB3', 95.827, 108.0, 7], ['HD2-CD-HD3', 122.233, 110.0, 7], ['C-CA-HA', 96.951, 109.0, 10], ['CE-NZ-HZ2', 94.864, 110.0, 0], ['CA-CB-HB3', 96.927, 109.0, 9], ['CA-CB-HB2', 121.002, 109.0, 4], ['HD12-CD1-HD13', 97.874, 110.0, 1], ['HD11-CD1-HD12', 95.703, 110.0, 0], ['HG22-CG2-HG23', 96.722, 109.0, 3], ['SD-CE-HE1', 95.744, 109.0, 1], ['HG21-CG2-HG23', 95.829, 110.0, 0], ['CB-CG-HG3', 121.179, 109.0, 2], ['CB-CG1-HG11', 122.984, 109.0, 0], ['CG-CD2-HD23', 121.251, 109.0, 1], ['NZ-CE-HE2', 121.714, 108.0, 0], ['HD21-CD2-HD23', 96.708, 110.0, 1], ['N-CA-HA2', 96.384, 110.0, 0], ['HE2-CE-HE3', 96.468, 110.0, 0], ['CB-CG-HG2', 121.139, 109.0, 2], ['CD-CG-HG2', 121.262, 108.0, 0], ['CB-CG2-HG22', 97.308, 110.0, 1], ['HG11-CG1-HG13', 97.438, 110.0, 3], ['SD-CE-HE2', 121.941, 109.0, 0], ['HE1-CE-HE3', 97.073, 110.0, 0], ['CZ-CE2-HE2', 107.364, 120.2, 0], ['HG11-CG1-HG12', 97.195, 110.0, 0], ['CZ-OH-HH', 122.334, 110.0, 1], ['HH21-NH2-HH22', 107.333, 120.0, 0], ['HB1-CB-HB3', 97.473, 110.0, 1], ['OG-CB-HB2', 121.604, 109.0, 0], ['CD-CG-HG3', 97.925, 110.0, 2], ['N-CD-HD3', 121.548, 109.0, 0], ['CG-CD1-HD12', 121.475, 109.0, 0], ['N-CD-HD2', 121.456, 109.0, 0], ['CG-CD2-HD22', 121.003, 109.0, 1], ['CD2-CG-HG', 95.7, 108.0, 0], ['CZ-NH2-HH22', 107.711, 120.0, 0], ['CG2-CB-HB', 95.715, 108.0, 0], ['HZ2-NZ-HZ3', 121.179, 109.0, 1], ['OG-CB-HB3', 96.789, 109.0, 0], ['CB-CG2-HG23', 121.082, 109.0, 1], ['CG-CD-HD3', 121.18, 109.0, 0], ['HD11-CD1-HD13', 97.867, 110.0, 0], ['C-CA-HA3', 96.869, 109.0, 0], ['HA2-CA-HA3', 96.936, 109.0, 1], ['CZ-NH1-HH11', 107.88, 120.0, 0], ['CG-ND2-HD21', 107.932, 120.0, 0], ['CA-CB-HB1', 121.049, 109.0, 0], ['NZ-CE-HE3', 120.023, 108.0, 0]])
+                                               document.write(space);}
+                                       var docx= "<h3 class= ex2 align= left>7.2 Too-close contacts</h3>";
+                                       docx+="<i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i>";
+                                       document.write(docx);
+                                       document.write(space);
+                                       if ([['Model ID', 'Clash score', 'Number of clashes'], ['Model 1', '0.00', 0], ['Model 10', '0.00', 0], ['Model 2', '0.00', 0], ['Model 3', '0.00', 0], ['Model 4', '0.00', 0], ['Model 5', '0.00', 0], ['Model 6', '0.00', 0], ['Model 7', '0.00', 0], ['Model 8', '0.00', 0], ['Model 9', '0.00', 0]].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Clash score', 'Number of clashes'], ['Model 1', '0.00', 0], ['Model 10', '0.00', 0], ['Model 2', '0.00', 0], ['Model 3', '0.00', 0], ['Model 4', '0.00', 0], ['Model 5', '0.00', 0], ['Model 6', '0.00', 0], ['Model 7', '0.00', 0], ['Model 8', '0.00', 0], ['Model 9', '0.00', 0]])
+                                               document.write(space);}
+                                       var text1="<i> All "+ 0 + " close contacts within the same asymmetric unit are listed below, sorted by their clash magnitude.</i>";
+                                       document.write(text1);
+                                       document.write(space);
+                                       if ({'Model ID': [], 'Atom-1': [], 'Atom-2': [], 'Clash overlap (&#8491)': []}.length>0){
+                                               Write_Table(list_to_write={'Model ID': [], 'Atom-1': [], 'Atom-2': [], 'Clash overlap (&#8491)': []})
+                                               document.write(space);}
+                                       var text2="<h3 class=ex2 align= left>7.3 Torsion angles</h3>";
+                                       text2+= "<h4 class=ex2 align=left>7.3.1 Protein backbone</h4>";
+                                       text2+="<i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation wasanalysed. </i>"
+                                       document.write(text2);
+                                       document.write(space);
+                                       if ([['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 182, 147, 32, 3], [2, 182, 150, 28, 4], [3, 182, 169, 10, 3], [4, 182, 154, 26, 2], [5, 182, 161, 14, 7], [6, 182, 153, 23, 6], [7, 182, 159, 19, 4], [8, 182, 153, 23, 6], [9, 182, 156, 19, 7], [10, 182, 155, 23, 4]].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 182, 147, 32, 3], [2, 182, 150, 28, 4], [3, 182, 169, 10, 3], [4, 182, 154, 26, 2], [5, 182, 161, 14, 7], [6, 182, 153, 23, 6], [7, 182, 159, 19, 4], [8, 182, 153, 23, 6], [9, 182, 156, 19, 7], [10, 182, 155, 23, 4]])
+                                               document.write(space);}
+                                       var text4= "<i> Detailed list of outliers are tabulated below. </i>";
+                                       document.write(text4);
+                                       document.write(space);
+                                       if ([['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:55', 'PRO'], [1, 'A:74', 'GLY'], [1, 'A:136', 'PRO'], [2, 'A:21', '1ASN'], [2, 'A:35', '1LEU'], [2, 'A:55', '1PRO'], [2, 'A:129', '1PRO'], [3, 'A:55', 'PRO'], [3, 'A:72', 'VAL'], [3, 'A:124', 'HIS'], [4, 'A:55', 'PRO'], [4, 'A:99', 'PRO'], [5, 'A:10', 'SER'], [5, 'A:11', 'GLY'], [5, 'A:14', 'LEU'], [5, 'A:55', 'PRO'], [5, 'A:76', 'THR'], [5, 'A:117', 'LEU'], [5, 'A:144', 'ALA'], [6, 'A:55', 'PRO'], [6, 'A:70', 'ALA'], [6, 'A:103', 'VAL'], [6, 'A:126', 'GLN'], [6, 'A:146', 'PRO'], [6, 'A:163', 'GLU'], [7, 'A:44', 'LEU'], [7, 'A:47', 'SER'], [7, 'A:55', 'PRO'], [7, 'A:110', 'LEU'], [8, 'A:32', 'LYS'], [8, 'A:55', 'PRO'], [8, 'A:79', 'PRO'], [8, 'A:86', 'ALA'], [8, 'A:90', 'GLY'], [8, 'A:144', 'ALA'], [9, 'A:55', 'PRO'], [9, 'A:57', 'GLY'], [9, 'A:69', 'ASN'], [9, 'A:70', 'ALA'], [9, 'A:88', 'ALA'], [9, 'A:96', 'GLY'], [9, 'A:126', 'GLN'], [10, 'A:42', 'VAL'], [10, 'A:55', 'PRO'], [10, 'A:57', 'GLY'], [10, 'A:141', 'VAL']].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:55', 'PRO'], [1, 'A:74', 'GLY'], [1, 'A:136', 'PRO'], [2, 'A:21', '1ASN'], [2, 'A:35', '1LEU'], [2, 'A:55', '1PRO'], [2, 'A:129', '1PRO'], [3, 'A:55', 'PRO'], [3, 'A:72', 'VAL'], [3, 'A:124', 'HIS'], [4, 'A:55', 'PRO'], [4, 'A:99', 'PRO'], [5, 'A:10', 'SER'], [5, 'A:11', 'GLY'], [5, 'A:14', 'LEU'], [5, 'A:55', 'PRO'], [5, 'A:76', 'THR'], [5, 'A:117', 'LEU'], [5, 'A:144', 'ALA'], [6, 'A:55', 'PRO'], [6, 'A:70', 'ALA'], [6, 'A:103', 'VAL'], [6, 'A:126', 'GLN'], [6, 'A:146', 'PRO'], [6, 'A:163', 'GLU'], [7, 'A:44', 'LEU'], [7, 'A:47', 'SER'], [7, 'A:55', 'PRO'], [7, 'A:110', 'LEU'], [8, 'A:32', 'LYS'], [8, 'A:55', 'PRO'], [8, 'A:79', 'PRO'], [8, 'A:86', 'ALA'], [8, 'A:90', 'GLY'], [8, 'A:144', 'ALA'], [9, 'A:55', 'PRO'], [9, 'A:57', 'GLY'], [9, 'A:69', 'ASN'], [9, 'A:70', 'ALA'], [9, 'A:88', 'ALA'], [9, 'A:96', 'GLY'], [9, 'A:126', 'GLN'], [10, 'A:42', 'VAL'], [10, 'A:55', 'PRO'], [10, 'A:57', 'GLY'], [10, 'A:141', 'VAL']])
+                                               document.write(space);  }
+                                       var text3="<h4 class=ex2 align=left>7.3.2 Protein sidechains</h4>";
+                                       text3+="<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
+                                       document.write(text3);
+                                       document.write(space);
+                                       if ([['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 147, 123, 14, 10], [2, 147, 133, 12, 2], [3, 147, 132, 9, 6], [4, 147, 125, 16, 6], [5, 147, 108, 24, 15], [6, 147, 126, 13, 8], [7, 147, 116, 19, 12], [8, 147, 119, 21, 7], [9, 147, 124, 15, 8], [10, 147, 119, 21, 7]].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 147, 123, 14, 10], [2, 147, 133, 12, 2], [3, 147, 132, 9, 6], [4, 147, 125, 16, 6], [5, 147, 108, 24, 15], [6, 147, 126, 13, 8], [7, 147, 116, 19, 12], [8, 147, 119, 21, 7], [9, 147, 124, 15, 8], [10, 147, 119, 21, 7]])
+                                               document.write(space);  }
+                                       var text4= "<i> Detailed list of outliers are tabulated below. </i>";
+                                       document.write(text4);
+                                       document.write(space);
+                                       if ([['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:2', 'THR'], [1, 'A:18', 'ILE'], [1, 'A:26', 'LEU'], [1, 'A:72', 'VAL'], [1, 'A:109', 'MET'], [1, 'A:116', 'GLN'], [1, 'A:151', 'ARG'], [1, 'A:165', 'LEU'], [1, 'A:168', 'THR'], [1, 'A:184', 'TYR'], [2, 'A:106', 'SER'], [2, 'A:177', 'GLU'], [3, 'A:17', 'GLN'], [3, 'A:26', 'LEU'], [3, 'A:33', 'ILE'], [3, 'A:99', 'PRO'], [3, 'A:102', 'SER'], [3, 'A:140', 'THR'], [4, 'A:12', 'MET'], [4, 'A:51', 'VAL'], [4, 'A:91', 'SER'], [4, 'A:97', 'PHE'], [4, 'A:112', 'HIS'], [4, 'A:140', 'THR'], [5, 'A:14', 'LEU'], [5, 'A:39', 'LEU'], [5, 'A:42', 'VAL'], [5, 'A:43', 'TYR'], [5, 'A:60', 'TYR'], [5, 'A:97', 'PHE'], [5, 'A:103', 'VAL'], [5, 'A:117', 'LEU'], [5, 'A:120', 'PHE'], [5, 'A:135', 'GLU'], [5, 'A:154', 'SER'], [5, 'A:164', 'ARG'], [5, 'A:168', 'THR'], [5, 'A:169', 'ASN'], [5, 'A:181', 'GLU'], [6, 'A:4', 'THR'], [6, 'A:52', 'TYR'], [6, 'A:85', 'GLU'], [6, 'A:110', 'LEU'], [6, 'A:134', 'ASN'], [6, 'A:140', 'THR'], [6, 'A:165', 'LEU'], [6, 'A:177', 'GLU'], [7, 'A:1', 'MET'], [7, 'A:4', 'THR'], [7, 'A:31', 'LEU'], [7, 'A:35', 'LEU'], [7, 'A:45', 'ASP'], [7, 'A:91', 'SER'], [7, 'A:126', 'GLN'], [7, 'A:128', 'VAL'], [7, 'A:132', 'LEU'], [7, 'A:165', 'LEU'], [7, 'A:180', 'LYS'], [7, 'A:183', 'ARG'], [8, 'A:44', 'LEU'], [8, 'A:72', 'VAL'], [8, 'A:108', 'LEU'], [8, 'A:140', 'THR'], [8, 'A:143', 'GLU'], [8, 'A:159', 'GLN'], [8, 'A:168', 'THR'], [9, 'A:6', 'HIS'], [9, 'A:15', 'LEU'], [9, 'A:19', 'GLN'], [9, 'A:104', 'SER'], [9, 'A:126', 'GLN'], [9, 'A:127', 'GLN'], [9, 'A:174', 'MET'], [9, 'A:178', 'SER'], [10, 'A:35', 'LEU'], [10, 'A:39', 'LEU'], [10, 'A:42', 'VAL'], [10, 'A:78', 'LEU'], [10, 'A:100', 'LEU'], [10, 'A:129', 'PRO'], [10, 'A:176', 'MET']].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:2', 'THR'], [1, 'A:18', 'ILE'], [1, 'A:26', 'LEU'], [1, 'A:72', 'VAL'], [1, 'A:109', 'MET'], [1, 'A:116', 'GLN'], [1, 'A:151', 'ARG'], [1, 'A:165', 'LEU'], [1, 'A:168', 'THR'], [1, 'A:184', 'TYR'], [2, 'A:106', 'SER'], [2, 'A:177', 'GLU'], [3, 'A:17', 'GLN'], [3, 'A:26', 'LEU'], [3, 'A:33', 'ILE'], [3, 'A:99', 'PRO'], [3, 'A:102', 'SER'], [3, 'A:140', 'THR'], [4, 'A:12', 'MET'], [4, 'A:51', 'VAL'], [4, 'A:91', 'SER'], [4, 'A:97', 'PHE'], [4, 'A:112', 'HIS'], [4, 'A:140', 'THR'], [5, 'A:14', 'LEU'], [5, 'A:39', 'LEU'], [5, 'A:42', 'VAL'], [5, 'A:43', 'TYR'], [5, 'A:60', 'TYR'], [5, 'A:97', 'PHE'], [5, 'A:103', 'VAL'], [5, 'A:117', 'LEU'], [5, 'A:120', 'PHE'], [5, 'A:135', 'GLU'], [5, 'A:154', 'SER'], [5, 'A:164', 'ARG'], [5, 'A:168', 'THR'], [5, 'A:169', 'ASN'], [5, 'A:181', 'GLU'], [6, 'A:4', 'THR'], [6, 'A:52', 'TYR'], [6, 'A:85', 'GLU'], [6, 'A:110', 'LEU'], [6, 'A:134', 'ASN'], [6, 'A:140', 'THR'], [6, 'A:165', 'LEU'], [6, 'A:177', 'GLU'], [7, 'A:1', 'MET'], [7, 'A:4', 'THR'], [7, 'A:31', 'LEU'], [7, 'A:35', 'LEU'], [7, 'A:45', 'ASP'], [7, 'A:91', 'SER'], [7, 'A:126', 'GLN'], [7, 'A:128', 'VAL'], [7, 'A:132', 'LEU'], [7, 'A:165', 'LEU'], [7, 'A:180', 'LYS'], [7, 'A:183', 'ARG'], [8, 'A:44', 'LEU'], [8, 'A:72', 'VAL'], [8, 'A:108', 'LEU'], [8, 'A:140', 'THR'], [8, 'A:143', 'GLU'], [8, 'A:159', 'GLN'], [8, 'A:168', 'THR'], [9, 'A:6', 'HIS'], [9, 'A:15', 'LEU'], [9, 'A:19', 'GLN'], [9, 'A:104', 'SER'], [9, 'A:126', 'GLN'], [9, 'A:127', 'GLN'], [9, 'A:174', 'MET'], [9, 'A:178', 'SER'], [10, 'A:35', 'LEU'], [10, 'A:39', 'LEU'], [10, 'A:42', 'VAL'], [10, 'A:78', 'LEU'], [10, 'A:100', 'LEU'], [10, 'A:129', 'PRO'], [10, 'A:176', 'MET']])
+                                               document.write(space);}
+            }
+                       	
+         </script>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">8. Fit of model to data used for modeling</h2>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">9. Fit of model to data not used for modeling</h2>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">10. Uncertainty of model</h2>
+         <hr class="ex2">
+   </body>
+</html>
+

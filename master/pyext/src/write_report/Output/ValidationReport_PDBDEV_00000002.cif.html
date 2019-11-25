@@ -1,0 +1,391 @@
+<!Template for writing HTML page>
+<! ganesans - Salilab - UCSF>
+<!ganesans@salilab.org>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+   <body style="font-family: Times new roman">
+      <style>
+         table#t01 {
+         font-family: Times New Roman;
+         border-collapse: collapse;
+         table-layout:fixed;
+         width: 100%;
+         word-break: keep-all;
+         overflow-wrap: break-word;
+         hyphens: auto;
+         }
+         td, th {
+         border: 1px solid;
+         text-align: center;
+         padding: 12px;
+         word-break: keep-all;
+         page-break-inside:avoid;
+         }
+         tr {
+         page-break-inside:avoid;
+         page-break-before:always;
+         page-break-inside:'always';
+         -webkit-hyphens: auto;
+         -moz-hyphens: auto;
+         -ms-hyphens: auto;
+         hyphens: auto;
+         }
+         tr:nth-child(even) {
+         background-color: ;
+         }
+         table tr th:first-child td {
+         border-top: 0;
+         }
+         table tr td th :first-child {
+         border-left: 0;
+         }
+         table tr th :last-child td {
+         border-bottom: 0;
+         }
+         table tr td th:last-child {
+         border-right: 0;
+         }
+         img {
+         display: block;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         body {
+         height: 297mm;
+         width: 210mm;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         .center {
+         text-align: center
+         }
+         .ex1 {
+         margin-top: 50px;
+         }
+         .ex2 {
+         margin-top: 30px;
+         }
+         hr {
+         width: 100%;
+         height: 2px;
+         margin-left: auto;
+         margin-right: auto;
+         background-color:#666;
+         border: 0 none;
+         margin-top: 10px;
+         margin-bottom:10px;
+         }
+         .fixed-header, .fixed-footer{
+         width: 100%;
+         position: fixed;        
+         background: #333;
+         padding: 10px 0;
+         color: #fff;
+         }
+         .fixed-header{
+         top: 0;
+         }
+         .fixed-footer{
+         bottom: 0;
+         }
+         .container{
+         width: 80%;
+         margin: 0 auto; /* Center the DIV horizontally */
+         }
+         nav a{
+         color: #fff;
+         text-decoration: none;
+         padding: 7px 25px;
+         display: inline-block;
+         }
+      </style>
+      </head>
+      <body>
+         <p class="ex1"> </p>
+         <img src="../static/images/PDB.png" alt="PDB" class="center" style="width:25%">
+         <h1 class="center">Full wwPDB Integrative Structure Validation Report</h1>
+         <h2 class="center"> November 07, 2019 --  03:35 PM</h2>
+         <div class="ex1">
+            <table id=t01>
+               <tr>
+                  <th bgcolor = 'silver' align='center'><i>PDB ID</i></th>
+                  <th bgcolor = 'silver' align='center'><i>PDBDEV00000002</i></th>
+               </tr>
+               <tr>
+                  <td>Molecule Name</td>
+                  <td>Structure of Saccharomyces cerevisiae exosome determined with CX-MS </td>
+               </tr>
+               <tr>
+                  <td>Title</td>
+                  <td>A strategy for dissecting the architectures of native macromolecular assemblies.</td>
+               </tr>
+               <tr>
+                  <td>Authors</td>
+                  <td>Shi Y;Pellarin R;Fridy PC;Fernandez-Martinez J;Thompson MK;Li Y;Wang QJ;Sali A;Rout MP;Chait BT</td>
+               </tr>
+            </table>
+         </div>
+         <hr class="ex1">
+         <div class="ex2 center">
+            <p><b> The following software were used in the production of this report:</b></p>
+            <ul style="list-style-type:none;">
+               <script>
+                  var s=1
+                  if (s <1) {
+                                      	var docx= "<li><em>Molprobity : Version 4.4</em></li>";
+                  document.write(docx);
+                  }
+               </script>
+               <li><em>Integrative Modeling Validation Package : Version 1.0</em></li>
+            </ul>
+         </div>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">1. Overall quality at a glance</h2>
+         <script>
+            function plot_image(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'quality_at_glance.html');
+                      img.setAttribute("width","100%");
+                      img.setAttribute("height","27%");
+                      document.body.appendChild(img);
+                      }
+              plot_image(ID= "PDBDEV00000002")
+              
+         </script>
+         <script>
+            function Write_Table(list_to_write){
+            var mytable = "<table id=t01><tr>";
+            for (var i = 0; i < list_to_write[0].length; i++) {
+            mytable += "<th bgcolor = 'silver' align='center'><i>" + list_to_write[0][i] + "</i></th>";
+            }
+            mytable += "</tr><tr>";
+            
+            for (var j=1;j<list_to_write.length;j++) {
+            for (var i=0; i<list_to_write[j].length; i++) {
+            mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
+            }
+            mytable += "</tr><tr>";
+            
+            }
+            mytable += "</tr></table>";
+            document.write(mytable);
+            }
+         </script>
+         <p class="ex2"> </p>
+         <hr>
+         <script>
+            var n=4;
+            var section='<h2 align="left">2. Ensemble information</h2>';
+            if (n<2) {
+            section+='<p class ="ex2"><i>This entry consists of '+ n +' distinct ensemble.</i></p>';
+            document.write(section);
+            } else {
+            section+='<p class ="ex2"><i>This entry consists of '+ n +' distinct ensembles.</i></p>';
+            document.write(section);
+            }	
+            if (n>0){
+            var input_list=[['Ensemble number', 'Ensemble name', 'Model ID', 'Number of models', 'Clustering method', 'Clustering feature', 'Cluster precision'], ['1', 'Rrp6 cluster 1', '1', '69', 'None', 'RMSD', '24.374'], ['2', 'Rrp6 cluster 2', '2', '131', 'None', 'RMSD', '19.258'], ['3', 'Ski7 cluster 1', '3', '159', 'None', 'RMSD', '9.798'], ['4', 'Ski7 cluster 2', '4', '41', 'None', 'RMSD', '11.517']];	 
+            Write_Table(list_to_write=input_list)
+            }
+            var write1='<hr>';
+            write1+='<h2 class="ex2" align="left">3. Model composition</h2>';
+            
+            write1+='<h3 class="ex2" align="left">3.1 Summary</h3>';
+            
+            write1+='<i>This entry consists of '+ 4 + ' unique models, with '+ String (12.0) +' subunits in each model. A total of '+ 5 + ' datasets or restraints was used to build this entry. Each model is represented by ' +  String (30) +' rigid bodies and '+ String (31) + ' flexible or non-rigid units. </i>';
+            write1+='<h3 class="ex2" align="left">3.2 Entry composition</h3>';
+            document.write(write1);
+         </script>
+         <script>
+            function write_intro_1(input_variable){
+                    if (input_variable < 2) {
+            var docx="<i>There is " + input_variable + " unique type of model in this entry. </i>";
+                            document.write(docx);
+                    } else {
+            var docx="<i>There are "+ input_variable +" unique types of models in this entry.</i> ";
+            document.write(docx);
+            }
+            }        
+            
+            function write_model_name(input_variable){
+                  if (input_variable.length <2) {  
+            var docx= " <i>This model is titled "+ input_variable[0] + " respectively. </i>"
+                   document.write(docx);
+            } else {
+            var docx= "<i>These models are titled "+ input_variable.join(', ') + " respectively.</i> "
+                   document.write(docx);                  
+            }
+            }
+            
+            
+            function write_intro_2(input_variable){
+                  if (input_variable.length <2) {	
+            var docx= "<i>Model has "+ input_variable.join() + " chains respectively.</i> "
+                   document.write(docx);
+            } else {
+            var docx= "<i>Models have "+ input_variable.join() + " chains respectively.</i> "
+                   document.write(docx);		       
+            }
+            }
+            
+            write_intro_1(input_variable=4)
+            write_model_name(input_variable=['Rrp6 cluster 1/Best scoring model', 'Rrp6 cluster 2/Best scoring model', 'Ski7 cluster 1/Best scoring model', 'Ski7 cluster 2/Best scoring model']) 
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list=[['Model ID', 'Subunit number', 'Subunit ID', 'Subunit name', 'Chain ID', 'Total residues'], [1, 1, '1', 'Dis3', 'A', 1001], [1, 2, '2', 'Rrp45', 'B', 305], [1, 3, '3', 'Rrp4', 'C', 359], [1, 4, '4', 'Csl4', 'D', 292], [1, 5, '5', 'Mtr3', 'E', 250], [1, 6, '6', 'Rrp40', 'F', 240], [1, 7, '7', 'Rrp42', 'G', 265], [1, 8, '8', 'Ski6', 'H', 265], [1, 9, '9', 'Rrp46_gfp', 'I', 475], [1, 10, '10', 'Rrp43', 'J', 394], [1, 11, '11', 'Lrp1', 'K', 184], [1, 12, '12', 'Rrp6', 'L', 733], [1, 13, '13', 'MPP6', 'M', 186], [2, 1, '1', 'Dis3', 'A', 1001], [2, 2, '2', 'Rrp45', 'B', 305], [2, 3, '3', 'Rrp4', 'C', 359], [2, 4, '4', 'Csl4', 'D', 292], [2, 5, '5', 'Mtr3', 'E', 250], [2, 6, '6', 'Rrp40', 'F', 240], [2, 7, '7', 'Rrp42', 'G', 265], [2, 8, '8', 'Ski6', 'H', 265], [2, 9, '9', 'Rrp46_gfp', 'I', 475], [2, 10, '10', 'Rrp43', 'J', 394], [2, 11, '11', 'Lrp1', 'K', 184], [2, 12, '12', 'Rrp6', 'L', 733], [2, 13, '13', 'MPP6', 'M', 186], [3, 1, '1', 'Dis3', 'A', 1001], [3, 2, '2', 'Rrp45', 'B', 305], [3, 3, '3', 'Rrp4', 'C', 359], [3, 4, '4', 'Csl4', 'D', 292], [3, 5, '5', 'Mtr3', 'E', 250], [3, 6, '6', 'Rrp40', 'F', 240], [3, 7, '7', 'Rrp42', 'G', 265], [3, 8, '8', 'Ski6', 'H', 265], [3, 9, '9', 'Rrp46_gfp', 'I', 475], [3, 10, '10', 'Rrp43', 'J', 394], [3, 11, '15', 'Ski7', 'N', 747], [4, 1, '1', 'Dis3', 'A', 1001], [4, 2, '2', 'Rrp45', 'B', 305], [4, 3, '3', 'Rrp4', 'C', 359], [4, 4, '4', 'Csl4', 'D', 292], [4, 5, '5', 'Mtr3', 'E', 250], [4, 6, '6', 'Rrp40', 'F', 240], [4, 7, '7', 'Rrp42', 'G', 265], [4, 8, '8', 'Ski6', 'H', 265], [4, 9, '9', 'Rrp46_gfp', 'I', 475], [4, 10, '10', 'Rrp43', 'J', 394], [4, 11, '15', 'Ski7', 'N', 747]];
+            Write_Table(list_to_write=input_list)
+         </script>
+         <p class="ex2"> </p>
+         <h3 class="ex2" align="left">3.3 Datasets used for modeling</h3>
+         <p class="ex2"> </p>
+         <script>
+            function write_dataset(input_variable){
+                    if (input_variable < 2) {
+            var docx="<i>There is " + input_variable + " unique dataset used to build the models in this entry. </i>";
+                            document.write(docx);
+                    } else {
+            var docx="<i>There are "+ input_variable +" unique datasets used to build the models in this entry.</i> ";
+                            document.write(docx);
+            }
+            }
+            write_dataset(input_variable=5)
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list_2=[['ID', 'Dataset type', 'Database name', 'Data access code'], ['1', 'Experimental model', 'PDB', '4IFD'], ['2', 'Experimental model', 'PDB', '1GFL'], ['3', 'Experimental model', 'PDB', '2HBJ'], ['4', 'Comparative model', 'Not listed', 'None'], ['5', 'CX-MS data', 'Not listed', 'None']];
+            Write_Table(list_to_write=input_list_2)
+         </script>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">4. Representation </h2>
+         <p class ="ex2"><i>This entry has only one representation and includes 30 rigid bodies and 31 flexible units.</i></p>
+         <p class="ex2"> </p>
+         <script>
+            var input_list_3=[['Chain ID', 'Rigid bodies', 'Non-rigid segments'], ['A', '9-237:Experimental model/4IFD, 249-329:Experimental model/4IFD, 364-471:Experimental model/4IFD, 472-1001:Experimental model/4IFD. ', '1-8, 238-248, 330-363. '], ['B', '2-301:Experimental model/4IFD. ', '1-1, 302-305. '], ['C', '2-17:Experimental model/4IFD, 50-102:Experimental model/4IFD, 103-245:Experimental model/4IFD, 275-357:Experimental model/4IFD. ', '1-1, 18-49, 246-274, 358-359. '], ['D', '1-71:Experimental model/4IFD, 99-113:Experimental model/4IFD, 126-162:Experimental model/4IFD, 185-291:Experimental model/4IFD. ', '72-98, 114-125, 163-184, 292-292. '], ['E', '4-22:Experimental model/4IFD, 42-149:Experimental model/4IFD, 163-248:Experimental model/4IFD. ', '1-3, 23-41, 150-162, 249-250. '], ['F', '1-60:Experimental model/4IFD, 61-236:Experimental model/4IFD. ', '237-240. '], ['G', '1-265:Experimental model/4IFD. ', '-'], ['H', '1-242:Experimental model/4IFD. ', '243-265. '], ['I', '1-223:Experimental model/4IFD, 247-475:Experimental model/1GFL. ', '224-246. '], ['J', '7-99:Experimental model/4IFD, 121-193:Experimental model/4IFD, 206-309:Experimental model/4IFD, 327-394:Experimental model/4IFD. ', '1-6, 100-120, 194-205, 310-326. '], ['K', '-', '1-184. '], ['L', '127-516:Experimental model/2HBJ, 532-557:Experimental model/4IFD, 565-619:Experimental model/4IFD. ', '1-126, 517-531, 558-564, 620-733. '], ['M', '-', '1-186. '], ['N', '259-747:Comparative model/None. ', '1-258. ']];
+            Write_Table(list_to_write=input_list_3)
+         </script>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">5. Methodology and software</h2>
+         <script>
+            var n=2
+            if (n<2){
+            var write_prot= "<i>This entry is a result of " + 2 +" distinct protocol.</i>";
+            document.write(write_prot);
+            }else{
+             var write_prot= "<i>This entry is a result of " + 2 +" distinct protocols.</i>";
+             document.write(write_prot);	
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list_3=[['Step number', 'Protocol ID', 'Method name', 'Method type', 'Number of computed models', 'Multi state modeling', 'Multi scale modeling'], ['1', 1, 'Replica exchange monte carlo', 'Sampling', 50000, 'False', 'True'], ['1', 2, 'Replica exchange monte carlo', 'Sampling', 50000, 'False', 'True']];
+            Write_Table(list_to_write=input_list_3)
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            function write_software(software_list){
+                   if (software_list < 1) {
+            var docx="<i>Software packages used for modeling were either not reported or not used.</i> ";
+                           document.write(docx);
+                   } else if (software_list <2) {
+            var docx="<i>There is "+ software_list +" software package reported in this entry.</i> ";
+                                          document.write(docx);
+                          } else{
+             var docx="<i>There are "+ software_list +" software packages reported in this entry. </i>";
+                           document.write(docx);
+            }
+            } 
+            write_software(software_list=3)
+         </script>
+         <p class="ex2"> </p>
+         <script>
+            var input_list=[['ID', 'Software name', 'Software version', 'Software classification', 'Software location'], ['1', 'Integrative Modeling Platform (IMP)', 'develop-0a5706e202', 'integrative model building', 'https://integrativemodeling.org'], ['2', 'IMP PMI module', '67456c0', 'integrative model building', 'https://integrativemodeling.org'], ['3', 'Phyre2', '2.0', 'protein homology modeling', 'http://www.sbg.bio.ic.ac.uk/~phyre2/']];
+            Write_Table(list_to_write=input_list)
+         </script>
+         <p class="ex2"> </p>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">6. Data quality</h2>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">7. Model quality</h2>
+         <script>
+            var sphere=1
+            if (sphere>0){
+            var ex="<h3 class= ex2 align= left>7.1 Excluded volume satisfaction</h3>";
+                                 ex+="<i> Excluded volume satisfaction for the models in the entry are listed below. </i>";
+                                 document.write(ex);
+                                 var space='<p class="ex2"> </p>';
+                                 document.write(space);
+                                 Write_Table(list_to_write=[['Models', 'Excluded Volume Satisfaction', 'Number of violations'], ['1', '99.89', '9530.0'], ['2', '99.89', '9561.0'], ['3', '99.89', '9595.0'], ['4', '99.89', '9583.0']])
+                                document.write(space);
+            } 
+         </script>
+         <script>
+            if (1 <1) {
+                                       var intro="<h3 class= ex2 align= left>7.1 Standard geometry</h3>";
+                                       intro+="<i> There are " +  + " bond outliers in this entry. </i>";
+                                       document.write(intro);
+                                       var space='<p class="ex2"> </p>';
+                                       document.write(space);
+                                       if (.length>0){
+                                       Write_Table(list_to_write=)
+                                               document.write(space);}
+                                       var intro2="<i> There are " +  + " angle outliers in this entry.  </i>";
+                                       document.write(intro2);
+                                       document.write(space);
+                                       if (.length>0){
+                                               Write_Table(list_to_write=)
+                                               document.write(space);}
+                                       var docx= "<h3 class= ex2 align= left>7.2 Too-close contacts</h3>";
+                                       docx+="<i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i>";
+                                       document.write(docx);
+                                       document.write(space);
+                                       if (.length>0){
+                                       Write_Table(list_to_write=)
+                                               document.write(space);}
+                                       var text1="<i> All "+  + " close contacts within the same asymmetric unit are listed below, sorted by their clash magnitude.</i>";
+                                       document.write(text1);
+                                       document.write(space);
+                                       if (.length>0){
+                                               Write_Table(list_to_write=)
+                                               document.write(space);}
+                                       var text2="<h3 class=ex2 align= left>7.3 Torsion angles</h3>";
+                                       text2+= "<h4 class=ex2 align=left>7.3.1 Protein backbone</h4>";
+                                       text2+="<i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation wasanalysed. </i>"
+                                       document.write(text2);
+                                       document.write(space);
+                                       if (.length>0){
+                                       Write_Table(list_to_write=)
+                                               document.write(space);}
+                                       var text4= "<i> Detailed list of outliers are tabulated below. </i>";
+                                       document.write(text4);
+                                       document.write(space);
+                                       if (.length>0){
+                                       Write_Table(list_to_write=)
+                                               document.write(space);  }
+                                       var text3="<h4 class=ex2 align=left>7.3.2 Protein sidechains</h4>";
+                                       text3+="<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
+                                       document.write(text3);
+                                       document.write(space);
+                                       if (.length>0){
+                                       Write_Table(list_to_write=)
+                                               document.write(space);  }
+                                       var text4= "<i> Detailed list of outliers are tabulated below. </i>";
+                                       document.write(text4);
+                                       document.write(space);
+                                       if (.length>0){
+                                       Write_Table(list_to_write=)
+                                               document.write(space);}
+            }
+                       	
+         </script>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">8. Fit of model to data used for modeling</h2>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">9. Fit of model to data not used for modeling</h2>
+         <hr class="ex2">
+         <h2 class="ex2" align="left">10. Uncertainty of model</h2>
+         <hr class="ex2">
+   </body>
+</html>
+
