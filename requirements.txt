@@ -1,0 +1,12 @@
+Python version  3 and above
+#Required Python modules
+pytz
+jinja2
+pandas
+numpy
+pdfkit
+flask
+multiprocessing
+collections
+json
+
