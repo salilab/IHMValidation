@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="English">
+  <head>
+    <meta charset="utf-8" />
+    <title>Usage &#8212; IHM Validation 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Design principles" href="design.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>Usage of the library for output consists of first creating a hierarchy of
+Python objects that together describe the system, and then dumping that
+hierarchy to an mmCIF file.</p>
+<p>For a complete worked example, see the
+<a class="reference external" href="https://github.com/ihmwg/python-ihm/blob/master/examples/simple-docking.py">simple docking example</a>.</p>
+<p>The top level of the hierarchy in IHM is the <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.System</span></code>. All other
+objects are referenced from a System object.</p>
+<p>Any data used anywhere in the modeling (including in validation) can be
+referenced with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.dataset.Dataset</span></code>. For example,
+electron microscopy data is referenced with
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.dataset.EMDensityDataset</span></code> and small angle scattering data with
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.dataset.SASDataset</span></code>. A dataset uses an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.location.Location</span></code> object to describe where it is stored.
+Typically this is an <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.location.DatabaseLocation</span></code> for something
+that's deposited in a experiment-specific database such as PDB, EMDB, PRIDE,
+or EMPIAR, or <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.location.InputFileLocation</span></code> for something that's
+stored as a simple file, either on the local disk or at a location described
+with a DOI such as <a class="reference external" href="https://zenodo.org">Zenodo</a> or a publication's
+supplementary information. See the
+<a class="reference external" href="https://github.com/ihmwg/python-ihm/blob/master/examples/locations.py">locations example</a>
+for more examples.</p>
+<p>The architecture of the system is described with a number of classes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.Entity</span></code> describes each unique sequence.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.AsymUnit</span></code> describes each asymmetric unit (chain) in the system.
+For example, a homodimer would consist of two asymmetric units, both
+pointing to the same entity, while a heterodimer contains two entities.
+It is also possible for an entity to exist with no asymmetric units pointing
+to it - this typically corresponds to something seen in an experiment (such
+as a cross-linking study) which was not modeled. Note that the IHM
+extension currently contains no support for symmetry, so two chains that
+are symmetrically related should each be represented as an &quot;asymmetric&quot;
+unit.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.Assembly</span></code> groups asymmetric units and/or entities, or parts of
+them. Assemblies are used to describe which parts of the system correspond
+to each input source of data, or that were modeled.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.representation.Representation</span></code> describes how each part of the
+system was represented in the modeling, for example
+<code class="xref py py-class docutils literal notranslate"><span class="pre">as</span> <span class="pre">atoms</span></code> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">as</span> <span class="pre">coarse-grained</span> <span class="pre">spheres</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Restraints, that score or otherwise fit the computational model against
+the input data, can be created as <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.restraint.Restraint</span></code> objects.
+These generally take as input a <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code> pointing to
+the input data, and an <code class="xref py py-class docutils literal notranslate"><span class="pre">Assembly</span></code> describing which part of the
+model the data corresponds to. For example, there are restraints for
+<code class="xref py py-class docutils literal notranslate"><span class="pre">3D</span> <span class="pre">EM</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">small</span> <span class="pre">angle</span> <span class="pre">scattering</span></code>.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.protocol.Protocol</span></code> objects describe how models were generated
+from the input data. A protocol can consist of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">multiple</span> <span class="pre">steps</span></code>, such as molecular dynamics or
+Monte Carlo, followed by one or more analyses, such as clustering, filtering,
+rescoring, or validation, described by <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.analysis.Analysis</span></code> objects.
+These objects generally take an <code class="xref py py-class docutils literal notranslate"><span class="pre">Assembly</span></code> to indicate what part
+of the system was considered and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">group</span> <span class="pre">of</span> <span class="pre">datasets</span></code> to show which data
+guided the modeling or analysis.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.model.Model</span></code> objects give the actual coordinates of the final
+generated models. These point to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Assembly</span></code> of what was
+modeled, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code> describing how the modeling
+was done, and the <code class="xref py py-class docutils literal notranslate"><span class="pre">Representation</span></code> showing how
+the model was represented.</p>
+<p>Models can be grouped together for any purpose using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.model.ModelGroup</span></code> class. If a given group describes an ensemble
+of models, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.model.Ensemble</span></code> class allows for additional
+information on the ensemble to be provided, such as
+<code class="xref py py-class docutils literal notranslate"><span class="pre">localization</span> <span class="pre">densities</span></code> of parts of
+the system and precision. Due to size, generally only representative models
+of an ensemble are deposited in mmCIF, but the <code class="xref py py-class docutils literal notranslate"><span class="pre">Ensemble</span></code>
+class allows the full ensemble to be referred to, for example in a more
+compact binary format (e.g. DCD) deposited at a given DOI. Groups of models
+can also be shown as corresponding to different states of the system using
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.model.State</span></code> class.</p>
+<p>Metadata can also be added to the system, such as</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.Citation</span></code>: publication(s) that describe this modeling or the
+methods used in it.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.Software</span></code>: software packages used to process the experimental
+data, generate intermediate inputs, do the modeling itself, and/or
+process the output.</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="residue-numbering">
+<h2>Residue numbering<a class="headerlink" href="#residue-numbering" title="Permalink to this headline">¶</a></h2>
+<p>The library keeps track of several numbering schemes to reflect the reality
+of the data used in modeling:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Internal numbering</em>. Residues are always numbered sequentially starting at
+1 in an <code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code>. All references to residues or residue ranges in
+the library use this numbering.</p></li>
+<li><p><em>Author-provided numbering</em>. If a different numbering scheme is used by the
+authors, for example to correspond to the numbering of the original sequence
+that is modeled, this can be given as an author-provided numbering for
+one or more asymmetric units. See the <code class="docutils literal notranslate"><span class="pre">auth_seq_id_map</span></code> parameter to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AsymUnit</span></code>. (The mapping between author-provided and internal
+numbering is given in the <code class="docutils literal notranslate"><span class="pre">pdbx_poly_seq_scheme</span></code> table in the mmCIF file.)</p></li>
+<li><p><em>Starting model numbering</em>. If the initial state of the modeling is given
+by one or more PDB files, the numbering of residues in those files may not
+line up with the internal numbering. In this case an offset from starting
+model numbering to internal numbering can be provided - see the <code class="docutils literal notranslate"><span class="pre">offset</span></code>
+parameter to <code class="xref py py-class docutils literal notranslate"><span class="pre">StartingModel</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="output">
+<h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Once the hierarchy of classes is complete, it can be freely inspected or
+modified. All the classes are simple lightweight Python objects, generally
+with the relevant data available as member variables. For example, modeling
+packages such as <a class="reference external" href="https://integrativemodeling.org">IMP</a> will typically
+generate an IHM hierarchy from their own internal data models, but in many
+cases some information relevant to IHM (such as
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">associated</span> <span class="pre">publication</span></code>) cannot be determined
+automatically and can be filled in by adding more objects to the hierarchy.</p>
+<p>The complete hierarchy can be written out to an mmCIF or BinaryCIF file using
+the <code class="xref py py-func docutils literal notranslate"><span class="pre">ihm.dumper.write()</span></code> function.</p>
+</div>
+<div class="section" id="input">
+<h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<p>Hierarchies of IHM classes can also be read from mmCIF or BinaryCIF files.
+This is done using the <code class="xref py py-func docutils literal notranslate"><span class="pre">ihm.reader.read()</span></code> function, which returns a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ihm.System</span></code> objects.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">IHM Validation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#residue-numbering">Residue numbering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input">Input</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design principles</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="introduction.html" title="previous chapter">Introduction</a></li>
+      <li>Next: <a href="design.html" title="next chapter">Design principles</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Sai Ganesan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

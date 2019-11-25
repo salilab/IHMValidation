@@ -1,0 +1,198 @@
+<!Template for writing HTML page>
+<! ganesans - Salilab - UCSF>
+<!ganesans@salilab.org>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+         table#t01 {
+         font-family: arial, sans-serif;
+         border-collapse: collapse;
+         width: 120%;
+         }
+         td, th {
+         border: 1px solid #dddddd;
+         text-align: left;
+         padding: 12px;
+         }
+         tr:nth-child(even) {
+         background-color: #dddddd;
+         }
+         img {
+         display: block;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         body {
+         height: 297mm;
+         width: 210mm;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         .center {
+         text-align: center
+         }
+         .ex1 {
+         margin-top: 50px;
+         }
+         .ex2 {
+         margin-top: 30px;
+         }
+         hr {
+         width: 120%;
+         height: 2px;
+         margin-left: auto;
+         margin-right: auto;
+         background-color:#666;
+         border: 0 none;
+         margin-top: 10px;
+         margin-bottom:10px;
+         }
+      </style>
+   </head>
+   <body>
+      <img src="PDB.png" alt="PDB" class="center" style="width:25%">
+      <h1 class="center">Full wwPDB Integrative Structure Validation Report</h1>
+      <h2 class="center"> September 06, 2019 --  02:06 PM</h2>
+      <div class="ex1">
+         <table id=t01>
+            <tr>
+               <td>PDB ID</td>
+               <td>PDBDEV00000025</td>
+            </tr>
+            <tr>
+               <td>Molecule Name</td>
+               <td>Architecture of Pol II(G) and molecular mechanism of transcription regulation by Gdown1 </td>
+            </tr>
+            <tr>
+               <td>Title</td>
+               <td>Architecture of Pol II(G) and molecular mechanism of transcription regulation by Gdown1.</td>
+            </tr>
+            <tr>
+               <td>Authors</td>
+               <td>Jishage M;Yu X;Shi Y;Ganesan SJ;Chen WY;Sali A;Chait BT;Asturias FJ;Roeder RG</td>
+            </tr>
+         </table>
+      </div>
+      <hr class="ex1">
+      <div class="ex2 center">
+         <p><b> The following softwares were used in the production of this report:</b></p>
+         <ul style="list-style-type:none;">
+            <li><em>Integrative Modeling Package : Version XX</em></li>
+            <li><em>Molprobity : Version XX</em></li>
+            <li><em>Phenix : Version XX</em></li>
+            <li><em>Integrative Modeling Validation Package : Version XX</em></li>
+         </ul>
+      </div>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">1. Overall quality at a glance</h2>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">2. Entry composition</h2>
+      <script>
+         function write_intro_1(input_variable){
+                 if (input_variable < 2) {
+                         var docx="There is " + input_variable + " unique type of model in this entry. ";
+                         document.write(docx);
+                 } else {
+                         var docx="There are "+ input_variable +" unique types of models in this entry. ";
+	 		 document.write(docx);
+         }
+         }
+        
+         function write_intro_2(input_variable){
+               if (input_variable.length <2) {	
+		var docx= "Model has "+ input_variable.join() + " chains respectively. "
+                document.write(docx);
+	       } else {
+                var docx= "Models have "+ input_variable.join() + " chains respectively. "
+                document.write(docx);		       
+	       }
+	 }
+	
+         write_intro_1(input_variable=1)
+	 write_intro_2(input_variable=[13])
+
+      </script>
+
+      <script>
+         function write_table(list_to_write){
+         var mytable = "<table cellpadding=\"4\" cellspacing=\"2\"><tbody><tr>";
+         for (var i = 0; i < list_to_write[0].length; i++) {
+         mytable += "<th>" + list_to_write[0][i] + "</th>";
+         }
+         mytable += "</tr><tr>";
+         
+         for (var j=1;j<list_to_write.length;j++) {
+         for (var i=0; i<list_to_write[j].length; i++) {
+         mytable += "<td>" + list_to_write[j][i] + "</td>";
+         }
+         mytable += "</tr><tr>";
+         
+         }
+         mytable += "</tr></tbody></table>";
+         document.write(mytable);
+         }
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         var input_list=[['Molecule ID', 'Molecule Name', 'Chain ID', 'Total Residues'], ['1', 'RPB1', 'A', 1970], ['1', 'RPB2', 'B', 1174], ['1', 'RPB3', 'C', 275], ['1', 'RPB4', 'D', 142], ['1', 'RPB5', 'E', 210], ['1', 'RPB6', 'F', 127], ['1', 'RPB7', 'G', 172], ['1', 'RPB8', 'H', 150], ['1', 'RPB9', 'I', 125], ['1', 'RPB10', 'J', 67], ['1', 'RPB11', 'K', 117], ['1', 'RPB12', 'L', 58], ['1', 'GDOWN1', 'M', 368]];
+         write_table(list_to_write=input_list)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         function write_software(software_list){
+         	if (software_list < 1) {
+         		var docx="Software packages used for modeling were either not reported or not used. ";
+         		document.write(docx);
+         	} else if (software_list <2) {
+                                       var docx="There is "+ software_list +" software package reported in this entry. ";
+                                       document.write(docx);
+                       } else{
+         		var docx="There are "+ software_list +" software packages reported in this entry. ";
+         		document.write(docx);
+         }
+         }
+         
+         write_software(software_list=2)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         var input_list=[['ID', 'Software Name', 'Software Version', 'Software Classification'], ['1', 'IMP PMI module', 'develop-7c7c0f4348', 'integrative model building'], ['2', 'Integrative Modeling Platform (IMP)', 'develop-0a5706e202', 'integrative model building']];
+         
+         write_table(list_to_write=input_list)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         function write_dataset(input_variable){
+                 if (input_variable < 2) {
+                         var docx="There is " + input_variable + " unique dataset used to build the model in this entry. ";
+                         document.write(docx);
+                 } else {
+                         var docx="There are "+ input_variable +" unique datasets used to build the model in this entry. ";
+                         document.write(docx);
+         }
+         }
+         write_dataset(input_variable=3)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         var input_list_2=[['ID', 'Dataset Type', 'Database Name', 'Data Access Code'], ['1', 'Experimental model', 'PDB', '5FLM'], ['2', 'Experimental model', 'Not Listed', 'None'], ['3', 'CX-MS data', 'Not Listed', 'None']];
+         write_table(list_to_write=input_list_2)
+      </script>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">3. Data quality</h2>
+      <embed src="images/plot.html" width=50% height=30%>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">4. Model quality</h2>
+      <h3 class="ex2" align="left">4.1 Too-close contacts</h3>
+      <h3 class="ex2" align="left">4.2 Torsion angles</h3>
+      <h4 class="ex2" align="left">4.2.1 Protein backbone</h4>
+      <h4 class="ex2" align="left">4.2.2 Protein sidechains</h4>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">5. Fit of model and data</h2>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">6. Uncertaintiy of model</h2>
+      <hr class="ex2">
+   </body>
+</html>

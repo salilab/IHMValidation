@@ -1,0 +1,198 @@
+<!Template for writing HTML page>
+<! ganesans - Salilab - UCSF>
+<!ganesans@salilab.org>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+         table#t01 {
+         font-family: arial, sans-serif;
+         border-collapse: collapse;
+         width: 120%;
+         }
+         td, th {
+         border: 1px solid #dddddd;
+         text-align: left;
+         padding: 12px;
+         }
+         tr:nth-child(even) {
+         background-color: #dddddd;
+         }
+         img {
+         display: block;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         body {
+         height: 297mm;
+         width: 210mm;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         .center {
+         text-align: center
+         }
+         .ex1 {
+         margin-top: 50px;
+         }
+         .ex2 {
+         margin-top: 30px;
+         }
+         hr {
+         width: 120%;
+         height: 2px;
+         margin-left: auto;
+         margin-right: auto;
+         background-color:#666;
+         border: 0 none;
+         margin-top: 10px;
+         margin-bottom:10px;
+         }
+      </style>
+   </head>
+   <body>
+      <img src="PDB.png" alt="PDB" class="center" style="width:25%">
+      <h1 class="center">Full wwPDB Integrative Structure Validation Report</h1>
+      <h2 class="center"> September 06, 2019 --  02:06 PM</h2>
+      <div class="ex1">
+         <table id=t01>
+            <tr>
+               <td>PDB ID</td>
+               <td>PDBDEV00000012</td>
+            </tr>
+            <tr>
+               <td>Molecule Name</td>
+               <td>Integrative structure and functional anatomy of eight spokes of a nuclear pore complex </td>
+            </tr>
+            <tr>
+               <td>Title</td>
+               <td>Integrative structure and functional anatomy of a nuclear pore complex.</td>
+            </tr>
+            <tr>
+               <td>Authors</td>
+               <td>Kim SJ;Fernandez-Martinez J;Nudelman I;Shi Y;Zhang W;Raveh B;Herricks T;Slaughter BD;Hogan JA;Upla P;Chemmama IE;Pellarin R;Echeverria I;Shivaraju M;Chaudhury AS;Wang J;Williams R;Unruh JR;Greenberg CH;Jacobs EY;Yu Z;de la Cruz MJ;Mironska R;Stokes DL;Aitchison JD;Jarrold MF;Gerton JL;Ludtke SJ;Akey CW;Chait BT;Sali A;Rout MP</td>
+            </tr>
+         </table>
+      </div>
+      <hr class="ex1">
+      <div class="ex2 center">
+         <p><b> The following softwares were used in the production of this report:</b></p>
+         <ul style="list-style-type:none;">
+            <li><em>Integrative Modeling Package : Version XX</em></li>
+            <li><em>Molprobity : Version XX</em></li>
+            <li><em>Phenix : Version XX</em></li>
+            <li><em>Integrative Modeling Validation Package : Version XX</em></li>
+         </ul>
+      </div>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">1. Overall quality at a glance</h2>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">2. Entry composition</h2>
+      <script>
+         function write_intro_1(input_variable){
+                 if (input_variable < 2) {
+                         var docx="There is " + input_variable + " unique type of model in this entry. ";
+                         document.write(docx);
+                 } else {
+                         var docx="There are "+ input_variable +" unique types of models in this entry. ";
+	 		 document.write(docx);
+         }
+         }
+        
+         function write_intro_2(input_variable){
+               if (input_variable.length <2) {	
+		var docx= "Model has "+ input_variable.join() + " chains respectively. "
+                document.write(docx);
+	       } else {
+                var docx= "Models have "+ input_variable.join() + " chains respectively. "
+                document.write(docx);		       
+	       }
+	 }
+	
+         write_intro_1(input_variable=37)
+	 write_intro_2(input_variable=[552, 200, 54, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+      </script>
+
+      <script>
+         function write_table(list_to_write){
+         var mytable = "<table cellpadding=\"4\" cellspacing=\"2\"><tbody><tr>";
+         for (var i = 0; i < list_to_write[0].length; i++) {
+         mytable += "<th>" + list_to_write[0][i] + "</th>";
+         }
+         mytable += "</tr><tr>";
+         
+         for (var j=1;j<list_to_write.length;j++) {
+         for (var i=0; i<list_to_write[j].length; i++) {
+         mytable += "<td>" + list_to_write[j][i] + "</td>";
+         }
+         mytable += "</tr><tr>";
+         
+         }
+         mytable += "</tr></tbody></table>";
+         document.write(mytable);
+         }
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         var input_list=[['Molecule ID', 'Molecule Name', 'Chain ID', 'Total Residues'], ['1', 'Nup84', 'A', 726], ['1', 'Nup85', 'H', 726], ['1', 'Nup120', 'BR', 726], ['1', 'Nup133', 'BY', 726], ['1', 'Nup145c', 'CF', 726], ['1', 'Seh1', 'CM', 726], ['1', 'Sec13', 'CT', 726], ['1', 'Dyn2', 'DA', 726], ['1', 'Nup82', 'DH', 726], ['1', 'Nup159', 'DO', 726], ['1', 'Nsp1', 'DV', 726], ['1', 'Nic96', 'EC', 726], ['1', 'Nup49', 'EJ', 726], ['1', 'Nup57', 'EQ', 726], ['1', 'Nup157', 'EX', 726], ['1', 'Nup170', 'FE', 726], ['1', 'Nup188', 'B', 744], ['1', 'Nup192', 'I', 744], ['1', 'Nup53', 'BS', 744], ['1', 'Nup59', 'BZ', 744], ['1', 'Ndc1', 'CG', 744], ['1', 'Pom34', 'CN', 744], ['1', 'Pom152', 'CU', 744], ['1', 'Nup100', 'DB', 744], ['1', 'Nup116', 'DI', 744], ['1', 'Nup42', 'DP', 744], ['1', 'Gle1', 'DW', 744], ['1', 'Nup145', 'ED', 744], ['1', 'Nup1', 'EK', 744], ['1', 'Nup60', 'ER', 744], ['1', 'Mlp1', 'EY', 744], ['1', 'Mlp2', 'FF', 744], ['1', 'Nup84', 'C', 1037], ['1', 'Nup85', 'J', 1037], ['1', 'Nup120', 'BT', 1037], ['1', 'Nup133', 'CA', 1037], ['1', 'Nup145c', 'CH', 1037], ['1', 'Seh1', 'CO', 1037], ['1', 'Sec13', 'CV', 1037], ['1', 'Dyn2', 'DC', 1037], ['1', 'Nup82', 'DJ', 1037], ['1', 'Nup159', 'DQ', 1037], ['1', 'Nsp1', 'DX', 1037], ['1', 'Nic96', 'EE', 1037], ['1', 'Nup49', 'EL', 1037], ['1', 'Nup57', 'ES', 1037], ['1', 'Nup157', 'EZ', 1037], ['1', 'Nup170', 'FG', 1037], ['1', 'Nup188', 'D', 1157], ['1', 'Nup192', 'K', 1157], ['1', 'Nup53', 'BU', 1157], ['1', 'Nup59', 'CB', 1157], ['1', 'Ndc1', 'CI', 1157], ['1', 'Pom34', 'CP', 1157], ['1', 'Pom152', 'CW', 1157], ['1', 'Nup100', 'DD', 1157], ['1', 'Nup116', 'DK', 1157], ['1', 'Nup42', 'DR', 1157], ['1', 'Gle1', 'DY', 1157], ['1', 'Nup145', 'EF', 1157], ['1', 'Nup1', 'EM', 1157], ['1', 'Nup60', 'ET', 1157], ['1', 'Mlp1', 'FA', 1157], ['1', 'Mlp2', 'FH', 1157], ['1', 'Nup84', 'E', 712], ['1', 'Nup85', 'L', 712], ['1', 'Nup120', 'BV', 712], ['1', 'Nup133', 'CC', 712], ['1', 'Nup145c', 'CJ', 712], ['1', 'Seh1', 'CQ', 712], ['1', 'Sec13', 'CX', 712], ['1', 'Dyn2', 'DE', 712], ['1', 'Nup82', 'DL', 712], ['1', 'Nup159', 'DS', 712], ['1', 'Nsp1', 'DZ', 712], ['1', 'Nic96', 'EG', 712], ['1', 'Nup49', 'EN', 712], ['1', 'Nup57', 'EU', 712], ['1', 'Nup157', 'FB', 712], ['1', 'Nup170', 'FI', 712], ['1', 'Nup188', 'F', 349], ['1', 'Nup192', 'M', 349], ['1', 'Nup53', 'BW', 349], ['1', 'Nup59', 'CD', 349], ['1', 'Ndc1', 'CK', 349], ['1', 'Pom34', 'CR', 349], ['1', 'Pom152', 'CY', 349], ['1', 'Nup100', 'DF', 349], ['1', 'Nup116', 'DM', 349], ['1', 'Nup42', 'DT', 349], ['1', 'Gle1', 'EA', 349], ['1', 'Nup145', 'EH', 349], ['1', 'Nup1', 'EO', 349], ['1', 'Nup60', 'EV', 349], ['1', 'Mlp1', 'FC', 349], ['1', 'Mlp2', 'FJ', 349], ['1', 'Nup84', 'G', 297], ['1', 'Nup85', 'N', 297], ['1', 'Nup120', 'BX', 297], ['1', 'Nup133', 'CE', 297], ['1', 'Nup145c', 'CL', 297], ['1', 'Seh1', 'CS', 297], ['1', 'Sec13', 'CZ', 297], ['1', 'Dyn2', 'DG', 297], ['1', 'Nup82', 'DN', 297], ['1', 'Nup159', 'DU', 297], ['1', 'Nsp1', 'EB', 297], ['1', 'Nic96', 'EI', 297], ['1', 'Nup49', 'EP', 297], ['1', 'Nup57', 'EW', 297], ['1', 'Nup157', 'FD', 297], ['1', 'Nup170', 'FK', 297], ['1', 'Nup188', 'O', 92], ['1', 'Nup192', 'P', 92], ['1', 'Nup53', 'FL', 92], ['1', 'Nup59', 'FM', 92], ['1', 'Ndc1', 'FT', 92], ['1', 'Pom34', 'FU', 92], ['1', 'Pom152', 'GB', 92], ['1', 'Nup100', 'GC', 92], ['1', 'Nup116', 'GJ', 92], ['1', 'Nup42', 'GK', 92], ['1', 'Gle1', 'GR', 92], ['1', 'Nup145', 'GS', 92], ['1', 'Nup1', 'GZ', 92], ['1', 'Nup60', 'HA', 92], ['1', 'Mlp1', 'HH', 92], ['1', 'Mlp2', 'HI', 92], ['1', 'Nup84', 'Q', 713], ['1', 'Nup85', 'R', 713], ['1', 'Nup120', 'FN', 713], ['1', 'Nup133', 'FO', 713], ['1', 'Nup145c', 'FV', 713], ['1', 'Seh1', 'FW', 713], ['1', 'Sec13', 'GD', 713], ['1', 'Dyn2', 'GE', 713], ['1', 'Nup82', 'GL', 713], ['1', 'Nup159', 'GM', 713], ['1', 'Nsp1', 'GT', 713], ['1', 'Nic96', 'GU', 713], ['1', 'Nup49', 'HB', 713], ['1', 'Nup57', 'HC', 713], ['1', 'Nup157', 'HJ', 713], ['1', 'Nup170', 'HK', 713], ['1', 'Nup188', 'S', 1460], ['1', 'Nup192', 'T', 1460], ['1', 'Nup53', 'FP', 1460], ['1', 'Nup59', 'FQ', 1460], ['1', 'Ndc1', 'FX', 1460], ['1', 'Pom34', 'FY', 1460], ['1', 'Pom152', 'GF', 1460], ['1', 'Nup100', 'GG', 1460], ['1', 'Nup116', 'GN', 1460], ['1', 'Nup42', 'GO', 1460], ['1', 'Gle1', 'GV', 1460], ['1', 'Nup145', 'GW', 1460], ['1', 'Nup1', 'HD', 1460], ['1', 'Nup60', 'HE', 1460], ['1', 'Mlp1', 'HL', 1460], ['1', 'Mlp2', 'HM', 1460], ['1', 'Nup84', 'U', 823], ['1', 'Nup85', 'V', 823], ['1', 'Nup120', 'X', 823], ['1', 'Nup133', 'AB', 823], ['1', 'Nup145c', 'AF', 823], ['1', 'Seh1', 'AJ', 823], ['1', 'Sec13', 'FR', 823], ['1', 'Dyn2', 'FS', 823], ['1', 'Nup82', 'FZ', 823], ['1', 'Nup159', 'GA', 823], ['1', 'Nsp1', 'GH', 823], ['1', 'Nic96', 'GI', 823], ['1', 'Nup49', 'GP', 823], ['1', 'Nup57', 'GQ', 823], ['1', 'Nup157', 'GX', 823], ['1', 'Nup170', 'GY', 823], ['1', 'Nup188', 'HF', 823], ['1', 'Nup192', 'HG', 823], ['1', 'Nup53', 'HN', 823], ['1', 'Nup59', 'HO', 823], ['1', 'Ndc1', 'HR', 823], ['1', 'Pom34', 'HS', 823], ['1', 'Pom152', 'HZ', 823], ['1', 'Nup100', 'IA', 823], ['1', 'Nup116', 'IH', 823], ['1', 'Nup42', 'II', 823], ['1', 'Gle1', 'IP', 823], ['1', 'Nup145', 'IQ', 823], ['1', 'Nup1', 'IX', 823], ['1', 'Nup60', 'IY', 823], ['1', 'Mlp1', 'JF', 823], ['1', 'Mlp2', 'JG', 823], ['1', 'Nup84', 'JN', 823], ['1', 'Nup85', 'JO', 823], ['1', 'Nup120', 'JV', 823], ['1', 'Nup133', 'JW', 823], ['1', 'Nup145c', 'KD', 823], ['1', 'Seh1', 'KE', 823], ['1', 'Sec13', 'KL', 823], ['1', 'Dyn2', 'KM', 823], ['1', 'Nup82', 'KT', 823], ['1', 'Nup159', 'KU', 823], ['1', 'Nsp1', 'LB', 823], ['1', 'Nic96', 'LC', 823], ['1', 'Nup49', 'LJ', 823], ['1', 'Nup57', 'LK', 823], ['1', 'Nup157', 'LR', 823], ['1', 'Nup170', 'LS', 823], ['1', 'Nup188', 'W', 839], ['1', 'Nup192', 'AA', 839], ['1', 'Nup53', 'AE', 839], ['1', 'Nup59', 'AI', 839], ['1', 'Ndc1', 'HP', 839], ['1', 'Pom34', 'HQ', 839], ['1', 'Pom152', 'HX', 839], ['1', 'Nup100', 'HY', 839], ['1', 'Nup116', 'IF', 839], ['1', 'Nup42', 'IG', 839], ['1', 'Gle1', 'IN', 839], ['1', 'Nup145', 'IO', 839], ['1', 'Nup1', 'IV', 839], ['1', 'Nup60', 'IW', 839], ['1', 'Mlp1', 'JD', 839], ['1', 'Mlp2', 'JE', 839], ['1', 'Nup84', 'JL', 839], ['1', 'Nup85', 'JM', 839], ['1', 'Nup120', 'JT', 839], ['1', 'Nup133', 'JU', 839], ['1', 'Nup145c', 'KB', 839], ['1', 'Seh1', 'KC', 839], ['1', 'Sec13', 'KJ', 839], ['1', 'Dyn2', 'KK', 839], ['1', 'Nup82', 'KR', 839], ['1', 'Nup159', 'KS', 839], ['1', 'Nsp1', 'KZ', 839], ['1', 'Nic96', 'LA', 839], ['1', 'Nup49', 'LH', 839], ['1', 'Nup57', 'LI', 839], ['1', 'Nup157', 'LP', 839], ['1', 'Nup170', 'LQ', 839], ['1', 'Nup188', 'Y', 472], ['1', 'Nup192', 'AC', 472], ['1', 'Nup53', 'AG', 472], ['1', 'Nup59', 'AK', 472], ['1', 'Ndc1', 'HT', 472], ['1', 'Pom34', 'HU', 472], ['1', 'Pom152', 'IB', 472], ['1', 'Nup100', 'IC', 472], ['1', 'Nup116', 'IJ', 472], ['1', 'Nup42', 'IK', 472], ['1', 'Gle1', 'IR', 472], ['1', 'Nup145', 'IS', 472], ['1', 'Nup1', 'IZ', 472], ['1', 'Nup60', 'JA', 472], ['1', 'Mlp1', 'JH', 472], ['1', 'Mlp2', 'JI', 472], ['1', 'Nup84', 'JP', 472], ['1', 'Nup85', 'JQ', 472], ['1', 'Nup120', 'JX', 472], ['1', 'Nup133', 'JY', 472], ['1', 'Nup145c', 'KF', 472], ['1', 'Seh1', 'KG', 472], ['1', 'Sec13', 'KN', 472], ['1', 'Dyn2', 'KO', 472], ['1', 'Nup82', 'KV', 472], ['1', 'Nup159', 'KW', 472], ['1', 'Nsp1', 'LD', 472], ['1', 'Nic96', 'LE', 472], ['1', 'Nup49', 'LL', 472], ['1', 'Nup57', 'LM', 472], ['1', 'Nup157', 'LT', 472], ['1', 'Nup170', 'LU', 472], ['1', 'Nup188', 'Z', 541], ['1', 'Nup192', 'AD', 541], ['1', 'Nup53', 'AH', 541], ['1', 'Nup59', 'AL', 541], ['1', 'Ndc1', 'HV', 541], ['1', 'Pom34', 'HW', 541], ['1', 'Pom152', 'ID', 541], ['1', 'Nup100', 'IE', 541], ['1', 'Nup116', 'IL', 541], ['1', 'Nup42', 'IM', 541], ['1', 'Gle1', 'IT', 541], ['1', 'Nup145', 'IU', 541], ['1', 'Nup1', 'JB', 541], ['1', 'Nup60', 'JC', 541], ['1', 'Mlp1', 'JJ', 541], ['1', 'Mlp2', 'JK', 541], ['1', 'Nup84', 'JR', 541], ['1', 'Nup85', 'JS', 541], ['1', 'Nup120', 'JZ', 541], ['1', 'Nup133', 'KA', 541], ['1', 'Nup145c', 'KH', 541], ['1', 'Seh1', 'KI', 541], ['1', 'Sec13', 'KP', 541], ['1', 'Dyn2', 'KQ', 541], ['1', 'Nup82', 'KX', 541], ['1', 'Nup159', 'KY', 541], ['1', 'Nsp1', 'LF', 541], ['1', 'Nic96', 'LG', 541], ['1', 'Nup49', 'LN', 541], ['1', 'Nup57', 'LO', 541], ['1', 'Nup157', 'LV', 541], ['1', 'Nup170', 'LW', 541], ['1', 'Nup188', 'AM', 1391], ['1', 'Nup192', 'AQ', 1391], ['1', 'Nup53', 'LX', 1391], ['1', 'Nup59', 'MB', 1391], ['1', 'Ndc1', 'MF', 1391], ['1', 'Pom34', 'MJ', 1391], ['1', 'Pom152', 'MN', 1391], ['1', 'Nup100', 'MR', 1391], ['1', 'Nup116', 'MV', 1391], ['1', 'Nup42', 'MZ', 1391], ['1', 'Gle1', 'ND', 1391], ['1', 'Nup145', 'NH', 1391], ['1', 'Nup1', 'NL', 1391], ['1', 'Nup60', 'NP', 1391], ['1', 'Mlp1', 'NT', 1391], ['1', 'Mlp2', 'NX', 1391], ['1', 'Nup84', 'AN', 1502], ['1', 'Nup85', 'AR', 1502], ['1', 'Nup120', 'LY', 1502], ['1', 'Nup133', 'MC', 1502], ['1', 'Nup145c', 'MG', 1502], ['1', 'Seh1', 'MK', 1502], ['1', 'Sec13', 'MO', 1502], ['1', 'Dyn2', 'MS', 1502], ['1', 'Nup82', 'MW', 1502], ['1', 'Nup159', 'NA', 1502], ['1', 'Nsp1', 'NE', 1502], ['1', 'Nic96', 'NI', 1502], ['1', 'Nup49', 'NM', 1502], ['1', 'Nup57', 'NQ', 1502], ['1', 'Nup157', 'NU', 1502], ['1', 'Nup170', 'NY', 1502], ['1', 'Nup188', 'AO', 1655], ['1', 'Nup192', 'AS', 1655], ['1', 'Nup53', 'LZ', 1655], ['1', 'Nup59', 'MD', 1655], ['1', 'Ndc1', 'MH', 1655], ['1', 'Pom34', 'ML', 1655], ['1', 'Pom152', 'MP', 1655], ['1', 'Nup100', 'MT', 1655], ['1', 'Nup116', 'MX', 1655], ['1', 'Nup42', 'NB', 1655], ['1', 'Gle1', 'NF', 1655], ['1', 'Nup145', 'NJ', 1655], ['1', 'Nup1', 'NN', 1655], ['1', 'Nup60', 'NR', 1655], ['1', 'Mlp1', 'NV', 1655], ['1', 'Mlp2', 'NZ', 1655], ['1', 'Nup84', 'AP', 1683], ['1', 'Nup85', 'AT', 1683], ['1', 'Nup120', 'MA', 1683], ['1', 'Nup133', 'ME', 1683], ['1', 'Nup145c', 'MI', 1683], ['1', 'Seh1', 'MM', 1683], ['1', 'Sec13', 'MQ', 1683], ['1', 'Dyn2', 'MU', 1683], ['1', 'Nup82', 'MY', 1683], ['1', 'Nup159', 'NC', 1683], ['1', 'Nsp1', 'NG', 1683], ['1', 'Nic96', 'NK', 1683], ['1', 'Nup49', 'NO', 1683], ['1', 'Nup57', 'NS', 1683], ['1', 'Nup157', 'NW', 1683], ['1', 'Nup170', 'OA', 1683], ['1', 'Nup188', 'AU', 475], ['1', 'Nup192', 'AZ', 475], ['1', 'Nup53', 'OB', 475], ['1', 'Nup59', 'OG', 475], ['1', 'Ndc1', 'OL', 475], ['1', 'Pom34', 'OQ', 475], ['1', 'Pom152', 'OV', 475], ['1', 'Nup100', 'PA', 475], ['1', 'Nup116', 'PF', 475], ['1', 'Nup42', 'PK', 475], ['1', 'Gle1', 'PP', 475], ['1', 'Nup145', 'PU', 475], ['1', 'Nup1', 'PZ', 475], ['1', 'Nup60', 'QE', 475], ['1', 'Mlp1', 'QJ', 475], ['1', 'Mlp2', 'QO', 475], ['1', 'Nup84', 'AV', 528], ['1', 'Nup85', 'BA', 528], ['1', 'Nup120', 'OC', 528], ['1', 'Nup133', 'OH', 528], ['1', 'Nup145c', 'OM', 528], ['1', 'Seh1', 'OR', 528], ['1', 'Sec13', 'OW', 528], ['1', 'Dyn2', 'PB', 528], ['1', 'Nup82', 'PG', 528], ['1', 'Nup159', 'PL', 528], ['1', 'Nsp1', 'PQ', 528], ['1', 'Nic96', 'PV', 528], ['1', 'Nup49', 'QA', 528], ['1', 'Nup57', 'QF', 528], ['1', 'Nup157', 'QK', 528], ['1', 'Nup170', 'QP', 528], ['1', 'Nup188', 'AW', 655], ['1', 'Nup192', 'BB', 655], ['1', 'Nup53', 'OD', 655], ['1', 'Nup59', 'OI', 655], ['1', 'Ndc1', 'ON', 655], ['1', 'Pom34', 'OS', 655], ['1', 'Pom152', 'OX', 655], ['1', 'Nup100', 'PC', 655], ['1', 'Nup116', 'PH', 655], ['1', 'Nup42', 'PM', 655], ['1', 'Gle1', 'PR', 655], ['1', 'Nup145', 'PW', 655], ['1', 'Nup1', 'QB', 655], ['1', 'Nup60', 'QG', 655], ['1', 'Mlp1', 'QL', 655], ['1', 'Mlp2', 'QQ', 655], ['1', 'Nup84', 'AX', 299], ['1', 'Nup85', 'BC', 299], ['1', 'Nup120', 'OE', 299], ['1', 'Nup133', 'OJ', 299], ['1', 'Nup145c', 'OO', 299], ['1', 'Seh1', 'OT', 299], ['1', 'Sec13', 'OY', 299], ['1', 'Dyn2', 'PD', 299], ['1', 'Nup82', 'PI', 299], ['1', 'Nup159', 'PN', 299], ['1', 'Nsp1', 'PS', 299], ['1', 'Nic96', 'PX', 299], ['1', 'Nup49', 'QC', 299], ['1', 'Nup57', 'QH', 299], ['1', 'Nup157', 'QM', 299], ['1', 'Nup170', 'QR', 299], ['1', 'Nup188', 'AY', 1337], ['1', 'Nup192', 'BD', 1337], ['1', 'Nup53', 'OF', 1337], ['1', 'Nup59', 'OK', 1337], ['1', 'Ndc1', 'OP', 1337], ['1', 'Pom34', 'OU', 1337], ['1', 'Pom152', 'OZ', 1337], ['1', 'Nup100', 'PE', 1337], ['1', 'Nup116', 'PJ', 1337], ['1', 'Nup42', 'PO', 1337], ['1', 'Gle1', 'PT', 1337], ['1', 'Nup145', 'PY', 1337], ['1', 'Nup1', 'QD', 1337], ['1', 'Nup60', 'QI', 1337], ['1', 'Mlp1', 'QN', 1337], ['1', 'Mlp2', 'QS', 1337], ['1', 'Nup84', 'BE', 959], ['1', 'Nup85', 'BF', 959], ['1', 'Nup120', 'QT', 959], ['1', 'Nup133', 'QU', 959], ['1', 'Nup145c', 'QZ', 959], ['1', 'Seh1', 'RA', 959], ['1', 'Sec13', 'RF', 959], ['1', 'Dyn2', 'RG', 959], ['1', 'Nup82', 'RL', 959], ['1', 'Nup159', 'RM', 959], ['1', 'Nsp1', 'RR', 959], ['1', 'Nic96', 'RS', 959], ['1', 'Nup49', 'RX', 959], ['1', 'Nup57', 'RY', 959], ['1', 'Nup157', 'SD', 959], ['1', 'Nup170', 'SE', 959], ['1', 'Nup188', 'BG', 1113], ['1', 'Nup192', 'BH', 1113], ['1', 'Nup53', 'QV', 1113], ['1', 'Nup59', 'QW', 1113], ['1', 'Ndc1', 'RB', 1113], ['1', 'Pom34', 'RC', 1113], ['1', 'Pom152', 'RH', 1113], ['1', 'Nup100', 'RI', 1113], ['1', 'Nup116', 'RN', 1113], ['1', 'Nup42', 'RO', 1113], ['1', 'Gle1', 'RT', 1113], ['1', 'Nup145', 'RU', 1113], ['1', 'Nup1', 'RZ', 1113], ['1', 'Nup60', 'SA', 1113], ['1', 'Mlp1', 'SF', 1113], ['1', 'Mlp2', 'SG', 1113], ['1', 'Nup84', 'BI', 430], ['1', 'Nup85', 'QX', 430], ['1', 'Nup120', 'RD', 430], ['1', 'Nup133', 'RJ', 430], ['1', 'Nup145c', 'RP', 430], ['1', 'Seh1', 'RV', 430], ['1', 'Sec13', 'SB', 430], ['1', 'Dyn2', 'SH', 430], ['1', 'Nup82', 'BJ', 538], ['1', 'Nup159', 'QY', 538], ['1', 'Nsp1', 'RE', 538], ['1', 'Nic96', 'RK', 538], ['1', 'Nup49', 'RQ', 538], ['1', 'Nup57', 'RW', 538], ['1', 'Nup157', 'SC', 538], ['1', 'Nup170', 'SI', 538], ['1', 'Nup188', 'BK', 1317], ['1', 'Nup192', 'BL', 1317], ['1', 'Nup53', 'SJ', 1317], ['1', 'Nup59', 'SK', 1317], ['1', 'Ndc1', 'SO', 1317], ['1', 'Pom34', 'SP', 1317], ['1', 'Pom152', 'ST', 1317], ['1', 'Nup100', 'SU', 1317], ['1', 'Nup116', 'SY', 1317], ['1', 'Nup42', 'SZ', 1317], ['1', 'Gle1', 'TD', 1317], ['1', 'Nup145', 'TE', 1317], ['1', 'Nup1', 'TI', 1317], ['1', 'Nup60', 'TJ', 1317], ['1', 'Mlp1', 'TN', 1317], ['1', 'Mlp2', 'TO', 1317], ['1', 'Nup84', 'BM', 1076], ['1', 'Nup85', 'SN', 1076], ['1', 'Nup120', 'SS', 1076], ['1', 'Nup133', 'SX', 1076], ['1', 'Nup145c', 'TC', 1076], ['1', 'Seh1', 'TH', 1076], ['1', 'Sec13', 'TM', 1076], ['1', 'Dyn2', 'TR', 1076], ['1', 'Nup82', 'BN', 539], ['1', 'Nup159', 'BO', 539], ['1', 'Nsp1', 'SL', 539], ['1', 'Nic96', 'SM', 539], ['1', 'Nup49', 'SQ', 539], ['1', 'Nup57', 'SR', 539], ['1', 'Nup157', 'SV', 539], ['1', 'Nup170', 'SW', 539], ['1', 'Nup188', 'TA', 539], ['1', 'Nup192', 'TB', 539], ['1', 'Nup53', 'TF', 539], ['1', 'Nup59', 'TG', 539], ['1', 'Ndc1', 'TK', 539], ['1', 'Pom34', 'TL', 539], ['1', 'Pom152', 'TP', 539], ['1', 'Nup100', 'TQ', 539], ['1', 'Nup116', 'BP', 1875], ['1', 'Nup42', 'TS', 1875], ['1', 'Gle1', 'TU', 1875], ['1', 'Nup145', 'TW', 1875], ['1', 'Nup1', 'TY', 1875], ['1', 'Nup60', 'UA', 1875], ['1', 'Mlp1', 'UC', 1875], ['1', 'Mlp2', 'UE', 1875], ['1', 'Nup84', 'BQ', 1679], ['1', 'Nup85', 'TT', 1679], ['1', 'Nup120', 'TV', 1679], ['1', 'Nup133', 'TX', 1679], ['1', 'Nup145c', 'TZ', 1679], ['1', 'Seh1', 'UB', 1679], ['1', 'Sec13', 'UD', 1679], ['1', 'Dyn2', 'UF', 1679]];
+         write_table(list_to_write=input_list)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         function write_software(software_list){
+         	if (software_list < 1) {
+         		var docx="Software packages used for modeling were either not reported or not used. ";
+         		document.write(docx);
+         	} else if (software_list <2) {
+                                       var docx="There is "+ software_list +" software package reported in this entry. ";
+                                       document.write(docx);
+                       } else{
+         		var docx="There are "+ software_list +" software packages reported in this entry. ";
+         		document.write(docx);
+         }
+         }
+         
+         write_software(software_list=13)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         var input_list=[['ID', 'Software Name', 'Software Version', 'Software Classification'], ['1', 'Integrative Modeling Platform (IMP)', 'develop-0a5706e202', 'integrative model building'], ['2', 'IMP PMI module', '67456c0', 'integrative model building'], ['3', 'HHpred', '2.0.16', 'protein homology detection'], ['4', 'PSIPRED', '4.0', 'secondary structure prediction'], ['5', 'DISOPRED', '3', 'disorder prediction'], ['6', 'DomPred', 'None', 'domain boundary prediction'], ['7', 'COILS/PCOILS', 'None', 'coiled-coil prediction'], ['8', 'EMAN2', '2.2', 'image processing'], ['9', 'RELION', '1.4', 'image processing'], ['10', 'SGD', 'None', 'database'], ['11', 'HeliQuest', 'None', 'helix prediction'], ['12', 'MODELLER', '9.15', 'comparative modeling'], ['13', 'MODELLER', '9.13', 'comparative modeling']];
+         
+         write_table(list_to_write=input_list)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         function write_dataset(input_variable){
+                 if (input_variable < 2) {
+                         var docx="There is " + input_variable + " unique dataset used to build the model in this entry. ";
+                         document.write(docx);
+                 } else {
+                         var docx="There are "+ input_variable +" unique datasets used to build the model in this entry. ";
+                         document.write(docx);
+         }
+         }
+         write_dataset(input_variable=65)
+      </script>
+      <p class="ex2"> </p>
+      <script>
+         var input_list_2=[['ID', 'Dataset Type', 'Database Name', 'Data Access Code'], ['1', 'Integrative model', 'Not Listed', 'None'], ['2', 'Integrative model', 'Not Listed', 'None'], ['3', 'Experimental model', 'PDB', '5CWS'], ['4', 'Comparative model', 'Not Listed', 'None'], ['5', 'Experimental model', 'PDB', '2QX5'], ['6', 'Experimental model', 'Not Listed', 'None'], ['7', 'Experimental model', 'Not Listed', 'None'], ['8', 'Comparative model', 'Not Listed', 'None'], ['9', 'Comparative model', 'Not Listed', 'None'], ['10', 'Comparative model', 'Not Listed', 'None'], ['11', 'Comparative model', 'Not Listed', 'None'], ['12', 'Comparative model', 'Not Listed', 'None'], ['13', 'Comparative model', 'Not Listed', 'None'], ['14', 'Integrative model', 'Not Listed', 'None'], ['15', 'Integrative model', 'Not Listed', 'None'], ['16', 'Experimental model', 'PDB', '3NF5'], ['17', 'Comparative model', 'Not Listed', 'None'], ['18', 'Comparative model', 'Not Listed', 'None'], ['19', 'Experimental model', 'PDB', '3KEP'], ['20', 'Experimental model', 'Not Listed', 'None'], ['21', 'Mass Spectrometry data', 'Not Listed', 'None'], ['22', 'CX-MS data', 'Not Listed', 'None'], ['23', 'CX-MS data', 'Not Listed', 'None'], ['24', 'EM raw micrographs', 'EMPIAR', 'EMPIAR-10155'], ['25', '3DEM volume', 'EMDB', 'EMD-7321'], ['26', '3DEM volume', 'Not Listed', 'None'], ['27', 'SAS data', 'Not Listed', 'None'], ['28', 'SAS data', 'Not Listed', 'None'], ['29', 'SAS data', 'Not Listed', 'None'], ['30', 'SAS data', 'Not Listed', 'None'], ['31', 'SAS data', 'Not Listed', 'None'], ['32', 'SAS data', 'Not Listed', 'None'], ['33', 'SAS data', 'Not Listed', 'None'], ['34', 'SAS data', 'Not Listed', 'None'], ['35', 'SAS data', 'Not Listed', 'None'], ['36', 'SAS data', 'Not Listed', 'None'], ['37', 'SAS data', 'Not Listed', 'None'], ['38', 'SAS data', 'Not Listed', 'None'], ['39', 'SAS data', 'Not Listed', 'None'], ['40', 'SAS data', 'Not Listed', 'None'], ['41', 'SAS data', 'Not Listed', 'None'], ['42', 'SAS data', 'Not Listed', 'None'], ['43', 'SAS data', 'Not Listed', 'None'], ['44', 'SAS data', 'Not Listed', 'None'], ['45', 'SAS data', 'Not Listed', 'None'], ['46', 'SAS data', 'Not Listed', 'None'], ['47', 'SAS data', 'Not Listed', 'None'], ['48', 'SAS data', 'SASBDB', 'SASDBV9'], ['49', 'SAS data', 'SASBDB', 'SASDBW9'], ['50', 'SAS data', 'SASBDB', 'SASDBZ9'], ['51', 'SAS data', 'SASBDB', 'SASDBX9'], ['52', 'SAS data', 'SASBDB', 'SASDBY9'], ['53', 'SAS data', 'Not Listed', 'None'], ['54', 'SAS data', 'Not Listed', 'None'], ['55', 'SAS data', 'Not Listed', 'None'], ['56', 'SAS data', 'Not Listed', 'None'], ['57', 'SAS data', 'Not Listed', 'None'], ['58', 'SAS data', 'Not Listed', 'None'], ['59', 'SAS data', 'Not Listed', 'None'], ['60', 'SAS data', 'Not Listed', 'None'], ['61', 'SAS data', 'Not Listed', 'None'], ['62', 'SAS data', 'Not Listed', 'None'], ['63', 'EM raw micrographs', 'EMPIAR', 'EMPIAR-10162'], ['64', '2DEM class average', 'Not Listed', 'None'], ['65', '2DEM class average', 'Not Listed', 'None']];
+         write_table(list_to_write=input_list_2)
+      </script>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">3. Data quality</h2>
+      <embed src="images/plot.html" width=50% height=30%>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">4. Model quality</h2>
+      <h3 class="ex2" align="left">4.1 Too-close contacts</h3>
+      <h3 class="ex2" align="left">4.2 Torsion angles</h3>
+      <h4 class="ex2" align="left">4.2.1 Protein backbone</h4>
+      <h4 class="ex2" align="left">4.2.2 Protein sidechains</h4>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">5. Fit of model and data</h2>
+      <hr class="ex2">
+      <h2 class="ex2" align="left">6. Uncertaintiy of model</h2>
+      <hr class="ex2">
+   </body>
+</html>

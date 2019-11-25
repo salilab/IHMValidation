@@ -1,0 +1,122 @@
+<!Template for writing Supplemental Table page>
+<! ganesans - Salilab - UCSF>
+<!ganesans@salilab.org>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+         table#t01 {
+         font-family: Times New Roman;
+         border-collapse: collapse;
+         width: 100%;
+	 table-layout:fixed;
+         }
+         td, th {
+         border: 1px solid;
+         text-align: left;
+         padding: 12px;
+         }
+         tr:nth-child(even) {
+         background-color: ;
+         }
+        table tr:first-child td {
+        border-top: 1;
+        }
+        table tr td:first-child {
+        border-left: 1;
+        }
+        table tr:last-child td {
+        border-bottom: 1;
+        }
+        table tr td:last-child {
+        border-right: 1;
+        }
+        img {
+         display: block;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         body {
+         height: 297mm;
+         width: 210mm;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         .center {
+         text-align: center
+         }
+         .ex1 {
+         margin-top: 50px;
+         }
+         .ex2 {
+         margin-top: 30px;
+         }
+         hr {
+         width: 120%;
+         height: 2px;
+         margin-left: auto;
+         margin-right: auto;
+         background-color:#666;
+         border: 0 none;
+         margin-top: 10px;
+         margin-bottom:10px;
+         }
+      </style>
+   </head>
+   <body>
+	   <h3 class="center" font = 'Times New Roman'>Table S1: Summary of Integrative Structure Determination of {{complex_name}} </h3>
+      <div class="ex1">
+	                              <script>
+                        function write_RB(RB_list){
+                        for (var j=0;j<RB_list.length;j++) {
+                        var j1=j+1
+                        var docx=j1 + ". "+ RB_list[j]+ "\n";
+                                document.write(docx);
+                                document.write ("<br>")}
+                                }
+                        function write_bullet(RB_list){
+                        for (var j=0;j<RB_list.length;j++) {
+                        var docx= '- ' + RB_list[j]+ "\n";
+                                document.write(docx);
+                                document.write ("<br>")}
+                                }
+
+        </script>
+
+                  <table ID=t01>
+                <tr bgcolor ='silver'><td><b><i>1) Model Compostion</i></b></td><td></td></tr>
+                <tr><td><i>PDB ID</i></td><td>{{PDB_ID}}</td></tr>
+	<tr><td><i>Entry composition</i></td><td><script>write_RB(RB_list={{Subunits}})</script></td></tr>
+		<tr><td><i>Datasets used for modeling</i></td><td>{{datasets}}</td></tr>
+                <tr><td><i>Physical principles</i></td><td>{{physics}}</td></tr>
+                <tr><td><i>Softwares</i></td><td>{{software}}</td></tr>
+		<tr bgcolor = 'silver'><td><b><i>2) Representation Information</i></b></td><td></td></tr>
+		<tr><td><i>Structural coverage</i></td><td>{{struc}}</td></tr>
+                <tr><td><i>Total number of rigid bodies</i></td><td>{{RB_nos}}</td></tr>
+                <tr><td><i>Total number of flexible units</i></td><td>{{flex_nos}}</td></tr>
+
+		<tr><td><i>Rigid bodies</i></td><td><script>write_RB(RB_list={{RB}})</script></td></tr>
+				<tr><td><i>Flexible regions</i></td><td><script>write_RB(RB_list={{flex}})</script></td></tr>
+                <tr><td><i>Resolution</i></td><td><script>write_RB(RB_list={{resolution}})</script></td></tr>
+                <tr bgcolor ='silver'><td><b><i>3) Methodology</i></b></td><td></td></tr>
+                <tr><td><i>Method name</i></td><td>{{method}}</td></tr>
+                <tr><td><i>Method type</i></td><td>{{method_type}}</td></tr>
+                <tr><td><i>Method details</i></td><td><script>write_bullet(RB_list={{method_details}})</script></td></tr>
+                <tr bgcolor = 'silver'><td><b><i>4) Validation</i></b></td><td></td></tr>
+                <tr><td><i>Number of models analyzed</i></td><td>{{models}}</td></tr>
+		<tr><td><i>Sampling validation</i></td><td><script>write_RB(RB_list={{sampling_validation}})</script></td></tr>
+                <tr><td><i>Number of clusters</i></td><td>{{Number_of_clusters}}</td></tr>
+                <tr><td><i>Population of clusters</i></td><td>{{Population_of_clusters}}</td></tr>
+                <tr><td><i>Data validation</i></td><td>-</td></tr>               
+                <tr><td><i>Validation of atomic regions</i></td><td>-</td></tr>
+                <tr><td><i>Validation by information used for modeling</i></td><td><script>write_RB(RB_list={{validation_input}})</script></td></tr>
+	<tr><td><i>Cross-validation of models</i></td><td><script>write_RB(RB_list={{cross_validation}})</script></td></tr>
+                <tr><td><i>Uncertainity of models</i></td><td>{{model_precision}}</td></tr>
+
+
+      </div>
+	      
+   </body>
+</html>
+
