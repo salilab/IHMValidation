@@ -2,6 +2,7 @@ import pandas as pd
 import glob
 import sys,os,math
 import numpy as np
+import pandas as pd
 import validation
 import ihm
 import ihm.reader
@@ -33,6 +34,34 @@ class sas_validation(validation.get_input_information):
                 print ("fetched data from SASBDB")
             else:
                 print ("Error....unable to fetch data from SASBDB, please check the entry ID")
-            data=response.json()
-            data_dic[i]=response.json
+            data_dic[i]=response.json()
+            with open (i+'.json', 'w') as f:
+                formatted_data=json.dumps(response.json(), indent = 4, sort_keys=True)
+                f.write(formatted_data)
         return data_dic
+
+    def get_intensities(self):
+        data_dic=self.get_data_from_SASBDB()
+        target_url=list(data_dic.values())[0]['intensities_data']
+        intensities = requests.get(target_url)
+        if intensities.status_code==200:
+            print ("fetched data from SASBDB")
+        else:
+            print ("Error....unable to fetch data from SASBDB, please check the entry ID")
+        with open ('intensities.csv','w') as f:
+            f.write(intensities.text)
+        I_df=pd.read_csv('intensities.csv', skiprows=4,delim_whitespace=True, names=['Q','I','E'])
+        I_df=I_df.astype({'Q':float,'I':float,'E':float})
+        I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1)
+        I_df['err_y']=I_df.apply(lambda row: (np.log(row['I']-row['E']),np.log(row['I']+row['E'])),axis=1)
+        I_df['logI']=np.log(I_df['I'])
+        I_df['logQ']=np.log(I_df['Q'])
+        I_df['logX']=I_df.apply(lambda row: (row['logQ'],row['logQ']), axis=1)
+        I_df['Ky']=I_df['Q']*I_df['Q']*I_df['I']
+        I_df['Px']=I_df['Q']**4
+        I_df['Py']=I_df['Px']*I_df['I']
+
+        print (I_df.head())
+        return I_df
+
+
