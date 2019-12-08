@@ -61,7 +61,6 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.yaxis.axis_label_text_font_size='14pt'
         dirname=os.path.dirname(os.path.abspath(__file__))
         filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        print (filename)
         save(p,filename=filename+'/'+self.ID+"intensities_log.html")
         p.output_backend="svg"
         export_svgs(p,filename=filename+'/'+self.ID+"intensities_log.svg")
@@ -83,13 +82,12 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.yaxis.axis_label_text_font_size='14pt'
         dirname=os.path.dirname(os.path.abspath(__file__))
         filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        print (filename)
         save(p,filename=filename+'/'+self.ID+"Kratky.html")
         p.output_backend="svg"
         export_svgs(p,filename=filename+'/'+self.ID+"Kratky.svg")
         export_png(p,filename=filename+'/'+self.ID+"Kratky.png")
     
-    def plot_kratky(self):
+    def plot_porod_debye(self):
         output_file(self.ID+"porod.html",mode="inline")
         source = ColumnDataSource(self.df)
         p = figure(plot_height=500, plot_width=500, title="Porod-Debye plot")
@@ -105,7 +103,6 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.yaxis.axis_label_text_font_size='14pt'
         dirname=os.path.dirname(os.path.abspath(__file__))
         filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        print (filename)
         save(p,filename=filename+'/'+self.ID+"porod.html")
         p.output_backend="svg"
         export_svgs(p,filename=filename+'/'+self.ID+"porod.svg")

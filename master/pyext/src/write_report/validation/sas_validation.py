@@ -60,8 +60,7 @@ class sas_validation(validation.get_input_information):
         I_df['Ky']=I_df['Q']*I_df['Q']*I_df['I']
         I_df['Px']=I_df['Q']**4
         I_df['Py']=I_df['Px']*I_df['I']
-
-        print (I_df.head())
+        #print (I_df.head())
         return I_df
 
 
