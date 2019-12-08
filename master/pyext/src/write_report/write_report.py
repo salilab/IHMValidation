@@ -12,7 +12,7 @@ import numpy as np
 import validation
 from validation import get_excluded_volume
 from validation import get_molprobity_information
-from validation import get_plots,sas_validation
+from validation import get_plots,sas_validation,sas_validation_plots
 import pdfkit
 import datetime,time
 import pickle
@@ -336,9 +336,16 @@ def run_model_quality(mmcif_file):
 def run_sas_validation(mmcif_file):
     I = validation.get_input_information(mmcif_file)
     if I.check_for_sas():
+        Template_Dict['sas']=["True"]
+        print (Template_Dict['sas'])
         I_sas=sas_validation.sas_validation(mmcif_file)
-        print (I_sas.get_SASBDB_code())
-        I_sas.get_data_from_SASBDB()
+        Template_Dict['sasdb_code']=I_sas.get_SASBDB_code()
+        data_dic=I_sas.get_data_from_SASBDB()
+        I_sas.get_intensities()
+        I_sas_plt=validation.sas_validation_plots.sas_validation_plots(mmcif_file)
+        I_sas_plt.plot_intensities()
+        I_sas_plt.plot_intensities_log()
+        I_sas_plt.plot_kratky()
 
 def run_supplementary_table(args):
     I = validation.get_input_information(args.f)
@@ -425,10 +432,10 @@ if __name__ == "__main__":
     run_entry_composition(args.f)
     run_model_quality(args.f)
     #run_supplementary_table(args)
-    write_json(args.f,Template_Dict)
     run_sas_validation(args.f)
     write_html(args.f,Template_Dict,template_html)
     write_pdf(args.f,Template_Dict,template_pdf)
+    write_json(args.f,Template_Dict)
     #write_supplementary_table(args.f,Template_Dict,template_file_supp)
         
 '''
