@@ -5,7 +5,7 @@ import ihm.reader
 import validation
 from bokeh.io import output_file, show, curdoc, export_png, export_svgs
 from bokeh.models import ColumnDataSource, LinearAxis, Legend
-from bokeh.palettes import GnBu3, OrRd3, Spectral6, Set1
+from bokeh.palettes import GnBu3, Blues, OrRd3, Spectral6, Set1
 from bokeh.plotting import figure, output_file, save
 from bokeh.models.widgets import Tabs, Panel
 from bokeh.layouts import row,column
@@ -20,7 +20,7 @@ class plots_mp(validation.get_molprobity_information.get_molprobity_information)
         counts=[clashscore,rama,sidechain]
         Scores = ['Clashscore', 'Ramachandran Outliers', 'Sidechain Outliers']
         legends=[str(counts[0]),str(counts[1])+'%',str(counts[2])+'%']
-        source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=Set1[3]))
+        source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=Blues[6]))
         p = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Model Quality: Molprobity Analysis")
         p.hbar(y='Scores',right='counts', height=0.5, color='color', legend="legends", source=source,alpha=0.8)
         p.legend.orientation = "vertical"
@@ -54,6 +54,7 @@ class plots_mp(validation.get_molprobity_information.get_molprobity_information)
         save(tabs,filename=filename+'/'+self.ID+"quality_at_glance.html")
         p.output_backend="svg"
         export_svgs(p,filename=filename+'/'+self.ID+"quality_at_glance.svg")
+        export_png(p,filename=filename+'/'+self.ID+"quality_at_glance.png")
 
 
 class plots_exv(validation.get_excluded_volume.get_excluded_volume):
@@ -71,7 +72,7 @@ class plots_exv(validation.get_excluded_volume.get_excluded_volume):
         Scores = ['Model '+ str(i+1) for i,j in enumerate (model)]
         legends=['Model '+ str(i+1)+ ': ' +str(int(j))  for i,j in enumerate(counts)]
         n=3 if len(model)< 3 else len(model)
-        source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=Set1[n]))
+        source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=Blues[n]))
         if len(model)>1:
             upper=max(counts)+ (max(counts)-min(counts))
             lower=min(counts)-(max(counts)-min(counts))
@@ -113,4 +114,5 @@ class plots_exv(validation.get_excluded_volume.get_excluded_volume):
         save(tabs,filename=filename+'/'+self.ID+"quality_at_glance.html")
         p.output_backend="svg"
         export_svgs(p,filename=filename+'/'+self.ID+"quality_at_glance.svg")
+        export_png(p,filename=filename+'/'+self.ID+"quality_at_glance.png")
 

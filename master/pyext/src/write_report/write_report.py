@@ -337,15 +337,19 @@ def run_sas_validation(mmcif_file):
     I = validation.get_input_information(mmcif_file)
     if I.check_for_sas():
         Template_Dict['sas']=["True"]
-        print (Template_Dict['sas'])
         I_sas=sas_validation.sas_validation(mmcif_file)
         Template_Dict['sasdb_code']=I_sas.get_SASBDB_code()
-        data_dic=I_sas.get_data_from_SASBDB()
-        I_sas.get_intensities()
+        #data_dic=I_sas.get_data_from_SASBDB()
+        #I_sas.get_intensities()
+        Template_Dict['parameters_volume']=validation.dict_to_JSlist(I_sas.get_parameters_vol())
+        Template_Dict['description']=str(I_sas.get_experiment_description())
+        
         I_sas_plt=validation.sas_validation_plots.sas_validation_plots(mmcif_file)
         I_sas_plt.plot_intensities()
         I_sas_plt.plot_intensities_log()
         I_sas_plt.plot_kratky()
+        I_sas_plt.plot_porod_debye()
+
 
 def run_supplementary_table(args):
     I = validation.get_input_information(args.f)

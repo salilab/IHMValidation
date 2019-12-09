@@ -106,7 +106,7 @@
          <p class="ex1"> </p>
          <img src="../static/images/PDB.png" alt="PDB" class="center" style="width:25%">
          <h1 class="center">Full wwPDB Integrative Structure Validation Report</h1>
-         <h2 class="center"> December 07, 2019 --  09:27 AM</h2>
+         <h2 class="center"> December 08, 2019 --  10:37 PM</h2>
          <div class="ex1">
             <table id=t01>
                <tr>
@@ -235,7 +235,7 @@
          </script>
          <p class="ex2"> </p>
          <script>
-            var input_list=[['Model ID', 'Subunit number', 'Subunit ID', 'Subunit name', 'Chain ID', 'Total residues'], [1, 1, '1', 'Rev7-monomer', 'A', 212], [1, 2, '1', 'Rev7-monomer', 'C', 212], [1, 3, '2', 'Rev3-RBM2', 'B', 28], [1, 4, '2', 'Rev3-RBM2', 'D', 28]];
+            var input_list=[['Model ID', 'Subunit number', 'Subunit ID', 'Subunit name', 'Chain ID', 'Total residues'], ['1', '1', '1', 'Rev7-monomer', 'A', '212'], ['1', '2', '1', 'Rev7-monomer', 'C', '212'], ['1', '3', '2', 'Rev3-RBM2', 'B', '28'], ['1', '4', '2', 'Rev3-RBM2', 'D', '28']];
             Write_Table(list_to_write=input_list)
          </script>
          <p class="ex2"> </p>
@@ -279,7 +279,7 @@
          </script>
          <p class="ex2"> </p>
          <script>
-            var input_list_3=[['Step number', 'Protocol ID', 'Method name', 'Method type', 'Number of computed models', 'Multi state modeling', 'Multi scale modeling'], ['1', 1, None, None, None, 'False', 'False']];
+            var input_list_3=[['Step number', 'Protocol ID', 'Method name', 'Method type', 'Number of computed models', 'Multi state modeling', 'Multi scale modeling'], ['1', '1', 'None', 'None', 'None', 'False', 'False']];
             Write_Table(list_to_write=input_list_3)
          </script>
          <p class="ex2"> </p>
@@ -306,6 +306,69 @@
          <p class="ex2"> </p>
          <hr class="ex2">
          <h2 class="ex2" align="left">6. Data quality</h2>
+	 <div> <script>
+                  if (['True'].length >0) {   
+            var ex="<h3 class= ex2 align= left> 6.1. Analysis of SAXS data used in this entry </h3>";
+			  ex+='<i>'+ ['Data description: None'] +' </i>';
+			  ex+="<h4 class= ex2 align= left> 6.1.1. Intensity plots </h4>";	
+			  ex+='<i> SAXS data was obtained from deposited SASBDB entry: '+['SASDC29']+". Below are plots of intentisities, for further information,  <a href=https://www.sasbdb.org/data/" +['SASDC29'] + "/> refer to entry on SASBDB.</a> </i>"
+	document.write(ex)
+		}
+	 </script></div>
+	<div> <script>
+                  if (['True'].length >0) {
+
+			  function plot_image(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'intensities.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_image(ID= "PDBDEV00000009")
+		function plot_image_log(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'intensities_log.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_image_log(ID= "PDBDEV00000009")
+		 }
+	</script>
+	</div>
+	<script>
+	    var ex1="<h4 class= ex2 align= left> 6.1.2. Key experimental estimates </h4>";
+	    document.write(ex1);
+var input_list=[['Estimated volume', 'Estimated volume method', 'Porod volume'], ['None', 'None', '108.40 nm³']];
+            Write_Table(list_to_write=input_list)
+	</script>
+	<script>
+	    var ex2="<h4 class= ex2 align= left> 6.1.3. Flexibility analysis </h4>";
+ex1+="<i> Flexibility is assessed by Kratky and Porod-Debye plots. For details, refer to <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer,2011.</a></i>"
+            document.write(ex2)
+        </script>
+        <div> <script>
+                  if (['True'].length >0) {
+                          function plot_kratky(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'Kratky.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_kratky(ID= "PDBDEV00000009") 
+                function plot_porod(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'porod.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_porod(ID= "PDBDEV00000009")
+                 }
+        </script>
+        </div>
          <hr class="ex2">
          <h2 class="ex2" align="left">7. Model quality</h2>
          <script>
@@ -327,21 +390,21 @@
                                        document.write(intro);
                                        var space='<p class="ex2"> </p>';
                                        document.write(space);
-                                       if ([['Bond type', 'Observed distance (&#8491)', 'Ideal distance (&#8491)', 'Number of outliers'], ['N--H', 1.079, 0.86, 13], ['NE2--HE2', 1.03, 0.86, 1], ['CD2--HD2', 1.086, 0.93, 1], ['CE1--HE1', 1.082, 0.93, 1], ['CB--HB', 1.111, 0.97, 1], ['CE--HE3', 1.102, 0.97, 5], ['CB--HB2', 1.106, 0.97, 11], ['CB--HB3', 1.106, 0.97, 11], ['CE--HE2', 1.104, 0.97, 5], ['CD--HD2', 1.109, 0.97, 1], ['CG--HG2', 1.102, 0.97, 7], ['NZ--HZ1', 1.027, 0.89, 1], ['CA--HA2', 1.105, 0.97, 3], ['CD--HD3', 1.106, 0.97, 1], ['CA--HA', 1.102, 0.97, 13], ['CG2--HG23', 1.106, 0.97, 1], ['CG--HG3', 1.102, 0.97, 7], ['CG2--HG21', 1.106, 0.97, 1], ['CE--HE1', 1.105, 0.97, 3], ['CG2--HG22', 1.105, 0.97, 1], ['NZ--HZ2', 1.025, 0.89, 1], ['N--H1', 1.08, 0.96, 3], ['OG--HG', 0.961, 0.84, 1], ['OG1--HG1', 0.96, 0.84, 1], ['NZ--HZ3', 1.009, 0.89, 1], ['CA--HA3', 1.05, 0.97, 2]].length>0){
-                                       Write_Table(list_to_write=[['Bond type', 'Observed distance (&#8491)', 'Ideal distance (&#8491)', 'Number of outliers'], ['N--H', 1.079, 0.86, 13], ['NE2--HE2', 1.03, 0.86, 1], ['CD2--HD2', 1.086, 0.93, 1], ['CE1--HE1', 1.082, 0.93, 1], ['CB--HB', 1.111, 0.97, 1], ['CE--HE3', 1.102, 0.97, 5], ['CB--HB2', 1.106, 0.97, 11], ['CB--HB3', 1.106, 0.97, 11], ['CE--HE2', 1.104, 0.97, 5], ['CD--HD2', 1.109, 0.97, 1], ['CG--HG2', 1.102, 0.97, 7], ['NZ--HZ1', 1.027, 0.89, 1], ['CA--HA2', 1.105, 0.97, 3], ['CD--HD3', 1.106, 0.97, 1], ['CA--HA', 1.102, 0.97, 13], ['CG2--HG23', 1.106, 0.97, 1], ['CG--HG3', 1.102, 0.97, 7], ['CG2--HG21', 1.106, 0.97, 1], ['CE--HE1', 1.105, 0.97, 3], ['CG2--HG22', 1.105, 0.97, 1], ['NZ--HZ2', 1.025, 0.89, 1], ['N--H1', 1.08, 0.96, 3], ['OG--HG', 0.961, 0.84, 1], ['OG1--HG1', 0.96, 0.84, 1], ['NZ--HZ3', 1.009, 0.89, 1], ['CA--HA3', 1.05, 0.97, 2]])
+                                       if ([['Bond type', 'Observed distance (&#8491)', 'Ideal distance (&#8491)', 'Number of outliers'], ['N--H', '1.079', '0.86', '13'], ['NE2--HE2', '1.03', '0.86', '1'], ['CD2--HD2', '1.086', '0.93', '1'], ['CE1--HE1', '1.082', '0.93', '1'], ['CB--HB', '1.111', '0.97', '1'], ['CE--HE3', '1.102', '0.97', '5'], ['CB--HB2', '1.106', '0.97', '11'], ['CB--HB3', '1.106', '0.97', '11'], ['CE--HE2', '1.104', '0.97', '5'], ['CD--HD2', '1.109', '0.97', '1'], ['CG--HG2', '1.102', '0.97', '7'], ['NZ--HZ1', '1.027', '0.89', '1'], ['CA--HA2', '1.105', '0.97', '3'], ['CD--HD3', '1.106', '0.97', '1'], ['CA--HA', '1.102', '0.97', '13'], ['CG2--HG23', '1.106', '0.97', '1'], ['CG--HG3', '1.102', '0.97', '7'], ['CG2--HG21', '1.106', '0.97', '1'], ['CE--HE1', '1.105', '0.97', '3'], ['CG2--HG22', '1.105', '0.97', '1'], ['NZ--HZ2', '1.025', '0.89', '1'], ['N--H1', '1.08', '0.96', '3'], ['OG--HG', '0.961', '0.84', '1'], ['OG1--HG1', '0.96', '0.84', '1'], ['NZ--HZ3', '1.009', '0.89', '1'], ['CA--HA3', '1.05', '0.97', '2']].length>0){
+                                       Write_Table(list_to_write=[['Bond type', 'Observed distance (&#8491)', 'Ideal distance (&#8491)', 'Number of outliers'], ['N--H', '1.079', '0.86', '13'], ['NE2--HE2', '1.03', '0.86', '1'], ['CD2--HD2', '1.086', '0.93', '1'], ['CE1--HE1', '1.082', '0.93', '1'], ['CB--HB', '1.111', '0.97', '1'], ['CE--HE3', '1.102', '0.97', '5'], ['CB--HB2', '1.106', '0.97', '11'], ['CB--HB3', '1.106', '0.97', '11'], ['CE--HE2', '1.104', '0.97', '5'], ['CD--HD2', '1.109', '0.97', '1'], ['CG--HG2', '1.102', '0.97', '7'], ['NZ--HZ1', '1.027', '0.89', '1'], ['CA--HA2', '1.105', '0.97', '3'], ['CD--HD3', '1.106', '0.97', '1'], ['CA--HA', '1.102', '0.97', '13'], ['CG2--HG23', '1.106', '0.97', '1'], ['CG--HG3', '1.102', '0.97', '7'], ['CG2--HG21', '1.106', '0.97', '1'], ['CE--HE1', '1.105', '0.97', '3'], ['CG2--HG22', '1.105', '0.97', '1'], ['NZ--HZ2', '1.025', '0.89', '1'], ['N--H1', '1.08', '0.96', '3'], ['OG--HG', '0.961', '0.84', '1'], ['OG1--HG1', '0.96', '0.84', '1'], ['NZ--HZ3', '1.009', '0.89', '1'], ['CA--HA3', '1.05', '0.97', '2']])
                                                document.write(space);}
                                        var intro2="<i> There are " + 14 + " angle outliers in this entry.  </i>";
                                        document.write(intro2);
                                        document.write(space);
-                                       if ([['Angle type', 'Observed angle (&#176)', 'Ideal angle (&#176)', 'Number of outliers'], ['CA-N-H', 126.774, 114.0, 13]].length>0){
-                                               Write_Table(list_to_write=[['Angle type', 'Observed angle (&#176)', 'Ideal angle (&#176)', 'Number of outliers'], ['CA-N-H', 126.774, 114.0, 13]])
+                                       if ([['Angle type', 'Observed angle (&#176)', 'Ideal angle (&#176)', 'Number of outliers'], ['CA-N-H', '126.774', '114.0', '13']].length>0){
+                                               Write_Table(list_to_write=[['Angle type', 'Observed angle (&#176)', 'Ideal angle (&#176)', 'Number of outliers'], ['CA-N-H', '126.774', '114.0', '13']])
                                                document.write(space);}
                                        var docx= "<h3 class= ex2 align= left>7.2 Too-close contacts</h3>";
                                        docx+="<i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i>";
                                        document.write(docx);
                                        document.write(space);
-                                       if ([['Model ID', 'Clash score', 'Number of clashes'], ['Model 1', '8.73', 69]].length>0){
-                                       Write_Table(list_to_write=[['Model ID', 'Clash score', 'Number of clashes'], ['Model 1', '8.73', 69]])
+                                       if ([['Model ID', 'Clash score', 'Number of clashes'], ['Model 1', '8.73', '69']].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Clash score', 'Number of clashes'], ['Model 1', '8.73', '69']])
                                                document.write(space);}
                                        var text1="<i> All "+ 69 + " close contacts within the same asymmetric unit are listed below, sorted by their clash magnitude.</i>";
                                        document.write(text1);
@@ -354,41 +417,42 @@
                                        text2+="<i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation wasanalysed. </i>"
                                        document.write(text2);
                                        document.write(space);
-                                       if ([['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 482, 472, 8, 2]].length>0){
-                                       Write_Table(list_to_write=[['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 482, 472, 8, 2]])
+                                       if ([['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], ['1', '482', '472', '8', '2']].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], ['1', '482', '472', '8', '2']])
                                                document.write(space);}
                                        var text4= "<i> Detailed list of outliers are tabulated below. </i>";
                                        document.write(text4);
                                        document.write(space);
-                                       if ([['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:110', 'ILE'], [1, 'C:110', 'ILE']].length>0){
-                                       Write_Table(list_to_write=[['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:110', 'ILE'], [1, 'C:110', 'ILE']])
+                                       if ([['Model ID', 'Chain and res ID', 'Residue type'], ['1', 'A:110', 'ILE'], ['1', 'C:110', 'ILE']].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Chain and res ID', 'Residue type'], ['1', 'A:110', 'ILE'], ['1', 'C:110', 'ILE']])
                                                document.write(space);  }
                                        var text3="<h4 class=ex2 align=left>7.3.2 Protein sidechains</h4>";
                                        text3+="<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
                                        document.write(text3);
                                        document.write(space);
-                                       if ([['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 454, 416, 22, 16]].length>0){
-                                       Write_Table(list_to_write=[['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], [1, 454, 416, 22, 16]])
+                                       if ([['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], ['1', '454', '416', '22', '16']].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Analyzed', 'Favored', 'Allowed', 'Outliers'], ['1', '454', '416', '22', '16']])
                                                document.write(space);  }
                                        var text4= "<i> Detailed list of outliers are tabulated below. </i>";
                                        document.write(text4);
                                        document.write(space);
-                                       if ([['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:3', 'THR'], [1, 'A:110', 'ILE'], [1, 'A:120', 'GLU'], [1, 'A:158', 'ARG'], [1, 'A:168', 'ASP'], [1, 'A:208', 'HIS'], [1, 'B1990', 'LYS'], [1, 'B2011', 'GLN'], [1, 'C:3', 'THR'], [1, 'C:110', 'ILE'], [1, 'C:120', 'GLU'], [1, 'C:158', 'ARG'], [1, 'C:168', 'ASP'], [1, 'C:208', 'HIS'], [1, 'D1990', 'LYS'], [1, 'D2011', 'GLN']].length>0){
-                                       Write_Table(list_to_write=[['Model ID', 'Chain and res ID', 'Residue type'], [1, 'A:3', 'THR'], [1, 'A:110', 'ILE'], [1, 'A:120', 'GLU'], [1, 'A:158', 'ARG'], [1, 'A:168', 'ASP'], [1, 'A:208', 'HIS'], [1, 'B1990', 'LYS'], [1, 'B2011', 'GLN'], [1, 'C:3', 'THR'], [1, 'C:110', 'ILE'], [1, 'C:120', 'GLU'], [1, 'C:158', 'ARG'], [1, 'C:168', 'ASP'], [1, 'C:208', 'HIS'], [1, 'D1990', 'LYS'], [1, 'D2011', 'GLN']])
+                                       if ([['Model ID', 'Chain and res ID', 'Residue type'], ['1', 'A:3', 'THR'], ['1', 'A:110', 'ILE'], ['1', 'A:120', 'GLU'], ['1', 'A:158', 'ARG'], ['1', 'A:168', 'ASP'], ['1', 'A:208', 'HIS'], ['1', 'B1990', 'LYS'], ['1', 'B2011', 'GLN'], ['1', 'C:3', 'THR'], ['1', 'C:110', 'ILE'], ['1', 'C:120', 'GLU'], ['1', 'C:158', 'ARG'], ['1', 'C:168', 'ASP'], ['1', 'C:208', 'HIS'], ['1', 'D1990', 'LYS'], ['1', 'D2011', 'GLN']].length>0){
+                                       Write_Table(list_to_write=[['Model ID', 'Chain and res ID', 'Residue type'], ['1', 'A:3', 'THR'], ['1', 'A:110', 'ILE'], ['1', 'A:120', 'GLU'], ['1', 'A:158', 'ARG'], ['1', 'A:168', 'ASP'], ['1', 'A:208', 'HIS'], ['1', 'B1990', 'LYS'], ['1', 'B2011', 'GLN'], ['1', 'C:3', 'THR'], ['1', 'C:110', 'ILE'], ['1', 'C:120', 'GLU'], ['1', 'C:158', 'ARG'], ['1', 'C:168', 'ASP'], ['1', 'C:208', 'HIS'], ['1', 'D1990', 'LYS'], ['1', 'D2011', 'GLN']])
                                                document.write(space);}
             }
                        	
          </script>
          <hr class="ex2">
          <h2 class="ex2" align="left">8. Fit of model to data used for modeling</h2>
-          <script>
+	 <div>
+	 <script>
 		  if (['True'].length >0) {   
             var ex="<h3 class= ex2 align= left> 8.1 Fit of model to SAS data </h3>";
 			
             document.write(ex)
                 }
         </script>
-
+	</div>
 	 <hr class="ex2">
          <h2 class="ex2" align="left">9. Fit of model to data not used for modeling</h2>
          <hr class="ex2">

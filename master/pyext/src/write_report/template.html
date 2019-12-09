@@ -306,6 +306,69 @@
          <p class="ex2"> </p>
          <hr class="ex2">
          <h2 class="ex2" align="left">6. Data quality</h2>
+	 <div> <script>
+                  if ({{sas}}.length >0) {   
+            var ex="<h3 class= ex2 align= left> 6.1. Analysis of SAXS data used in this entry </h3>";
+			  ex+='<i>'+ {{description}} +' </i>';
+			  ex+="<h4 class= ex2 align= left> 6.1.1. Intensity plots </h4>";	
+			  ex+='<i> SAXS data was obtained from deposited SASBDB entry: '+{{sasdb_code}}+". Below are plots of intentisities, for further information,  <a href=https://www.sasbdb.org/data/" +{{sasdb_code}} + "/> refer to entry on SASBDB.</a> </i>"
+	document.write(ex)
+		}
+	 </script></div>
+	<div> <script>
+                  if ({{sas}}.length >0) {
+
+			  function plot_image(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'intensities.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_image(ID= "{{ID}}")
+		function plot_image_log(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'intensities_log.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_image_log(ID= "{{ID}}")
+		 }
+	</script>
+	</div>
+	<script>
+	    var ex1="<h4 class= ex2 align= left> 6.1.2. Key experimental estimates </h4>";
+	    document.write(ex1);
+var input_list={{parameters_volume}};
+            Write_Table(list_to_write=input_list)
+	</script>
+	<script>
+	    var ex2="<h4 class= ex2 align= left> 6.1.3. Flexibility analysis </h4>";
+ex1+="<i> Flexibility is assessed by Kratky and Porod-Debye plots. For details, refer to <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer,2011.</a></i>"
+            document.write(ex2)
+        </script>
+        <div> <script>
+                  if ({{sas}}.length >0) {
+                          function plot_kratky(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'Kratky.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_kratky(ID= "{{ID}}") 
+                function plot_porod(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'porod.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+                      }
+              plot_porod(ID= "{{ID}}")
+                 }
+        </script>
+        </div>
          <hr class="ex2">
          <h2 class="ex2" align="left">7. Model quality</h2>
          <script>
@@ -381,14 +444,15 @@
          </script>
          <hr class="ex2">
          <h2 class="ex2" align="left">8. Fit of model to data used for modeling</h2>
-          <script>
+	 <div>
+	 <script>
 		  if ({{sas}}.length >0) {   
             var ex="<h3 class= ex2 align= left> 8.1 Fit of model to SAS data </h3>";
 			
             document.write(ex)
                 }
         </script>
-
+	</div>
 	 <hr class="ex2">
          <h2 class="ex2" align="left">9. Fit of model to data not used for modeling</h2>
          <hr class="ex2">

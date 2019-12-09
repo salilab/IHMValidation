@@ -40,7 +40,7 @@ def dict_to_JSlist(d):
             for i in range(len(target[0])):
                 ltt=[]
                 for j in target:
-                    ltt.append(j[i])
+                    ltt.append(str(j[i]))
                 L.append(ltt)
     return L
 

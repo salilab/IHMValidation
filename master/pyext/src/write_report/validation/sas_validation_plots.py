@@ -24,15 +24,15 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
     def  plot_intensities(self):
         output_file(self.ID+"intensities.html",mode="inline")
         source = ColumnDataSource(self.df)
-        p = figure(plot_height=500, plot_width=500, title="Plot of intensities with errorbars")
-        p.circle(x='Q',y='logI',source=source, color='blue',fill_alpha=0.4,size=4)
-        p.multi_line('err_x','err_y',source=source, color='gray',line_width=1)
+        p = figure(plot_height=350, plot_width=350, title="Log I(s) vs s with errorbars")
+        p.circle(x='Q',y='logI',source=source, color='blue',fill_alpha=0.1,size=5)
+        p.multi_line('err_x','err_y',source=source, color='gray',line_width=0.5)
         p.xaxis.major_label_text_font_size="14pt"
         p.yaxis.major_label_text_font_size="14pt"
-        p.title.text_font_size='14pt'
+        p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = 's nm\u207B\u00B9'
+        p.xaxis.axis_label = "s nm\u207B\u00B9"
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(s)'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -45,14 +45,14 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         export_png(p,filename=filename+'/'+self.ID+"intensities.png")
 
     def plot_intensities_log(self):
-        output_file(self.ID+"intensities.html",mode="inline")
+        output_file(self.ID+"intensities_log.html",mode="inline")
         source = ColumnDataSource(self.df)
-        p = figure(plot_height=500, plot_width=500, title="Plot of intensities with errorbars(Log scale)")
-        p.circle(x='logQ',y='logI',source=source,fill_color='blue',fill_alpha=0.4,size=4)
-        p.multi_line('logX','err_y',source=source, color='gray',line_width=1)
+        p = figure(plot_height=350, plot_width=350, title="Log I(s) vs Log s with errorbars")
+        p.circle(x='logQ',y='logI',source=source,color='blue',fill_alpha=0.1,size=5)
+        p.multi_line('logX','err_y',source=source, color='gray',line_width=0.5)
         p.xaxis.major_label_text_font_size="14pt"
         p.yaxis.major_label_text_font_size="14pt"
-        p.title.text_font_size='14pt'
+        p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top' 
         p.xaxis.axis_label = 'Log s nm\u207B\u00B9'
@@ -67,13 +67,13 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         export_png(p,filename=filename+'/'+self.ID+"intensities_log.png")
 
     def plot_kratky(self):
-        output_file(self.ID+"kratky.html",mode="inline")
+        output_file(self.ID+"Kratky.html",mode="inline")
         source = ColumnDataSource(self.df)
-        p = figure(plot_height=500, plot_width=500, title="Kratky plot")
-        p.circle(x='Q',y='Ky',source=source,fill_color='blue',line_width=2,fill_alpha=0.4,size=4)
+        p = figure(plot_height=350, plot_width=350, title="Kratky plot")
+        p.circle(x='Q',y='Ky',source=source,color='blue',fill_alpha=0.1,size=5)
         p.xaxis.major_label_text_font_size="14pt"
         p.yaxis.major_label_text_font_size="14pt"
-        p.title.text_font_size='14pt'
+        p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
         p.xaxis.axis_label = 'Log s nm\u207B\u00B9'
@@ -90,11 +90,11 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
     def plot_porod_debye(self):
         output_file(self.ID+"porod.html",mode="inline")
         source = ColumnDataSource(self.df)
-        p = figure(plot_height=500, plot_width=500, title="Porod-Debye plot")
-        p.circle(x='Px',y='Py',source=source,fill_color='blue',line_width=2,fill_alpha=0.4,size=4)
+        p = figure(plot_height=350, plot_width=350, title="Porod-Debye plot")
+        p.circle(x='Px',y='Py',source=source,color='blue',fill_alpha=0.1,size=5)
         p.xaxis.major_label_text_font_size="14pt"
         p.yaxis.major_label_text_font_size="14pt"
-        p.title.text_font_size='14pt'
+        p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
         p.xaxis.axis_label = 's \u2074'

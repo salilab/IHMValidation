@@ -62,5 +62,18 @@ class sas_validation(validation.get_input_information):
         I_df['Py']=I_df['Px']*I_df['I']
         #print (I_df.head())
         return I_df
+    
+    def get_experiment_description(self):
+        data_dic=self.get_data_from_SASBDB()
+        description=['Data description: '+ str(list(data_dic.values())[0]['experiment_description'])]
+        return description
 
+    def get_parameters_vol(self):
+        data_dic=self.get_data_from_SASBDB()
+        print (list(data_dic.values())[0].keys())
+        parameter_table={'Estimated volume':[],'Estimated volume method':[],'Porod volume':[]}
+        parameter_table['Estimated volume'].append(list(data_dic.values())[0]['estimated_volume'])
+        parameter_table['Estimated volume method'].append(list(data_dic.values())[0]['estimated_volume_method'])
+        parameter_table['Porod volume'].append(list(data_dic.values())[0]['porod_volume']+' nm\u00b3')
+        return parameter_table
 
