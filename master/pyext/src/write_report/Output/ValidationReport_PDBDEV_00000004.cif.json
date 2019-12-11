@@ -55,7 +55,7 @@
     },
     {
         "Category": "date",
-        "Itemized_List": "December 08, 2019 --  10:35 PM"
+        "Itemized_List": "December 10, 2019 --  10:49 AM"
     },
     {
         "Category": "ID",
@@ -917,7 +917,20 @@
         ]
     },
     {
-        "Category": "description",
-        "Itemized_List": "['Data description: Synchrotron SAXS data from solutions of Lys63-linked diubiquitin in 20mM HEPES, 150mM NaCl, pH 7.4 were collected on the BL19U2 beam line at the Shanghai Synchrotron Radiation Facilitystorage ring  (SSRF: Shanghai, China) using a Pilatus 1M detector at a sample-detector distance of 2.1 m and at a wavelength of \u03bb = 0.1033 nm (I(s) vs s, where  s = 4\u03c0sin \u03b8/\u03bb and 2\u03b8 is the scattering angle). One solute concentration of 2.60 mg/ml (150 \u00b5M) was measured at 25\u00b0C. 20 successive 1 second frames were collected. The data were normalized to the intensity of the transmitted beam and radially averaged; the scattering of the solvent-blank was subtracted.']"
+        "Category": "parameters_mw",
+        "Itemized_List": [
+            [
+                "Molecule MW",
+                "Experimental MW",
+                "Porod MW",
+                "Guinier MW"
+            ],
+            [
+                "17.130",
+                "13.000",
+                "13.000",
+                "None"
+            ]
+        ]
     }
 ]
