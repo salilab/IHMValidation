@@ -339,13 +339,19 @@
 	</div>
 	<script>
 	    var ex1="<h4 class= ex2 align= left> 6.1.2. Key experimental estimates </h4>";
+ex1+="<p class=ex2><i>Molecular weight (MW) estimates from experiments and analysis.</i> </p>";
 	    document.write(ex1);
+var input_list={{parameters_mw}};
+            Write_Table(list_to_write=input_list)
+var ex11="<p class=ex2><i>Volume estimates from experiments and analysis.</i></p>";
+	document.write(ex11)
 var input_list={{parameters_volume}};
             Write_Table(list_to_write=input_list)
+
 	</script>
 	<script>
 	    var ex2="<h4 class= ex2 align= left> 6.1.3. Flexibility analysis </h4>";
-ex1+="<i> Flexibility is assessed by Kratky and Porod-Debye plots. For details, refer to <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer,2011.</a></i>"
+ex2+="<i> Flexibility is assessed by Kratky and Porod-Debye plots. For details, refer to <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer,2011.</a></i>"
             document.write(ex2)
         </script>
         <div> <script>

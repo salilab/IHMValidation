@@ -77,3 +77,35 @@ class sas_validation(validation.get_input_information):
         parameter_table['Porod volume'].append(list(data_dic.values())[0]['porod_volume']+' nm\u00b3')
         return parameter_table
 
+    def get_parameters_mw(self):
+        data_dic=self.get_data_from_SASBDB()
+        print (list(data_dic.values())[0].keys())
+        parameter_table={'Molecule MW':[],'Experimental MW':[],'Porod MW':[],'Guinier MW':[]}
+        parameter_table['Experimental MW'].append(list(data_dic.values())[0]['experimental_mw'])
+        parameter_table['Guinier MW'].append(list(data_dic.values())[0]['guinier_i0_mw'])
+        parameter_table['Porod MW'].append(list(data_dic.values())[0]['porod_mw'])
+        parameter_table['Molecule MW'].append(list(data_dic.values())[0]['experiment']['sample']['molecule'][0]['total_mw'])
+        return parameter_table
+
+    def get_pddf(self):
+        data_dic=self.get_data_from_SASBDB()
+        target_url=list(data_dic.values())[0]['pddf_data']
+        pddf = requests.get(target_url)
+        if pddf.status_code==200:
+            print ("fetched data from SASBDB")
+        else:
+            print ("Error....unable to fetch data from SASBDB, please check the entry ID")
+        with open ('pddf.csv','w') as f:
+            f.write(pddf.text)
+        f=open('pddf.csv');lines=f.readlines()
+        for i,j in enumerate(lines):
+            if 'Real Space Data' in j:
+                list_f=lines[i:]
+                print (''.join(list_f),file=open('pddf_output.csv','w'))
+        pd_df=pd.read_csv('pddf_output.csv', skiprows=7,delim_whitespace=True, names=['R','P','E'])
+        pd_df=pd_df.astype({'P':float,'R':float,'E':float})
+        pd_df['err_x']=pd_df.apply(lambda row: (row['R'],row['R']), axis=1)
+        pd_df['err_y']=pd_df.apply(lambda row: (row['P']-row['E'],row['P']+row['E']),axis=1)
+        return pd_df
+
+

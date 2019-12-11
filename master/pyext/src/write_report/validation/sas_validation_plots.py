@@ -8,7 +8,7 @@ import ihm
 import ihm.reader
 import re,pickle,requests,json
 from bokeh.io import output_file, show, curdoc, export_png, export_svgs
-from bokeh.models import ColumnDataSource, LinearAxis, Legend
+from bokeh.models import Span,ColumnDataSource, LinearAxis, Legend
 from bokeh.palettes import GnBu3, RdBu,OrRd3,Blues,YlOrBr, Spectral6, Set1
 from bokeh.plotting import figure, output_file, save
 from bokeh.models.widgets import Tabs, Panel
@@ -20,6 +20,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         super().__init__(mmcif_file)
         self.ID=str(validation.get_input_information.get_id(self))
         self.df=validation.sas_validation.sas_validation.get_intensities(self)
+        self.pdf=validation.sas_validation.sas_validation.get_pddf(self)
  
     def  plot_intensities(self):
         output_file(self.ID+"intensities.html",mode="inline")
@@ -71,6 +72,9 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         source = ColumnDataSource(self.df)
         p = figure(plot_height=350, plot_width=350, title="Kratky plot")
         p.circle(x='Q',y='Ky',source=source,color='blue',fill_alpha=0.1,size=5)
+        #vline = Span(location=0.1732, dimension='height', line_color='red', line_width=3)
+        #hline = Span(location=0.1104, dimension='width', line_color='green', line_width=3)
+        #p.renderers.extend([vline, hline])
         p.xaxis.major_label_text_font_size="14pt"
         p.yaxis.major_label_text_font_size="14pt"
         p.title.text_font_size='12pt'
@@ -107,4 +111,27 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.output_backend="svg"
         export_svgs(p,filename=filename+'/'+self.ID+"porod.svg")
         export_png(p,filename=filename+'/'+self.ID+"porod.png")
+
+    def  plot_pddf(self):
+        output_file(self.ID+"pddf.html",mode="inline") 
+        source = ColumnDataSource(self.pdf)
+        p = figure(plot_height=350, plot_width=350, title="Pair distance distribution function")
+        p.circle(x='R',y='P',source=source,color='blue',fill_alpha=0.1,size=5)
+        p.multi_line('err_x','err_y',source=source, color='gray',line_width=1.5)
+        p.xaxis.major_label_text_font_size="14pt"
+        p.yaxis.major_label_text_font_size="14pt"
+        p.title.text_font_size='12pt'
+        p.title.align="center"
+        p.title.vertical_align='top'
+        p.xaxis.axis_label = "r nm"
+        p.xaxis.axis_label_text_font_size='14pt'
+        p.yaxis.axis_label = 'P(r)'
+        p.yaxis.axis_label_text_font_size='14pt'
+        dirname=os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
+        print (filename)
+        save(p,filename=filename+'/'+self.ID+"pddf.html")
+        p.output_backend="svg"
+        export_svgs(p,filename=filename+'/'+self.ID+"pddf.svg")
+        export_png(p,filename=filename+'/'+self.ID+"pddf.png")
 
