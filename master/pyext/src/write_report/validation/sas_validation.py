@@ -27,17 +27,19 @@ class sas_validation(validation.get_input_information):
         url='https://www.sasbdb.org/rest-api/entry/summary/'
         data_dic={}
         for i in self.get_SASBDB_code():
-            url=url+i+'.json'
-            print ('fetching data from: %s'%(url))
-            response=requests.get(url, data={'key':'value'})
-            if response.status_code==200:
-                print ("fetched data from SASBDB")
-            else:
-                print ("Error....unable to fetch data from SASBDB, please check the entry ID")
-            data_dic[i]=response.json()
-            with open (i+'.json', 'w') as f:
-                formatted_data=json.dumps(response.json(), indent = 4, sort_keys=True)
-                f.write(formatted_data)
+            if 'None' not in str(i):
+                url_f=url+i+'.json'
+                print ('fetching data from: %s'%(url_f))
+                response=requests.get(url_f, data={'key':'value'})
+                if response.status_code==200:
+                    print ("fetched data from SASBDB")
+                else:
+                    print ("Error....unable to fetch data from SASBDB, please check the entry ID")
+                data_dic[i]=response.json()
+                print (data_dic)
+                with open (i+'.json', 'w') as f:
+                    formatted_data=json.dumps(response.json(), indent = 4, sort_keys=True)
+                    f.write(formatted_data)
         return data_dic
 
     def get_intensities(self):
@@ -74,7 +76,11 @@ class sas_validation(validation.get_input_information):
         parameter_table={'Estimated volume':[],'Estimated volume method':[],'Porod volume':[]}
         parameter_table['Estimated volume'].append(list(data_dic.values())[0]['estimated_volume'])
         parameter_table['Estimated volume method'].append(list(data_dic.values())[0]['estimated_volume_method'])
-        parameter_table['Porod volume'].append(list(data_dic.values())[0]['porod_volume']+' nm\u00b3')
+        print (list(data_dic.values())[0]['porod_volume'])
+        if list(data_dic.values())[0]['porod_volume'] is None:
+            parameter_table['Porod volume'].append(list(data_dic.values())[0]['porod_volume'])
+        else:
+            parameter_table['Porod volume'].append(list(data_dic.values())[0]['porod_volume']+' nm\u00b3')
         return parameter_table
 
     def get_parameters_mw(self):
@@ -108,4 +114,38 @@ class sas_validation(validation.get_input_information):
         pd_df['err_y']=pd_df.apply(lambda row: (row['P']-row['E'],row['P']+row['E']),axis=1)
         return pd_df
 
+    def get_pddf_software(self):
+        data_dic=self.get_data_from_SASBDB()
+        return str(list(data_dic.values())[0]['pddf_software'])
+
+    def get_pddf_dmax(self):
+        data_dic=self.get_data_from_SASBDB()
+        return str(list(data_dic.values())[0]['pddf_dmax'])
+
+    def get_pddf_rg(self):
+        data_dic=self.get_data_from_SASBDB()
+        return str(list(data_dic.values())[0]['pddf_rg'])
+
+    def get_number_of_fits(self):
+        data_dic=self.get_data_from_SASBDB()
+        number= len(list(data_dic.values())[0]['fits'])
+        return number
+
+    def get_chi_table(self):
+        data_dic=self.get_data_from_SASBDB()
+        number= self.get_number_of_fits()
+        chi_table={'Model':[],'\u03C7\u00b2':[]}
+        if number>0:
+            for i in range(0,number):
+                count=i+1
+                chi_table['Model'].append(str(count))
+                chi_table['\u03C7\u00b2'].append(list(data_dic.values())[0]['fits'][i]['chi_square_value'])
+        return chi_table
+
+    def get_rg_table(self):
+        data_dic=self.get_data_from_SASBDB()
+        rg_table={'Rg from Guinier analysis':[],'Rg from P(r) plot':[]}
+        rg_table['Rg from Guinier analysis'].append(list(data_dic.values())[0]['guinier_rg'])
+        rg_table['Rg from P(r) plot'].append(list(data_dic.values())[0]['pddf_rg']) 
+        return rg_table
 

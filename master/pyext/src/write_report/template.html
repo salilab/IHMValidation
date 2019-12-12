@@ -309,7 +309,6 @@
 	 <div> <script>
                   if ({{sas}}.length >0) {   
             var ex="<h3 class= ex2 align= left> 6.1. Analysis of SAXS data used in this entry </h3>";
-			  ex+='<i>'+ {{description}} +' </i>';
 			  ex+="<h4 class= ex2 align= left> 6.1.1. Intensity plots </h4>";	
 			  ex+='<i> SAXS data was obtained from deposited SASBDB entry: '+{{sasdb_code}}+". Below are plots of intentisities, for further information,  <a href=https://www.sasbdb.org/data/" +{{sasdb_code}} + "/> refer to entry on SASBDB.</a> </i>"
 	document.write(ex)
@@ -374,6 +373,24 @@ ex2+="<i> Flexibility is assessed by Kratky and Porod-Debye plots. For details, 
               plot_porod(ID= "{{ID}}")
                  }
         </script>
+        </div>
+        <script>
+            var ex2="<h4 class= ex2 align= left> 6.1.4. Pair-distance distribution analysis </h4>";
+ex2+="<i> Pair-distance distribution was evaluated using ATSAS software. The analysis resulted in a D<sub>max</sub> of "+ String ({{pddf_dmax}}) + "nm and a radius of gyration of "+ String ({{pddf_rg}}) + "nm </i>"
+            document.write(ex2)
+        </script>
+        <div> <script>
+                  if ({{sas}}.length >0) {
+                          function plot_pddf(ID) {
+                      var img = document.createElement("Embed")
+                      img.setAttribute("src",'../static/images/'+ID+'pddf.html');
+                      img.setAttribute("width","50%");
+                      img.setAttribute("height","33%");
+                      document.body.appendChild(img);
+        		} 
+              plot_pddf(ID= "{{ID}}")
+		  }
+		</script>
         </div>
          <hr class="ex2">
          <h2 class="ex2" align="left">7. Model quality</h2>
@@ -454,11 +471,37 @@ ex2+="<i> Flexibility is assessed by Kratky and Porod-Debye plots. For details, 
 	 <script>
 		  if ({{sas}}.length >0) {   
             var ex="<h3 class= ex2 align= left> 8.1 Fit of model to SAS data </h3>";
-			
             document.write(ex)
-                }
+			  var fits={{number_of_fits}}
+			  if (fits>0) {
+				  var num_fits="<i>This entry has "+ String (fits) +" distinct model fits. </i>"; 
+				  document.write(num_fits);
+                          var ex1="<h4 class= ex2 align= left> 8.1.1. \u03C7\u00b2 goodness of fit analysis </h4>";
+				  ex1+=" <p class=ex2><i> \u03C7\u00b2 values for model fits were obtained from SASBDB. </i> </p>"; 
+            document.write(ex1)
+		var input_list={{chi_table}};
+        	    Write_Table(list_to_write=input_list)
+                          var ex2="<h4 class= ex2 align= left> 8.1.3. Radius of gyration (R<sub>g</sub>) estimates </h4>";
+		           ex2+="<p class=ex2> <i>R<sub>g</sub> estimates were obtained from SASBDB.</i> </p>"		  
+            document.write(ex2)
+                var input_list={{rg_table}};
+                    Write_Table(list_to_write=input_list)
+
+		} else {
+                                  var num_fits="<i>Model fit for this entry has not been deposited. </i>"; 
+				  document.write(num_fits);
+                          var ex2="<h4 class= ex2 align= left> 8.1.1. Radius of gyration (R<sub>g</sub>) estimates </h4>";
+                           ex2+="<p class=ex2> <i>R<sub>g</sub> estimates were obtained from SASBDB.</i> </p>"            
+            document.write(ex2)
+                var input_list={{rg_table}};
+                    Write_Table(list_to_write=input_list)
+
+		}
+		
+
+			  }
         </script>
-	</div>
+	 </div>
 	 <hr class="ex2">
          <h2 class="ex2" align="left">9. Fit of model to data not used for modeling</h2>
          <hr class="ex2">

@@ -55,7 +55,7 @@
     },
     {
         "Category": "date",
-        "Itemized_List": "December 10, 2019 --  10:49 AM"
+        "Itemized_List": "December 11, 2019 --  11:33 PM"
     },
     {
         "Category": "ID",
@@ -930,6 +930,44 @@
                 "13.000",
                 "13.000",
                 "None"
+            ]
+        ]
+    },
+    {
+        "Category": "pddf_software",
+        "Itemized_List": "ATSAS GNOM"
+    },
+    {
+        "Category": "pddf_dmax",
+        "Itemized_List": "7.00"
+    },
+    {
+        "Category": "pddf_rg",
+        "Itemized_List": "2.100"
+    },
+    {
+        "Category": "number_of_fits",
+        "Itemized_List": 0
+    },
+    {
+        "Category": "chi_table",
+        "Itemized_List": [
+            [
+                "Model",
+                "\u03c7\u00b2"
+            ]
+        ]
+    },
+    {
+        "Category": "rg_table",
+        "Itemized_List": [
+            [
+                "Rg from Guinier analysis",
+                "Rg from P(r) plot"
+            ],
+            [
+                "2.000",
+                "2.100"
             ]
         ]
     }
