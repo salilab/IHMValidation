@@ -31,12 +31,9 @@ class sas_validation(validation.get_input_information):
                 url_f=url+i+'.json'
                 print ('fetching data from: %s'%(url_f))
                 response=requests.get(url_f, data={'key':'value'})
-                if response.status_code==200:
-                    print ("fetched data from SASBDB")
-                else:
+                if response.status_code!=200:
                     print ("Error....unable to fetch data from SASBDB, please check the entry ID")
                 data_dic[i]=response.json()
-                print (data_dic)
                 with open (i+'.json', 'w') as f:
                     formatted_data=json.dumps(response.json(), indent = 4, sort_keys=True)
                     f.write(formatted_data)
@@ -46,9 +43,7 @@ class sas_validation(validation.get_input_information):
         data_dic=self.get_data_from_SASBDB()
         target_url=list(data_dic.values())[0]['intensities_data']
         intensities = requests.get(target_url)
-        if intensities.status_code==200:
-            print ("fetched data from SASBDB")
-        else:
+        if intensities.status_code != 200:
             print ("Error....unable to fetch data from SASBDB, please check the entry ID")
         with open ('intensities.csv','w') as f:
             f.write(intensities.text)
@@ -72,11 +67,9 @@ class sas_validation(validation.get_input_information):
 
     def get_parameters_vol(self):
         data_dic=self.get_data_from_SASBDB()
-        print (list(data_dic.values())[0].keys())
         parameter_table={'Estimated volume':[],'Estimated volume method':[],'Porod volume':[]}
         parameter_table['Estimated volume'].append(list(data_dic.values())[0]['estimated_volume'])
         parameter_table['Estimated volume method'].append(list(data_dic.values())[0]['estimated_volume_method'])
-        print (list(data_dic.values())[0]['porod_volume'])
         if list(data_dic.values())[0]['porod_volume'] is None:
             parameter_table['Porod volume'].append(list(data_dic.values())[0]['porod_volume'])
         else:
@@ -85,7 +78,6 @@ class sas_validation(validation.get_input_information):
 
     def get_parameters_mw(self):
         data_dic=self.get_data_from_SASBDB()
-        print (list(data_dic.values())[0].keys())
         parameter_table={'Molecule MW':[],'Experimental MW':[],'Porod MW':[],'Guinier MW':[]}
         parameter_table['Experimental MW'].append(list(data_dic.values())[0]['experimental_mw'])
         parameter_table['Guinier MW'].append(list(data_dic.values())[0]['guinier_i0_mw'])
@@ -97,9 +89,7 @@ class sas_validation(validation.get_input_information):
         data_dic=self.get_data_from_SASBDB()
         target_url=list(data_dic.values())[0]['pddf_data']
         pddf = requests.get(target_url)
-        if pddf.status_code==200:
-            print ("fetched data from SASBDB")
-        else:
+        if pddf.status_code != 200:
             print ("Error....unable to fetch data from SASBDB, please check the entry ID")
         with open ('pddf.csv','w') as f:
             f.write(pddf.text)
@@ -139,7 +129,7 @@ class sas_validation(validation.get_input_information):
             for i in range(0,number):
                 count=i+1
                 chi_table['Model'].append(str(count))
-                chi_table['\u03C7\u00b2'].append(list(data_dic.values())[0]['fits'][i]['chi_square_value'])
+                chi_table['\u03C7'+'\u00b2'].append(list(data_dic.values())[0]['fits'][i]['chi_square_value'])
         return chi_table
 
     def get_rg_table(self):
@@ -148,4 +138,47 @@ class sas_validation(validation.get_input_information):
         rg_table['Rg from Guinier analysis'].append(list(data_dic.values())[0]['guinier_rg'])
         rg_table['Rg from P(r) plot'].append(list(data_dic.values())[0]['pddf_rg']) 
         return rg_table
+
+    def get_fit_data(self):
+        data_dic=self.get_data_from_SASBDB()
+        number=self.get_number_of_fits()
+        if number>0:
+            target_url=list(data_dic.values())[0]['fits'][0]['fit_data']
+            fit = requests.get(target_url)
+            if fit.status_code !=200:
+                print ("Error....unable to fetch data from SASBDB, please check the entry ID")
+            with open ('fit.csv','w') as f:
+                f.write(fit.text)
+            f_df=pd.read_csv('fit.csv', skiprows=3,delim_whitespace=True, names=['Q','Ie','Ib','E'])
+            f_df['logIe']=np.log(f_df['Ie'])
+            f_df['logIb']=np.log(f_df['Ib'])
+            f_df['r']=f_df['Ie']-f_df['Ib']
+            f_df['logr']=f_df['logIe']-f_df['logIb']
+            f_df['r2a']=(f_df['Ib']-f_df['Ie'].mean())**2
+            f_df['r2b']=(f_df['Ie']-f_df['Ie'].mean())**2
+            print (f_df.head())
+            return f_df
+        else:
+            return None
+
+    def get_fit_r2(self):
+        number=self.get_number_of_fits()
+        if number>0:
+            f_df=self.get_fit_data()
+            r2=f_df['r2a'].sum()/f_df['r2b'].sum()
+            return round(r2,2)
+        else:
+            return None
+
+    def get_fit_image(self):
+        data_dic=self.get_data_from_SASBDB()
+        target_url=list(data_dic.values())[0]['fits'][0]['models'][0]['model_plot']
+        fit = requests.get(target_url)
+        print (target_url)
+        if fit.status_code !=200:
+            print ("Error....unable to fetch data from SASBDB, please check the entry ID")
+        dirname=os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.abspath(os.path.join(dirname, '../static/images/',self.ID+'fit.png'))
+        with open (filename,'wb') as f:
+            f.write(fit.content)
 

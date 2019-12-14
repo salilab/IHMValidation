@@ -69,7 +69,7 @@
     },
     {
         "Category": "date",
-        "Itemized_List": "December 11, 2019 --  11:33 PM"
+        "Itemized_List": "December 12, 2019 --  06:54 AM"
     },
     {
         "Category": "ID",
@@ -957,5 +957,9 @@
                 "3.010"
             ]
         ]
+    },
+    {
+        "Category": "r2",
+        "Itemized_List": 0.98
     }
 ]
