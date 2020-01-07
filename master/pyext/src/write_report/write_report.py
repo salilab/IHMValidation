@@ -339,19 +339,28 @@ def run_sas_validation(mmcif_file):
         Template_Dict['sas']=["True"]
         I_sas=sas_validation.sas_validation(mmcif_file)
         Template_Dict['sasdb_code']=I_sas.get_SASBDB_code()
-        #data_dic=I_sas.get_data_from_SASBDB()
-        #I_sas.get_intensities()
         Template_Dict['parameters_volume']=validation.dict_to_JSlist(I_sas.get_parameters_vol())
-        #Template_Dict['description']=str(I_sas.get_experiment_description())
         Template_Dict['parameters_mw']=validation.dict_to_JSlist(I_sas.get_parameters_mw())
-        I_sas.get_pddf()
-
+        Template_Dict['pddf_software']=str(I_sas.get_pddf_software())
+        Template_Dict['pddf_dmax']=I_sas.get_pddf_dmax()
+        Template_Dict['pddf_rg']=I_sas.get_pddf_rg()
+        Template_Dict['number_of_fits']=I_sas.get_number_of_fits()
+        Template_Dict['chi_table']=validation.dict_to_JSlist(I_sas.get_chi_table())
+        Template_Dict['rg_table']=validation.dict_to_JSlist(I_sas.get_rg_table())
+        Template_Dict['r2']=I_sas.get_fit_r2()
         I_sas_plt=validation.sas_validation_plots.sas_validation_plots(mmcif_file)
         I_sas_plt.plot_intensities()
         I_sas_plt.plot_intensities_log()
         I_sas_plt.plot_kratky()
         I_sas_plt.plot_porod_debye()
         I_sas_plt.plot_pddf()
+        I_sas_plt.Guinier_plot_fit()
+        I_sas_plt.Guinier_plot_residuals()
+        if Template_Dict['number_of_fits']>0:
+            I_sas_plt.plot_fit()
+            I_sas_plt.plot_residuals()
+            I_sas.get_fit_image()
+
 
 def run_supplementary_table(args):
     I = validation.get_input_information(args.f)
@@ -441,7 +450,7 @@ if __name__ == "__main__":
     run_sas_validation(args.f)
     write_html(args.f,Template_Dict,template_html)
     write_pdf(args.f,Template_Dict,template_pdf)
-    write_json(args.f,Template_Dict)
+    #write_json(args.f,Template_Dict)
     #write_supplementary_table(args.f,Template_Dict,template_file_supp)
         
 '''
