@@ -23,7 +23,9 @@ import argparse
 import json
 #############################
 # Features to add:
-# 1) Flask and server support
+# 1) Flask and API calls
+# 2) Link MongoDB
+# 3) Add Bootstrap library 
 #############################
 
 ####################################################################################################################
@@ -270,6 +272,7 @@ def run_entry_composition(mmcif_file):
 
 def run_model_quality(mmcif_file):
     I = validation.get_input_information(mmcif_file)
+    print ("exo",I.check_sphere())
     if I.check_sphere()<1:
         I_mp=get_molprobity_information.get_molprobity_information(mmcif_file)
         if I_mp.check_for_molprobity():
