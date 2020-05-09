@@ -1,0 +1,185 @@
+{
+    "angular_unit": "1/A",
+    "code": "SASDBX9",
+    "description": "Guinier Rg and I_0 were calculated using AutoRg.\r\n\r\nMW was estimated using SAXSMOW.",
+    "estimated_volume": null,
+    "estimated_volume_error": null,
+    "estimated_volume_method": null,
+    "experiment": {
+        "cell_temperature": "15.0",
+        "concentration_max": "1.00",
+        "concentration_method": null,
+        "concentration_min": null,
+        "concentration_unit": null,
+        "contributor": [
+            {
+                "affiliation": [
+                    {
+                        "address": "San Francisco, CA, USA",
+                        "full_name": "University of California, San Francisco (UCSF)",
+                        "short_name": "UCSF",
+                        "webpage": "https://www.ucsf.edu/"
+                    }
+                ],
+                "contributor_name": "Seung Joong",
+                "contributor_surname": "Kim",
+                "orcid": null
+            }
+        ],
+        "date": "2015-04-12",
+        "exposure_time": "1.000",
+        "flow_rate": null,
+        "instrument": {
+            "beam_geometry": null,
+            "beam_profile_ah": null,
+            "beam_profile_al": null,
+            "beamline_name": "BL4-2",
+            "city": "Menlo Park, CA",
+            "country": "USA",
+            "detector": {
+                "name": "Rayonix MX225-HE",
+                "resolution": null,
+                "type": null
+            },
+            "line_collimation": null,
+            "line_collimation_integrationwidth": null,
+            "line_collimation_slitlength": null,
+            "name": "Stanford Synchrotron Radiation Lightsource (SSRL)",
+            "point_source": null,
+            "sample_path_length": null,
+            "type_of_source": "X-ray synchrotron",
+            "xray_energy": null
+        },
+        "number_of_frames": 20,
+        "s_max": "1.998",
+        "s_min": "0.069",
+        "sample": {
+            "absorbption": null,
+            "buffer": {
+                "additive": null,
+                "comment": null,
+                "concentration": null,
+                "concentration_unit": null,
+                "deuteration": null,
+                "name": "10mM HEPES, 150mM NaCl, 10%(v/v) glycerol, 5mM DTT",
+                "ph": "7.500",
+                "pka": null
+            },
+            "contrast": null,
+            "deuteration": null,
+            "dry_vol": null,
+            "ext_coefficient": null,
+            "mixture": null,
+            "molecule": [
+                {
+                    "complex_state": false,
+                    "deuteration": null,
+                    "long_name": "Nucleoporin POM152",
+                    "molecular_type": "protein",
+                    "mw": "12.479",
+                    "number_molecules": 1,
+                    "oligomerization": "monomer",
+                    "organism": "Saccharomyces cerevisiae (strain ATCC 204508 / S288c)",
+                    "sequence": "EKPKFAIQDNHHITKVTENLFSKEEVCQGMEGTVDLALFGSPPFILEYDLMAPNGHISTKKIQVATKYASLKLPNQIPGEYITTIKAIFDGNYGESDIHFREEGHHHHHH",
+                    "short_name": null,
+                    "total_mw": "12.479",
+                    "uniprot_code": "P39685",
+                    "uniprot_range": null,
+                    "uniprot_range_first": null,
+                    "uniprot_range_last": null
+                }
+            ],
+            "name": "Immunoglobulin domain 6 of Nucleoporin Pom152 (Pom152 Ig-6: amino acids 919-1020)",
+            "purity_method": null,
+            "specific_vol": null
+        },
+        "sample_detector_distance": "1.70000",
+        "sample_volume": null,
+        "seccolumn": null,
+        "storage_temperature": "15.0",
+        "total_exposure_time": null,
+        "wavelength": "0.098000"
+    },
+    "experiment_description": "Synchrotron SAXS data from solutions of Immunoglobulin domain 6 of Nucleoporin Pom152 (Pom152 Ig-6: amino acids 919-1020) in 10mM HEPES, 150mM NaCl, 10%(v/v) glycerol, 5mM DTT, pH 7.5 were collected on the BL4-2 beam line at the Stanford Synchrotron Radiation Lightsource (SSRL) (Stanford, CA, USA) using a Rayonix MX225-HE detector at a sample-detector distance of 1.7 m and at a wavelength of \u03bb = 0.098 nm (I(s) vs s, where s = 4\u03c0sin\u03b8/\u03bb and 2\u03b8 is the scattering angle). Solute concentrations ranging between 1 and 1 mg/ml were measured at 15\u00b0C. 20 successive 1 second frames were collected. The data were normalized to the intensity of the transmitted beam and radially averaged; the scattering of the solvent-blank was subtracted and the different curves were scaled for protein concentration.",
+    "experimental_mw": "12.500",
+    "experimental_mw_error": null,
+    "fits": [
+        {
+            "chi_square_value": 2.863,
+            "description": null,
+            "fit_data": "https://www.sasbdb.org/media/fitting_files/SASDBX9_fit1.fir",
+            "fit_log": "https://www.sasbdb.org/media/fitting_files/log_files/26998_29.log",
+            "fit_plot": "https://www.sasbdb.org/media/fitting_files/scattering_plots/SASDBX9_fit1_fit_img.png",
+            "fit_residual_plot": "SASDBX9_fit1_fitresiduals_img.png",
+            "fit_unit": "1/A",
+            "models": [
+                {
+                    "bead_radius": "2.25",
+                    "comment": "",
+                    "log": null,
+                    "model_data": "https://www.sasbdb.org/media/pdb_file/SASDBX9_fit1_model1.pdb",
+                    "model_mw": "6.093",
+                    "model_plot": "https://www.sasbdb.org/media/pdb_file/images/SASDBX9_fit1_model1_img.png",
+                    "pdb_link": [],
+                    "software": "DAMMIN",
+                    "software_version": "",
+                    "symmetry": "",
+                    "type_of_model": "dummy"
+                }
+            ],
+            "p_value": 0.0,
+            "software": "DAMMIN",
+            "software_version": ""
+        }
+    ],
+    "guinier_i0": "206.4200000000",
+    "guinier_i0_error": "1.5000000000",
+    "guinier_i0_mw": "14.700",
+    "guinier_i0_mw_error": null,
+    "guinier_point_first": 8,
+    "guinier_point_last": 44,
+    "guinier_rg": "2.780",
+    "guinier_rg_error": "0.180",
+    "i0_calibration_standard": null,
+    "i0_calibration_standard_data": null,
+    "intensities_data": "https://www.sasbdb.org/media/intensities_files/SASDBX9.sub",
+    "intensities_guinier_plot": "https://www.sasbdb.org/media/intensities_files/scattering_plots/SASDBX9_guinier_img.png",
+    "intensities_kratky_plot": "https://www.sasbdb.org/media/intensities_files/scattering_plots/SASDBX9_kratky_img.png",
+    "intensities_log_plot": "https://www.sasbdb.org/media/intensities_files/scattering_plots/SASDBX9_dat_img.png",
+    "intensity_unit": null,
+    "last_modified": "2019-12-06T13:07:15.624532+01:00",
+    "pddf_data": "https://www.sasbdb.org/media/p_of_R_files/SASDBX9.out",
+    "pddf_dmax": "7.93",
+    "pddf_dmax_error": null,
+    "pddf_i0": "198.7000000000",
+    "pddf_i0_error": "0.7539000000",
+    "pddf_plot": "https://www.sasbdb.org/media/p_of_R_files/pofr_images/SASDBX9_pofr_img.png",
+    "pddf_point_first": null,
+    "pddf_point_last": null,
+    "pddf_rg": "2.636",
+    "pddf_rg_error": "0.008",
+    "pddf_software": "ATSAS GNOM",
+    "pddf_software_version": "GNOM 4.5a",
+    "porod_mw": null,
+    "porod_mw_error": null,
+    "porod_volume": "56.68",
+    "porod_volume_error": null,
+    "project": {
+        "publication": {
+            "author_list": "Upla P, Kim SJ, Sampathkumar P, Dutta K, Cahill SM, Chemmama IE, Williams R, Bonanno JB, Rice WJ, Stokes DL, Cowburn D, Almo SC, Sali A, Rout MP, Fernandez-Martinez J",
+            "doi": "10.1016/j.str.2017.01.006",
+            "journal": "Structure",
+            "pmid": "28162953",
+            "published_date": "2017 Mar 7",
+            "title": "Molecular Architecture of the Major Membrane Ring Component of the Nuclear Pore Complex."
+        },
+        "released_date": "2017-02-16",
+        "status": "released",
+        "submitted_date": "2017-01-23",
+        "title": "Molecular Architecture of the Major Membrane Ring Component of the Nuclear Pore Complex."
+    },
+    "sascif_data": "https://www.sasbdb.org/media/sascif/sascif_files/SASDBX9.sascif",
+    "status": "Published",
+    "tags": [],
+    "type_of_curve": "Single concentration"
+}

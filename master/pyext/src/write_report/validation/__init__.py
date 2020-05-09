@@ -44,6 +44,22 @@ def dict_to_JSlist(d):
                 L.append(ltt)
     return L
 
+def dict_to_JSlist_sas(d):
+    final_L=[]
+    for key,val in d.items():
+        L = []
+        if bool(val):
+            if len(list(val.keys()))>0:
+                L.append(list(val.keys()))
+                target=list(val.values())
+                for i in range(len(target[0])):
+                    ltt=[]
+                    for j in target:
+                        ltt.append(str(j[i]))
+                    L.append(ltt)
+        final_L.append(L)
+    return final_L
+
 
 def format_RB_text(tex):
     val=''
@@ -527,9 +543,11 @@ class get_input_information(object):
 
     def check_for_sas(self):
         dataset=self.get_dataset_comp()
+        print (dataset)
         data_type=dataset['Dataset type']
+        database=dataset['Database name']
         print (data_type)
-        if 'SAS' in str(data_type):
+        if 'SAS' in str(data_type) and 'SAS' in str(database):
             return True
         else:
             return False

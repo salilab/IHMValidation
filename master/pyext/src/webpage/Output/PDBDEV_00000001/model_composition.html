@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>PDB-Dev Validation Report Landing Page</title>
-        <!-- add bootstrap css file -->
-        <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="screen, projection, print">
-        <link rel="stylesheet" type="text/css" href="../css/main.css" media="screen, projection, print">
-        <style>
-            @charset "UTF-8";
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>PDB-Dev Validation Report Landing Page</title>
+    <!-- add bootstrap css file -->
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="screen, projection, print">
+    <link rel="stylesheet" type="text/css" href="../css/main.css" media="screen, projection, print">
+    <style>
+        @charset "UTF-8";
             /* CSS Document */
             a {
             color: #333399;
@@ -32,348 +33,341 @@
             display: show;
             }
         </style>
-        <script type="text/javascript" src="../js/jquery.min.js"></script>
-        <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-        <script type="text/javascript" src='../js/main.js'></script>
-        <script> 
-            $(function(){
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src='../js/main.js'></script>
+    <script>
+        $(function(){
               $("#includedContent").load("footer.html"); 
             });
-        </script> 
-    </head>
-    <body style="background-color: #669966; ">
-        <!-- header -->	
-        <!-- header -->
-        <div class="container-fluid">
-        <div class="card" style="border: none; margin-bottom: 0px; margin-right: 10px; margin-left: 30px; ">
-        <div class="float-left"><b><span id="siteid"></span></b></div>
-        <div class="card-body" style="padding: 0px 0px;background-color: rgba(102,153,102, 0.5); " >
-            <div class="row">
-                <div class=" col-sm-9" style="margin-left: 0px;">
-                    <a href="https://pdb-dev.wwpdb.org/">
-                        <img src="../images/logon.png" class="float-left" alt="PDBDEV.org" height="100"  width="110"  style="margin-top: 10px; margin-bottom: 10px" />
-                        <p>
-                        <h1  style="margin-left: 0px; color: #003366;">PDB-Dev</h1>
-                        <h5 class="float-left" style="color: #003366;">Prototype Archiving System for Integrative Structures</h5>
-                        </p>
-                    </a>
-                </div>
-                <div class="col-sm-3 d-flex align-items-end" style="margin-top: 0px;">
-                    <h5 class="home-header ml-auto" style="margin-right:27px; color:#003366"><b><small>Released Entries: 36</small></b></h5>
-                </div>
-            </div>
-        </div>
-        <!--end panel body-->
-        <!-- navbar -->
-        <nav class="navbar navbar-expand-xl navbar-dark">
-            <a class="navbar-brand" href="main.html">
-		    <h5>Validation Report for PDBDEV_00000001</h5>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-        </nav>
-        <!-- navbar -->
-        <nav class="navbar navbar-expand-xl navbar-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="nav navbar-nav mr-auto">
-                    <li class="nav-item mr-4 dropdown">
-                        <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="main.html"><span class="overview">Overview</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="main.html#qual">Overall quality at a glance</a>
-                        </div>
-                    </li>
-                    <li class="nav-item mr-4 dropdown">
-                        <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_composition.html"><span class="overview">Model details</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="model_composition.html#ensemble">Ensemble information</a>
-                            <a class="dropdown-item" href="model_composition.html#summary">Summary</a>
-                            <a class="dropdown-item" href="model_composition.html#entry">Entry composition</a>
-                            <a class="dropdown-item" href="model_composition.html#data">Datasets used</a>
-                            <a class="dropdown-item" href="model_composition.html#representation">Representation</a>
-                            <a class="dropdown-item" href="model_composition.html#methods">Methods and software</a>
-                        </div>
-                    </li>
-                    <li class="nav-item mr-4 dropdown">
-                        <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="data_quality.html#first">SAS</a>
-                            <a class="dropdown-item" href="data_quality.html#second">CX-MS</a>
-                            <a class="dropdown-item" href="data_quality.html#third">FRET</a>
-                        </div>
-                    </li>
-                    <li class="nav-item mr-4 dropdown">
-                        <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="model_quality.html#geometry">Standard geometry</a>
-                            <a class="dropdown-item" href="model_quality.html#contacts">Close contacts</a>
-                            <a class="dropdown-item" href="model_quality.html#torsion1">Protein backbone outliers</a>
-                            <a class="dropdown-item" href="model_quality.html#torsion2">Protein sidechain outliers</a>
-                        </div>
-                    </li>
-                    <li class="nav-item mr-4 dropdown">
-                        <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used for modeling</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="formodeling.html#first">SAS</a>
-                            <a class="dropdown-item" href="formodeling.html#second">CX-MS</a>
-                            <a class="dropdown-item" href="formodeling.html#third">FRET</a>
-                        </div>
-                    </li>
-                    <li class="nav-item mr-4 dropdown">
-                        <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notmodeling.html"><span class="overview">Fit to data not used for modeling</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="notmodeling.html#data">Data</a>
-                        </div>
-                    </li>
-                    <li class="nav-item mr-4 dropdown">
-                        <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="uncertainty.html"><span class="overview">Uncertainty</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="uncertainty.html#data">Data</a>
-                            <a class="dropdown-item" href="uncertainty.html#model">Model</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <!-- scripts -->
-        <script>
-            function Write_Table(list_to_write){
-            var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
-            for (var i = 0; i < list_to_write[0].length; i++) {
-            mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
-            }
-            mytable += "</tr></thead><tr>";
-            
-            for (var j=1;j<list_to_write.length;j++) {
-            for (var i=0; i<list_to_write[j].length; i++) {
-            mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
-            }
-            mytable += "</tr><tr>";
-            
-            }
-            mytable += "</tr></table></div>";
-            document.write(mytable);
-            }
         </script>
-        <div class="card-body border-success" style="border-color: solid black;">
-            <!-- start overall card body for front page -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card-header" style="background-color: #FFF;">
-                        <script>
-            		   var n=2;
-                            var section='<h4 align="center"><u><a name="ensemble">Ensemble information</a></u></h4>';
-                            if (n<2) {
-                            section+='<p class ="ex2"><i>This entry consists of '+ n +' distinct ensemble.</i></p>';
-                            document.write(section);
+</head>
+
+<body style="background-color: #669966; ">
+    <!-- header -->
+    <!-- header -->
+    <div class="container-fluid">
+        <div class="card" style="border: none; margin-bottom: 0px; margin-right: 10px; margin-left: 30px; ">
+            <div class="float-left"><b><span id="siteid"></span></b></div>
+            <div class="card-body" style="padding: 0px 0px;background-color: rgba(102,153,102, 0.5); ">
+                <div class="row">
+                    <div class=" col-sm-9" style="margin-left: 0px;">
+                        <a href="https://pdb-dev.wwpdb.org/">
+                            <img src="../webimages/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 10px; margin-bottom: 10px" />
+                            <p>
+                                <h1 style="margin-left: 0px; color: #003366;">PDB-Dev</h1>
+                                <h5 class="float-left" style="color: #003366;">Prototype Archiving System for Integrative Structures</h5>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="col-sm-3 d-flex align-items-end" style="margin-top: 0px;">
+                        <h5 class="home-header ml-auto" style="margin-right:27px; color:#003366"><b><small>Released Entries: 36</small></b></h5>
+                    </div>
+                </div>
+            </div>
+            <!--end panel body-->
+            <!-- navbar -->
+            <nav class="navbar navbar-expand-xl navbar-dark">
+                <a class="navbar-brand" href="main.html">
+                    <h5>Validation Report for PDBDEV_00000001</h5>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+            <!-- navbar -->
+            <nav class="navbar navbar-expand-xl navbar-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav mr-auto">
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="main.html"><span class="overview">Overview</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="main.html#qual">Overall quality</a>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_composition.html"><span class="overview">Model details</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="model_composition.html#ensemble">Ensemble information</a>
+                                <a class="dropdown-item" href="model_composition.html#summary">Summary</a>
+                                <a class="dropdown-item" href="model_composition.html#entry">Entry composition</a>
+                                <a class="dropdown-item" href="model_composition.html#data">Datasets used</a>
+                                <a class="dropdown-item" href="model_composition.html#representation">Representation</a>
+                                <a class="dropdown-item" href="model_composition.html#methods">Methods and software</a>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="data_quality.html#first">Data</a>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="model_quality.html#geometry">Model</a>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="formodeling.html#first">Data</a>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notmodeling.html"><span class="overview">Fit to data not used</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="notmodeling.html#data">Data</a>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="uncertainty.html"><span class="overview">Uncertainty</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="uncertainty.html#data">Data</a>
+                                <a class="dropdown-item" href="uncertainty.html#model">Model</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- scripts -->
+            <script>
+            function Write_Table(list_to_write) {
+                var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
+                for (var i = 0; i < list_to_write[0].length; i++) {
+                    mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
+                }
+                mytable += "</tr></thead><tr>";
+
+                for (var j = 1; j < list_to_write.length; j++) {
+                    for (var i = 0; i < list_to_write[j].length; i++) {
+                        mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
+                    }
+                    mytable += "</tr><tr>";
+
+                }
+                mytable += "</tr></table></div>";
+                document.write(mytable);
+            }
+            </script>
+            <div class="card-body border-success" style="border-color: solid black;">
+                <!-- start overall card body for front page -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-header" style="background-color: #FFF;">
+                            <script>
+                            var n = 2;
+                            var section = '<h4 align="center"><u><a name="ensemble">Ensemble information</a></u></h4>';
+                            if (n < 2) {
+                                section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensemble.</i></p>';
+                                document.write(section);
                             } else {
-                            section+='<p class ="ex2"><i>This entry consists of '+ n +' distinct ensembles.</i></p>';
-                            document.write(section);
-                            }   
-                            if (n>0){
-                            var input_list=None;         
-                            Write_Table(list_to_write=input_list)
+                                section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensembles.</i></p>';
+                                document.write(section);
                             }
-                            var div1='</div></div></div></div>';
+                            if (n > 0) {
+                                var input_list = None;
+                                Write_Table(list_to_write = input_list)
+                            }
+                            var div1 = '</div></div></div></div>';
                             document.write(div1);
-                            
-                            var div2='<div class="card-body border-success" style="border-color: solid black;"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFF;">'
+
+                            var div2 = '<div class="card-body border-success" style="border-color: solid black;"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFF;">'
                             document.write(div2);
-                            var write1='';
-                            write1+='<h4 class="ex2" align="center"><u><a name=summary>Summary</a></u></h4>';
-                            
-                            
-                            write1+='<p align="justify"><i>This entry consists of '+ 2 + ' unique models, with '+ String (7.0) +' subunits in each model. A total of '+ 28 + ' datasets or restraints was used to build this entry. Each model is represented by ' +   String (40) +' rigid bodies and '+ String (42) + ' flexible or non-rigid units. </i> </p>';
+                            var write1 = '';
+                            write1 += '<h4 class="ex2" align="center"><u><a name=summary>Summary</a></u></h4>';
+
+
+                            write1 += '<p align="justify"><i>This entry consists of ' + 2 + ' unique models, with ' + String(7.0) + ' subunits in each model. A total of ' + 28 + ' datasets or restraints was used to build this entry. Each model is represented by ' + String(40) + ' rigid bodies and ' + String(42) + ' flexible or non-rigid units. </i> </p>';
                             document.write(write1);
-                        </script>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body border-success" style="border-color: solid black;">
-            <!-- start overall card body for front page -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card-header" style="background-color: #FFF;">
-                        <h4 class="ex2" align="center"><u><a name='entry'>Entry composition</a></u> </h4>
-                        <script>
-                            function write_intro_1(input_variable){
-                                    if (input_variable < 2) {
-                            var docx="<i>There is " + input_variable + " unique type of model in this entry. </i>";
-                                            document.write(docx);
-                                    } else {
-                            var docx="<i>There are "+ input_variable +" unique types of models in this entry.</i> ";
-                            document.write(docx);
-                            }
-                            }        
-                            
-                            function write_model_name(input_variable){
-                                  if (input_variable.length <2) {  
-                            var docx= " <i>This model is titled "+ input_variable[0] + " respectively. </i>"
-                                   document.write(docx);
-                            } else {
-                            var docx= "<i>These models are titled "+ input_variable.join(', ') + " respectively.</i> "
-                                   document.write(docx);                  
-                            }
-                            }
-                            function write_intro_2(input_variable){
-                                  if (input_variable.length <2) {       
-                            var docx= "<i>Model has "+ input_variable.join() + " chains respectively.</i> "
-                                   document.write(docx);
-                            } else {
-                            var docx= "<i>Models have "+ input_variable.join() + " chains respectively.</i> "
-                                   document.write(docx);                       
-                            }
-                            }
-                            write_intro_1(input_variable=2)
-		            write_model_name(input_variable=['Cluster 1/Best scoring model', 'Cluster 2/Best scoring model']) 
- 
-                        </script>
-                        <script>
-                                        var input_list=[['Model ID', 'Subunit number', 'Subunit ID', 'Subunit name', 'Chain ID', 'Total residues'], ['1', '1', '1', 'Nup84', 'A', '726'], ['1', '2', '2', 'Nup85', 'B', '744'], ['1', '3', '3', 'Nup120', 'C', '1037'], ['1', '4', '4', 'Nup133', 'D', '1157'], ['1', '5', '5', 'Nup145c', 'E', '712'], ['1', '6', '6', 'Seh1', 'F', '349'], ['1', '7', '7', 'Sec13', 'G', '297'], ['2', '1', '1', 'Nup84', 'A', '726'], ['2', '2', '2', 'Nup85', 'B', '744'], ['2', '3', '3', 'Nup120', 'C', '1037'], ['2', '4', '4', 'Nup133', 'D', '1157'], ['2', '5', '5', 'Nup145c', 'E', '712'], ['2', '6', '6', 'Seh1', 'F', '349'], ['2', '7', '7', 'Sec13', 'G', '297']];
-
-				Write_Table(list_to_write=input_list)
-                        </script>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- start overall card body for front page -->
-        <div class="card-body border-success" style="border-color: solid black;">
-            <!-- start overall card body for front page -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card-header" style="background-color: #FFF;">
-                        <h4 class="ex2" align="center"><u><a name='data'>Datasets used for modeling </a></u> </h4>
-                        <script>
-                            function write_dataset(input_variable){
-                                    if (input_variable < 2) {
-                            var docx="<i>There is " + input_variable + " unique dataset used to build the models in this entry. </i>";
-                                            document.write(docx);
-                                    } else {
-                            var docx="<i>There are "+ input_variable +" unique datasets used to build the models in this entry.</i> ";
-                                            document.write(docx);
-                            }
-                            }
-                                       write_dataset(input_variable=28)
-                        </script>
-                        <p class="ex2"> </p>
-                        <script>
-                                        var input_list_2=[['ID', 'Dataset type', 'Database name', 'Data access code'], ['1', 'Experimental model', 'PDB', '3JRO'], ['2', 'Experimental model', 'PDB', '3F3F'], ['3', 'Experimental model', 'PDB', '3IKO'], ['4', 'Comparative model', 'Not listed', 'None'], ['5', 'Experimental model', 'PDB', '3CQC'], ['6', 'Comparative model', 'Not listed', 'None'], ['7', 'Experimental model', 'PDB', '4LCT'], ['8', 'Experimental model', 'PDB', '2QX5'], ['9', 'Experimental model', 'PDB', '3EWE'], ['10', 'Comparative model', 'Not listed', 'None'], ['11', 'Experimental model', 'PDB', '3F7F'], ['12', 'Experimental model', 'PDB', '3HXR'], ['13', 'Experimental model', 'PDB', '4FHN'], ['14', 'Comparative model', 'Not listed', 'None'], ['15', 'Experimental model', 'PDB', '4Q9T'], ['16', 'Comparative model', 'Not listed', 'None'], ['17', 'Experimental model', 'PDB', '3I4R'], ['18', 'Experimental model', 'PDB', '3KFO'], ['19', 'Comparative model', 'Not listed', 'None'], ['20', 'Experimental model', 'PDB', '3BG1'], ['21', 'Experimental model', 'PDB', '3BG0'], ['22', 'Comparative model', 'Not listed', 'None'], ['23', 'Experimental model', 'PDB', '3F3F'], ['24', 'Experimental model', 'PDB', '2PM7'], ['25', 'CX-MS data', 'Not listed', 'None'], ['26', 'CX-MS data', 'Not listed', 'None'], ['27', 'EM raw micrographs', 'Not listed', 'None'], ['28', '2DEM class average', 'Not listed', 'None']];
-
-				Write_Table(list_to_write=input_list_2)
-                        </script>
-                    </div>
-                </div>
-            </div>
-            <!-- start overall card body for front page -->
-            <div class="card-body border-success" style="border-color: solid black;">
-                <!-- start overall card body for front page -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card-header" style="background-color: #FFF;">
-                            <h4 class="ex2" align="center"><u><a name="representation">Representation </a></u> </h4>
-                            <p class ="ex2" align="justify"><i>This entry has only one representation and includes  40 rigid bodies and 42 flexible units.</i></p>
-                            <p class="ex2"> </p>
-                            <script>
-                                            var input_list_3=[['Chain ID', 'Rigid bodies', 'Non-rigid segments'], ['A', '7-20:Comparative model/None, 27-80:Comparative model/None, 96-126:Comparative model/None, 136-364:Comparative model/None, 372-483:Comparative model/None, 506-562:Comparative model/None, 575-726:Comparative model/None. ', '1-6, 21-26, 81-95, 127-135, 365-371, 484-505, 563-574. '], ['B', '67-122:Comparative model/None, 135-427:Comparative model/None, 461-529:Comparative model/None, 533-602:Comparative model/None, 620-671:Comparative model/None, 680-743:Comparative model/None. ', '1-66, 123-134, 428-460, 530-532, 603-619, 672-679, 744-744. '], ['C', '1-29:Comparative model/None, 53-212:Comparative model/None, 221-305:Comparative model/None, 311-429:Comparative model/None, 440-710:Comparative model/None, 711-712:Comparative model/None, 727-781:Comparative model/None, 805-892:Comparative model/None, 903-910:Comparative model/None, 921-1010:Comparative model/None, 1023-1037:Comparative model/None. ', '30-52, 213-220, 306-310, 430-439, 713-726, 782-804, 893-902, 911-920, 1011-1022. '], ['D', '56-78:Comparative model/None, 86-125:Comparative model/None, 133-144:Comparative model/None, 162-184:Comparative model/None, 193-200:Comparative model/None, 206-249:Comparative model/None, 258-480:Comparative model/None, 490-763:Comparative model/None, 772-1155:Comparative model/None. ', '1-55, 79-85, 126-132, 145-161, 185-192, 201-205, 250-257, 481-489, 764-771, 1156-1157. '], ['E', '126-144:Comparative model/None, 151-175:Comparative model/None, 182-553:Comparative model/None. ', '1-125, 145-150, 176-181, 554-712. '], ['F', '1-248:Experimental model/3F3F, 288-346:Experimental model/3F3F. ', '249-287, 347-349. '], ['G', '2-158:Experimental model/2PM7, 166-296:Experimental model/2PM7. ', '1-1, 159-165, 297-297. ']];
-
-				    Write_Table(list_to_write=input_list_3)
                             </script>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- start overall card body for front page -->
             <div class="card-body border-success" style="border-color: solid black;">
                 <!-- start overall card body for front page -->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card-header" style="background-color: #FFF;">
-                            </script>
-                            <h4 class="ex2" align="center">
-                            <u><a name="methods">Methodology and software</a></u></h2>
+                            <h4 class="ex2" align="center"><u><a name='entry'>Entry composition</a></u> </h4>
                             <script>
-		            var n=1
-            if (n<2){
-            var write_prot= "<i>This entry is a result of " + 1 +" distinct protocol.</i>";
-            document.write(write_prot);
-            }else{
-             var write_prot= "<i>This entry is a result of " + 1 +" distinct protocols.</i>";
-             document.write(write_prot);
-
-                            </script>
-                            <p class="ex2"> </p>
-                            <script>
-                                            var input_list_3=[['Step number', 'Protocol ID', 'Method name', 'Method type', 'Number of computed models', 'Multi state modeling', 'Multi scale modeling'], ['1', '1', 'Replica exchange monte carlo', 'Sampling', '500', 'False', 'True'], ['2', '1', 'Replica exchange monte carlo', 'Sampling', '5000', 'False', 'True']];
-
-				    Write_Table(list_to_write=input_list_3)
-                            </script>
-                            <script>
-                                function write_software(software_list){
-                                       if (software_list < 1) {
-                                var docx="<i>Software packages used for modeling were either not reported or not used.</i> ";
-                                               document.write(docx);
-                                       } else if (software_list <2) {
-                                var docx="<i>There is "+ software_list +" software package reported in this entry.</i> ";
-                                                              document.write(docx);
-                                              } else{
-                                 var docx="<i>There are "+ software_list +" software packages reported in this entry. </i>";
-                                               document.write(docx);
+                            function write_intro_1(input_variable) {
+                                if (input_variable < 2) {
+                                    var docx = "<i>There is " + input_variable + " unique type of model in this entry. </i>";
+                                    document.write(docx);
+                                } else {
+                                    var docx = "<i>There are " + input_variable + " unique types of models in this entry.</i> ";
+                                    document.write(docx);
                                 }
-                                } 
-                                        write_software(software_list=6)
+                            }
 
-			    </script>
-                            <p class="ex2"> </p>
-                            <script>
-                                            var input_list=[['ID', 'Software name', 'Software version', 'Software classification', 'Software location'], ['1', 'Integrative Modeling Platform (IMP)', 'develop-0a5706e202', 'integrative model building', 'https://integrativemodeling.org'], ['2', 'IMP PMI module', '67456c0', 'integrative model building', 'https://integrativemodeling.org'], ['3', 'HHpred', '2.0.16', 'protein homology detection', 'https://toolkit.tuebingen.mpg.de/hhpred'], ['4', 'PSIPRED', '4.0', 'secondary structure prediction', 'http://bioinf.cs.ucl.ac.uk/psipred/'], ['5', 'DISOPRED', '3', 'disorder prediction', 'http://bioinf.cs.ucl.ac.uk/psipred/?disopred=1'], ['6', 'MODELLER', '9.12', 'comparative modeling', 'https://salilab.org/modeller/']];
+                            function write_model_name(input_variable) {
+                                if (input_variable.length < 2) {
+                                    var docx = " <i>This model is titled " + input_variable[0] + " respectively. </i>"
+                                    document.write(docx);
+                                } else {
+                                    var docx = "<i>These models are titled " + input_variable.join(', ') + " respectively.</i> "
+                                    document.write(docx);
+                                }
+                            }
 
-				    Write_Table(list_to_write=input_list)
+                            function write_intro_2(input_variable) {
+                                if (input_variable.length < 2) {
+                                    var docx = "<i>Model has " + input_variable.join() + " chains respectively.</i> "
+                                    document.write(docx);
+                                } else {
+                                    var docx = "<i>Models have " + input_variable.join() + " chains respectively.</i> "
+                                    document.write(docx);
+                                }
+                            }
+                            write_intro_1(input_variable = 2)
+                            write_model_name(input_variable = ['Cluster 1/Best scoring model', 'Cluster 2/Best scoring model'])
                             </script>
-                            <p class="ex2"> </p>
+                            <script>
+                            var input_list = [['Model ID', 'Subunit number', 'Subunit ID', 'Subunit name', 'Chain ID', 'Total residues'], ['1', '1', '1', 'Nup84', 'A', '726'], ['1', '2', '2', 'Nup85', 'B', '744'], ['1', '3', '3', 'Nup120', 'C', '1037'], ['1', '4', '4', 'Nup133', 'D', '1157'], ['1', '5', '5', 'Nup145c', 'E', '712'], ['1', '6', '6', 'Seh1', 'F', '349'], ['1', '7', '7', 'Sec13', 'G', '297'], ['2', '1', '1', 'Nup84', 'A', '726'], ['2', '2', '2', 'Nup85', 'B', '744'], ['2', '3', '3', 'Nup120', 'C', '1037'], ['2', '4', '4', 'Nup133', 'D', '1157'], ['2', '5', '5', 'Nup145c', 'E', '712'], ['2', '6', '6', 'Seh1', 'F', '349'], ['2', '7', '7', 'Sec13', 'G', '297']];
+
+                            Write_Table(list_to_write = input_list)
+                            </script>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- start overall card body for front page -->
-            <!-- start overall card body for front page -->
-            <!-- start overall card body for front page -->
-            <!-- start footer -->
-            <footer class="page-footer">
-                <div class="container-fluid">
-                    <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
-                        <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
-                            <a href="http://www.wwpdb.org/" target="_blank">
-                            <img src="../images/wwpdb-logo11.png" alt="wwpdb"  height="35px" width="160px"/></a>
+            <div class="card-body border-success" style="border-color: solid black;">
+                <!-- start overall card body for front page -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-header" style="background-color: #FFF;">
+                            <h4 class="ex2" align="center"><u><a name='data'>Datasets used for modeling </a></u> </h4>
+                            <script>
+                            function write_dataset(input_variable) {
+                                if (input_variable < 2) {
+                                    var docx = "<i>There is " + input_variable + " unique dataset used to build the models in this entry. </i>";
+                                    document.write(docx);
+                                } else {
+                                    var docx = "<i>There are " + input_variable + " unique datasets used to build the models in this entry.</i> ";
+                                    document.write(docx);
+                                }
+                            }
+                            write_dataset(input_variable = 28)
+                            </script>
+                            <p class="ex2"> </p>
+                            <script>
+                            var input_list_2 = [['ID', 'Dataset type', 'Database name', 'Data access code'], ['1', 'Experimental model', 'PDB', '3JRO'], ['2', 'Experimental model', 'PDB', '3F3F'], ['3', 'Experimental model', 'PDB', '3IKO'], ['4', 'Comparative model', 'Not listed', 'None'], ['5', 'Experimental model', 'PDB', '3CQC'], ['6', 'Comparative model', 'Not listed', 'None'], ['7', 'Experimental model', 'PDB', '4LCT'], ['8', 'Experimental model', 'PDB', '2QX5'], ['9', 'Experimental model', 'PDB', '3EWE'], ['10', 'Comparative model', 'Not listed', 'None'], ['11', 'Experimental model', 'PDB', '3F7F'], ['12', 'Experimental model', 'PDB', '3HXR'], ['13', 'Experimental model', 'PDB', '4FHN'], ['14', 'Comparative model', 'Not listed', 'None'], ['15', 'Experimental model', 'PDB', '4Q9T'], ['16', 'Comparative model', 'Not listed', 'None'], ['17', 'Experimental model', 'PDB', '3I4R'], ['18', 'Experimental model', 'PDB', '3KFO'], ['19', 'Comparative model', 'Not listed', 'None'], ['20', 'Experimental model', 'PDB', '3BG1'], ['21', 'Experimental model', 'PDB', '3BG0'], ['22', 'Comparative model', 'Not listed', 'None'], ['23', 'Experimental model', 'PDB', '3F3F'], ['24', 'Experimental model', 'PDB', '2PM7'], ['25', 'CX-MS data', 'Not listed', 'None'], ['26', 'CX-MS data', 'Not listed', 'None'], ['27', 'EM raw micrographs', 'Not listed', 'None'], ['28', '2DEM class average', 'Not listed', 'None']];
+
+                            Write_Table(list_to_write = input_list_2)
+                            </script>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="float-right text-right">
-                                <p style="margin-bottom: 0px; margin-right: 0px;color: #000">Supported by<br />National Science Foundation</p>
+                    </div>
+                </div>
+                <!-- start overall card body for front page -->
+                <div class="card-body border-success" style="border-color: solid black;">
+                    <!-- start overall card body for front page -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card-header" style="background-color: #FFF;">
+                                <h4 class="ex2" align="center"><u><a name="representation">Representation </a></u> </h4>
+                                <p class="ex2" align="justify"><i>This entry has only one representation and includes 40 rigid bodies and 42 flexible units.</i></p>
+                                <p class="ex2"> </p>
+                                <script>
+                                var input_list_3 = [['Chain ID', 'Rigid bodies', 'Non-rigid segments'], ['A', '7-20:Comparative model/None, 27-80:Comparative model/None, 96-126:Comparative model/None, 136-364:Comparative model/None, 372-483:Comparative model/None, 506-562:Comparative model/None, 575-726:Comparative model/None. ', '1-6, 21-26, 81-95, 127-135, 365-371, 484-505, 563-574. '], ['B', '67-122:Comparative model/None, 135-427:Comparative model/None, 461-529:Comparative model/None, 533-602:Comparative model/None, 620-671:Comparative model/None, 680-743:Comparative model/None. ', '1-66, 123-134, 428-460, 530-532, 603-619, 672-679, 744-744. '], ['C', '1-29:Comparative model/None, 53-212:Comparative model/None, 221-305:Comparative model/None, 311-429:Comparative model/None, 440-710:Comparative model/None, 711-712:Comparative model/None, 727-781:Comparative model/None, 805-892:Comparative model/None, 903-910:Comparative model/None, 921-1010:Comparative model/None, 1023-1037:Comparative model/None. ', '30-52, 213-220, 306-310, 430-439, 713-726, 782-804, 893-902, 911-920, 1011-1022. '], ['D', '56-78:Comparative model/None, 86-125:Comparative model/None, 133-144:Comparative model/None, 162-184:Comparative model/None, 193-200:Comparative model/None, 206-249:Comparative model/None, 258-480:Comparative model/None, 490-763:Comparative model/None, 772-1155:Comparative model/None. ', '1-55, 79-85, 126-132, 145-161, 185-192, 201-205, 250-257, 481-489, 764-771, 1156-1157. '], ['E', '126-144:Comparative model/None, 151-175:Comparative model/None, 182-553:Comparative model/None. ', '1-125, 145-150, 176-181, 554-712. '], ['F', '1-248:Experimental model/3F3F, 288-346:Experimental model/3F3F. ', '249-287, 347-349. '], ['G', '2-158:Experimental model/2PM7, 166-296:Experimental model/2PM7. ', '1-1, 159-165, 297-297. ']];
+
+                                Write_Table(list_to_write = input_list_3)
+                                </script>
                             </div>
                         </div>
                     </div>
-                    <div class="row" style="color:#FFF; background-color: #669966; padding-top: 3px; padding-bottom: 8px;"></div>
                 </div>
-        </div>
-        </footer>
-        <!-- add Javasscript file from js file -->
-        <script type="text/javascript" src="../js/jquery.min.js"></script>
-        <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-        <script type="text/javascript" src='../js/main.js'></script>
-        <script src="../js/jquery-3.3.1.min.js" type="text/javascript"></script>
-        <script src="../js/popper1.12.9.min.js"      type="text/javascript"></script>
-        <script src="../js/bootstrap4.1.3.min.js"    type="text/javascript"></script>
-        <script type="text/javascript" src="../js/bootstrap3-typeahead.min.js"></script>
-    </body>
+                <!-- start overall card body for front page -->
+                <div class="card-body border-success" style="border-color: solid black;">
+                    <!-- start overall card body for front page -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card-header" style="background-color: #FFF;">
+                                </script>
+                                <h4 class="ex2" align="center">
+                                    <u><a name="methods">Methodology and software</a></u></h2>
+                                    <script>
+                                    var n = 1
+                                    if (n < 2) {
+                                        var write_prot = "<i>This entry is a result of " + 1 + " distinct protocol.</i>";
+                                        document.write(write_prot);
+                                    } else {
+                                        var write_prot = "<i>This entry is a result of " + 1 + " distinct protocols.</i>";
+                                        document.write(write_prot);
+                                    </script>
+                                    <p class="ex2"> </p>
+                                    <script>
+                                    var input_list_3 = [['Step number', 'Protocol ID', 'Method name', 'Method type', 'Number of computed models', 'Multi state modeling', 'Multi scale modeling'], ['1', '1', 'Replica exchange monte carlo', 'Sampling', '500', 'False', 'True'], ['2', '1', 'Replica exchange monte carlo', 'Sampling', '5000', 'False', 'True']];
+
+                                    Write_Table(list_to_write = input_list_3)
+                                    </script>
+                                    <script>
+                                    function write_software(software_list) {
+                                        if (software_list < 1) {
+                                            var docx = "<i>Software packages used for modeling were either not reported or not used.</i> ";
+                                            document.write(docx);
+                                        } else if (software_list < 2) {
+                                            var docx = "<i>There is " + software_list + " software package reported in this entry.</i> ";
+                                            document.write(docx);
+                                        } else {
+                                            var docx = "<i>There are " + software_list + " software packages reported in this entry. </i>";
+                                            document.write(docx);
+                                        }
+                                    }
+                                    write_software(software_list = 6)
+                                    </script>
+                                    <p class="ex2"> </p>
+                                    <script>
+                                    var input_list = [['ID', 'Software name', 'Software version', 'Software classification', 'Software location'], ['1', 'Integrative Modeling Platform (IMP)', 'develop-0a5706e202', 'integrative model building', 'https://integrativemodeling.org'], ['2', 'IMP PMI module', '67456c0', 'integrative model building', 'https://integrativemodeling.org'], ['3', 'HHpred', '2.0.16', 'protein homology detection', 'https://toolkit.tuebingen.mpg.de/hhpred'], ['4', 'PSIPRED', '4.0', 'secondary structure prediction', 'http://bioinf.cs.ucl.ac.uk/psipred/'], ['5', 'DISOPRED', '3', 'disorder prediction', 'http://bioinf.cs.ucl.ac.uk/psipred/?disopred=1'], ['6', 'MODELLER', '9.12', 'comparative modeling', 'https://salilab.org/modeller/']];
+
+                                    Write_Table(list_to_write = input_list)
+                                    </script>
+                                    <p class="ex2"> </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- start overall card body for front page -->
+                <!-- start overall card body for front page -->
+                <!-- start overall card body for front page -->
+                <!-- start footer -->
+                <footer class="page-footer">
+                    <div class="container-fluid">
+                        <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
+                            <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
+                                <a href="http://www.wwpdb.org/" target="_blank">
+                                    <img src="../webimages/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px" /></a>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="float-right text-right">
+                                    <p style="margin-bottom: 0px; margin-right: 0px;color: #000">Supported by<br />National Science Foundation</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="color:#FFF; background-color: #669966; padding-top: 3px; padding-bottom: 8px;"></div>
+                    </div>
+            </div>
+            </footer>
+            <!-- add Javasscript file from js file -->
+            <script type="text/javascript" src="../js/jquery.min.js"></script>
+            <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+            <script type="text/javascript" src='../js/main.js'></script>
+            <script src="../js/jquery-3.3.1.min.js" type="text/javascript"></script>
+            <script src="../js/popper1.12.9.min.js" type="text/javascript"></script>
+            <script src="../js/bootstrap4.1.3.min.js" type="text/javascript"></script>
+            <script type="text/javascript" src="../js/bootstrap3-typeahead.min.js"></script>
+</body>
+
 </html>
