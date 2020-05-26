@@ -1,7 +1,0 @@
-pandas
-numpy
-flask
-Werkzeug
-bokeh
-jinja2
-gunicorn==19.9.0
