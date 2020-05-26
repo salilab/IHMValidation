@@ -120,21 +120,24 @@
                                 <a class="dropdown-item" href="model_composition.html#methods">Methods and software</a>
                             </div>
 			    </li>
-                        <li class="nav-item mr-4 dropdown">
+                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item dropdown-toggle" type="button" href="data_quality.html#first">SAS</a>
-                                <ul class="dropdown-submenu">
-                            <li><a class="dropdown-item" href="data_quality.html#firstI">Scattering profiles</a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstE">Experimental estimates</a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstF">Flexibility analysis </a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstP">P(r) analysis </a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstG">Guinier analysis </a></li>
-                                </ul>
-                            </div>
-                        </li>
 
+                            <script>
+                                if (['SAS DATA', 'MUTAGENESIS DATA'].includes('SAS DATA') >= 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
+                                document.write(ex);}
+
+                            else {
+
+                                var ex='<a class=dropdown-item href=data_quality.html#first>Data</a>'
+                                document.write(ex);
+                            }
+                        </script>
+                        </div>
+                        </li>                       
 			<li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
                             </a>
@@ -149,11 +152,20 @@
                             </script>
                             </div>
                         </li>
+
                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="formodeling.html#first">SAS</a>
+                            <script>
+                                if (['SAS DATA', 'MUTAGENESIS DATA'].includes('SAS DATA') >= 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
+                                document.write(ex);}
+                            else {
+                                var ex='<a class=dropdown-item href=formodeling.html#first>Data</a>'
+                                document.write(ex);
+                                }  
+                            </script>                          
                             </div>
                         </li>
                         <li class="nav-item mr-4 dropdown">

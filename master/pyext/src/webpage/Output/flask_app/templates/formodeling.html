@@ -225,7 +225,7 @@ body {
                             if (['True'].length > 0) {
                                 if (1 > 0) {
                                     var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u></h5>";
-                                    ex2 += "<p class =ex2><i>Model and fits displayed below were obtained from SASBDB. \u03C7\u00b2 values are a measure of fit of the model to data. A perfect fit has a \u03C7\u00b2 value of zero.</i>";
+                                    ex2 += "<p class =ex2><i>Model and fits displayed below were obtained from SASBDB. \u03C7\u00b2 values are a measure of fit of the model to data. A model that fits the data within its error estimates will have a \u03C7\u00b2 value close to 1, assuming that the random statistical errors are propagated correctly and there are no systematic errors. </i>";
                                     document.write(ex2)
                                     var input_list = [['SASDB ID', 'Model', 'χ²'], ['SASDC29', '1', '25.13']];
                                     Write_Table(list_to_write = input_list)
@@ -246,15 +246,15 @@ body {
                             for (var i = 0; i < sasdb_code.length; i++) {
                                 for (var j=0; j<sasdb_code_fits[i]; j++) {
                                 var k=j+1
-                            var ex3 ='<p align=justify align=center> <u> Model fit for '+ sasdb_code[i]+' (fit/model number '+String(k) +'):</u> Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis. </p>'; 
+                            var ex3 ='<p align=justify align=center> <u> Model fit for '+ sasdb_code[i]+' (fit/model number '+String(k) +'):</u> Residual value plot assesses the fit of a model to the data. Residual values should be randomly spaced around the horizontal axis. </p>'; 
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                            ex4 +='<iframe src=../static/images/' + ['PDBDEV00000009'] + sasdb_code[i]+String(j)+'fit1.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../static/images/' + ['PDBDEV00000009'] + sasdb_code[i]+String(j)+'fit12.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../static/images/' + ['PDBDEV00000009'] + sasdb_code[i]+ String (j)+'residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../static/images/' + ['PDBDEV00000009'] + sasdb_code[i]+ String (j)+'residuals2.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';

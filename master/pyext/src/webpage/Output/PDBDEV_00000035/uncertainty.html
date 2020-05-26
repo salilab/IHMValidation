@@ -31,7 +31,25 @@
             .home-header {
             display: show;
             }
-        </style>
+            .dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu a::after {
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 6px;
+  top: .8em;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+
+	</style>
         <script type="text/javascript" src="../js/jquery.min.js"></script>
         <script type="text/javascript" src="../js/bootstrap.min.js"></script>
         <script type="text/javascript" src='../js/main.js'></script>
@@ -103,12 +121,18 @@
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="data_quality.html#first">SAS</a>
-                                <a class="dropdown-item" href="data_quality.html#second">CX-MS</a>
-                                <a class="dropdown-item" href="data_quality.html#third">FRET</a>
+                                <a class="dropdown-item dropdown-toggle" type="button" href="data_quality.html#first">SAS</a>
+                                <ul class="dropdown-submenu">
+                            <li><a class="dropdown-item" href="data_quality.html#firstI">Scattering profiles</a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstE">Experimental estimates</a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstF">Flexibility analysis </a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstP">P(r) analysis </a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstG">Guinier analysis </a></li>
+                                </ul>
                             </div>
                         </li>
-                        <li class="nav-item mr-4 dropdown">
+                        
+			<li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
                             </a>
                             <div class="dropdown-menu">

@@ -39,6 +39,24 @@ body {
  display: show;
 }
 
+           .dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu a::after {
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 6px;
+  top: .8em;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+
 </style>
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
@@ -105,13 +123,23 @@ body {
                                 <a class="dropdown-item" href="model_composition.html#methods">Methods and software</a>
                             </div>
                         </li>
-                        <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
+                        
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="data_quality.html#first">SAS</a>
+                                <a class="dropdown-item dropdown-toggle" type="button" href="data_quality.html#first">SAS</a>
+                                <ul class="dropdown-submenu">
+                            <li><a class="dropdown-item" href="data_quality.html#firstI">Scattering profiles</a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstE">Experimental estimates</a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstF">Flexibility analysis </a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstP">P(r) analysis </a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstG">Guinier analysis </a></li>
+                                </ul>
                             </div>
                         </li>
-                        <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
+
+			<li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
                             </a>
                             <div class="dropdown-menu">
                             <script>
@@ -195,7 +223,7 @@ body {
                                     var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u></h5>";
                                     ex2 += "<p class =ex2><i>Model and fits displayed below were obtained from SASBDB. \u03C7\u00b2 values are a measure of fit of the model to data. A perfect fit has a \u03C7\u00b2 value of zero.</i>";
                                     document.write(ex2)
-                                    var input_list = [['SASDB ID', 'Model', 'χ²'], ['SASDG85', 'None', 'None']];
+                                    var input_list = [['SASDB ID', 'Model', 'χ²'], ['SASDG85', 'N/A', 'N/A']];
                                     Write_Table(list_to_write = input_list)
                                 } else {
                                     var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u></h5>";
@@ -235,34 +263,6 @@ body {
                 </div> <!-- end card body-->
             </div>
             <!-- start overall card body for front page -->
-
-            <div class="card-body border-success" style="border-color: solid black;">
-                <!-- start overall card body for front page -->
-                <div class="card-header" style="background-color: #FFF; height=500rem">
-                    <script>
-                            if (['True'].length > 0) {
-                            var sasdb_code=['SASDG85']  
-                            var sasdb_code_fits=[0]   
-                            for (var i = 0; i < sasdb_code.length; i++) {
-                                for (var j=0; j<sasdb_code_fits[i]; j++) {
-                            var ex3='<div class=row> <div class=col-lg-12> <div class=box align=center text-center container-fluid no-padding style=height:60vh>';
-
-                            ex3 +='<p align=justify align=center> <u> Structural model from PDB/SASBDB for '+ sasdb_code[i]+'</u> </p>'; 
-                            document.write(ex3)
-
-                            var ex5 = '<iframe src=../static/images/' + ['PDBDEV00000035'] +sasdb_code[i]+ String(j)+'fit.png frameborder=0 scrolling=yes width=50% height=450vh  style=position:relative align=text-center onload=resizeIframe(this)></iframe>'
-
-                            document.write(ex5)
-                            var ex6 ='</div></div> </div>';
-                            ex6 +='<p style=margin-bottom:3cm;> </p>';
-                            document.write(ex6)
-                        }
-                    }
-                }
-                </script>
-                    <p style="margin-bottom:3cm;"> </p>
-                </div> <!-- end card body-->
-            </div>
 
             <!-- start overall card body for front page -->
             <!-- start footer -->

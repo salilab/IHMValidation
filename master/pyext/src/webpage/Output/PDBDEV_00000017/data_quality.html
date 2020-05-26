@@ -32,6 +32,25 @@
             .home-header {
             display: show;
             }
+
+           .dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu a::after {
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 6px;
+  top: .8em;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+
         </style>
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
@@ -98,14 +117,27 @@
                                 <a class="dropdown-item" href="model_composition.html#methods">Methods and software</a>
                             </div>
                         </li>
-                        <li class="nav-item mr-4 dropdown">
+                        
+                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="data_quality.html#first">SAS</a>
-                            </div>
-                        </li>
-                        <li class="nav-item mr-4 dropdown">
+
+                            <script>
+                                if (['3DEM VOLUME', 'SAS DATA', '2DEM CLASS AVERAGE'].includes('SAS DATA') >= 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
+                                document.write(ex);}
+
+                            else {
+
+                                var ex='<a class=dropdown-item href=data_quality.html#first>Data</a>'
+                                document.write(ex);
+                            }
+                        </script>
+                        </div>
+                        </li>                       
+
+			<li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
                             </a>
                             <div class="dropdown-menu">
@@ -119,13 +151,23 @@
                             </script>
                             </div>
                         </li>
+
                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="formodeling.html#first">SAS</a>
+                            <script>
+                                if (['3DEM VOLUME', 'SAS DATA', '2DEM CLASS AVERAGE'].includes('SAS DATA') >= 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
+                                document.write(ex);}
+                            else {
+                                var ex='<a class=dropdown-item href=formodeling.html#first>Data</a>'
+                                document.write(ex);
+                                }  
+                            </script>                          
                             </div>
                         </li>
+
                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notmodeling.html"><span class="overview">Fit to data not used</span>
                             </a>
@@ -174,7 +216,7 @@
                             <h4 class="ex2" align="center"><u><a name='first'>Data quality: SAS</a></u></h4>
                             <script>
                             if (['True'].length > 0) {
-                                var ex = "<h5 class= ex2 align= center><u>Scattering profile</u> </h5>";
+				    var ex = "<h5 class= ex2 align= center><u><a name=firstI>Scattering profile</a></u> </h5>";
                                 document.write(ex)
                                 var sasdb_code=['SASDBV9', 'SASDBW9', 'SASDBX9', 'SASDBY9', 'SASDBZ9']     
                                 var ex2 = '<p align=justify> SAS data used in this integrative model was obtained from '+String(sasdb_code.length) +' deposited SASBDB entry (entries).</p>';
@@ -188,7 +230,7 @@
                             if (['True'].length > 0) {
                             var sasdb_code=['SASDBV9', 'SASDBW9', 'SASDBX9', 'SASDBY9', 'SASDBZ9']     
                             for (var i = 0; i < sasdb_code.length; i++) {
-                            var ex3 ='<p align=justify> <u> Scattering profile for <a href=https://www.sasbdb.org/data/' + sasdb_code[i] + '/> '+ sasdb_code[i]+'</a>:</u> data plotted as both log I(q) vs q and log I(q) vs log (q), along with errors, based on <a href=https://salilab.org/pdf/Trewhella_ActaCrystD_2017.pdf>SAS validation task force (SASvtf) recommendations.</a></p>'; 
+                            var ex3 ='<p align=justify> <u> Scattering profile for <a href=https://www.sasbdb.org/data/' + sasdb_code[i] + '/> '+ sasdb_code[i]+'</a>:</u> data from solutions of biological macromolecules are presented as both log I(q) vs q and log I(q) vs log (q) based on <a href=https://salilab.org/pdf/Trewhella_ActaCrystD_2017.pdf>SAS validation task force (SASvtf) recommendations.</a> I(q) is the intensity (in arbitrary units) and q is the modulus of the scattering vector. </p>'; 
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
@@ -215,16 +257,16 @@
                         <div class="card-header" style="background-color: #FFF;">
                             <script>
                             if (['True'].length > 0) {
-                                var ex1 = "<h5 class= ex2 align= center> <u>Key experimental estimates </u></h5>";
+				    var ex1 = "<h5 class= ex2 align= center> <u><a name=firstE>Key experimental estimates</a></u></h5>";
                                 ex1 +='<p style=margin-bottom:0.5cm;> </p>';
 
-                                ex1 += "<p class=ex2 align='justify'><u>Molecular weight (MW) estimates from experiments and analysis.</u>: true molecular weight can be compared to Porod estimate from scattering profiles. </p>";
+                                ex1 += "<p class=ex2 align='justify'><u>Molecular weight (MW) estimates from experiments and analysis</u>: true molecular weight can be compared to the Porod estimate from scattering profiles. </p>";
                                 document.write(ex1);
-                                var input_list = [['SASDB ID', 'Molecule MW', 'Experimental MW', 'Porod MW'], ['SASDBV9', '12.386 kDa', '12.600 kDa', 'None'], ['SASDBW9', '12.386 kDa', '12.600 kDa', 'None'], ['SASDBX9', '12.386 kDa', '12.600 kDa', 'None'], ['SASDBY9', '12.386 kDa', '12.600 kDa', 'None'], ['SASDBZ9', '12.386 kDa', '12.600 kDa', 'None']];
+                                var input_list = [['SASDB ID', 'Sequence MW', 'Experimental MW', 'Porod MW'], ['SASDBV9', '12.386 kDa', '12.600 kDa', 'N/A'], ['SASDBW9', '12.386 kDa', '12.600 kDa', 'N/A'], ['SASDBX9', '12.386 kDa', '12.600 kDa', 'N/A'], ['SASDBY9', '12.386 kDa', '12.600 kDa', 'N/A'], ['SASDBZ9', '12.386 kDa', '12.600 kDa', 'N/A']];
                                 Write_Table(list_to_write = input_list)
                                 var ex11 ='<p style=margin-bottom:0.5cm;> </p>';
 
-                                ex11 += "<p class=ex2><u>Volume estimates from experiments and analysis.</u>: estimated volume can be compared to Porod volume obtained from scattering profiles.</p>";
+                                ex11 += "<p class=ex2><u>Volume estimates from experiments and analysis</u>: estimated volume can be compared to Porod volume obtained from scattering profiles.</p>";
                                 document.write(ex11)
                                 var input_list = [['SASDB ID', 'Estimated volume', 'Estimated volume method', 'Porod volume'], ['SASDBV9', 'None', 'None', '17.94 nm³'], ['SASDBW9', 'None', 'None', '22.50 nm³'], ['SASDBX9', 'None', 'None', '56.68 nm³'], ['SASDBY9', 'None', 'None', '27.97 nm³'], ['SASDBZ9', 'None', 'None', '66.59 nm³']];
                                 Write_Table(list_to_write = input_list)
@@ -242,7 +284,7 @@
                             <script>
                             if (['True'].length > 0) {
 
-                                var ex2 = "<h5 class= ex2 align= center><u> Flexibility analysis </u></h5>";
+				    var ex2 = "<h5 class= ex2 align= center><u><a name=firstF> Flexibility analysis</a> </u></h5>";
                                 document.write(ex2)
                             }
                             </script>
@@ -253,7 +295,7 @@
                             if (['True'].length > 0) {
                             var sasdb_code=['SASDBV9', 'SASDBW9', 'SASDBX9', 'SASDBY9', 'SASDBZ9']     
                             for (var i = 0; i < sasdb_code.length; i++) {
-                            var ex3 ='<p align=justify> <u> Flexibility analysis for '+ sasdb_code[i]+'.</u>: In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domain, whereas, a fully unfolded domain is devoid of any discernable plateau. For details, refer to Figure 5 in <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer,2011.</a>. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domain and a hyperbolic shape is observed for a fully unfolded domain. </p>'; 
+                            var ex3 ='<p align=justify> <u> Flexibility analysis for '+ sasdb_code[i]+'</u>: In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domains, whereas, fully unfolded domains are devoid of any discernable plateau. For details, refer to Figure 5 in <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer, 2011</a>. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domains and a hyperbolic shape is observed for fully unfolded domains. </p>'; 
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
@@ -280,14 +322,14 @@
                         <div class="col-lg-12">
                             <script>
                             if (['True'].length > 0) {
-                                var ex2 = "<h5 align= center><u> Pair-distance distribution analysis </u></h5>";
+				    var ex2 = "<h5 align= center><u><a name=firstP>Pair-distance distribution analysis</a></u></h5>";
                                 document.write(ex2)
                                 var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
 
-                                ex3 += "<p class=ex2 align='justify'><u> P(r) analysis:</u> agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. </p>";
+                                ex3 += "<p class=ex2 align='justify'><u> P(r) analysis:</u> p(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. p(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the p(r) function. Agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where p(r) is decaying to zero is called Dmax and represents the maximum size of the particle.</p>";
                                 ex3 +='<p style=margin-bottom:0.5cm;> </p>';
                                 document.write(ex3);
-                                var input_list = [['SASDB ID', 'Software used', 'Dmax', 'Dmax error', 'Rg', 'Rg error'], ['SASDBV9', 'ATSAS GNOM', '6.66 nm', 'None nm', '1.824 nm', '0.006 nm'], ['SASDBW9', 'ATSAS GNOM', '9.37 nm', 'None nm', '2.787 nm', '0.007 nm'], ['SASDBX9', 'ATSAS GNOM', '7.93 nm', 'None nm', '2.636 nm', '0.008 nm'], ['SASDBY9', 'ATSAS GNOM', '10.45 nm', 'None nm', '2.976 nm', '0.005 nm'], ['SASDBZ9', 'ATSAS GNOM', '15.43 nm', 'None nm', '4.629 nm', '0.011 nm']];
+                                var input_list = [['SASDB ID', 'Software used', 'Dmax', 'Dmax error', 'Rg', 'Rg error'], ['SASDBV9', 'ATSAS GNOM', '6.66 nm', 'N/A', '1.824 nm', '0.006 nm'], ['SASDBW9', 'ATSAS GNOM', '9.37 nm', 'N/A', '2.787 nm', '0.007 nm'], ['SASDBX9', 'ATSAS GNOM', '7.93 nm', 'N/A', '2.636 nm', '0.008 nm'], ['SASDBY9', 'ATSAS GNOM', '10.45 nm', 'N/A', '2.976 nm', '0.005 nm'], ['SASDBZ9', 'ATSAS GNOM', '15.43 nm', 'N/A', '4.629 nm', '0.011 nm']];
                                 Write_Table(list_to_write = input_list)
                             }
                             </script>
@@ -319,13 +361,13 @@
                         <div class="col-lg-12">
                             <script>
                             if (['True'].length > 0) {
-                                var ex2 = "<h5 class= ex2 align= center><u> Guinier analysis </u></h5>";
+				    var ex2 = "<h5 class= ex2 align= center><u><a name=firstG> Guinier analysis </a></u></h5>";
                                 document.write(ex2)
                                 var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
-                                ex3 += "<p class=ex2 align='justify'><u> Guinier analysis:</u> agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Molecular weight estimates can also be compared to Porod and sample molecular weights for consistency.</p>";
+                                ex3 += "<p class=ex2 align='justify'><u> Guinier analysis:</u> agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Molecular weight estimates can also be compared to Porod and sample molecular weights for consistency.</p>";
                                 ex3 +='<p style=margin-bottom:0.5cm;> </p>';
                                 document.write(ex3);
-                                var input_list = [['SASDB ID', 'Rg', 'Rg error', 'MW', 'MW error'], ['SASDBV9', '1.77 nm', '0.048 nm', '12.200 nm', 'None'], ['SASDBW9', '2.71 nm', '0.063 nm', '25.200 nm', 'None'], ['SASDBX9', '2.78 nm', '0.180 nm', '14.700 nm', 'None'], ['SASDBY9', '2.95 nm', '0.110 nm', '25.200 nm', 'None'], ['SASDBZ9', '4.34 nm', '0.170 nm', '48.300 nm', 'None']];
+                                var input_list = [['SASDB ID', 'Rg', 'Rg error', 'MW', 'MW error'], ['SASDBV9', '1.77 nm', '0.048 nm', '12.200 nm', 'N/A'], ['SASDBW9', '2.71 nm', '0.063 nm', '25.200 nm', 'N/A'], ['SASDBX9', '2.78 nm', '0.180 nm', '14.700 nm', 'N/A'], ['SASDBY9', '2.95 nm', '0.110 nm', '25.200 nm', 'N/A'], ['SASDBZ9', '4.34 nm', '0.170 nm', '48.300 nm', 'N/A']];
                                 Write_Table(list_to_write = input_list)
                                                             }
                             </script>
@@ -336,7 +378,7 @@
                             if (['True'].length > 0) {
                             var sasdb_code=['SASDBV9', 'SASDBW9', 'SASDBX9', 'SASDBY9', 'SASDBZ9']     
                             for (var i = 0; i < sasdb_code.length; i++) {
-                            var ex3 ='<p align=justify> <u> Guinier analysis for '+ sasdb_code[i]+': </u> a linear Guinier plot is a necessary but not sufficient demonstrationthat a solution contains monodisperse particles of the samesize. Residual value plot and coefficient of determination (R<sup>2</sup>) are measures to assess linear fit to the data. A perfect fit has an R<sup>2</sup> value of 1. Residual values should be equally and randomly spaced around the horizontal axis. </p>'; 
+                            var ex3 ='<p align=justify> <u> Guinier analysis for '+ sasdb_code[i]+': </u> the linearity of the Guinier plot is a sensitive indicator of the quality of the experimental SAS data; a linear Guinier plot is a necessary but not sufficient demonstration that a solution contains monodisperse particles of the samesize. Deviations from linearity usually point to strong interference effects, polydispersity of the samples or improper background subtraction. Residual value plot and coefficient of determination (R<sup>2</sup>) are measures to assess linear fit to the data. A perfect fit has an R<sup>2</sup> value of 1. Residual values should be equally and randomly spaced around the horizontal axis. </p>'; 
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';

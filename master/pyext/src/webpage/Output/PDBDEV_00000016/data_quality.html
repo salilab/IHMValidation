@@ -32,6 +32,25 @@
             .home-header {
             display: show;
             }
+
+           .dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu a::after {
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 6px;
+  top: .8em;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+
         </style>
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
@@ -98,14 +117,23 @@
                                 <a class="dropdown-item" href="model_composition.html#methods">Methods and software</a>
                             </div>
                         </li>
+                        
                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="data_quality.html#first">Data</a>
+                                <a class="dropdown-item dropdown-toggle" type="button" href="data_quality.html#first">SAS</a>
+                                <ul class="dropdown-submenu">
+                            <li><a class="dropdown-item" href="data_quality.html#firstI">Scattering profiles</a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstE">Experimental estimates</a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstF">Flexibility analysis </a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstP">P(r) analysis </a></li>
+                            <li><a class="dropdown-item" href="data_quality.html#firstG">Guinier analysis </a></li>
+                                </ul>
                             </div>
                         </li>
-                        <li class="nav-item mr-4 dropdown">
+
+			<li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
                             </a>
                             <div class="dropdown-menu">
@@ -123,7 +151,7 @@
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="formodeling.html#first">Data</a>
+                                <a class="dropdown-item" href="formodeling.html#first">SAS</a>
                             </div>
                         </li>
                         <li class="nav-item mr-4 dropdown">
@@ -174,42 +202,38 @@
                             <h4 class="ex2" align="center"><u><a name='first'>Data quality: SAS</a></u></h4>
                             <script>
                             if (.length > 0) {
-                                var ex = "<h5 class= ex2 align= center><u>Intensity plots</u> </h5>";
-                                ex += '<p align="justify"><i> SAXS data was obtained from deposited SASBDB entry: ' +  + ". Below are plots of intentisities, for further information,  <a href=https://www.sasbdb.org/data/" +  + "/> refer to entry on SASBDB.</a> </i></p>"
+				    var ex = "<h5 class= ex2 align= center><u><a name=firstI>Scattering profile</a></u> </h5>";
                                 document.write(ex)
-                            }
+                                var sasdb_code=     
+                                var ex2 = '<p align=justify> SAS data used in this integrative model was obtained from '+String(sasdb_code.length) +' deposited SASBDB entry (entries).</p>';
+                                document.write(ex2);
+                             
+                             }
                             </script>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="box text-center container-fluid no-padding" style='height:60vh'>
-                                <script>
-                                if (.length > 0) {
+                    <script>
+                            if (.length > 0) {
+                            var sasdb_code=     
+                            for (var i = 0; i < sasdb_code.length; i++) {
+                            var ex3 ='<p align=justify> <u> Scattering profile for <a href=https://www.sasbdb.org/data/' + sasdb_code[i] + '/> '+ sasdb_code[i]+'</a>:</u> data from solutions of biological macromolecules are presented as both log I(q) vs q and log I(q) vs log (q) based on <a href=https://salilab.org/pdf/Trewhella_ActaCrystD_2017.pdf>SAS validation task force (SASvtf) recommendations.</a> I(q) is the intensity (in arbitrary units) and q is the modulus of the scattering vector. </p>'; 
+                            document.write(ex3)
 
-                                    var section = '<iframe src=../static/images/' + ['PDBDEV00000016'] + 'intensities.html frameborder=0 scrolling=yes width=100% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
+                            ex4 +='<iframe src=../static/images/' + ['PDBDEV00000016'] + sasdb_code[i]+'intensities.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            document.write(ex4)
 
-                                    document.write(section);
-                                }
-                                </script>
-                            </div>
-                        </div>
-                        <!-- end col -->
-                        <div class="col-lg-6">
-                            <div class="box text-center container-fluid no-padding" style='height:60vh'>
-                                <script>
-                                if (.length > 0) {
+                            var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
+                            ex5 += '<iframe src=../static/images/' + ['PDBDEV00000016'] + sasdb_code[i]+'intensities_log.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            document.write(ex5)
+                            var ex6 ='</div></div> </div>';
+                            ex6 +='<p style=margin-bottom:2cm;> </p>';
+                            document.write(ex6)
+                        }
+                    }
+                    </script>
 
-                                    var section = '<iframe src=../static/images/' + ['PDBDEV00000016'] + 'intensities_log.html frameborder=0 scrolling=yes width=100% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
-
-                                    document.write(section);
-                                }
-                                </script>
-                            </div>
-                        </div>
-                        <!-- end col -->
-                    </div>
-                    <!-- end row -->
+                    <p style="margin-bottom:1cm;"> </p>
                 </div>
             </div>
             <div class="card-body border-success" style="border-color: solid black;">
@@ -219,13 +243,16 @@
                         <div class="card-header" style="background-color: #FFF;">
                             <script>
                             if (.length > 0) {
+				    var ex1 = "<h5 class= ex2 align= center> <u><a name=firstE>Key experimental estimates</a></u></h5>";
+                                ex1 +='<p style=margin-bottom:0.5cm;> </p>';
 
-                                var ex1 = "<h5 class= ex2 align= center> <u>Key experimental estimates </u></h5>";
-                                ex1 += "<p class=ex2 align='justify'><i>Molecular weight (MW) estimates from experiments and analysis.</i> </p>";
+                                ex1 += "<p class=ex2 align='justify'><u>Molecular weight (MW) estimates from experiments and analysis</u>: true molecular weight can be compared to the Porod estimate from scattering profiles. </p>";
                                 document.write(ex1);
                                 var input_list = ;
                                 Write_Table(list_to_write = input_list)
-                                var ex11 = "<p class=ex2><i>Volume estimates from experiments and analysis.</i></p>";
+                                var ex11 ='<p style=margin-bottom:0.5cm;> </p>';
+
+                                ex11 += "<p class=ex2><u>Volume estimates from experiments and analysis</u>: estimated volume can be compared to Porod volume obtained from scattering profiles.</p>";
                                 document.write(ex11)
                                 var input_list = ;
                                 Write_Table(list_to_write = input_list)
@@ -243,43 +270,37 @@
                             <script>
                             if (.length > 0) {
 
-                                var ex2 = "<h5 class= ex2 align= center><u> Flexibility analysis </u></h5>";
-                                ex2 += "<p align='justify'><i> Flexibility is assessed by Kratky and Porod-Debye plots. For details, refer to <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer,2011.</a></i></p>"
+				    var ex2 = "<h5 class= ex2 align= center><u><a name=firstF> Flexibility analysis</a> </u></h5>";
                                 document.write(ex2)
                             }
                             </script>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="box text-center container-fluid no-padding" style='height:60vh'>
-                                <script>
-                                if (.length > 0) {
 
-                                    var section = '<iframe src=../static/images/' + ['PDBDEV00000016'] + 'porod.html frameborder=0 scrolling=yes width=100% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
-                                    document.write(section);
-                                }
-                                </script>
-                            </div>
-                        </div>
-                        <!-- end col -->
-                        <div class='col-lg-6'>
-                            <div class="box text-center container-fluid no-padding" style='height:60vh'>
-                                <script>
-                                if (.length > 0) {
+                    <script>
+                            if (.length > 0) {
+                            var sasdb_code=     
+                            for (var i = 0; i < sasdb_code.length; i++) {
+                            var ex3 ='<p align=justify> <u> Flexibility analysis for '+ sasdb_code[i]+'</u>: In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domains, whereas, fully unfolded domains are devoid of any discernable plateau. For details, refer to Figure 5 in <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer, 2011</a>. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domains and a hyperbolic shape is observed for fully unfolded domains. </p>'; 
+                            document.write(ex3)
 
-                                    var section = '<iframe src=../static/images/' + ['PDBDEV00000016'] + 'Kratky.html frameborder=0 scrolling=yes width=100% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
+                            ex4 +='<iframe src=../static/images/' + ['PDBDEV00000016'] + sasdb_code[i]+'porod.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            document.write(ex4)
 
-                                    document.write(section);
-                                }
-                                </script>
-                            </div>
-                        </div>
-                        <!-- end col -->
-                    </div>
-                    <!-- end row -->
+                            var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
+                            ex5 += '<iframe src=../static/images/' + ['PDBDEV00000016'] + sasdb_code[i]+'Kratky.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            document.write(ex5)
+                            var ex6 ='</div></div> </div>';
+                            ex6 +='<p style=margin-bottom:2cm;> </p>';
+                            document.write(ex6)
+                        }
+                    }
+                    </script>
+
+                    <p style="margin-bottom:3cm;"> </p>
                 </div>
-            </div>
+            </div>           
             <div class="card-body border-success" style="border-color: solid black;">
                 <!-- start overall card body for front page -->
                 <div class="card-header" style="background-color: #FFF;">
@@ -287,32 +308,82 @@
                         <div class="col-lg-12">
                             <script>
                             if (.length > 0) {
-
-                                var ex2 = "<h5 align= center><u> Pair-distance distribution analysis </u></h5>";
-                                ex2 += "<p align='justify'><i> Pair-distance distribution was evaluated using ATSAS software. The analysis resulted in a D<sub>max</sub> of " + String() + "nm and a radius of gyration of " + String() + "nm </i></p>"
+				    var ex2 = "<h5 align= center><u><a name=firstP>Pair-distance distribution analysis</a></u></h5>";
                                 document.write(ex2)
+                                var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
+
+                                ex3 += "<p class=ex2 align='justify'><u> P(r) analysis:</u> p(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. p(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the p(r) function. Agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where p(r) is decaying to zero is called Dmax and represents the maximum size of the particle.</p>";
+                                ex3 +='<p style=margin-bottom:0.5cm;> </p>';
+                                document.write(ex3);
+                                var input_list = ;
+                                Write_Table(list_to_write = input_list)
                             }
                             </script>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="box text-center container-fluid no-padding" style='height:60vh'>
-                                <script>
-                                if (.length > 0) {
+                    <script>
+                            if (.length > 0) {
+                            var sasdb_code=     
+                            for (var i = 0; i < sasdb_code.length; i++) {
+                            var ex3 ='<p align=justify> <u> P(r) for '+ sasdb_code[i]+':</u> The value of P(r) should be zero beyond r=Dmax. </p>'; 
+                            document.write(ex3)
+                            var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding  align=center style=height:60vh>';
+                            ex4 +='<iframe src=../static/images/' + ['PDBDEV00000016'] + sasdb_code[i]+'pddf.html frameborder=0 scrolling=yes width=50% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            document.write(ex4)
+                            var ex6 ='</div></div> </div>';
+                            ex6 +='<p style=margin-bottom:3cm;> </p>';
+                            document.write(ex6)
+                        }
+                    }
+                    </script>
 
-                                    var section = '<iframe src=../static/images/' + ['PDBDEV00000016'] + 'pddf.html frameborder=0 scrolling=yes width=100% height=500vh style=position:relative onload=resizeIframe(this)></iframe>'
-
-                                    document.write(section);
-                                }
-                                </script>
-                            </div>
-                        </div>
-                        <!-- end col -->
-                    </div>
+                    <p style="margin-bottom:3cm;"> </p>
                 </div>
-                <!-- end card body-->
             </div>
+            <div class="card-body border-success" style="border-color: solid black;">
+                <!-- start overall card body for front page -->
+                <div class="card-header" style="background-color: #FFF; height=108rem">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <script>
+                            if (.length > 0) {
+				    var ex2 = "<h5 class= ex2 align= center><u><a name=firstG> Guinier analysis </a></u></h5>";
+                                document.write(ex2)
+                                var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
+                                ex3 += "<p class=ex2 align='justify'><u> Guinier analysis:</u> agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Molecular weight estimates can also be compared to Porod and sample molecular weights for consistency.</p>";
+                                ex3 +='<p style=margin-bottom:0.5cm;> </p>';
+                                document.write(ex3);
+                                var input_list = ;
+                                Write_Table(list_to_write = input_list)
+                                                            }
+                            </script>
+                        </div><!-- end col -->
+                    </div>
+
+                    <script>
+                            if (.length > 0) {
+                            var sasdb_code=     
+                            for (var i = 0; i < sasdb_code.length; i++) {
+                            var ex3 ='<p align=justify> <u> Guinier analysis for '+ sasdb_code[i]+': </u> the linearity of the Guinier plot is a sensitive indicator of the quality of the experimental SAS data; a linear Guinier plot is a necessary but not sufficient demonstration that a solution contains monodisperse particles of the samesize. Deviations from linearity usually point to strong interference effects, polydispersity of the samples or improper background subtraction. Residual value plot and coefficient of determination (R<sup>2</sup>) are measures to assess linear fit to the data. A perfect fit has an R<sup>2</sup> value of 1. Residual values should be equally and randomly spaced around the horizontal axis. </p>'; 
+                            document.write(ex3)
+
+                            var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
+                            ex4 +='<iframe src=../static/images/' + ['PDBDEV00000016'] + sasdb_code[i]+'guinier.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            document.write(ex4)
+
+                            var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
+                            ex5 += '<iframe src=../static/images/' + ['PDBDEV00000016'] + sasdb_code[i]+'guinier_residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            document.write(ex5)
+                            var ex6 ='</div></div> </div>';
+                            ex6 +='<p style=margin-bottom:3cm;> </p>';
+                            document.write(ex6)
+                        }
+                    }
+                </script>
+                    <p style="margin-bottom:3cm;"> </p>
+                </div> <!-- end card body-->
+            </div>
+
             <!-- start overall card body for front page -->
             <!-- start overall card body for front page -->
             <!-- start overall card body for front page -->

@@ -118,20 +118,24 @@
                             </div>
                         </li>
                         
-                        <li class="nav-item mr-4 dropdown">
+                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item dropdown-toggle" type="button" href="data_quality.html#first">SAS</a>
-                                <ul class="dropdown-submenu">
-                            <li><a class="dropdown-item" href="data_quality.html#firstI">Scattering profiles</a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstE">Experimental estimates</a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstF">Flexibility analysis </a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstP">P(r) analysis </a></li>
-                            <li><a class="dropdown-item" href="data_quality.html#firstG">Guinier analysis </a></li>
-                                </ul>
-                            </div>
-                        </li>
+
+                            <script>
+                                if (['SAS DATA', 'MUTAGENESIS DATA'].includes('SAS DATA') >= 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
+                                document.write(ex);}
+
+                            else {
+
+                                var ex='<a class=dropdown-item href=data_quality.html#first>Data</a>'
+                                document.write(ex);
+                            }
+                        </script>
+                        </div>
+                        </li>                       
 
 			<li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
@@ -147,13 +151,23 @@
                             </script>
                             </div>
                         </li>
+
                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="formodeling.html#first">SAS</a>
+                            <script>
+                                if (['SAS DATA', 'MUTAGENESIS DATA'].includes('SAS DATA') >= 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
+                                document.write(ex);}
+                            else {
+                                var ex='<a class=dropdown-item href=formodeling.html#first>Data</a>'
+                                document.write(ex);
+                                }  
+                            </script>                          
                             </div>
                         </li>
+
                         <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notmodeling.html"><span class="overview">Fit to data not used</span>
                             </a>
@@ -248,7 +262,7 @@
 
                                 ex1 += "<p class=ex2 align='justify'><u>Molecular weight (MW) estimates from experiments and analysis</u>: true molecular weight can be compared to the Porod estimate from scattering profiles. </p>";
                                 document.write(ex1);
-                                var input_list = [['SASDB ID', 'Molecule MW', 'Experimental MW', 'Porod MW'], ['SASDC29', '48.782 kDa', '53.400 kDa', '63.800 kDa']];
+                                var input_list = [['SASDB ID', 'Sequence MW', 'Experimental MW', 'Porod MW'], ['SASDC29', '48.782 kDa', '53.400 kDa', '63.800 kDa']];
                                 Write_Table(list_to_write = input_list)
                                 var ex11 ='<p style=margin-bottom:0.5cm;> </p>';
 
@@ -315,7 +329,7 @@
                                 ex3 += "<p class=ex2 align='justify'><u> P(r) analysis:</u> p(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. p(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the p(r) function. Agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where p(r) is decaying to zero is called Dmax and represents the maximum size of the particle.</p>";
                                 ex3 +='<p style=margin-bottom:0.5cm;> </p>';
                                 document.write(ex3);
-                                var input_list = [['SASDB ID', 'Software used', 'Dmax', 'Dmax error', 'Rg', 'Rg error'], ['SASDC29', 'ATSAS GNOM', '11.00 nm', 'None nm', '3.010 nm', '0.004 nm']];
+                                var input_list = [['SASDB ID', 'Software used', 'Dmax', 'Dmax error', 'Rg', 'Rg error'], ['SASDC29', 'ATSAS GNOM', '11.00 nm', 'N/A', '3.010 nm', '0.004 nm']];
                                 Write_Table(list_to_write = input_list)
                             }
                             </script>
