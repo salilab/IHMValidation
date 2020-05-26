@@ -27,7 +27,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
     def plot_intensities(self,sasbdb,df):
         output_file(self.ID+sasbdb+"intensities.html",mode="inline")
         source = ColumnDataSource(df)
-        p = figure(plot_height=500, plot_width=500, title="Log I(q) vs q with errorbars ("+sasbdb+")")
+        p = figure(plot_height=500, plot_width=500, title="Log I(q) vs q with error bars ("+sasbdb+")")
         p.circle(x='Q',y='logI',source=source, color='blue',fill_alpha=0.3,size=5)
         p.multi_line('err_x','err_y',source=source, color='gray',line_width=0.5)
         p.xaxis.major_label_text_font_size="14pt"
@@ -35,7 +35,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = "q nm\u207B\u00B9"
+        p.xaxis.axis_label = "q [nm\u207B\u00B9]"
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -74,7 +74,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
     def plot_intensities_log(self,sasbdb,df):
         output_file(self.ID+sasbdb+"intensities_log.html",mode="inline")
         source = ColumnDataSource(df)
-        p = figure(plot_height=500, plot_width=500, title="Log I(q) vs Log q with errorbars ("+sasbdb+")")
+        p = figure(plot_height=500, plot_width=500, title="Log I(q) vs Log q with error bars ("+sasbdb+")")
         p.circle(x='logQ',y='logI',source=source,color='blue',fill_alpha=0.3,size=5)
         p.multi_line('logX','err_y',source=source, color='gray',line_width=0.5)
         p.xaxis.major_label_text_font_size="14pt"
@@ -82,7 +82,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top' 
-        p.xaxis.axis_label = 'Log q nm\u207B\u00B9'
+        p.xaxis.axis_label = 'Log q [nm\u207B\u00B9]'
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -106,7 +106,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = 'Log q nm\u207B\u00B9'
+        p.xaxis.axis_label = 'Log q [nm\u207B\u00B9]'
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'q\u00B2 I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -149,7 +149,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = "r nm"
+        p.xaxis.axis_label = "r [nm]"
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'P(r)'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -175,7 +175,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = "q\u00B2 nm\u00B2" #\u212B\u207B\u00B2"
+        p.xaxis.axis_label = "q\u00B2 [nm \u00B2]" #\u212B\u207B\u00B2"
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -198,7 +198,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = "q\u00B2 nm\u00B2"#\u212B\u207B\u00B2"
+        p.xaxis.axis_label = "q\u00B2 [nm \u00B2]"#\u212B\u207B\u00B2"
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -224,7 +224,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = "q \u212B\u207B\u207B\u00B9"
+        p.xaxis.axis_label = "q [\u212B\u207B\u207B\u00B9]"
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
@@ -247,7 +247,7 @@ class sas_validation_plots(validation.sas_validation.sas_validation):
         p.title.text_font_size='12pt'
         p.title.align="center"
         p.title.vertical_align='top'
-        p.xaxis.axis_label = "q \u212B\u207B\u207B\u00B9"
+        p.xaxis.axis_label = "q [\u212B\u207B\u207B\u00B9]"
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size='14pt'

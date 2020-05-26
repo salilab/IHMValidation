@@ -570,7 +570,58 @@ class get_input_information(object):
         else:
             return False
 
-    def get_resolution(self):
-        pass
+    def mmcif_get_lists(self):
+        file=open(self.mmcif_file,'r')
+        all_lines=[]
+        for i,j in enumerate(file.readlines()):
+            all_lines.append(j.strip().split())
+        atom_site={}
+        atoms={}
+        before_atom_site=[]
+        after_atom=[]
+        for i,j in enumerate(all_lines):
+            if len(j)>0 and '_atom_site.' in j[0]:
+                if len(before_atom_site)==0:
+                    before_atom_site=all_lines[:i+1]
+                atom_site[i]=j[0]
+            elif ('_atom_site.B_iso_or_equiv' not in list(atom_site.values())) and len(list(atom_site.values()))>0:
+                atom_site[i]='_atom_site.B_iso_or_equiv'
+            elif ('_atom_site.occupancy' not in list(atom_site.values())) and len(list(atom_site.values()))>0 :
+                atom_site[i]='_atom_site.occupancy'
+
+        total_list=list(atom_site.values())
+        index_biso=total_list.index('_atom_site.B_iso_or_equiv')
+        index_occu=total_list.index('_atom_site.occupancy')
+        for i,j in enumerate(all_lines):
+            if len(j)> 0 and ('ATOM' in j[0] or 'HETATM' in j[0]) and  (i > list(atom_site.keys())[-1]):
+                if len(j)<=index_occu:
+                    j.extend(['1'])
+                elif j[index_occu]=='.':
+                    j[index_occu]='1'
+                if len(j)<=index_biso:
+                    j.extend(['1'])
+                elif j[index_biso]=='.':
+                    j[index_biso]='1'
+                atoms[i]=j
+            elif len(j)> 0 and  (i > list(atom_site.keys())[-1]):
+                if len(after_atom)==0:
+                    after_atom=all_lines[i:]
+        return before_atom_site,atom_site,atoms,after_atom
+
+    def rewrite_mmcif(self):
+        before_atom_site,atom_site,atoms,after_atom=self.mmcif_get_lists()
+        if os.path.isfile('test.cif'):
+            os.remove('test.cif')
+        file_re=open('test.cif','w')
+        for i, j in enumerate(before_atom_site):
+            file_re.write(' '.join(j)+'\n')
+        for i, j in atom_site.items():
+            file_re.write(''.join(j)+'\n')
+        for i,j in atoms.items():
+            file_re.write(' '.join(j)+'\n')
+        for i,j in enumerate(after_atom):
+            file_re.write(' '.join(j)+'\n')
+
+
 
 

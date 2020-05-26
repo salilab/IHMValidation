@@ -27,12 +27,16 @@ class get_molprobity_information(validation.get_input_information):
 
     def check_for_molprobity(self):
         models=[b for i in self.system.state_groups for j in i for a in j for b in a]
-        if models[0]._atoms[0].biso is not None and  models[0]._atoms[0].occupancy is not None:
+        #print (models)
+        #print (models[0]._atoms)
+        if models[0]._atoms[0].biso is not None: #and  models[0]._atoms[0].occupancy is not None:
             print ("File in the appropriate format for molprobity")
             return True
             #call([r"/home/ganesans/PDB-dev-test/MolProbity-master/build/bin/molprobity.molprobity",self.mmcif_file,"prefix="+out])
             #print ("printing result", result_mp.stdout)
         else:
+            print ("bisoval",models[0]._atoms[0].biso)
+            print ("occ",models[0]._atoms[0].occupancy)
             print ("File is not in the appropriate format for molprobity")  
             return False
 

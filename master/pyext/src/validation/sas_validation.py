@@ -64,8 +64,9 @@ class sas_validation(validation.get_input_information):
 
     def get_intensities(self):
         self.get_sascif_file()
+        Int_dict={}
         for code in self.get_SASBDB_code():
-            Int_dict={}
+            #Int_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
             for m,n in enumerate(all_lines):
@@ -84,9 +85,41 @@ class sas_validation(validation.get_input_information):
             Int_dict[code]=I_df_re
         return Int_dict
 
-    def get_pofr(self):
+    def get_rg_for_plot(self):
+        self.get_sascif_file()
+        Rg_dict={}
         for code in self.get_SASBDB_code():
-            pofr_dict={}
+            rg={};
+            all_lines=self.get_all_sascif(code)
+            for m,n in enumerate(all_lines):
+                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_PR' in n[0] and'sas_result.Rg_from_PR_' not in n[0] :
+                    rg[n[0].split('.')[1]]=float(n[1])
+                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_Guinier' in n[0] and'sas_result.Rg_from_Guinier_' not in n[0] :
+                    rg[n[0].split('.')[1]]=float(n[1])
+            Rg_dict[code]=list(rg.values())
+        print (Rg_dict)
+        return Rg_dict
+
+    def get_fits_for_plot(self):
+        self.get_sascif_file()
+        fit_dict={}
+        for code in self.get_SASBDB_code():
+            fits=[];
+            all_lines=self.get_all_sascif(code)
+            for m,n in enumerate(all_lines):
+                #if len(n)<3 and len(n)>0 and 'sas_model_fitting_details.id' in n[0]:
+                #    fitid=int(n[1])
+                if (len(n)<3) and (len(n)>0) and ('sas_model_fitting_details.chi_square' in n[0]) and (float(n[1])>0.00000):
+                    fits.append(round(float(n[1]),2))
+            if len(fits)>0:
+                fit_dict[code]=fits
+        print (fit_dict)
+        return fit_dict
+
+    def get_pofr(self):
+        pofr_dict={}
+        for code in self.get_SASBDB_code():
+            #pofr_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
             for m,n in enumerate(all_lines):
@@ -161,34 +194,40 @@ class sas_validation(validation.get_input_information):
         parameter_table={'SASDB ID':[],'Estimated volume':[],'Estimated volume method':[],'Porod volume':[]}
         for key,val in data_dic.items():
             try:
-                parameter_table['Estimated volume'].append(val['estimated_volume'])
-                parameter_table['Estimated volume method'].append(val['estimated_volume_method'])
+                if parameter_table['Estimated volume'] is None:
+                    parameter_table['Estimated volume'].append('N/A')
+                else:
+                    parameter_table['Estimated volume'].append(val['estimated_volume'])
+                if parameter_table['Estimated volume method'] is None:
+                    parameter_table['Estimated volume method'].append('N/A')
+                else:
+                    parameter_table['Estimated volume method'].append(val['estimated_volume_method'])
             except:
-                parameter_table['Estimated volume'].append('None')
-                parameter_table['Estimated volume method'].append('None')
+                parameter_table['Estimated volume'].append('N/A')
+                parameter_table['Estimated volume method'].append('N/A')
             try:
                 parameter_table['Porod volume'].append(val['porod_volume']+' nm\u00b3')
             except:
-                parameter_table['Porod volume'].append('None')
+                parameter_table['Porod volume'].append('N/A')
             parameter_table['SASDB ID'].append(key)
         return parameter_table
 
     def get_parameters_mw_many(self):
         data_dic=self.get_data_from_SASBDB()
-        parameter_table={'SASDB ID':[],'Molecule MW':[],'Experimental MW':[],'Porod MW':[]}        
+        parameter_table={'SASDB ID':[],'Sequence MW':[],'Experimental MW':[],'Porod MW':[]}        
         for key,val in data_dic.items():
             try:
                 parameter_table['Experimental MW'].append(list(data_dic.values())[0]['experimental_mw']+' kDa')
             except:
-                parameter_tabel['Experimental MW'].append('None')
+                parameter_tabel['Experimental MW'].append('N/A')
             try:
                 parameter_table['Porod MW'].append(list(data_dic.values())[0]['porod_mw']+' kDa')
             except:
-                parameter_table['Porod MW'].append('None')
+                parameter_table['Porod MW'].append('N/A')
             try:
-                parameter_table['Molecule MW'].append(list(data_dic.values())[0]['experiment']['sample']['molecule'][0]['total_mw']+' kDa')
+                parameter_table['Sequence MW'].append(list(data_dic.values())[0]['experiment']['sample']['molecule'][0]['total_mw']+' kDa')
             except:
-                parameter_table['Molecule MW'].append('None')
+                parameter_table['Sequence MW'].append('N/A')
             parameter_table['SASDB ID'].append(key)
         return parameter_table
     
@@ -209,16 +248,27 @@ class sas_validation(validation.get_input_information):
         pddf_info={'SASDB ID':[],'Software used':[],'Dmax':[],'Dmax error':[],'Rg':[],'Rg error':[]}
         for key,val in data_dic.items():
             pddf_info['Software used'].append(str(val['pddf_software']))
-            pddf_info['Dmax'].append(str(val['pddf_dmax'])+' nm')
-            pddf_info['Rg'].append(str(val['pddf_rg'])+' nm')
             try:
-                pddf_info['Dmax error'].append(str(val['pddf_dmax_error'])+' nm')
+                pddf_info['Dmax'].append(str(val['pddf_dmax'])+' nm')
+            except: 
+                pddf_info['Dmax'].append('N/A')
+
+            try:
+                pddf_info['Rg'].append(str(val['pddf_rg'])+' nm')
             except:
-                pddf_info['Dmax error'].append('None')
+                pddf_info['Rg'].append('N/A')
+            try:
+                if val['pddf_dmax_error'] is None:
+                    pddf_info['Dmax error'].append('N/A')
+                else:
+                    pddf_info['Dmax error'].append(str(val['pddf_dmax_error'])+' nm')
+
+            except:
+                pddf_info['Dmax error'].append('N/A')
             try:
                 pddf_info['Rg error'].append(str(val['pddf_rg_error'])+' nm')
             except:
-                pddf_info['Rg error'].append('None')
+                pddf_info['Rg error'].append('N/A')
 
             pddf_info['SASDB ID'].append(key)
         return pddf_info
@@ -254,8 +304,8 @@ class sas_validation(validation.get_input_information):
                     chi_table['\u03C7'+'\u00b2'].append(chi_value_round)
             else:
                 chi_table['SASDB ID'].append(key)
-                chi_table['Model'].append('None')
-                chi_table['\u03C7'+'\u00b2'].append('None')
+                chi_table['Model'].append('N/A')
+                chi_table['\u03C7'+'\u00b2'].append('N/A')
         return chi_table
 
     def get_sasdb_code_fits(self):
@@ -271,15 +321,15 @@ class sas_validation(validation.get_input_information):
             try:
                 rg_table['Rg error'].append(val['guinier_rg_error']+ ' nm')
             except:
-                rg_table['Rg error'].append('None')
+                rg_table['Rg error'].append('N/A')
             try:
                 rg_table['MW'].append(val['guinier_i0_mw']+ ' nm')
             except:
-                rg_table['MW'].append('None')
+                rg_table['MW'].append('N/A')
             try:
                 rg_table['MW error'].append(val['guinier_i0_mw_error']+ ' nm')
             except:
-                rg_table['MW error'].append('None')
+                rg_table['MW error'].append('N/A')
             rg_table['SASDB ID'].append(key)
         return rg_table
 
