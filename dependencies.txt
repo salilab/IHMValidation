@@ -14,3 +14,4 @@ bokeh
 subprocess
 pickle
 requests
+wkhtmltopdf
