@@ -36,7 +36,7 @@ def get_output_file_temp_html(mmcif_file):
     return 'temp.html'
 
 def get_output_file_pdf(mmcif_file):
-    return 'ValidationReport_'+mmcif_file+'.pdf'
+    return mmcif_file+'.pdf'
 
 def get_output_file_json(mmcif_file):
     return 'ValidationReport_'+mmcif_file+'.json'
@@ -50,7 +50,7 @@ def get_all_files(path_dir):
 def get_subunits(sub_dict):
     n=len(sub_dict['Model ID'])
     sublist=['%s: Chain %s (%d residues)' % (sub_dict['Subunit name'][i],sub_dict['Chain ID'][i],sub_dict['Total residues'][i]) for i in range(0,n)]
-    return sublist
+    return list(set(sublist))
 
 def get_datasets(data_dict):
     n=len(data_dict['ID'])
@@ -112,6 +112,20 @@ def exv_readable_format(exv):
     for i,j in enumerate(exv['Models']):
         fin_string.append('Model-'+str(j)+': '+'Number of violations-' + str(exv['Number of violations'][i]) + ' ')
     return fin_string
+
+def get_rg_data(rg_dict):
+    fin_rg=[]
+    for key,val in rg_dict.items():
+        fin_rg.append(key+': Rg from Gunier is '+ str(val[0])+'nm and Rg from p(r) is '+ str(val[1])+'nm')
+    return fin_rg
+
+def get_rg_data_fits(rg_dict):
+    fin_rg=[]
+    for key,val in rg_dict.items():
+        for i,j in enumerate(val):
+            count=i+1
+            fin_rg.append(key+': Fit '+ str(count) +' with &#x3A7;&#xb2; value '+ str(j))
+    return fin_rg
 
 def clean_all():
     #dirname_ed='/Users/saijananiganesan/Desktop/PDB-dev/working'

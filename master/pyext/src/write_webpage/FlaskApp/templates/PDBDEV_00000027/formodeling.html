@@ -91,17 +91,17 @@ body {
             </div>
             <!--end panel body-->
             <!-- navbar -->
-                
 
             <nav class="navbar navbar-expand-xl navbar-dark">
                 <div class="dropdown">
                     <a class="navbar-brand" href="main.html">
-                        <h5>Validation Report for {{ ID_T }}</h5>
+                        <h5>Validation Report for PDBDEV_00000027</h5>
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
+                
 
                 <div class="dropdown">
                     <a class="navbar-brand" href="{{ url_for('home') }}">
@@ -146,7 +146,7 @@ body {
                             <div class="dropdown-menu">
 
                             <script>
-                                if (['SAS DATA', 'UNSPECIFIED'].includes('SAS DATA') >= 1) {
+                                if (['UNSPECIFIED', 'SAS DATA'].includes('SAS DATA') >= 1) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
                                 document.write(ex);}
 
@@ -177,7 +177,7 @@ body {
                             </a>
                             <div class="dropdown-menu">
                             <script>
-                                if (['SAS DATA', 'UNSPECIFIED'].includes('SAS DATA') >= 1) {
+                                if (['UNSPECIFIED', 'SAS DATA'].includes('SAS DATA') >= 1) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
                                 document.write(ex);}
                             else {
@@ -188,10 +188,10 @@ body {
                             </div>
                         </li>
 
-                        <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notmodeling.html"><span class="overview">Fit to data not used</span>
+                        <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notformodeling.html"><span class="overview">Fit to data not used</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="notmodeling.html#data">Data</a>
+                                <a class="dropdown-item" href="notformodeling.html#data">Data</a>
                             </div>
                         </li>
                         <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="uncertainty.html"><span class="overview">Uncertainty</span>

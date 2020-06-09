@@ -1,0 +1,6 @@
+pandas
+numpy
+flask
+Werkzeug
+bokeh
+jinja2

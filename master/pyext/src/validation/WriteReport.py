@@ -98,7 +98,7 @@ class WriteReport(object):
 				clashscores,Template_Dict['tot']=I_mp.clash_summary_table(d_mp['clash'])
 				Template_Dict['clashscore_list']=validation.dict_to_JSlist(clashscores)
 				Template_Dict['clashlist']=I_mp.clash_detailed_table(d_mp['clash'])
-				Template_Dict['assess_atomic_segments']='Clashscore: '+ str(clashscore) + ', Ramachandran outliers: '+ str(rama)+ ', Sidechain outliers: '+str(sidechain)
+				Template_Dict['assess_atomic_segments']='Clashscore: '+ str(clashscore) + ', Ramachandran outliers: '+ str(rama)+ '% '+', Sidechain outliers: '+str(sidechain)+'%'
 				Template_Dict['assess_excluded_volume']=['Not applicable']
 			else:
 				self.I.rewrite_mmcif()
@@ -119,7 +119,7 @@ class WriteReport(object):
 					clashscores,Template_Dict['tot']=I_mp.clash_summary_table(d_mp['clash'])
 					Template_Dict['clashscore_list']=validation.dict_to_JSlist(clashscores)
 					Template_Dict['clashlist']=I_mp.clash_detailed_table(d_mp['clash'])
-					Template_Dict['assess_atomic_segments']='Clashscore: '+ str(clashscore) + ', Ramachandran outliers: '+ str(rama)+ ', Sidechain outliers: '+str(sidechain)
+					Template_Dict['assess_atomic_segments']='Clashscore: '+ str(clashscore) + ', Ramachandran outliers: '+ str(rama)+ '% '+', Sidechain outliers: '+str(sidechain)+'%'
 					Template_Dict['assess_excluded_volume']=['Not applicable']
 		else:
 			Template_Dict['assess_atomic_segments']='Not applicable'
@@ -157,8 +157,12 @@ class WriteReport(object):
 			Template_Dict['chi_table']=validation.dict_to_JSlist(I_sas.get_chi_table())
 			Template_Dict['rg_table']=validation.dict_to_JSlist(I_sas.get_rg_table_many())
 			Template_Dict['sasdb_code_fits']=I_sas.get_sasdb_code_fits()
+			Template_Dict['Data_quality']=validation.utility.get_rg_data(I_sas.get_rg_for_plot())
+			Template_Dict['validation_input']=validation.utility.get_rg_data_fits(I_sas.get_fits_for_plot())
+			print ("vq",Template_Dict['validation_input'])
 			I_sas_plt=validation.sas_validation_plots.sas_validation_plots(self.mmcif_file)
 			I_sas.modify_intensity()
+			'''
 			I_sas_plt.plot_multiple()
 			I_sas_plt.plot_pf()
 			I_sas_plt.plot_Guinier()
@@ -166,8 +170,10 @@ class WriteReport(object):
 			I_sas_plt.plot_fits()
 			#I_sas_plt.plot_residuals()
 			I_sas.get_fit_image()
+			'''
 			sas_data=I_sas.get_rg_for_plot()
 			sas_fit=I_sas.get_fits_for_plot()
+
 		else:
 			sas_data={}
 			sas_fit={}
@@ -177,35 +183,48 @@ class WriteReport(object):
 		I_plt=validation.get_plots.plots(self.mmcif_file)
 		I_plt.plot_quality_at_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit)
 
-	def run_supplementary_table(self,args,Template_Dict):
-		if (self.I.get_ensembles() is not None) and  (all_same(self.I.get_ensembles()['Clustering method'])):
+	def run_supplementary_table(self,
+								Template_Dict,
+								location='N/A',
+								physics='Physical principles were not used for modeling',
+								method_details='N/A',
+								sampling_validation='N/A',
+								validation_input='N/A',
+								cross_validation='N/A',
+								Data_quality='N/A',
+								clustering='N/A',
+								resolution='N/A'):
+
+		if (self.I.get_ensembles() is not None) and  (validation.utility.all_same(self.I.get_ensembles()['Clustering method'])):
 			Template_Dict['clustering']=self.I.get_ensembles()['Clustering method'][0]
 		elif self.I.get_ensembles() is not None:
 			Template_Dict['clustering']=', '.join(self.I.get_ensembles()['Clustering method'])
 		else:
 			Template_Dict['clustering']='Not applicable'
-		Template_Dict['location']=args.ls
+		Template_Dict['location']=location
 		Template_Dict['complex_name']=self.I.get_struc_title()
 		Template_Dict['PDB_ID']=self.I.get_id()
-		Template_Dict['Subunits']=get_subunits(self.I.get_composition())
-		Template_Dict['datasets']=get_datasets(self.I.get_dataset_details()) if self.I.get_dataset_details() is not None else 'Not provided or used'
+		Template_Dict['Subunits']=validation.utility.get_subunits(self.I.get_composition())
+		Template_Dict['datasets']=validation.utility.get_datasets(self.I.get_dataset_details()) if self.I.get_dataset_details() is not None else 'Not provided or used'
 		Template_Dict['physics']=physics
-		Template_Dict['software']=get_software(self.I.get_software_comp())+args.ls
+		Template_Dict['software']=validation.utility.get_software(self.I.get_software_comp())+ location
 		Template_Dict['struc']=self.I.get_atomic_coverage()
-		Template_Dict['method']=get_method_name(self.I.get_sampling())
-		Template_Dict['method_type']=get_method_type(self.I.get_sampling())
-		Template_Dict['method_details']=args.m
+		Template_Dict['method']=validation.utility.get_method_name(self.I.get_sampling())
+		Template_Dict['method_type']=validation.utility.get_method_type(self.I.get_sampling())
+		Template_Dict['method_details']=method_details
 		Template_Dict['models']=', '.join(self.I.get_ensembles()['Number of models']) if self.I.get_ensembles() is not None else 'Not applicable' 
-		Template_Dict['sampling_validation']=args.sv
+		Template_Dict['sampling_validation']=sampling_validation
 		Template_Dict['feature']=self.I.get_ensembles()['Clustering feature'][0] if self.I.get_ensembles() is not None else 'Not applicable'
-		Template_Dict['validation_input']=args.v1
-		Template_Dict['cross_validation']=args.v2
+		Template_Dict['cross_validation']=cross_validation
 		Template_Dict['model_precision']=', '.join([i+'&#8491' for i in self.I.get_ensembles()['Cluster precision']]) if self.I.get_ensembles() is not None else 'Model precision can not be calculated with one structure'
-		Template_Dict['restraint_info']=get_restraints_info(self.I.get_restraints()) if self.I.get_restraints() is not None else 'Not provided or used'
-		Template_Dict['Data_quality']=args.dv
-		Template_Dict['clustering']=args.c
-		Template_Dict['sampling_validation']=args.sv
-		Template_Dict['resolution']=args.res
+		Template_Dict['restraint_info']=validation.utility.get_restraints_info(self.I.get_restraints()) if self.I.get_restraints() is not None else 'Not provided or used'
+		if 'Data_quality' not in list(Template_Dict.keys()):
+			Template_Dict['Data_quality']=Data_quality
+		if 'validation_input' not in list(Template_Dict.keys()):
+			Template_Dict['validation_input']=validation_input		
+		Template_Dict['clustering']=clustering
+		Template_Dict['resolution']=resolution
+		print (Template_Dict['restraint_info'])
 		return Template_Dict
 
 

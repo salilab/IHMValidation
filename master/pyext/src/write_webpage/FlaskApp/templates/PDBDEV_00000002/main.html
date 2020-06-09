@@ -206,11 +206,18 @@
                 <!-- start overall card body for front page -->
                 <div class="row">
                     <div class="col-lg-4">
-                        <div class="card-header" style="background-color: #E4E4E4; height: 22rem;">
+                        <div class="card-header" style="background-color: #E4E4E4; height: 27rem;">
                             <script>
                             var section = '<h3 align=center><a href=https://pdb-dev.wwpdb.org/entry.html?' + ['PDBDEV_00000002'] + '>' + ['PDBDEV_00000002'] + '</a></h3>';
                             document.write(section);
+                            var id = PDBDEV_00000002;
                             </script>
+                            
+                            <div class="box text-center no-padding float-left" style="text-align: center" ><a href="{{ url_for('downloadFile',id='PDBDEV_00000002')}}"><button style="background-color: #669966; margin-top: 15px;margin-bottom:0px; margin-right:0px;color: #FFF;height: 50px; width: 12.5em; border-radius: 10px;cursor: pointer; font-size:0.9em;"><h5 align="center" style="text-align: center";>Download report</h5></button></a></div>
+                            
+                            <div class="box text-center no-padding float-right" style="text-align: center" ><a href="{{ url_for('downloadTable',id='PDBDEV_00000002')}}"><button style="background-color: #669966; margin-top: 15px;margin-bottom:0px; margin-right:0px;color: #FFF;height: 50px; width: 12.5em; border-radius: 10px;cursor: pointer; font-size:0.9em;"><h5 align="center" style="text-align: center";>Download table</h5></button></a></div>
+
+                            
                             <div class="box text-center container-fluid no-padding">
                                 <script>
                                 var section = '<img src=../../static/webimages/' + ['PDBDEV_00000002'] + '_transparent.png class=image-fluid alt=Model Image style=width:300px align=center>';
@@ -224,7 +231,7 @@
                     <div class="col-lg-8 col-md-2">
                         <div class="card-header" style="background-color: #E4E4E4;">
                             <div class="bs-example" class="text-center">
-                                <table class="table table-bordered" style="border-color:#003366; height: 18rem;">
+                                <table class="table table-bordered" style="border-color:#003366; height: 23rem;">
                                     <thead>
                                         <tr>
                                             <th align="center" class="text-center">PDB ID</th>
