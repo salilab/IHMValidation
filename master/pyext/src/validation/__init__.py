@@ -18,124 +18,9 @@ import os
 import numpy as np
 import re
 from collections import defaultdict
-#########################
-#Useful functions
-#########################
-def dict_to_list(d):
-    L = []
-    if bool(d):
-        for k,v in d.items():
-            if isinstance(v, list):
-                L.append([k,v])
-            else:
-                L.append([k,[v]])
-    return L
+from validation import utility
+from io import StringIO, BytesIO
 
-def dict_to_JSlist(d):
-    L = []
-    if bool(d):
-        if len(list(d.keys()))>0:
-            L.append(list(d.keys()))
-            target=list(d.values())
-            for i in range(len(target[0])):
-                ltt=[]
-                for j in target:
-                    ltt.append(str(j[i]))
-                L.append(ltt)
-    return L
-
-def dict_to_JSlist_sas(d):
-    final_L=[]
-    for key,val in d.items():
-        L = []
-        if bool(val):
-            if len(list(val.keys()))>0:
-                L.append(list(val.keys()))
-                target=list(val.values())
-                for i in range(len(target[0])):
-                    ltt=[]
-                    for j in target:
-                        ltt.append(str(j[i]))
-                    L.append(ltt)
-        final_L.append(L)
-    return final_L
-
-
-def format_RB_text(tex):
-    val=''
-    for a in tex:
-        for b in a:
-            if b==a[-1] and a==tex[-1]:
-                val+=str(b)+'. '
-            elif b==a[-1] and a!= tex[-1]:
-                val+=str(b)+', '
-            else:
-                val+=str(b)+':'
-    if val=='':
-        val='-'
-    return val
-
-def format_flex_text(tex):
-    val=''
-    for a in tex:
-        for b in a:
-            if b==a[-1] and a==tex[-1]:
-                val+=str(b)+'. '
-            else:
-                val+=str(b)+', '
-
-    if val=='':
-        val='-'
-
-    return val
-
-
-def format_tupple(tex):
-    return str(tex[0])+'-'+str(tex[1])
-
-
-def dict_to_JSlist_rows(d1,d2):
-    L=[]
-    L.append(['Chain ID','Rigid bodies','Non-rigid segments'])
-    for i,j in d1.items():
-        L.append([i,format_RB_text(j),format_flex_text(d2[i])])
-    return L
-
-def islistempty(inlist):
-    if isinstance (inlist,list):
-        return all(map(islistempty,inlist))
-    return False
-
-def cat_list_string(listn):
-    result=' '
-    for i in range(len(listn)):
-        if i==0:
-            result += str(listn[i])
-        else:
-            result += ','
-            result += str(listn[i])
-    return result
-
-def get_key_from_val(dict1,val1):
-    return dict1.keys()[dict1.values().index(val1)]
-
-def get_val_from_key(dict1,key1):
-    return dict1[key1]
-
-def get_name(name):
-    #if str(name) in ['?','',1,'.']:
-    #    return 'None Listed'
-    #else:
-    return str(name)
-
-def get_copy(name):
-    if str(name)=='?':
-        copy='None listed'
-    elif '.' in name:
-        copy=(name.split('.')[1]).split('@')[0]
-    else:
-        copy=1
-    return copy
 
 #########################
 #Get information from IHM reader
@@ -151,10 +36,12 @@ class get_input_information(object):
                                   model_class=self.model)
         
     def get_databases(self):
+        """ get all datasets from the mmcif file"""
         dbs=self.system.orphan_datasets
         return dbs
 
     def get_id(self):
+        """ get id from model name, eg: PDBDEV_00XX will be PDBDEV00XX"""
         if self.system.id is 'model':
             id=self.get_id_from_entry()
         else:
@@ -162,6 +49,7 @@ class get_input_information(object):
         return id
 
     def get_id_from_entry(self):
+        """ get id name from entry"""
         sf=open(self.mmcif_file,'r')
         for i,ln in enumerate(sf.readlines()):
             line =ln.strip().split(' ')
@@ -171,11 +59,13 @@ class get_input_information(object):
         return entry
 
     def get_title(self):
+        """get title from citations """
         cit=self.system.citations
-        tit=cit[0].title
-        return tit
+        title=cit[0].title
+        return title
 
     def get_authors(self):
+        """get names of authors from citations """
         cit=self.system.citations
         aut=cit[0].authors
         for i in range(0,len(aut)):
@@ -186,6 +76,7 @@ class get_input_information(object):
         return authors
 
     def get_struc_title(self):
+        """get name of molecule"""
         strc=self.system.title
         if strc is None:
             e=self.system.entities
@@ -195,6 +86,7 @@ class get_input_information(object):
         return mol_name
     
     def check_sphere(self):
+        """check resolution of structure,returns 0 if its atomic and 1 if the model is multires"""
         spheres=[len(b._spheres) for i in self.system.state_groups for j in i for a in j for b in a]
         if 0 not in spheres:
             return 1
@@ -202,14 +94,17 @@ class get_input_information(object):
             return 0 
 
     def get_assembly_ID_of_models(self):
+        """Assembly info i.e. model assemblies in the file """
         assembly_id=[b.assembly._id for i in self.system.state_groups for j in i for a in j for b in a]
         return assembly_id
 
     def get_representation_ID_of_models(self):
+        """Number of representations in model """
         representation_id=[b.representation._id for i in self.system.state_groups for j in i for a in j for b in a]
         return representation_id
 
     def get_model_names(self):
+        """ Names of models"""
         model_name1=[a.name for i in self.system.state_groups for j in i for a in j]
         model_name2=[b.name for i in self.system.state_groups for j in i for a in j for b in a]
         if len(model_name1)==len(model_name2):
@@ -219,22 +114,27 @@ class get_input_information(object):
         return model_name
     
     def get_model_assem_dict(self):
+        """Map models to assemblies """
         model_id=map(int,[b._id for i in self.system.state_groups for j in i for a in j for b in a])
         assembly_id=map(int,self.get_assembly_ID_of_models())
         model_assembly=dict(zip(model_id,assembly_id))
         return model_assembly
 
     def get_model_rep_dict(self):
+        """Map models to representations 
+        useful especially for multi-state systems"""
         model_id=map(int,[b._id for i in self.system.state_groups for j in i for a in j for b in a])
         rep_id=map(int,self.get_representation_ID_of_models())
         model_rep=dict(zip(model_id,rep_id))
         return model_rep
 
     def get_number_of_models(self):
+        """ Get total number of models """
         models=[b._id for i in self.system.state_groups for j in i for a in j for b in a]
         return len(models)
 
     def get_residues(self,asym):
+        """Get residues per chain """
         if asym.seq_id_range[0] is not None:
             residues=asym.seq_id_range[1]-asym.seq_id_range[0]+1
         elif asym.seq_id_range[0] is None:
@@ -242,6 +142,7 @@ class get_input_information(object):
         return residues
     
     def get_composition(self):
+        """Get composition dictionary"""
         entry_comp={'Model ID':[],'Subunit number':[],'Subunit ID':[],
                     'Subunit name':[],'Chain ID':[],
                     'Total residues':[]}
@@ -263,9 +164,11 @@ class get_input_information(object):
         return entry_comp
 
     def get_protocol_number(self):
+        """ number of protocols/methods used to create model"""
         return len(self.system.orphan_protocols)
 
     def get_sampling(self):
+        """ sampling composition/details """
         sampling_comp={'Step number':[], 'Protocol ID':[],'Method name':[],'Method type':[],'Number of computed models':[],'Multi state modeling':[],
                         'Multi scale modeling':[]}
         for prot in self.system.orphan_protocols:
@@ -282,38 +185,29 @@ class get_input_information(object):
         return sampling_comp
 
     def get_representation(self):
+        """ get details on number of model composition based on 
+        types of representation listed """
         representation_comp={'Chain ID':[],'Subunit name':[],'Rigid bodies':[],
                     'Non-rigid regions':[]}
         for i in self.system.orphan_representations:
             print (["%s:%d-%d" % ((x.asym_unit._id,) + x.asym_unit.seq_id_range) for x in i if not x.rigid])
 
     def get_RB_flex_dict(self):
+        """ get RB and flexible segments from model information""" 
         RB=self.get_empty_chain_dict();RB_nos=[];all_nos=[];flex=self.get_empty_chain_dict()
         for i in self.system.orphan_representations:
             for j in i:
                 all_nos.append(j.asym_unit.seq_id_range)
                 if j.rigid and j.starting_model:
                     RB_nos.append(j.asym_unit.seq_id_range)
-                    RB[j.starting_model.asym_unit._id].append([format_tupple(j.asym_unit.seq_id_range),
-                        get_val_from_key(self.get_dataset_dict(),j.starting_model.dataset._id)])
+                    RB[j.starting_model.asym_unit._id].append([utility.format_tupple(j.asym_unit.seq_id_range),
+                        utility.get_val_from_key(self.get_dataset_dict(),j.starting_model.dataset._id)])
                 elif j.rigid and not j.starting_model:
                     RB_nos.append(j.asym_unit.seq_id_range)
-                    RB[j.asym_unit._id].append([format_tupple(j.asym_unit.seq_id_range),'None'])
+                    RB[j.asym_unit._id].append([utility.format_tupple(j.asym_unit.seq_id_range),'None'])
                 else:
-                    flex[j.asym_unit._id].append([format_tupple(j.asym_unit.seq_id_range)])
+                    flex[j.asym_unit._id].append([utility.format_tupple(j.asym_unit.seq_id_range)])
         return RB,flex,len(RB_nos),len(all_nos)      
-
-
-    def get_RB_dict(self):
-        RB=self.get_empty_chain_dict();RB_nos=[];all_nos=[]
-        for i in self.system.orphan_representations:
-            for j in i:
-                all_nos.append(j.asym_unit.seq_id_range)
-                if j.rigid: #starting_model:
-                    RB_nos.append(j.asym_unit.seq_id_range)
-                    RB[j.starting_model.asym_unit._id].append([get_val_from_key(self.get_chain_subunit_dict(),j.starting_model.asym_unit._id),j.asym_unit.seq_id_range,
-                        get_val_from_key(self.get_dataset_dict(),j.starting_model.dataset._id)])
-        return RB,len(RB_nos),len(all_nos)      
 
     def get_number_of_assemblies(self):
         return (len(self.system.orphan_assemblies))
@@ -322,6 +216,7 @@ class get_input_information(object):
         return (len(self.system.entities))
 
     def get_number_of_chains(self):
+        """get number of chains per protein per assembly """
         used=[];assembly={}
         lists= self.system.orphan_assemblies
         for i,k in enumerate(self.system.orphan_assemblies):
@@ -334,6 +229,7 @@ class get_input_information(object):
         return number_of_chains
 
     def get_all_asym(self):
+        """ get all asym units"""
         parents=[(a._id,a.details,a.entity.description,a.entity._id,i) for i,a in enumerate(self.system.asym_units)]
         return parents
 
@@ -344,39 +240,18 @@ class get_input_information(object):
         return empty_chain_dict
 
     def get_chain_subunit_dict(self):
+        """ Get chains of subunits"""
         chain_subunit_dict={}
         for i,a in enumerate(self.system.asym_units):
             chain_subunit_dict[a._id]=a.details.split('.')[0]
         return chain_subunit_dict
 
     def get_residues_subunit_dict(self):
+        """Get residues of chains in subunits"""
         residues_subunit_dict={}
         for i,a in enumerate(self.system.asym_units):
             residues_subunit_dict[a._id]=self.get_residues(a)
         return residues_subunit_dict
-
-    def get_dataset_xl_info(self,id):
-        restraints=self.get_restraints()
-        print (restraints)
-        print (id)
-        lt='Linker name and number of cross-links: %s' % (restraints['Restraint info'][restraints['Dataset ID'].index(id)])
-        return (lt)
-
-    def get_dataset_dict(self):
-        dataset_dict={}
-        lists=self.system.orphan_datasets
-        if len(lists)>0:
-            for i in lists:
-                try:
-                    loc=i.location.db_name
-                except AttributeError as error:
-                    loc=str('Not listed')
-                try:
-                    acc=i.location.access_code
-                except AttributeError as error:
-                    acc=str('None')
-                dataset_dict[i._id]=str(i.data_type)+'/'+str(acc)
-        return dataset_dict 
 
     def get_software_length(self):
         lists=self.system.software
@@ -386,6 +261,7 @@ class get_input_information(object):
             return len(lists)
 
     def get_software_comp (self):
+        """get software composition to write out as a table"""
         software_comp={'ID':[],'Software name':[],'Software version':[],'Software classification':[],'Software location':[]}
         lists=self.system.software
         if len(lists)>0:
@@ -404,18 +280,13 @@ class get_input_information(object):
             final_software_composition={}
         return final_software_composition
 
-    def get_dataset_length(self):
-        lists=self.system.orphan_datasets
-        if lists is None:
-            return 0
-        else:
-            return len(lists)
-
     def check_ensembles(self):
+        """check if ensembles exist"""
         a=self.system.ensembles
         return len(a)
 
     def get_ensembles(self):
+        """details on ensembles, if it exists"""
         s=self.system.ensembles
         if len(s)>0:
             ensemble_comp={'Ensemble number':[],'Ensemble name':[],'Model ID':[],'Number of models':[],
@@ -432,7 +303,38 @@ class get_input_information(object):
         else:
             return None
 
+    def get_dataset_xl_info(self,id):
+        """Get dataset XL info given dataset ID"""
+        restraints=self.get_restraints()
+        lt='Linker name and number of cross-links: %s' % (restraints['Restraint info'][restraints['Dataset ID'].index(id)])
+        return (lt)
+
+    def get_dataset_dict(self):
+        """get dataset dictionary """
+        dataset_dict={}
+        lists=self.system.orphan_datasets
+        if len(lists)>0:
+            for i in lists:
+                try:
+                    loc=i.location.db_name
+                except AttributeError as error:
+                    loc=str('Not listed')
+                try:
+                    acc=i.location.access_code
+                except AttributeError as error:
+                    acc=str('None')
+                dataset_dict[i._id]=str(i.data_type)+'/'+str(acc)
+        return dataset_dict 
+
+    def get_dataset_length(self):
+        lists=self.system.orphan_datasets
+        if lists is None:
+            return 0
+        else:
+            return len(lists)
+
     def get_dataset_comp (self):
+        """detailed dataset composition"""
         dataset_comp={'ID':[],'Dataset type':[],'Database name':[],'Data access code':[]}
         lists=self.system.orphan_datasets
         if len(lists)>0:
@@ -456,6 +358,7 @@ class get_input_information(object):
         return dataset_comp
 
     def dataset_id_type_dic(self):
+        """dataset id and data items"""
         dataset_dic={}
         if len(self.system.orphan_datasets)>0:
             for i in self.system.orphan_datasets:
@@ -466,6 +369,7 @@ class get_input_information(object):
         return dataset_dic
         
     def get_restraints(self):
+        """ get restraints table from cif file"""
         r=self.system.restraints
         restraints_comp={'ID':[],'Dataset ID':[],'Restraint type':[],'Restraint info':[]}
         for j,i in enumerate(r):
@@ -496,6 +400,7 @@ class get_input_information(object):
         return (restraints_comp) 
     
     def get_dataset_details(self):
+        """get information on dataset and databases"""
         dataset_comp={'ID':[],'Dataset type':[],'Database name':[],'Details':[]}
         lists=self.system.orphan_datasets
         if len(lists)>0:
@@ -532,6 +437,7 @@ class get_input_information(object):
         return dataset_comp
     
     def get_atomic_coverage(self):
+        """Measure amount of atomic residues"""
         for i in self.system.orphan_representations:
             if self.check_sphere()==1:
                 flex=sum([int(x.asym_unit.seq_id_range[1])-int(x.asym_unit.seq_id_range[0])+1 for x in i if not x.rigid])
@@ -541,37 +447,53 @@ class get_input_information(object):
                 percentage='100%'
         return percentage
 
-    def check_for_sas(self):
+    def check_for_sas(self,dataset):
+        """check if sas is in the dataset"""
         dataset=self.get_dataset_comp()
-        print (dataset)
         data_type=dataset['Dataset type']
         database=dataset['Database name']
-        print (data_type)
+        if 'SAS' in str(data_type) and 'SAS' in str(database):
+            return True
+        else:
+            return False
+
+    def check_for_sas_i(self,dataset):
+        """check if sas is in the dataset"""
+        dataset=self.get_dataset_comp()
+        data_type=dataset['Dataset type']
+        database=dataset['Database name']
         if 'SAS' in str(data_type) and 'SAS' in str(database):
             return True
         else:
             return False
 
     def check_for_cx(self,dataset):
+        """check if CX-XL is in the dataset"""
         dataset=self.get_dataset_comp()
         data_type=dataset['Dataset type']
-        print (data_type)
         if 'CX' in str(data_type):
             return True
         else:
             return False
 
     def check_for_em(self,dataset):
+        """check if em is in the dataset"""
         dataset=self.get_dataset_comp()
         data_type=dataset['Dataset type']
-        print (data_type)
         if 'EM' in str(data_type):
             return True
         else:
             return False
 
-    def mmcif_get_lists(self):
-        file=open(self.mmcif_file,'r')
+    def mmcif_get_lists(self,filetemp=None):
+        """function to help re-write mmcif file for molprobity
+        this function reads the atom_site dictionary terms and returns a list"""
+        if filetemp is None:
+            file=open(self.mmcif_file,'r')
+        else:
+            file=filetemp
+            filetemp.seek(0)
+            #print (file.readline())
         all_lines=[]
         for i,j in enumerate(file.readlines()):
             all_lines.append(j.strip().split())
@@ -588,7 +510,6 @@ class get_input_information(object):
                 atom_site[i]='_atom_site.B_iso_or_equiv'
             elif ('_atom_site.occupancy' not in list(atom_site.values())) and len(list(atom_site.values()))>0 :
                 atom_site[i]='_atom_site.occupancy'
-
         total_list=list(atom_site.values())
         index_biso=total_list.index('_atom_site.B_iso_or_equiv')
         index_occu=total_list.index('_atom_site.occupancy')
@@ -609,6 +530,8 @@ class get_input_information(object):
         return before_atom_site,atom_site,atoms,after_atom
 
     def rewrite_mmcif(self):
+        """ This function writes a temporary mmcif file that can be parsed by molprobity
+        after checking occupancy and b-iso parameters """
         before_atom_site,atom_site,atoms,after_atom=self.mmcif_get_lists()
         if os.path.isfile('test.cif'):
             os.remove('test.cif')

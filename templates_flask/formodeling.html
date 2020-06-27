@@ -91,17 +91,17 @@ body {
             </div>
             <!--end panel body-->
             <!-- navbar -->
-                {% raw %}
 
             <nav class="navbar navbar-expand-xl navbar-dark">
                 <div class="dropdown">
                     <a class="navbar-brand" href="main.html">
-                        <h5>Validation Report for {{ ID_T }}</h5>
+                        <h5>Validation Report for {{ID_T}}</h5>
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
+                {% raw %}
 
                 <div class="dropdown">
                     <a class="navbar-brand" href="{{ url_for('home') }}">
@@ -188,10 +188,10 @@ body {
                             </div>
                         </li>
 
-                        <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notmodeling.html"><span class="overview">Fit to data not used</span>
+                        <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notformodeling.html"><span class="overview">Fit to data not used</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="notmodeling.html#data">Data</a>
+                                <a class="dropdown-item" href="notformodeling.html#data">Data</a>
                             </div>
                         </li>
                         <li class="nav-item mr-4 dropdown"><a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="uncertainty.html"><span class="overview">Uncertainty</span>
@@ -272,15 +272,37 @@ body {
                             for (var i = 0; i < sasdb_code.length; i++) {
                                 for (var j=0; j<sasdb_code_fits[i]; j++) {
                                 var k=j+1
-                            var ex3 ='<p align=justify align=center> <u> Model fit for '+ sasdb_code[i]+' (fit/model number '+String(k) +'):</u> Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis. </p>'; 
+                            var ex3 ='<p align=justify align=center> <u> Model fit for '+ sasdb_code[i]+' (fit/model number '+String(k) +'):</u> The experimental scattering curve (in blue) can be compared with the theoretical curve calculated from a model (in red). </p>'; 
+                            document.write(ex3)
+
+                            var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding style=height:60vh align=center>';
+                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+String(j)+'fit1.html frameborder=0 scrolling=yes aligh=center width=50% height=550vh  style=position:relative align=center onload=resizeIframe(this)></iframe>'
+                            document.write(ex4)
+                            var ex6 ='</div></div> </div>';
+                            ex6 +='<p style=margin-bottom:3cm;> </p>';
+                            document.write(ex6)
+                        }
+                    }
+                }
+                </script>
+                    <p style="margin-bottom:3cm;"> </p>
+
+                    <script>
+                            if ({{sas}}.length > 0) {
+                            var sasdb_code={{sasdb_code}}  
+                            var sasdb_code_fits={{sasdb_code_fits}}   
+                            for (var i = 0; i < sasdb_code.length; i++) {
+                                for (var j=0; j<sasdb_code_fits[i]; j++) {
+                                var k=j+1
+                            var ex3 ='<p align=justify align=center> <u> Residuals and error weighted residuals for \u03C7\u00b2 goodness of fit analysis for '+ sasdb_code[i]+'</u>: Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis. </p>'; 
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+String(j)+'fit1.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+String(j)+'residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+ String (j)+'residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+ String (j)+'residuals_wt.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
@@ -290,6 +312,26 @@ body {
                 }
                 </script>
                     <p style="margin-bottom:3cm;"> </p>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <script>
+                            if ({{sas}}.length > 0) {
+                                if ({{number_of_fits}} > 0) {
+                                    var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u></h5>";
+                                    ex2 += "<p class =ex2><i>ATSAS datcmp was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis. </i>";
+                                    document.write(ex2)
+                                    var input_list = {{p_val}};
+                                    Write_Table(list_to_write = input_list)
+                                } else {
+                                    var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u></h5>";
+                                    ex2 += "<i>Model(s) and/or fit for this entry has not been deposited.  </i>";
+                                    document.write(ex2);
+                                }
+                            }
+                            </script>
+
+
                 </div> <!-- end card body-->
             </div>
             <!-- start overall card body for front page -->

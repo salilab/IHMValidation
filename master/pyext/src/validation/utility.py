@@ -5,6 +5,123 @@ import pickle
 from collections import Counter
 import argparse
 
+
+def dict_to_list(d):
+    L = []
+    if bool(d):
+        for k,v in d.items():
+            if isinstance(v, list):
+                L.append([k,v])
+            else:
+                L.append([k,[v]])
+    return L
+
+def dict_to_JSlist(d):
+    L = []
+    if bool(d):
+        if len(list(d.keys()))>0:
+            L.append(list(d.keys()))
+            target=list(d.values())
+            for i in range(len(target[0])):
+                ltt=[]
+                for j in target:
+                    ltt.append(str(j[i]))
+                L.append(ltt)
+    return L
+
+def dict_to_JSlist_sas(d):
+    final_L=[]
+    for key,val in d.items():
+        L = []
+        if bool(val):
+            if len(list(val.keys()))>0:
+                L.append(list(val.keys()))
+                target=list(val.values())
+                for i in range(len(target[0])):
+                    ltt=[]
+                    for j in target:
+                        ltt.append(str(j[i]))
+                    L.append(ltt)
+        final_L.append(L)
+    return final_L
+
+
+def format_RB_text(tex):
+    val=''
+    for a in tex:
+        for b in a:
+            if b==a[-1] and a==tex[-1]:
+                val+=str(b)+'. '
+            elif b==a[-1] and a!= tex[-1]:
+                val+=str(b)+', '
+            else:
+                val+=str(b)+':'
+    if val=='':
+        val='-'
+    return val
+
+def format_flex_text(tex):
+    val=''
+    for a in tex:
+        for b in a:
+            if b==a[-1] and a==tex[-1]:
+                val+=str(b)+'. '
+            else:
+                val+=str(b)+', '
+
+    if val=='':
+        val='-'
+
+    return val
+
+
+def format_tupple(tex):
+    return str(tex[0])+'-'+str(tex[1])
+
+
+def dict_to_JSlist_rows(d1,d2):
+    L=[]
+    L.append(['Chain ID','Rigid bodies','Non-rigid segments'])
+    for i,j in d1.items():
+        L.append([i,format_RB_text(j),format_flex_text(d2[i])])
+    return L
+
+def islistempty(inlist):
+    if isinstance (inlist,list):
+        return all(map(islistempty,inlist))
+    return False
+
+def cat_list_string(listn):
+    result=' '
+    for i in range(len(listn)):
+        if i==0:
+            result += str(listn[i])
+        else:
+            result += ','
+            result += str(listn[i])
+    return result
+
+def get_key_from_val(dict1,val1):
+    return dict1.keys()[dict1.values().index(val1)]
+
+def get_val_from_key(dict1,key1):
+    return dict1[key1]
+
+def get_name(name):
+    #if str(name) in ['?','',1,'.']:
+    #    return 'None Listed'
+    #else:
+    return str(name)
+
+def get_copy(name):
+    if str(name)=='?':
+        copy='None listed'
+    elif '.' in name:
+        copy=(name.split('.')[1]).split('@')[0]
+    else:
+        copy=1
+    return copy
+
 def get_all_files(path_dir):
     return glob.glob(path_dir)
 

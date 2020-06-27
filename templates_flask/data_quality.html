@@ -88,7 +88,7 @@
             <nav class="navbar navbar-expand-xl navbar-dark">
                 <div class="dropdown">
                     <a class="navbar-brand" href="main.html">
-                        <h5>Validation Report for {{ ID_T }}</h5>
+                        <h5>Validation Report for {{ID_T}}</h5>
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -256,7 +256,7 @@
                             ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'intensities_log.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
-                            ex6 +='<p style=margin-bottom:2cm;> </p>';
+                            ex6 +='<p style=margin-bottom:3cm;> </p>';
                             document.write(ex6)
                         }
                     }
@@ -321,7 +321,7 @@
                             ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'Kratky.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
-                            ex6 +='<p style=margin-bottom:2cm;> </p>';
+                            ex6 +='<p style=margin-bottom:3cm;> </p>';
                             document.write(ex6)
                         }
                     }
@@ -356,9 +356,14 @@
                             for (var i = 0; i < sasdb_code.length; i++) {
                             var ex3 ='<p align=justify> <u> P(r) for '+ sasdb_code[i]+':</u> The value of P(r) should be zero beyond r=Dmax. </p>'; 
                             document.write(ex3)
-                            var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding  align=center style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf.html frameborder=0 scrolling=yes width=50% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding  style=height:60vh>';
+                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
+
+                            var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
+                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf_int.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            document.write(ex5)
+
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
                             document.write(ex6)
@@ -367,8 +372,34 @@
                     </script>
 
                     <p style="margin-bottom:3cm;"> </p>
+
+                    <script>
+                            if ({{sas}}.length > 0) {
+                            var sasdb_code={{sasdb_code}}     
+                            for (var i = 0; i < sasdb_code.length; i++) {
+                            var ex3 ='<p align=justify> <u> Residuals and error weighted residuals for P(r) analysis for  '+ sasdb_code[i]+'</u>: Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis.</p>'; 
+                            document.write(ex3)
+
+                            var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
+                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf_residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            document.write(ex4)
+
+                            var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
+                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf_residuals_wt.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            document.write(ex5)
+                            var ex6 ='</div></div> </div>';
+                            ex6 +='<p style=margin-bottom:3cm;> </p>';
+                            document.write(ex6)
+                        }
+                    }
+                    </script>
+
+                    <p style="margin-bottom:3cm;"> </p>
+
+
                 </div>
             </div>
+
             <div class="card-body border-success" style="border-color: solid black;">
                 <!-- start overall card body for front page -->
                 <div class="card-header" style="background-color: #FFF; height=108rem">

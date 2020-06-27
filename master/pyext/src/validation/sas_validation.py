@@ -11,6 +11,8 @@ import re,pickle,requests,json
 import multiprocessing as mp
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
+from subprocess import run, call, PIPE
+ 
 
 class sas_validation(validation.get_input_information):
     def __init__(self,mmcif_file):
@@ -20,6 +22,10 @@ class sas_validation(validation.get_input_information):
         self.dataset=validation.get_input_information.get_dataset_comp(self) 
     
     def get_SASBDB_code(self):
+        '''
+        function to get all SASBDB codes used in the model,
+        returns a list of SASBDB codes
+        '''
         SAS_db_codes=[]
         for i,j in enumerate(self.dataset['Dataset type']):
             if 'SAS' in str(j):
@@ -137,12 +143,180 @@ class sas_validation(validation.get_input_information):
             pdf_re.rename(columns={'r':'R','P':'P','P_error':'E'},inplace=True)
             pofr_dict[code]=pdf_re
         return pofr_dict
+    '''
+    def create_fit_files(self):
+        self.get_sascif_file()
+        p_vals={}
+        for code in self.get_SASBDB_code():
+            all_lines=self.get_all_sascif(code)
+            p_vals[code]=[]
+            data={}
+            for m,n in enumerate(all_lines):
+                if len(n)<2 and len(n)>0 and '_sas_model_fitting.' in n[0]:
+                    data[(n[0].split('.')[1])]=[]
+                if len(n)>2 and len(all_lines[m-1])>0 and '_sas_model_fitting.' in all_lines[m-1][0]:
+                    for i,j in enumerate(all_lines[m:]):
+                        if len(j)>2 and '#' not in j and 'sas' not in j[0] :
+                            for num,key in enumerate(list(data.keys())):
+                                data[key].append(j[num])
+                        else:
+                            break
+            pdf=pd.DataFrame(list(data.values()),index=list(data.keys())).T
+            print(pdf.head())
+            fit_1=pdf[['momentum_transfer','intensity']]
+            fit_1.rename(columns={'momentum_transfer':'Q','intensity':'I'},inplace=True)
+            fit_1.to_csv('fit1.csv',header=False,index=False)
+            fit_2=pdf[['momentum_transfer','fit']]
+            fit_2.rename(columns={'momentum_transfer':'Q','fit':'I'},inplace=True)
+            fit_2.to_csv('fit2.csv',header=False,index=False)
+            f1=open('pval.txt','w+')
+            with f1 as outfile:
+                run([r"/Users/saijananiganesan/Applications/ATSAS-3.0.1-1/bin/datcmp",'fit1.csv','fit2.csv'],stdout=outfile)
+            f2=open('pval.txt','r')
+            all_lines=[j.strip().split() for i,j in enumerate(f2.readlines())]
+            p_val=   [all_lines[i+1][4] for i,j in enumerate(all_lines) if 'adj' in j][0]
+            p_vals[code].append(p_val)
+        return p_vals
+    '''
+    def get_pvals(self):
+        data_dic=self.get_data_from_SASBDB()
+        num_of_fits=self.get_number_of_fits()
+        pval_table={'SASDB ID':[],'Model':[],'p-value':[]}        
+        for key,val in data_dic.items():
+            num=num_of_fits[key]
+            if num>0:
+                for i in range(0,num):
+                    pval_table['SASDB ID'].append(key)
+                    pval_table['Model'].append(i+1)
+                    target_url=val['fits'][i]['fit_data']      
+                    fit = requests.get(target_url);
+                    if fit.status_code !=200:
+                        print ("Error....unable to fetch data from SASBDB, please check the entry ID")
+                    fname=key+str(i)+'fit.csv'
+                    with open (fname,'w') as f:
+                        f.write(fit.text)
+                    f_df=pd.read_csv(fname, skiprows=3,delim_whitespace=True, names=['Q','Ie','Ib','E'])
+                    if abs(f_df.iloc[22,2]-f_df.iloc[22,1])>abs(f_df.iloc[22,3]-f_df.iloc[22,1]):
+                        f_df.rename(columns={'Q':'Q','Ie':'Ie','Ib':'E','E':'Ib'},inplace=True)
+                    fit_1=f_df[['Q','Ie']]
+                    fit_1.to_csv('fit1.csv',header=False,index=False)
+                    fit_2=f_df[['Q','Ib']]
+                    fit_2.to_csv('fit2.csv',header=False,index=False)
+                    f1=open('pval.txt','w+')
+                    with f1 as outfile:
+                        run([r"/Users/saijananiganesan/Applications/ATSAS-3.0.1-1/bin/datcmp",'fit1.csv','fit2.csv'],stdout=outfile)
+                    f2=open('pval.txt','r')
+                    all_lines=[j.strip().split() for i,j in enumerate(f2.readlines())]
+                    p_val=[all_lines[i+1][4] for i,j in enumerate(all_lines) if 'adj' in j][0]
+                    pval_table['p-value'].append('%.2E' % Decimal(p_val))
+            else:
+                pval_table['SASDB ID'].append(key)
+                pval_table['Model'].append('N/A')
+                pval_table['p-value'].append('N/A')
+        print (pval_table)
+        return pval_table
+
+    def get_pofr_ext(self):
+        pofr_dict={}
+        for code in self.get_SASBDB_code():
+            #pofr_dict={}
+            all_lines=self.get_all_sascif(code)
+            data={}
+            for m,n in enumerate(all_lines):
+                if len(n)<2 and len(n)>0 and '_sas_p_of_R_extrapolated_intensity.' in n[0]:
+                    data[(n[0].split('.')[1])]=[]
+                if len(n)>2 and len(all_lines[m-1])>0 and '_sas_p_of_R_extrapolated_intensity.' in all_lines[m-1][0]:
+                    for i,j in enumerate(all_lines[m:]):
+                        if len(j)>2 and '#' not in j and 'sas' not in j[0] :
+                            for num,key in enumerate(list(data.keys())):
+                                data[key].append(j[num])
+                        else:
+                            break
+            pdf=pd.DataFrame(list(data.values()),index=list(data.keys())).T
+            pdf_re=pdf[['momentum_transfer','intensity_reg']]
+            pdf_re.rename(columns={'momentum_transfer':'Q','intensity_reg':'I'},inplace=True)
+            pdf_re=pdf_re.astype({'Q':float,'I':float})
+            pdf_re['Q']=pdf_re['Q']*10
+            pdf_re['logI']=np.log(pdf_re['I'])
+            pofr_dict[code]=pdf_re
+            #print (pdf_re.head())
+        return pofr_dict
+
+    def get_pofr_errors(self):
+        pofr_dict=self.get_pofr_ext()
+        Int_dict=self.modify_intensity()
+        compiled_dict={}
+        for code in self.get_SASBDB_code():
+            I_df=Int_dict[code]
+            I_df_dict= dict(zip(I_df.Q, I_df.I))
+            I_df_err_dict= dict(zip(I_df.Q, I_df.E))
+            p_df=pofr_dict[code]
+            p_df_dict=dict(zip(p_df.Q, p_df.I))
+            errors=[]
+            for Q,I in p_df_dict.items():
+                data_Q=self.findMinDiff(list(I_df_dict.keys()),Q)
+                if data_Q != 9999:
+                    data_I=I_df_dict[data_Q]
+                    delta_I=I-data_I
+                    wt_delta_I=delta_I/I_df_err_dict[data_Q]
+                    errors.append([Q,delta_I,wt_delta_I])
+            errors_df=pd.DataFrame(errors,columns=['Q','R','WR'])
+            print (errors_df.head())
+            compiled_dict[code]=errors_df
+        return compiled_dict
+
+
+    def findMinDiff(self,list1, num1): 
+        list_sub=[(i,abs(j-num1)) for i,j in enumerate(list1)]
+        list_sort=sorted(list_sub, key=lambda x: x[1])
+        if list_sort[0][1]<0.00001:
+        #print (list1[list_sort[0][0]])
+            return list1[list_sort[0][0]]
+        else:
+            return 9999  
+
+    def get_rg_and_io(self):
+        self.get_sascif_file()
+        rg_and_io={}
+        for code in self.get_SASBDB_code():
+            all_lines=self.get_all_sascif(code)
+            for m,n in enumerate(all_lines):
+                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_PR' in n[0] and'sas_result.Rg_from_PR_' not in n[0] :
+                    rg=float(n[1])
+                if len(n)<3 and len(n)>0 and '_sas_result.I0_from_PR' in n[0] and'_sas_result.I0_from_PR_' not in n[0] :
+                    io=float(n[1])
+            rg_and_io[code]=(rg,io)
+        return rg_and_io
 
     def modify_intensity(self):
         Int_dict=self.get_intensities()
         Int_dict_modify={}
+        rg_and_io=self.get_rg_and_io()
         for key,val in Int_dict.items():
-            val.head()
+            Rg=rg_and_io[key][0]
+            IO=rg_and_io[key][1]
+            dim_num=Rg*Rg/IO
+            I_df=val.astype({'Q':float,'I':float,'E':float})
+            I_df.head()
+            I_df=I_df[I_df['I']-I_df['E']>0]
+            I_df['Q']=I_df['Q']*10
+            I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1) 
+            I_df['err_y']=I_df.apply(lambda row: (np.log(row['I']-row['E']),np.log(row['I']+row['E'])),axis=1)
+            I_df['logI']=np.log(I_df['I'])
+            I_df['logQ']=np.log(I_df['Q'])
+            I_df['logX']=I_df.apply(lambda row: (row['logQ'],row['logQ']), axis=1)
+            I_df['Ky']=I_df['Q']*I_df['Q']*I_df['I']*dim_num
+            I_df['Kx']=I_df['Q']*Rg
+            I_df['Px']=I_df['Q']**4
+            I_df['Px'].round(3)
+            I_df['Py']=I_df['Px']*I_df['I']
+            Int_dict_modify[key]=I_df
+        return Int_dict_modify
+
+    def modify_intensity_dep(self):
+        Int_dict=self.get_intensities()
+        Int_dict_modify={}
+        for key,val in Int_dict.items():
             I_df=val.astype({'Q':float,'I':float,'E':float})
             I_df.head()
             I_df=I_df[I_df['I']-I_df['E']>0]
@@ -213,7 +387,33 @@ class sas_validation(validation.get_input_information):
         return parameter_table
 
     def get_parameters_mw_many(self):
+        self.get_sascif_file()
+        parameter_table={'SASDB ID':[],'Chemical composition MW':[],'Standard MW':[],'Porod MW':[]}        
+        for code in self.get_SASBDB_code():
+            parameter_table['SASDB ID'].append(code)
+            all_lines=self.get_all_sascif(code)
+            for m,n in enumerate(all_lines):
+                if len(n)<3 and len(n)>0 and '_sas_result.experimental_MW' in n[0] and '_sas_result.experimental_MW_error' not in n[0]:
+                    if len(n[1])>1:
+                        parameter_table['Chemical composition MW'].append(str(round(float(n[1]),2))+' kDa')
+                    else:
+                        parameter_table['Chemical composition MW'].append('N/A')
+                if len(n)<3 and len(n)>0 and '_sas_result.MW_standard' in n[0] and '_sas_result.MW_standard_error' not in n[0]:
+                    if len(n[1])>1:
+                        parameter_table['Standard MW'].append(str(round(float(n[1]),2))+' kDa')
+                    else:
+                        parameter_table['Standard MW'].append('N/A')
+                if len(n)<3 and len(n)>0 and '_sas_result.MW_Porod' in n[0] and '_sas_result.MW_Porod_error' not in n[0]:
+                    if len(n[1])>1:
+                        parameter_table['Porod MW'].append(str(round(float(n[1]),2))+' kDa')
+                    else:
+                        parameter_table['Porod MW'].append('N/A')
+        return parameter_table
+
+
+    def get_parameters_mw_many_dep(self):
         data_dic=self.get_data_from_SASBDB()
+        #MW based on chemical composition
         parameter_table={'SASDB ID':[],'Sequence MW':[],'Experimental MW':[],'Porod MW':[]}        
         for key,val in data_dic.items():
             try:
@@ -241,6 +441,7 @@ class sas_validation(validation.get_input_information):
             pd_df['err_x']=pd_df.apply(lambda row: (row['R'],row['R']), axis=1)
             pd_df['err_y']=pd_df.apply(lambda row: (row['P']-row['E'],row['P']+row['E']),axis=1)
             pddf_dic[key]=pd_df
+            print (pd_df.head())
         return pddf_dic
 
     def get_pddf_info(self):

@@ -122,12 +122,12 @@ class plots(validation.get_input_information):
 			pf.title.text_font_size='14pt'
 			pf.title.align="center"
 			pf.output_backend="svg"
-
 			third = Panel(child=row(pf), title='Fit to data: SAS')
 			tabsI.append(third)
+			pf.output_backend="svg"
 			export_svgs(pf,filename=self.filename+'/'+self.ID+"quality_at_glance_FQ.svg")
 			export_svgs(pf,filename=self.filename_add+'/'+self.ID+"quality_at_glance_FQ.svg")
-			export_png(pd,filename=self.filename+'/'+self.ID+"quality_at_glance_FQ.png")
+			export_png(pf,filename=self.filename+'/'+self.ID+"quality_at_glance_FQ.png")
 
 		else:
 			third = Panel(child=row(p1), title='Fit to input data')
