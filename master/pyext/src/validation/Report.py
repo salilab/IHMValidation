@@ -1,4 +1,14 @@
-import pytz
+###################################
+# Script : 
+# 1) Contains class to write dictionary
+# for jinja2/write HTML files/PDF files
+# and supplementary table
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
+
+import pytzi
 import jinja2
 import pandas as pd
 import sys,os,glob

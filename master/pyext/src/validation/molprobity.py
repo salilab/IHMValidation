@@ -1,8 +1,7 @@
 ###################################
 # Script : 
-# 1) Contains Child 1 class to 
-# generate molprobity data
-# 2) Parent to plotting class
+# 1) Contains class to 
+# generate molprobity assessments
 #
 # ganesans - Salilab - UCSF
 # ganesans@salilab.org

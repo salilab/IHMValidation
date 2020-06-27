@@ -1,3 +1,11 @@
+###################################
+# Script : 
+# 1) Contains class for em validation 
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
+
 from validation import get_input_information
 
 class em_validation(get_input_information):

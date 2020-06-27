@@ -1,3 +1,11 @@
+###################################
+# Script : 
+# 1) Contains class for XL-MS validation
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
+
 from validation import get_input_information
 
 class cx_validation(get_input_information):

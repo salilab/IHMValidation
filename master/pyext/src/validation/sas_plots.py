@@ -1,3 +1,12 @@
+###################################
+# Script : 
+# 1) Contains class to generate SAS
+# plots 
+# 2) Inherits from SAS class
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
 import pandas as pd
 import glob
 import sys,os,math

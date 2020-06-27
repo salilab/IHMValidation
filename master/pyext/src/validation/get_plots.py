@@ -1,3 +1,12 @@
+###################################
+# Script : 
+# 1) Contains class for plots that
+# combines infromation from multiple
+# datasets 
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
 import glob
 import sys,os,re
 import ihm

@@ -1,3 +1,11 @@
+###################################
+# Script : 
+# 1) Contains class to validate models
+# built using SAS datasets
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
 import pandas as pd
 import sys,os,math
 import numpy as np

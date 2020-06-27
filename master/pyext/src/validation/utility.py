@@ -1,3 +1,12 @@
+###################################
+# Script : 
+# 1) Contains trivial and useful
+# functions
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
+
 import pandas as pd
 import sys,os,glob
 import numpy as np

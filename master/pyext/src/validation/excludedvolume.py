@@ -1,4 +1,11 @@
-
+###################################
+# Script : 
+# 1) Contains class for excluded 
+# volume calculation
+#
+# ganesans - Salilab - UCSF
+# ganesans@salilab.org
+###################################
 from validation import get_input_information
 import ihm
 import multiprocessing as mp
