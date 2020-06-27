@@ -8,6 +8,12 @@
 
 - `src`  relevant source code for execution
 
+- `static`  relevant css/js files for flaskapp
+
+- `templates_flask`  all HTML templates for HTML and PDF reports
+
+- `tests`  tests for classes
+
 ## List of classes:
 
 - `WriteReport`  class to write dictionary for jinja2, HTML and PDF outputs
