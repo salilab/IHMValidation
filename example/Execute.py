@@ -86,8 +86,6 @@ options_supp = {
     'header-spacing':'5'
 }
 
-#sys.path.append('/home/ganesans/PDB-dev/master/pyext/src/table')
-#sys.path.append('/home/ganesans/PDB-dev/master/pyext/src/table/images')
 d=datetime.datetime.now();t=pytz.timezone("America/Los_Angeles");d1=t.localize(d)
 timestamp=d1.strftime("%B %d, %Y --  %I:%M %p")
 
