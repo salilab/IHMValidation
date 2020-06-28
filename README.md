@@ -10,9 +10,11 @@
 
 - `static`  relevant css/js files for flaskapp
 
-- `templates_flask`  all HTML templates for HTML and PDF reports
+- `templates`  all HTML templates for HTML and PDF reports
 
 - `tests`  tests for classes
+
+- `example`  example script to create PDF files
 
 ## List of classes:
 

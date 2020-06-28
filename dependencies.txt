@@ -15,3 +15,5 @@ subprocess
 pickle
 requests
 wkhtmltopdf
+ATSAS
+Molprobity
