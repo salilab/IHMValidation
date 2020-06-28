@@ -9,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>PDB-Dev Validation Report Landing Page</title>
     <!-- add bootstrap css file -->
-    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="screen, projection, print">
-    <link rel="stylesheet" type="text/css" href="../css/main.css" media="screen, projection, print">
+    <link rel="stylesheet" type="text/css" href="../../static/css/bootstrap.min.css" media="screen, projection, print">
+    <link rel="stylesheet" type="text/css" href="../../static/css/main.css" media="screen, projection, print">
     <style>
         @charset "UTF-8";
             /* CSS Document */
@@ -73,9 +73,9 @@ img {
 
 
     </style>
-    <script type="text/javascript" src="../js/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src='../js/main.js'></script>
+    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src='../../static/js/main.js'></script>
 </head>
 
 <body>
@@ -104,7 +104,7 @@ img {
     <div class="card-body border-success" style="border-color: solid black" align='center' ;>
               <div class="row">
             <div class="col-lg-12">
-                <img src="../static/images/logo11.png" alt="PDB" align="center" style="width:20%">
+                <img src="../../static/images/logo11.png" alt="PDB" align="center" style="width:20%">
                 <p style=margin-bottom:1cm;> </p>
             </div>
         </div>
@@ -170,7 +170,7 @@ img {
                     <h3 align="center"><a name='qual'>Overall quality</a></h3>
                     <div class="box text-center container-fluid no-padding" align='center'>
                         <script>
-                        var section = '<iframe src=../static/images/' + {{ID_w}}  + 'quality_at_glance_MQ.svg frameborder=0 scrolling=yes width=100% height=250vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
+                        var section = '<iframe src=images/' + {{ID_w}}  + 'quality_at_glance_MQ.svg frameborder=0 scrolling=yes width=100% height=250vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
                         document.write(section);
                         </script>
                     </div>
@@ -187,7 +187,7 @@ img {
                         <script>
                             if ({{sas}}.length > 0) {
 
-                        var section = '<iframe src=../static/images/' + {{ID_w}}  + 'quality_at_glance_DQ.svg frameborder=0 scrolling=yes width=100% height=250vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
+                        var section = '<iframe src=images/' + {{ID_w}}  + 'quality_at_glance_DQ.svg frameborder=0 scrolling=yes width=100% height=250vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
                         document.write(section);}
                         </script>
                     </div>
@@ -204,7 +204,7 @@ img {
                         <script>
                             if ({{number_of_fits}}  > 0) {
 
-                        var section = '<iframe src=../static/images/' + {{ID_w}}  + 'quality_at_glance_FQ.svg frameborder=0 scrolling=yes width=100% height=300vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
+                        var section = '<iframe src=images/' + {{ID_w}}  + 'quality_at_glance_FQ.svg frameborder=0 scrolling=yes width=100% height=300vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
                         document.write(section);}
                         </script>
                     </div>
@@ -353,13 +353,13 @@ img {
 
                             var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding align=center>';
 
-                            ex4 += '<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'intensities.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex4 += '<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'intensities.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
 
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center>';
 
-                            ex5 += '<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'intensities_log.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'intensities_log.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:0.5cm;> </p>';
@@ -391,11 +391,11 @@ img {
                             document.write(ex13)
 
                             var ex14 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding align=center style=height:60vh>';
-                            ex14 +='<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'porod.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex14 +='<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'porod.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex14)
 
                             var ex15 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh >';
-                            ex15 += '<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'Kratky.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex15 += '<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'Kratky.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex15)
                             var ex16 ='</div></div> </div>';
                             ex16 +='<p style=margin-bottom:0.5cm;> </p>';
@@ -416,22 +416,22 @@ img {
                             var ex19 ='<p align=justify> <u> P(r) for '+ sasdb_code[i]+':</u> The value of P(r) should be zero beyond r=Dmax. </p>'; 
                             document.write(ex19)
                             var ex20 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding  align=center style=height:60vh>';
-                            ex20 +='<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf.svg  frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex20 +='<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'pddf.svg  frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex20)
 
                             var ex21 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh >';
-                            ex21 += '<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf_int.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex21 += '<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'pddf_int.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex21)
 
                             var ex21a ='<p align=justify> <u> Residuals and error weighted residuals for P(r) analysis for  '+ sasdb_code[i]+'</u>: Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis.</p>'; 
                             document.write(ex21a)
 
                             var ex21b ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding align=center style=height:60vh>';
-                            ex21b +='<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf_residuals.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex21b +='<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'pddf_residuals.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex21b)
 
                             var ex21c ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh >';
-                            ex21c += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+'pddf_residuals_wt.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex21c += '<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'pddf_residuals_wt.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex21c)
 
 
@@ -454,11 +454,11 @@ img {
                             document.write(ex25)
 
                             var ex26 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding align=center style=height:60vh>';
-                            ex26 +='<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'guinier.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex26 +='<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'guinier.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex26)
 
                             var ex27 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh >';
-                            ex27 += '<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+'guinier_residuals.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex27 += '<iframe src=images/' + {{ID_w}} + sasdb_code[i]+'guinier_residuals.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex27)
                             var ex28 ='</div></div> </div>';
                             ex28 +='<p style=margin-bottom:0.5cm;> </p>';
@@ -630,15 +630,15 @@ img {
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding align=center style=height:60vh >';
-                            ex4 +='<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+String(j)+'fit1.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=images/' + {{ID_w}} + sasdb_code[i]+String(j)+'fit1.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh  >';
-                            ex5 += '<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+ String (j)+'residuals.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=images/' + {{ID_w}} + sasdb_code[i]+ String (j)+'residuals.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
 
                             var ex6 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh  >';
-                            ex6 += '<iframe src=../static/images/' + {{ID_w}} + sasdb_code[i]+ String (j)+'residuals_wt.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex6 += '<iframe src=simages/' + {{ID_w}} + sasdb_code[i]+ String (j)+'residuals_wt.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex6)
 
                             var ex7 ='</div></div> </div>';
@@ -700,13 +700,10 @@ img {
 
 
 
-    <script type="text/javascript" src="../js/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src='../js/main.js'></script>
-    <script src="../js/jquery-3.3.1.min.js" type="text/javascript"></script>
-    <script src="../js/popper1.12.9.min.js" type="text/javascript"></script>
-    <script src="../js/bootstrap4.1.3.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="../js/bootstrap3-typeahead.min.js"></script>
+    <script src="../../static/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="../../static/js/popper1.12.9.min.js" type="text/javascript"></script>
+    <script src="../../static/js/bootstrap4.1.3.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap3-typeahead.min.js"></script>
     </div>
 </body>
 
