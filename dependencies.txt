@@ -5,7 +5,7 @@ jinja2
 pandas
 numpy
 pdfkit
-flask
+flask #required only if you want to visualize HTML files
 multiprocessing
 collections
 json

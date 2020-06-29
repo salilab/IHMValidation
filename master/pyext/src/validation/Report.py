@@ -178,8 +178,8 @@ class WriteReport(object):
 			I_sas_plt.plot_multiple()
 			I_sas_plt.plot_pf()
 			I_sas_plt.plot_Guinier()
-			#if Template_Dict['number_of_fits']>0:
-			#I_sas_plt.plot_fits()
+			if Template_Dict['number_of_fits']>0:
+				I_sas_plt.plot_fits()
 			#I_sas_plt.plot_residuals()
 			#I_sas.get_fit_image()
 			sas_data=I_sas.get_rg_for_plot()
