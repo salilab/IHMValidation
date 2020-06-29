@@ -24,12 +24,12 @@ class plots(validation.get_input_information):
 		super().__init__(mmcif)
 		self.ID=str(validation.get_input_information.get_id(self))
 		self.dirname=os.path.dirname(os.path.abspath(__file__))
-		self.filename = os.path.abspath(os.path.join(self.dirname, '../static/images//'))
-		self.filename_add = os.path.abspath(os.path.join(self.dirname, '../Output/static/images//'))
+		self.filename = os.path.join('Output/images//')
+		self.filename_add = os.path.join('static/images//')
 
 	def plot_quality_at_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit):
 		output_file(self.ID+"quality_at_glance.html",mode="inline")
-		print (clashscore,rama,sidechain,exv_data,sas_data,sas_fit)
+		#print (clashscore,rama,sidechain,exv_data,sas_data,sas_fit)
 		tabsI=[]
 		if clashscore or rama or sidechain:
 			counts=[clashscore,rama,sidechain]
@@ -41,7 +41,7 @@ class plots(validation.get_input_information):
 		elif exv_data:
 			model=exv_data['Models']
 			satisfaction=exv_data['Number of violations']
-			print (satisfaction)
+			#print (satisfaction)
 			counts=[float(i) for i in satisfaction]
 			Scores = ['Model '+ str(i+1) for i,j in enumerate (model)]
 			legends=['Model '+ str(i+1)+ ': ' +str(int(j))  for i,j in enumerate(counts)]
@@ -90,9 +90,6 @@ class plots(validation.get_input_information):
 			Scores=['Rg from '+ Rgl[m]+ ' ('+i+')' for i,j in sas_data.items() for m,n in enumerate(j) ]
 			counts=[float(n)for i,j in sas_data.items() for m,n in enumerate(j) ];
 			legends=[str(i)+' nm' for i in counts]
-			print (Scores)
-			print (counts)
-			print (legends)
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
 			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Data Quality: Rg Analysis")
 			pd.hbar(y='Scores',right='counts', height=0.5, color='color', legend="legends", source=source,alpha=0.8)
@@ -117,9 +114,6 @@ class plots(validation.get_input_information):
 			Scores=['\u03C7\u00b2 value fit '+ str(int(m+1)) +' ('+i+')' for i,j in sas_fit.items() for m,n in enumerate(j)]
 			counts=[ float(n) for i,j in sas_fit.items() for m,n in enumerate(j)]
 			legends=[str(i) for i in counts]
-			print (Scores)
-			print (counts)
-			print (legends)
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
 			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to SAS input: \u03C7\u00b2 Fit")
 			pf.hbar(y='Scores',right='counts', height=0.25*len(list(sas_fit.values())[0]), color='color', legend="legends", source=source,alpha=0.8)

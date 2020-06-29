@@ -594,7 +594,7 @@ class sas_validation(get_input_information):
                     if fit.status_code !=200:
                         print ("Error....unable to fetch data from SASBDB, please check the entry ID")
                     dirname=os.path.dirname(os.path.abspath(__file__))
-                    filename = os.path.abspath(os.path.join(dirname, '../static/images/',self.ID+key+str(i)+'fit.png'))
+                    filename = os.path.abspath(os.path.join(os.getcwd(), 'static/images/',self.ID+key+str(i)+'fit.png'))
                     with open (filename,'wb') as f:
                         f.write(fit.content)
 

@@ -31,6 +31,8 @@ class sas_validation_plots(sas.sas_validation):
         self.pdf_ext_dict=sas.sas_validation.get_pofr_ext(self)
         self.pdf_dict_err=sas.sas_validation.get_pofr_errors(self)
         self.score,self.gdf=sas.sas_validation.get_Guinier_data(self)
+        self.filename = os.path.join('Output/images//')
+        self.filename_add = os.path.join('static/images//')
 
     def plot_intensities(self,sasbdb,df):
         output_file(self.ID+sasbdb+"intensities.html",mode="inline")
@@ -47,16 +49,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"intensities.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"intensities.html")
         p.output_backend="svg"
-        export_svgs(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"intensities.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"intensities.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"intensities.html")
-        export_svgs(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"intensities.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"intensities.png")
+        export_svgs(p,height=500, width=500,filename=self.filename+'/'+self.ID+sasbdb+"intensities.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities.html")
+        export_svgs(p,height=500, width=500,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities.svg")
 
 
     def plot_intensities_log(self,sasbdb,df):
@@ -74,16 +71,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"intensities_log.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"intensities_log.html")
         p.output_backend="svg"
-        export_svgs(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"intensities_log.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"intensities_log.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"intensities_log.html")
-        export_svgs(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"intensities_log.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"intensities_log.png")
+        export_svgs(p,height=500, width=500,filename=self.filename+'/'+self.ID+sasbdb+"intensities_log.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities_log.html")
+        export_svgs(p,height=500, width=500,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities_log.svg")
 
     def plot_kratky_dep(self,sasbdb,df):
         output_file(self.ID+sasbdb+"Kratky_dep.html",mode="inline")
@@ -102,16 +94,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'q\u00B2 I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"Kratky_dep.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky_dep.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"Kratky_dep.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"Kratky_dep.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"Kratky_dep.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"Kratky_dep.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"Kratky_dep.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky_dep.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky_dep.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky_dep.svg")
 
     def plot_kratky(self,sasbdb,df):
         output_file(self.ID+sasbdb+"Kratky.html",mode="inline")
@@ -130,16 +117,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'q\u00B2 Rg\u00B2 I(q)/I(0)'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"Kratky.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"Kratky.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"Kratky.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"Kratky.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"Kratky.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"Kratky.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky.svg")
 
     def plot_porod_debye(self,sasbdb,df):
         output_file(self.ID+sasbdb+"porod.html",mode="inline")
@@ -155,16 +137,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'q\u2074 I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
         p.output_backend="svg"
-        save(p,filename=filename+'/'+self.ID+sasbdb+"porod.html")
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"porod.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"porod.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"porod.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"porod.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"porod.png")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"porod.html")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"porod.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"porod.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"porod.svg")
 
     def plot_pddf(self,sasbdb,df):
         output_file(self.ID+sasbdb+"pddf.html",mode="inline") 
@@ -181,16 +158,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'P(r)'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        p.output_backend="svg"
-        save(p,filename=filename+'/'+self.ID+sasbdb+"pddf.html")
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"pddf.svg")
-        export_png(p,filename=filename+'/'+self.ID+sasbdb+"pddf.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf.svg")
-        export_png(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf.png")
+        p.output_backend="svg" 
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf.html")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf.svg")
 
     def plot_pddf_residuals(self,sasbdb,df):
         output_file(self.ID+sasbdb+"pddf_residuals.html",mode="inline")
@@ -208,16 +180,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"pddf_residuals.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"pddf_residuals.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"pddf_residuals.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf_residuals.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf_residuals.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"pddf_residuals.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals.svg")
 
     def plot_pddf_residuals_wt(self,sasbdb,df):
         output_file(self.ID+sasbdb+"pddf_residuals_wt.html",mode="inline")
@@ -235,16 +202,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'R/\u03C3'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"pddf_residuals_wt.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals_wt.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"pddf_residuals_wt.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"pddf_residuals_wt.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals_wt.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.svg")
 
     def plot_pddf_int(self,sasbdb,df_int,df_pofr):
         output_file(self.ID+sasbdb+"pddf_int.html",mode="inline")
@@ -266,16 +228,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"pddf_int.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_int.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"pddf_int.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"pddf_int.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf_int.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"pddf_int.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"pddf_int.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_int.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_int.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_int.svg")
 
     def Guinier_plot_fit(self,sasbdb,df,score):
         output_file(self.ID+sasbdb+"guinier.html",mode="inline")
@@ -295,16 +252,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"guinier.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"guinier.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"guinier.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"guinier.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"guinier.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"guinier.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier.svg")
 
     def Guinier_plot_residuals(self,sasbdb,df):
         output_file(self.ID+sasbdb+"guinier_residuals.html",mode="inline")
@@ -322,16 +274,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+"guinier_residuals.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier_residuals.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+"guinier_residuals.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+"guinier_residuals.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+"guinier_residuals.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+"guinier_residuals.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+"guinier_residuals.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier_residuals.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier_residuals.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier_residuals.svg")
 
     def plot_fit(self,sasbdb,fit,score,df):
         output_file(self.ID+sasbdb+str(fit)+"fit1.html",mode="inline")
@@ -352,16 +299,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+str(fit)+"fit1.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+str(fit)+"fit1.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"fit1.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.svg")
 
     def plot_fit_residuals(self,sasbdb,fit,df):
         output_file(self.ID+sasbdb+str(fit)+"residuals.html",mode="inline")
@@ -379,16 +321,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+str(fit)+"residuals.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+str(fit)+"residuals.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+str(fit)+"residuals.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.svg")
 
     def plot_fit_residuals_wt(self,sasbdb,fit,df):
         output_file(self.ID+sasbdb+str(fit)+"residuals_wt.html",mode="inline")
@@ -406,16 +343,11 @@ class sas_validation_plots(sas.sas_validation):
         p.xaxis.axis_label_text_font_size='14pt'
         p.yaxis.axis_label = 'R/\u03C3'
         p.yaxis.axis_label_text_font_size='14pt'
-        dirname=os.path.dirname(os.path.abspath(__file__))
-        filename = os.path.abspath(os.path.join(dirname, '../static/images/'))
-        filename_add = os.path.abspath(os.path.join(dirname, '../Output/static/images//'))
-        save(p,filename=filename+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.html")
+        save(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.html")
         p.output_backend="svg"
-        export_svgs(p,filename=filename+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.svg")
-        export_png(p,height=500, width=500,filename=filename+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.png")
-        save(p,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.html")
-        export_svgs(p,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.svg")
-        export_png(p,height=500, width=500,filename=filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.png")
+        export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.svg")
+        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.html")
+        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.svg")
 
     def plot_multiple(self):
         for key,val in self.df_dict.items():

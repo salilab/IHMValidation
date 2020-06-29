@@ -11,7 +11,7 @@ import ihm
 import multiprocessing as mp
 import pandas as pd
 import numpy as np
-import math
+import math,os
 from multiprocessing import Process, Queue, Pool, Manager
 
 
@@ -62,8 +62,8 @@ class get_excluded_volume(get_input_information):
 
         model_spheres={i+1:[j.x,j.y,j.z,j.radius,j.asym_unit._id,model_ID] for i,j in enumerate(spheres)}
         model_spheres_df=pd.DataFrame(model_spheres, index=['X','Y','Z','R','Chain_ID','Model_ID'])
-        print (model_spheres_df.head())
-        print (model_spheres_df.tail())
+        #print (model_spheres_df.head())
+        #print (model_spheres_df.tail())
         return model_spheres_df
 
     def get_violation_dict(self,model_spheres_df):
@@ -90,9 +90,9 @@ class get_excluded_volume(get_input_information):
             excluded_volume['Excluded Volume Satisfaction'].append(round(self.get_violation_percentage(df,self.get_violation_dict(df)),2))
             excluded_volume['Number of violations'].append(sum(list(self.get_violation_dict(df).values())))
         f_exv=open(os.path.join(os.getcwd(),'static/results/',self.ID+'exv.txt'),'w+')
-        print (excluded_volume['Models'], file=f_exv)
-        print (excluded_volume['Excluded Volume Satisfaction'],file=f_exv)
-        print (excluded_volume['Number of violations'], file=f_exv)
+        #print (excluded_volume['Models'], file=f_exv)
+        #print (excluded_volume['Excluded Volume Satisfaction'],file=f_exv)
+        #print (excluded_volume['Number of violations'], file=f_exv)
         return excluded_volume
 
     def get_exc_vol_for_models_normalized(self,model_dict):
@@ -107,7 +107,7 @@ class get_excluded_volume(get_input_information):
     def get_exc_vol_given_sphere_parallel(self,sphere_list):
         """ """
         df=self.get_xyzr(sphere_list)
-        print (df)
+        #print (df)
         violation_dict=self.get_violation_dict(df)
         satisfaction=round(self.get_violation_percentage(df,violation_dict),2)
         violations=sum(list(violation_dict.values()))
@@ -121,10 +121,10 @@ class get_excluded_volume(get_input_information):
         excluded_volume={'Models':list(model_dict.keys()),'Excluded Volume Satisfaction':[i[0] for i in complete_list], 'Number of violations':[i[1] for i in complete_list]}
 
         #excluded_volume={'Models':list(model_dict.keys()),'Excluded Volume Satisfaction':[i[0] for i in complete_list], 'Number of violations':[(int(i[1]),int((i[1]/(1-0.01*i[0])))) for i in complete_list]}
-        f_exv=open(os.path.join(os.getcwd(),'static/results/',self.ID+'exv.txt'),'w+')
-        print (excluded_volume['Models'], file=f_exv)
-        print (excluded_volume['Excluded Volume Satisfaction'],file=f_exv)
-        print (excluded_volume['Number of violations'], file=f_exv)
+        f_exv=open(os.path.join(os.getcwd(),'Output/',self.ID+'exv.txt'),'w+')
+        #print (excluded_volume['Models'], file=f_exv)
+        #print (excluded_volume['Excluded Volume Satisfaction'],file=f_exv)
+        #print (excluded_volume['Number of violations'], file=f_exv)
         return excluded_volume
 
     def exv_readable_format(self,exv):

@@ -8,7 +8,7 @@
 # ganesans@salilab.org
 ###################################
 
-import pytzi
+import pytz
 import jinja2
 import pandas as pd
 import sys,os,glob
@@ -74,20 +74,20 @@ class WriteReport(object):
 			exv_data=None
 			I_mp=molprobity.get_molprobity_information(self.mmcif_file)
 			if I_mp.check_for_molprobity():
-				dirname=os.path.normpath(os.getcwd() + os.sep + os.pardir)
-				filename = os.path.abspath(os.path.join(dirname, 'working/Output/static/results/',str(Template_Dict['ID'])+'_temp_mp.txt'))
+				filename = os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_mp.txt'))
+				print (filename)
 				if os.path.exists(filename):
 					d_mp={}
 					print ("Molprobity analysis file already exists...\n...assuming clashscores, Ramachandran and rotamer outliers have already been calculated")
 					with open(filename,'rb') as fp:
 						d_mp['molprobity']=pickle.load(fp)
-					f_rota=os.path.abspath(os.path.join(dirname, 'working/Output/static/results/',str(Template_Dict['ID'])+'_temp_rota.txt'))
+					f_rota=os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_rota.txt'))
 					with open(f_rota,'rb') as fp:
 						d_mp['rota']=pickle.load(fp)
-					f_rama=os.path.abspath(os.path.join(dirname, 'working/Output/static/results/',str(Template_Dict['ID'])+'_temp_rama.txt'))
+					f_rama=os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_rama.txt'))
 					with open(f_rama,'rb') as fp:
 						d_mp['rama']=pickle.load(fp)
-					f_clash=os.path.abspath(os.path.join(dirname, 'working/Output/static/results/',str(Template_Dict['ID'])+'_temp_clash.txt'))
+					f_clash=os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_clash.txt'))
 					with open(f_clash,'rb') as fp:
 						d_mp['clash']=pickle.load(fp)
 				else:
@@ -134,7 +134,7 @@ class WriteReport(object):
 					Template_Dict['assess_excluded_volume']=['Not applicable']
 		else:
 			Template_Dict['assess_atomic_segments']='Not applicable'
-			file=os.getcwd()+'/static/results/'+str(Template_Dict['ID'])+'exv.txt'
+			file=os.getcwd()+'Output/results/'+str(Template_Dict['ID'])+'exv.txt'
 			if os.path.exists(file):
 				print ("Excluded volume file already exists...")
 				with open(file, 'r+') as inf:
@@ -174,17 +174,14 @@ class WriteReport(object):
 				Template_Dict['validation_input']=['Fit of model to data has not been deposited']
 			I_sas_plt=validation.sas_plots.sas_validation_plots(self.mmcif_file)
 			I_sas.modify_intensity()
-			I_sas.get_pofr_errors()
-			'''
+			I_sas.get_pofr_errors()	
 			I_sas_plt.plot_multiple()
 			I_sas_plt.plot_pf()
 			I_sas_plt.plot_Guinier()
 			#if Template_Dict['number_of_fits']>0:
-			I_sas_plt.plot_fits()
+			#I_sas_plt.plot_fits()
 			#I_sas_plt.plot_residuals()
-			'''
-			I_sas.get_fit_image()
-			
+			#I_sas.get_fit_image()
 			sas_data=I_sas.get_rg_for_plot()
 			sas_fit=I_sas.get_fits_for_plot()
 
