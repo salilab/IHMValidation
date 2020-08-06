@@ -26,6 +26,28 @@ import argparse
 import json
 from validation import utility
 
+def get_all_files(path_dir):
+    return glob.glob(path_dir)
+
+def runInParallel(*fns):
+  proc = []
+  for fn in fns:
+    p = Process(target=fn,args=d)
+    p.start()
+    proc.append(p)
+  for p in proc:
+    p.join()
+
+def runInParallel_noargs(*fns):
+  proc = []
+  for fn in fns:
+    p = Process(target=fn)
+    p.start()
+    proc.append(p)
+  for p in proc:
+    p.join()
+
+
 class WriteReport(object):
 	def __init__(self,mmcif_file):
 		self.mmcif_file = mmcif_file
@@ -54,6 +76,8 @@ class WriteReport(object):
 		Template_Dict['Molecule']=self.I.get_struc_title()
 		Template_Dict['Title']=self.I.get_title()
 		Template_Dict['Authors']=self.I.get_authors()
+		#print (self.I.get_composition())
+
 		Template_Dict['Entry_list']=utility.dict_to_JSlist(self.I.get_composition())
 		Template_Dict['number_of_molecules']=self.I.get_number_of_models()
 		Template_Dict['model_names']=self.I.get_model_names()
@@ -64,6 +88,9 @@ class WriteReport(object):
 		Template_Dict['Datasets_list']=utility.dict_to_JSlist(self.I.get_dataset_comp())
 		Template_Dict['Protocols_number']=self.I.get_protocol_number()
 		Template_Dict['Sampling_list']=utility.dict_to_JSlist(self.I.get_sampling())
+		#print (self.I.get_composition())
+		#print ("c1",int(len(self.I.get_composition()['Chain ID'])))
+		#print ("c2",int(len(list(Counter(self.I.get_composition()['Model ID']).keys()))))
 		Template_Dict['num_chains']=int(len(self.I.get_composition()['Chain ID']))/int(len(list(Counter(self.I.get_composition()['Model ID']).keys())))
 		return Template_Dict
 
@@ -74,20 +101,20 @@ class WriteReport(object):
 			exv_data=None
 			I_mp=molprobity.get_molprobity_information(self.mmcif_file)
 			if I_mp.check_for_molprobity():
-				filename = os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_mp.txt'))
+				filename = os.path.abspath(os.path.join(os.getcwd(), 'static/results/',str(Template_Dict['ID'])+'_temp_mp.txt'))
 				print (filename)
 				if os.path.exists(filename):
 					d_mp={}
 					print ("Molprobity analysis file already exists...\n...assuming clashscores, Ramachandran and rotamer outliers have already been calculated")
 					with open(filename,'rb') as fp:
 						d_mp['molprobity']=pickle.load(fp)
-					f_rota=os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_rota.txt'))
+					f_rota=os.path.abspath(os.path.join(os.getcwd(), 'static/results/',str(Template_Dict['ID'])+'_temp_rota.txt'))
 					with open(f_rota,'rb') as fp:
 						d_mp['rota']=pickle.load(fp)
-					f_rama=os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_rama.txt'))
+					f_rama=os.path.abspath(os.path.join(os.getcwd(), 'static/results/',str(Template_Dict['ID'])+'_temp_rama.txt'))
 					with open(f_rama,'rb') as fp:
 						d_mp['rama']=pickle.load(fp)
-					f_clash=os.path.abspath(os.path.join(os.getcwd(), 'Output/results/',str(Template_Dict['ID'])+'_temp_clash.txt'))
+					f_clash=os.path.abspath(os.path.join(os.getcwd(), 'static/results/',str(Template_Dict['ID'])+'_temp_clash.txt'))
 					with open(f_clash,'rb') as fp:
 						d_mp['clash']=pickle.load(fp)
 				else:
@@ -112,7 +139,10 @@ class WriteReport(object):
 				Template_Dict['assess_atomic_segments']='Clashscore: '+ str(clashscore) + ', Ramachandran outliers: '+ str(rama)+ '% '+', Sidechain outliers: '+str(sidechain)+'%'
 				Template_Dict['assess_excluded_volume']=['Not applicable']
 			else:
-				self.I.rewrite_mmcif()
+				if I_mp.check_for_molprobity()==False:
+					self.I.rewrite_mmcif()
+					I_mp=molprobity.get_molprobity_information('test.cif')
+					print ("file rewritten")
 				if I_mp.check_for_molprobity():
 					print ("Molprobity analysis is being calculated...")
 					manager = Manager()
@@ -132,6 +162,7 @@ class WriteReport(object):
 					Template_Dict['clashlist']=I_mp.clash_detailed_table(d_mp['clash'])
 					Template_Dict['assess_atomic_segments']='Clashscore: '+ str(clashscore) + ', Ramachandran outliers: '+ str(rama)+ '% '+', Sidechain outliers: '+str(sidechain)+'%'
 					Template_Dict['assess_excluded_volume']=['Not applicable']
+                            
 		else:
 			Template_Dict['assess_atomic_segments']='Not applicable'
 			file=os.getcwd()+'Output/results/'+str(Template_Dict['ID'])+'exv.txt'
@@ -216,6 +247,7 @@ class WriteReport(object):
 		Template_Dict['complex_name']=self.I.get_struc_title().lower()
 		Template_Dict['PDB_ID']=self.I.get_id()
 		Template_Dict['Subunits']=utility.get_subunits(self.I.get_composition())
+		print ("info",self.I.get_dataset_details())
 		Template_Dict['datasets']=utility.get_datasets(self.I.get_dataset_details()) if self.I.get_dataset_details() is not None else 'Not provided or used'
 		Template_Dict['physics']=physics
 		Template_Dict['software']=utility.get_software(self.I.get_software_comp())+ location

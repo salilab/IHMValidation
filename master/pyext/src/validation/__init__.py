@@ -146,11 +146,36 @@ class get_input_information(object):
         entry_comp={'Model ID':[],'Subunit number':[],'Subunit ID':[],
                     'Subunit name':[],'Chain ID':[],
                     'Total residues':[]}
-        for i,j in self.get_model_assem_dict().items():
-            for m in self.system.orphan_assemblies:
-                if int(m._id)==int(j):
-                    count=0
+        #print ("assem",self.system.orphan_assemblies,len(self.system.orphan_assemblies))
+        #print ("assem len",len(self.system.orphan_assemblies))
+        #print ("assemdict",max(self.get_model_assem_dict().values()))
+        if (bool(self.get_model_assem_dict())):
+            for i,j in self.get_model_assem_dict().items():
+                for m in self.system.orphan_assemblies:
+                    if int(m._id)==int(j):
+                        count=0
+                        for n in m:
+                            try:
+                                count += 1
+                                entry_comp['Model ID'].append(i)
+                                entry_comp['Subunit number'].append(count)
+                                entry_comp['Subunit ID'].append(n.entity._id)
+                                entry_comp['Subunit name'].append(str(n.entity.description))
+                                entry_comp['Chain ID'].append(n._id)
+                                entry_comp['Total residues'].append(self.get_residues(n))
+                            except AttributeError:
+                                break
+        else:
+            print ("ex",self.system.orphan_assemblies)
+            print (self.system.state_groups)
+
+            for i,m in enumerate(self.system.orphan_assemblies):
+                count=0
+                if len(m)>0:
                     for n in m:
+                        print (n)
+                        print (n.sequence)
+                        print (n.parent)
                         try:
                             count += 1
                             entry_comp['Model ID'].append(i)
@@ -161,6 +186,7 @@ class get_input_information(object):
                             entry_comp['Total residues'].append(self.get_residues(n))
                         except AttributeError:
                             break
+     
         return entry_comp
 
     def get_protocol_number(self):
@@ -292,13 +318,35 @@ class get_input_information(object):
             ensemble_comp={'Ensemble number':[],'Ensemble name':[],'Model ID':[],'Number of models':[],
                         'Clustering method': [], 'Clustering feature': [], 'Cluster precision':[]}
             for i in s:
-                ensemble_comp['Ensemble number'].append(str(i._id))
-                ensemble_comp['Ensemble name'].append(str(i.name))
-                ensemble_comp['Model ID'].append(str(i.model_group._id))
-                ensemble_comp['Number of models'].append(str(i.num_models))
-                ensemble_comp['Clustering method'].append(str(i.clustering_method))
-                ensemble_comp['Clustering feature'].append(str(i.clustering_feature))
-                ensemble_comp['Cluster precision'].append(str(i.precision))
+                try:
+                    ensemble_comp['Ensemble number'].append(str(i._id))
+                except: 
+                    ensemble_comp['Ensemble number'].append('N/A')
+                try:
+                    ensemble_comp['Ensemble name'].append(str(i.name))
+                except:
+                    ensemble_comp['Ensemble name'].append('N/A')
+                try:
+                    ensemble_comp['Model ID'].append(str(i.model_group._id))
+                except:
+                    ensemble_comp['Model ID'].append('N/A')
+                try:
+                    ensemble_comp['Number of models'].append(str(i.num_models))
+                except:
+                    ensemble_comp['Number of models'].append('N/A')
+                try:
+                    ensemble_comp['Clustering method'].append(str(i.clustering_method))
+                except:
+                    ensemble_comp['Clustering method'].append('N/A')
+                try:
+                    ensemble_comp['Clustering feature'].append(str(i.clustering_feature))
+                except:
+                    ensemble_comp['Clustering feature'].append('N/A')
+                try:
+                    ensemble_comp['Cluster precision'].append(str(i.precision))
+                except:
+                    ensemble_comp['Cluster precision'].append('N/A')
+
             return ensemble_comp
         else:
             return None
@@ -306,6 +354,8 @@ class get_input_information(object):
     def get_dataset_xl_info(self,id):
         """Get dataset XL info given dataset ID"""
         restraints=self.get_restraints()
+        print (restraints)
+        print (id)
         lt='Linker name and number of cross-links: %s' % (restraints['Restraint info'][restraints['Dataset ID'].index(id)])
         return (lt)
 
@@ -375,7 +425,10 @@ class get_input_information(object):
         for j,i in enumerate(r):
             restraints_comp['ID'].append(j+1)
             restraints_comp['Restraint type'].append(str(i.__class__.__name__))
-            restraints_comp['Dataset ID'].append(str(i.dataset._id))
+            try:
+                restraints_comp['Dataset ID'].append(str(i.dataset._id))
+            except:
+                restraints_comp['Dataset ID'].append('N/A')
             if 'CrossLink' in str(i.__class__.__name__):
                 restraints_comp['Restraint info'].append(str(i.linker.auth_name)+', '+str(len(i.experimental_cross_links))+' cross-links')
             if 'EM3D' in str(i.__class__.__name__):
@@ -391,12 +444,19 @@ class get_input_information(object):
                 restraints_comp['Restraint info'].append('Details: '+str(i.details))
             if 'DerivedDistance' in str(i.__class__.__name__):
                 dic=self.dataset_id_type_dic()
-                ID=str(i.dataset._id)
+                try:
+                    ID=str(i.dataset._id)
+                except:
+                    ID='N/A'
                 #restraints_comp['Restraint info'].append(dic[ID])
                 if 'UpperBound' in str(i.distance.__class__.__name__):
                     restraints_comp['Restraint info'].append(('Upper Bound Distance: '+str(i.distance.distance)))
                 else:
-                    restraints_comp['Restraint info'].append(['restraint type '+ str(i.distance.__class__.__name__),dic[ID]])
+                    if ID !='N/A':
+                        restraints_comp['Restraint info'].append(['restraint type '+ str(i.distance.__class__.__name__),dic[ID]])
+                    else:
+                        restraints_comp['Restraint info'].append(['restraint type '+ str(i.distance.__class__.__name__),ID])
+
         return (restraints_comp) 
     
     def get_dataset_details(self):
@@ -405,29 +465,37 @@ class get_input_information(object):
         lists=self.system.orphan_datasets
         if len(lists)>0:
             for i in lists:
+                print ("class",i.__class__.__name__,i.location)
+
+                dataset_comp['ID'].append(i._id)
                 try:
                     loc=i.location.db_name
-                except AttributeError as error:
+                except:
                     loc=str('')
                 try:
                     acc=i.location.access_code
-                except AttributeError as error:
+                except:
                     acc=str('Not listed')
-                dataset_comp['ID'].append(i._id)
+
+                dataset_comp['Database name'].append(str(loc))
+
                 if i.data_type=='unspecified' and i.details is not None:
                     dataset_comp['Dataset type'].append(i.details)
                 else:
                     dataset_comp['Dataset type'].append(i.data_type)
-                dataset_comp['Database name'].append(str(loc))
+                                
                 if 'ComparativeModel' in str(i.__class__.__name__):
                     acc1='template PDB ID: '+ acc
                     dataset_comp['Details'].append(acc1)
                 elif 'PDB' in str(i.__class__.__name__):
                     acc1='PDB ID: '+ acc
                     dataset_comp['Details'].append(acc1)
-                elif 'CX' in str(i.__class__.__name__):
+                elif 'CX' in str(i.__class__.__name__) and loc=='':
                     acc1=self.get_dataset_xl_info(i._id)
                     dataset_comp['Details'].append(acc1)
+                elif 'CX' in str(i.__class__.__name__) and len(loc)>1:
+                    acc=i.location.access_code
+                    dataset_comp['Details'].append(acc)
                 elif 'EM' in str(i.__class__.__name__):
                     acc1='EMDB ID: '+acc
                     dataset_comp['Details'].append(acc1)
@@ -518,11 +586,11 @@ class get_input_information(object):
                 if len(j)<=index_occu:
                     j.extend(['1'])
                 elif j[index_occu]=='.':
-                    j[index_occu]='1'
+                    j[index_occu]='0.67'
                 if len(j)<=index_biso:
                     j.extend(['1'])
                 elif j[index_biso]=='.':
-                    j[index_biso]='1'
+                    j[index_biso]='0.00'
                 atoms[i]=j
             elif len(j)> 0 and  (i > list(atom_site.keys())[-1]):
                 if len(after_atom)==0:
@@ -536,8 +604,9 @@ class get_input_information(object):
         if os.path.isfile('test.cif'):
             os.remove('test.cif')
         file_re=open('test.cif','w')
-        for i, j in enumerate(before_atom_site):
+        for i, j in enumerate(before_atom_site[:-1]):
             file_re.write(' '.join(j)+'\n')
+            print (i,j,"before_atom_site")
         for i, j in atom_site.items():
             file_re.write(''.join(j)+'\n')
         for i,j in atoms.items():

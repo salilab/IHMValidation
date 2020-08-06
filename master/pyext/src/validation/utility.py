@@ -180,7 +180,7 @@ def get_subunits(sub_dict):
 
 def get_datasets(data_dict):
     n=len(data_dict['ID'])
-    print (data_dict)
+    print ("data",data_dict)
     datalist=['%s, %s' % (data_dict['Dataset type'][i],data_dict['Details'][i]) for i in range(0,n)]
     return datalist
 
@@ -211,11 +211,24 @@ def get_method_type(sample_dict):
     return datalist.replace('monte carlo','Monte Carlo')
 
 def get_restraints_info(restraints):
-    n=len(restraints['Restraint type'])
-    datalist=[]
-    dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,n)]
-    for i,j in Counter(dataset).items():
-        datalist.append(['%s unique %s: %s' % (j,i[1],i[0])])
+    if len(restraints['Restraint info'])==len(restraints['Restraint type']):
+        n=len(restraints['Restraint info'])
+        datalist=[]
+        dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,n) if i is not None]
+        for i,j in Counter(dataset).items():
+            datalist.append(['%s unique %s: %s' % (j,i[1],i[0])])
+    elif len(restraints['Restraint info'])>len(restraints['Restraint type']): 
+        n=len(restraints['Restraint type'])
+        datalist=[]
+        dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,n) if i is not None]
+        for i,j in Counter(dataset).items():
+            datalist.append(['%s unique %s: %s' % (j,i[1],i[0])])
+    else:
+        n=len(restraints['Restraint info'])
+        datalist=[]
+        dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,n) if i is not None]
+        for i,j in Counter(dataset).items():
+            datalist.append(['%s unique %s: %s' % (j,i[1],i[0])])
     return datalist
 
 def format_list_text(sublist):

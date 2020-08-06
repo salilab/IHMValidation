@@ -53,7 +53,8 @@ else:
 #############################################################################################################################
 # Input for Jinja
 ####################################################################################
-config = pdfkit.configuration(wkhtmltopdf='/usr/local/include/wkhtmltox/')
+#config = pdfkit.configuration(wkhtmltopdf='/usr/local/include/wkhtmltox/')
+config = pdfkit.configuration(wkhtmltopdf='/home/ganesans/PDB-dev/master/pyext/wkhtmltox/bin/wkhtmltopdf')
 options = {
     'page-size': 'Letter',
     'margin-top': '0.5in',
@@ -173,7 +174,7 @@ if __name__ == "__main__":
     template_dict,clashscore,rama,sidechain,exv_data=report.run_model_quality(template_dict)
     template_dict,sas_data,sas_fit=report.run_sas_validation(template_dict)
     report.run_quality_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit)
-    write_pdf(args.f,template_dict,template_pdf,dirNames[0],dirNames[0])
+    #write_pdf(args.f,template_dict,template_pdf,dirNames[0],dirNames[0])
     template_dict=report.run_supplementary_table(template_dict,
                                                 location=args.ls,
                                                 physics=physics,
@@ -184,7 +185,7 @@ if __name__ == "__main__":
                                                 Data_quality=args.dv,
                                                 clustering=args.c,
                                                 resolution=args.res)
-    write_supplementary_table(args.f,template_dict,template_file_supp,dirNames[2],dirNames[2])
+    #write_supplementary_table(args.f,template_dict,template_file_supp,dirNames[2],dirNames[2])
     #for i in template_flask:
     #    write_html(template_dict,template_flask_main,dirNames[-2])
     utility.clean_all()
