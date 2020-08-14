@@ -34,8 +34,20 @@ class sas_validation(get_input_information):
                 SAS_db_codes.append(self.dataset['Data access code'][i])
         #print (SAS_db_codes)
         return SAS_db_codes
-    
+
+    def clean_SASBDB_code(self):
+        '''
+        function to clean SASBDB list of codes
+        as some might have 'None' or can be repetitive 
+        '''
+        codes=list(set(self.get_SASBDB_code()))
+        cleaned_code=[i for i in codes if i != 'None']
+        return cleaned_code
+        
     def get_data_from_SASBDB(self):
+        '''
+        get data from JSON
+        '''
         url='https://www.sasbdb.org/rest-api/entry/summary/'
         data_dic={}
         for i in self.get_SASBDB_code():
@@ -52,6 +64,9 @@ class sas_validation(get_input_information):
         return data_dic
 
     def get_sascif_file(self):
+        '''
+        get data from SASCIF files
+        '''
         url='https://www.sasbdb.org/media/sascif/sascif_files/'
         for i in self.get_SASBDB_code():
             if 'None' not in str(i):
@@ -63,6 +78,9 @@ class sas_validation(get_input_information):
                     f.write(response.text);
 
     def get_all_sascif(self,sasbdb):
+        '''
+        get a list of all lines in a SASCIF file
+        '''
         if 'None' not in str(sasbdb):
             file=open(sasbdb+'.sascif','r')
             all_lines=[]
@@ -71,9 +89,14 @@ class sas_validation(get_input_information):
         return all_lines
 
     def get_intensities(self):
+        '''
+        get intensity data from SASCIF file
+        if SASCIF file is not present, this information will not be present/used in the report
+        JSON file typically has raw data 
+        '''
         self.get_sascif_file()
         Int_dict={}
-        for code in self.get_SASBDB_code():
+        for code in self.clean_SASBDB_code():
             #Int_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
@@ -93,10 +116,64 @@ class sas_validation(get_input_information):
             Int_dict[code]=I_df_re
         return Int_dict
 
+    def modify_intensity(self):
+        '''
+        modify intensity data to calcualte errors and log values
+        '''
+        Int_dict=self.get_intensities()
+        Int_dict_modify={}
+        rg_and_io=self.get_rg_and_io()
+        for key,val in Int_dict.items():
+            Rg=rg_and_io[key][0]
+            IO=rg_and_io[key][1]
+            dim_num=Rg*Rg/IO
+            I_df=val.astype({'Q':float,'I':float,'E':float})
+            I_df.head()
+            I_df=I_df[I_df['I']-I_df['E']>0]
+            I_df['Q']=I_df['Q']*10
+            I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1) 
+            I_df['err_y']=I_df.apply(lambda row: (np.log(row['I']-row['E']),np.log(row['I']+row['E'])),axis=1)
+            I_df['logI']=np.log(I_df['I'])
+            I_df['logQ']=np.log(I_df['Q'])
+            I_df['logX']=I_df.apply(lambda row: (row['logQ'],row['logQ']), axis=1)
+            I_df['Ky']=I_df['Q']*I_df['Q']*I_df['I']*dim_num
+            I_df['Kx']=I_df['Q']*Rg
+            I_df['Px']=I_df['Q']**4
+            I_df['Px'].round(3)
+            I_df['Py']=I_df['Px']*I_df['I']
+            Int_dict_modify[key]=I_df
+        return Int_dict_modify
+
+    def modify_intensity_dep(self):
+        '''
+        depreciated function to get intensities from JSON/raw data
+        '''
+        Int_dict=self.get_intensities()
+        Int_dict_modify={}
+        for key,val in Int_dict.items():
+            I_df=val.astype({'Q':float,'I':float,'E':float})
+            I_df.head()
+            I_df=I_df[I_df['I']-I_df['E']>0]
+            I_df['Q']=I_df['Q']*10
+            I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1) 
+            I_df['err_y']=I_df.apply(lambda row: (np.log(row['I']-row['E']),np.log(row['I']+row['E'])),axis=1)
+            I_df['logI']=np.log(I_df['I'])
+            I_df['logQ']=np.log(I_df['Q'])
+            I_df['logX']=I_df.apply(lambda row: (row['logQ'],row['logQ']), axis=1)
+            I_df['Ky']=I_df['Q']*I_df['Q']*I_df['I']
+            I_df['Px']=I_df['Q']**4
+            I_df['Px'].round(3)
+            I_df['Py']=I_df['Px']*I_df['I']
+            Int_dict_modify[key]=I_df
+        return Int_dict_modify
+
     def get_rg_for_plot(self):
+        '''
+        get Rg values from SASCIF file, if unavailabel, get it from JSON
+        '''
         self.get_sascif_file()
         Rg_dict={}
-        for code in self.get_SASBDB_code():
+        for code in self.clean_SASBDB_code():
             rg={};
             all_lines=self.get_all_sascif(code)
             for m,n in enumerate(all_lines):
@@ -105,13 +182,61 @@ class sas_validation(get_input_information):
                 if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_Guinier' in n[0] and'sas_result.Rg_from_Guinier_' not in n[0] :
                     rg[n[0].split('.')[1]]=float(n[1])
             Rg_dict[code]=list(rg.values())
-        print (Rg_dict)
+        if len(list(rg.values()))<1:
+            data_dic=self.get_data_from_SASBDB()
+            for key,val in data_dic.items():
+                Rg_dict[key]=[]
+                Rg_dict[key].append(round(float(val['guinier_rg']),2))
+                Rg_dict[key].append(round(float(val['pddf_rg']),2))
         return Rg_dict
 
+    def get_rg_and_io(self):
+        '''
+        get rg information from SASCIF file
+        '''
+        self.get_sascif_file()
+        rg_and_io={}
+        for code in self.clean_SASBDB_code():
+            all_lines=self.get_all_sascif(code)
+            for m,n in enumerate(all_lines):
+                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_PR' in n[0] and'sas_result.Rg_from_PR_' not in n[0] :
+                    rg=float(n[1])
+                if len(n)<3 and len(n)>0 and '_sas_result.I0_from_PR' in n[0] and'_sas_result.I0_from_PR_' not in n[0] :
+                    io=float(n[1])
+            rg_and_io[code]=(rg,io)
+        return rg_and_io
+
+    def get_rg_table_many(self):
+        '''
+        get rg information from multiple SASCIF files
+        '''
+        data_dic=self.get_data_from_SASBDB()
+        rg_table={'SASDB ID':[],'Rg':[],'Rg error':[],'MW':[],'MW error':[]}        
+        for key,val in data_dic.items():
+            rg_table['Rg'].append(str(round(float(val['guinier_rg']),2))+ ' nm')
+            try:
+                rg_table['Rg error'].append(val['guinier_rg_error']+ ' nm')
+            except:
+                rg_table['Rg error'].append('N/A')
+            try:
+                rg_table['MW'].append(val['guinier_i0_mw']+ ' nm')
+            except:
+                rg_table['MW'].append('N/A')
+            try:
+                rg_table['MW error'].append(val['guinier_i0_mw_error']+ ' nm')
+            except:
+                rg_table['MW error'].append('N/A')
+            rg_table['SASDB ID'].append(key)
+        return rg_table
+
+
     def get_fits_for_plot(self):
+        '''
+        get chi-squared values from SASCIF files
+        '''
         self.get_sascif_file()
         fit_dict={}
-        for code in self.get_SASBDB_code():
+        for code in self.clean_SASBDB_code():
             fits=[];
             all_lines=self.get_all_sascif(code)
             for m,n in enumerate(all_lines):
@@ -125,8 +250,11 @@ class sas_validation(get_input_information):
         return fit_dict
 
     def get_pofr(self):
+        '''
+        get pair-dist distribution from SASCIF files
+        '''
         pofr_dict={}
-        for code in self.get_SASBDB_code():
+        for code in self.clean_SASBDB_code():
             #pofr_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
@@ -145,42 +273,11 @@ class sas_validation(get_input_information):
             pdf_re.rename(columns={'r':'R','P':'P','P_error':'E'},inplace=True)
             pofr_dict[code]=pdf_re
         return pofr_dict
-    '''
-    def create_fit_files(self):
-        self.get_sascif_file()
-        p_vals={}
-        for code in self.get_SASBDB_code():
-            all_lines=self.get_all_sascif(code)
-            p_vals[code]=[]
-            data={}
-            for m,n in enumerate(all_lines):
-                if len(n)<2 and len(n)>0 and '_sas_model_fitting.' in n[0]:
-                    data[(n[0].split('.')[1])]=[]
-                if len(n)>2 and len(all_lines[m-1])>0 and '_sas_model_fitting.' in all_lines[m-1][0]:
-                    for i,j in enumerate(all_lines[m:]):
-                        if len(j)>2 and '#' not in j and 'sas' not in j[0] :
-                            for num,key in enumerate(list(data.keys())):
-                                data[key].append(j[num])
-                        else:
-                            break
-            pdf=pd.DataFrame(list(data.values()),index=list(data.keys())).T
-            print(pdf.head())
-            fit_1=pdf[['momentum_transfer','intensity']]
-            fit_1.rename(columns={'momentum_transfer':'Q','intensity':'I'},inplace=True)
-            fit_1.to_csv('fit1.csv',header=False,index=False)
-            fit_2=pdf[['momentum_transfer','fit']]
-            fit_2.rename(columns={'momentum_transfer':'Q','fit':'I'},inplace=True)
-            fit_2.to_csv('fit2.csv',header=False,index=False)
-            f1=open('pval.txt','w+')
-            with f1 as outfile:
-                run([r"/Users/saijananiganesan/Applications/ATSAS-3.0.1-1/bin/datcmp",'fit1.csv','fit2.csv'],stdout=outfile)
-            f2=open('pval.txt','r')
-            all_lines=[j.strip().split() for i,j in enumerate(f2.readlines())]
-            p_val=   [all_lines[i+1][4] for i,j in enumerate(all_lines) if 'adj' in j][0]
-            p_vals[code].append(p_val)
-        return p_vals
-    '''
+
     def get_pvals(self):
+        '''
+        get p-values from ATSAS 
+        '''
         data_dic=self.get_data_from_SASBDB()
         num_of_fits=self.get_number_of_fits()
         pval_table={'SASDB ID':[],'Model':[],'p-value':[]}        
@@ -219,8 +316,11 @@ class sas_validation(get_input_information):
         return pval_table
 
     def get_pofr_ext(self):
+        '''
+        get pair-distance details from SASCIF files
+        '''
         pofr_dict={}
-        for code in self.get_SASBDB_code():
+        for code in self.clean_SASBDB_code():
             #pofr_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
@@ -245,10 +345,13 @@ class sas_validation(get_input_information):
         return pofr_dict
 
     def get_pofr_errors(self):
+        '''
+        get pair-distance details and errors from JSON files
+        '''
         pofr_dict=self.get_pofr_ext()
         Int_dict=self.modify_intensity()
         compiled_dict={}
-        for code in self.get_SASBDB_code():
+        for code in self.clean_SASBDB_code():
             I_df=Int_dict[code]
             I_df_dict= dict(zip(I_df.Q, I_df.I))
             I_df_err_dict= dict(zip(I_df.Q, I_df.E))
@@ -271,6 +374,9 @@ class sas_validation(get_input_information):
         return compiled_dict
 
     def findMinDiff(self,list1, num1): 
+        '''
+        quick min diff operation for calculating errors
+        '''
         list_sub=[(i,abs(j-num1)) for i,j in enumerate(list1)]
         list_sort=sorted(list_sub, key=lambda x: x[1])
         if list_sort[0][1]<0.00001:
@@ -279,65 +385,10 @@ class sas_validation(get_input_information):
         else:
             return 9999  
 
-    def get_rg_and_io(self):
-        self.get_sascif_file()
-        rg_and_io={}
-        for code in self.get_SASBDB_code():
-            all_lines=self.get_all_sascif(code)
-            for m,n in enumerate(all_lines):
-                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_PR' in n[0] and'sas_result.Rg_from_PR_' not in n[0] :
-                    rg=float(n[1])
-                if len(n)<3 and len(n)>0 and '_sas_result.I0_from_PR' in n[0] and'_sas_result.I0_from_PR_' not in n[0] :
-                    io=float(n[1])
-            rg_and_io[code]=(rg,io)
-        return rg_and_io
-
-    def modify_intensity(self):
-        Int_dict=self.get_intensities()
-        Int_dict_modify={}
-        rg_and_io=self.get_rg_and_io()
-        for key,val in Int_dict.items():
-            Rg=rg_and_io[key][0]
-            IO=rg_and_io[key][1]
-            dim_num=Rg*Rg/IO
-            I_df=val.astype({'Q':float,'I':float,'E':float})
-            I_df.head()
-            I_df=I_df[I_df['I']-I_df['E']>0]
-            I_df['Q']=I_df['Q']*10
-            I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1) 
-            I_df['err_y']=I_df.apply(lambda row: (np.log(row['I']-row['E']),np.log(row['I']+row['E'])),axis=1)
-            I_df['logI']=np.log(I_df['I'])
-            I_df['logQ']=np.log(I_df['Q'])
-            I_df['logX']=I_df.apply(lambda row: (row['logQ'],row['logQ']), axis=1)
-            I_df['Ky']=I_df['Q']*I_df['Q']*I_df['I']*dim_num
-            I_df['Kx']=I_df['Q']*Rg
-            I_df['Px']=I_df['Q']**4
-            I_df['Px'].round(3)
-            I_df['Py']=I_df['Px']*I_df['I']
-            Int_dict_modify[key]=I_df
-        return Int_dict_modify
-
-    def modify_intensity_dep(self):
-        Int_dict=self.get_intensities()
-        Int_dict_modify={}
-        for key,val in Int_dict.items():
-            I_df=val.astype({'Q':float,'I':float,'E':float})
-            I_df.head()
-            I_df=I_df[I_df['I']-I_df['E']>0]
-            I_df['Q']=I_df['Q']*10
-            I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1) 
-            I_df['err_y']=I_df.apply(lambda row: (np.log(row['I']-row['E']),np.log(row['I']+row['E'])),axis=1)
-            I_df['logI']=np.log(I_df['I'])
-            I_df['logQ']=np.log(I_df['Q'])
-            I_df['logX']=I_df.apply(lambda row: (row['logQ'],row['logQ']), axis=1)
-            I_df['Ky']=I_df['Q']*I_df['Q']*I_df['I']
-            I_df['Px']=I_df['Q']**4
-            I_df['Px'].round(3)
-            I_df['Py']=I_df['Px']*I_df['I']
-            Int_dict_modify[key]=I_df
-        return Int_dict_modify
-
     def get_Guinier_data(self):
+        '''
+        get Guinier plot data from JSON files
+        '''
         Int_dict=self.get_intensities()
         data_dic=self.get_data_from_SASBDB()
         Guinier_dict={};Guinier_score={}
@@ -368,6 +419,9 @@ class sas_validation(get_input_information):
         return Guinier_score,Guinier_dict
 
     def get_parameters_vol_many(self):
+        '''
+        get volume parameters from JSON files 
+        '''
         data_dic=self.get_data_from_SASBDB()
         parameter_table={'SASDB ID':[],'Estimated volume':[],'Estimated volume method':[],'Porod volume':[]}
         for key,val in data_dic.items():
@@ -392,8 +446,8 @@ class sas_validation(get_input_information):
 
     def get_parameters_mw_many(self):
         self.get_sascif_file()
-        parameter_table={'SASDB ID':[],'Chemical composition MW':[],'Standard MW':[],'Porod MW':[]}        
-        for code in self.get_SASBDB_code():
+        parameter_table={'SASDB ID':[],'Chemical composition MW':[],'Standard MW':[],'Porod MW':[]}   
+        for code in self.clean_SASBDB_code():
             parameter_table['SASDB ID'].append(code)
             all_lines=self.get_all_sascif(code)
             for m,n in enumerate(all_lines):
@@ -517,26 +571,6 @@ class sas_validation(get_input_information):
         fit_dict=self.get_number_of_fits()
         print (list(fit_dict.values()))
         return list(fit_dict.values())
-
-    def get_rg_table_many(self):
-        data_dic=self.get_data_from_SASBDB()
-        rg_table={'SASDB ID':[],'Rg':[],'Rg error':[],'MW':[],'MW error':[]}        
-        for key,val in data_dic.items():
-            rg_table['Rg'].append(str(round(float(val['guinier_rg']),2))+ ' nm')
-            try:
-                rg_table['Rg error'].append(val['guinier_rg_error']+ ' nm')
-            except:
-                rg_table['Rg error'].append('N/A')
-            try:
-                rg_table['MW'].append(val['guinier_i0_mw']+ ' nm')
-            except:
-                rg_table['MW'].append('N/A')
-            try:
-                rg_table['MW error'].append(val['guinier_i0_mw_error']+ ' nm')
-            except:
-                rg_table['MW error'].append('N/A')
-            rg_table['SASDB ID'].append(key)
-        return rg_table
 
     def get_fit_data(self):
         data_dic=self.get_data_from_SASBDB()
