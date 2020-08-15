@@ -418,7 +418,7 @@ class sas_validation(get_input_information):
             Guinier_dict[key]=G_df_range
         return Guinier_score,Guinier_dict
 
-    def get_parameters_vol_many(self):
+    def get_parameters_vol_many_dep(self):
         '''
         get volume parameters from JSON files 
         '''
@@ -444,9 +444,52 @@ class sas_validation(get_input_information):
             parameter_table['SASDB ID'].append(key)
         return parameter_table
 
-    def get_parameters_mw_many(self):
+    def get_parameters_vol_many(self):
+        '''
+        get volume details from SASCIF files
+        '''
         self.get_sascif_file()
-        parameter_table={'SASDB ID':[],'Chemical composition MW':[],'Standard MW':[],'Porod MW':[]}   
+        parameter_table={'SASDB ID':[],'Estimated Volume':[],'Porod Volume':[],'Specific Volume':[],
+        'Sample Contrast':[],'Sample Concentration':[]}   
+        for code in self.clean_SASBDB_code():
+            parameter_table['SASDB ID'].append(code)
+            all_lines=self.get_all_sascif(code)
+            for m,n in enumerate(all_lines):
+                if len(n)<3 and len(n)>0 and '_sas_sample.specimen_concentration' in n[0]:
+                    if len(n[1])>1:
+                        parameter_table['Sample Concentration'].append(str(round(float(n[1]),2))+' mg/ml')
+                    else:
+                        parameter_table['Sample Concentration'].append('N/A')
+                if len(n)<3 and len(n)>0 and '_sas_sample.contrast' in n[0] :
+                    if len(n[1])>1:
+                        parameter_table['Sample Contrast'].append(str(round(float(n[1]),2)))
+                    else:
+                        parameter_table['Sample Contrast'].append('N/A')
+                if len(n)<3 and len(n)>0 and '_sas_sample.specific_vol' in n[0]:
+                    if len(n[1])>1:
+                        parameter_table['Specific Volume'].append(str(round(float(n[1]),2))+' nm\u00b3')
+                    else:
+                        parameter_table['Specific Volume'].append('N/A')
+                if len(n)<3 and len(n)>0 and '_sas_result.Porod_volume' in n[0] and '_sas_result.Porod_volume_error' not in n[0]:
+                    if len(n[1])>1:
+                        parameter_table['Porod Volume'].append(str(round(float(n[1]),2))+' nm\u00b3')
+                    else:
+                        parameter_table['Porod Volume'].append('N/A')
+                if len(n)<3 and len(n)>0 and '_sas_result.estimated_volume' in n[0] and '_sas_result.estimated_volume_error' not in n[0]:
+                    if len(n[1])>1:
+                        parameter_table['Estimated Volume'].append(str(round(float(n[1]),2))+' nm\u00b3')
+                    else:
+                        parameter_table['Estimated Volume'].append('N/A')
+
+        return parameter_table
+
+
+    def get_parameters_mw_many(self):
+        '''
+        get MW details from SASCIF files
+        '''
+        self.get_sascif_file()
+        parameter_table={'SASDB ID':[],'Chemical composition MW':[],'Standard MW':[],'Porod Volume/MW':[]}   
         for code in self.clean_SASBDB_code():
             parameter_table['SASDB ID'].append(code)
             all_lines=self.get_all_sascif(code)
@@ -463,13 +506,24 @@ class sas_validation(get_input_information):
                         parameter_table['Standard MW'].append('N/A')
                 if len(n)<3 and len(n)>0 and '_sas_result.MW_Porod' in n[0] and '_sas_result.MW_Porod_error' not in n[0]:
                     if len(n[1])>1:
-                        parameter_table['Porod MW'].append(str(round(float(n[1]),2))+' kDa')
+                        Porod_MW=round(float(n[1]),2)
                     else:
-                        parameter_table['Porod MW'].append('N/A')
+                        Porod_MW=0
+                if len(n)<3 and len(n)>0 and '_sas_result.Porod_volume' in n[0] and '_sas_result.Porod_volume_error' not in n[0]:
+                    if len(n[1])>1 and Porod_MW>0:
+                        Porod_V=round(float(n[1]),2)/Porod_MW
+                        parameter_table['Porod Volume/MW'].append(str(round(Porod_V,2))+' nm \u00b3/kDa')
+                    else:
+                        parameter_table['Porod Volume/MW'].append('N/A')
+
+
         return parameter_table
 
 
     def get_parameters_mw_many_dep(self):
+        '''
+        depreciated function on getting MW from JSON
+        '''
         data_dic=self.get_data_from_SASBDB()
         #MW based on chemical composition
         parameter_table={'SASDB ID':[],'Sequence MW':[],'Experimental MW':[],'Porod MW':[]}        
@@ -490,6 +544,9 @@ class sas_validation(get_input_information):
         return parameter_table
     
     def get_pddf(self):
+        '''
+        get p(r) data from JSON
+        '''
         data_dic=self.get_data_from_SASBDB()
         pofr_dic=self.get_pofr()
         pddf_dic={}
@@ -503,6 +560,9 @@ class sas_validation(get_input_information):
         return pddf_dic
 
     def get_pddf_info(self):
+        '''
+        get p(r) related info from JSON
+        '''
         data_dic=self.get_data_from_SASBDB()
         pddf_info={'SASDB ID':[],'Software used':[],'Dmax':[],'Dmax error':[],'Rg':[],'Rg error':[]}
         for key,val in data_dic.items():
@@ -533,20 +593,19 @@ class sas_validation(get_input_information):
         return pddf_info
 
     def get_number_of_fits(self):
+        '''
+        get number of fits from JSON, deprecated
+        '''
         data_dic=self.get_data_from_SASBDB()
         num_of_fits={}
         for key,val in data_dic.items():
             num_of_fits[key]=len(val['fits'])
         return num_of_fits
 
-    def get_total_fits(self):
-        data_dic=self.get_data_from_SASBDB()
-        num=0
-        for key,val in data_dic.items():
-            num += len(val['fits'])
-        return num
-
     def get_chi_table(self):
+        '''
+        get chi value from JSON, deprecated
+        '''
         data_dic=self.get_data_from_SASBDB()
         chi_table={'SASDB ID':[],'Model':[],'\u03C7\u00b2':[]}        
         for key,val in data_dic.items():
@@ -568,11 +627,17 @@ class sas_validation(get_input_information):
         return chi_table
 
     def get_sasdb_code_fits(self):
+        '''
+        get number of fits per SASBDB ID
+        '''
         fit_dict=self.get_number_of_fits()
         print (list(fit_dict.values()))
         return list(fit_dict.values())
 
     def get_fit_data(self):
+        '''
+        get fit information to make plots, from JSON
+        '''
         data_dic=self.get_data_from_SASBDB()
         num_of_fits=self.get_number_of_fits()
         data_fit={}
@@ -612,10 +677,26 @@ class sas_validation(get_input_information):
         return data_fit
 
     def get_fit_r2(self,df):
+        '''
+        '''
         r2=df['r2a'].sum()/df['r2b'].sum()
         return round(r2,2)
+    
+    def get_total_fits(self):
+        '''
+        get number of fits
+        '''
+        data_dic=self.get_data_from_SASBDB()
+        num=0
+        for key,val in data_dic.items():
+            num += len(val['fits'])
+        return num
+
 
     def get_fit_image(self):
+        '''
+        get fit image from fit, deprecated
+        '''
         data_dic=self.get_data_from_SASBDB()
         num_of_fits=self.get_number_of_fits()
         data_fit={}

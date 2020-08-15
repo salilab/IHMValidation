@@ -213,7 +213,7 @@ class sas_validation_plots(sas.sas_validation):
         source1 = ColumnDataSource(df_int)
         source2=ColumnDataSource(df_pofr)
         p = figure(plot_height=500, plot_width=500, title="P(r) extrapolated fit for "+sasbdb)        
-        legend1='Observed';legend2="Predicted"
+        legend1='Experimental data';legend2="Linear fit"
         p.circle(x='Q',y='logI',source=source1, color='blue',line_width=1,fill_alpha=0.3,size=3,legend=legend1)
         p.line(x='Q',y='logI',source=source2, color='red',line_width=3,legend=legend2)        
         #p.circle(x='Q',y='logIb',source=source, color='red',line_width=1,fill_alpha=0.1,size=3,legend=legend2)
@@ -238,7 +238,7 @@ class sas_validation_plots(sas.sas_validation):
         output_file(self.ID+sasbdb+"guinier.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Guinier plot for "+sasbdb+" (R\u00B2="+str(score)+")")
-        legend1='Observed';legend2="Predicted"
+        legend1='Experimental data';legend2="Linear fit"
         p.circle(x='Q2A',y='logI',source=source, color='blue',line_width=1,fill_alpha=0.3,size=5,legend=legend1)
         p.line(x='Q2A',y='y_pred',source=source, color='red',line_width=3,legend=legend2)
         p.legend.orientation = "vertical"
@@ -284,7 +284,7 @@ class sas_validation_plots(sas.sas_validation):
         output_file(self.ID+sasbdb+str(fit)+"fit1.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Model fit for "+sasbdb)        
-        legend1='Observed';legend2="Predicted"
+        legend1='Experimental data';legend2="Linear fit"
         p.circle(x='Q',y='logIe',source=source, color='blue',line_width=1,fill_alpha=0.3,size=3,legend=legend1)
         p.line(x='Q',y='logIb',source=source, color='red',line_width=3,legend=legend2)        
         #p.circle(x='Q',y='logIb',source=source, color='red',line_width=1,fill_alpha=0.1,size=3,legend=legend2)
