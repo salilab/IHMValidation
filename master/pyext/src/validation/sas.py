@@ -516,9 +516,7 @@ class sas_validation(get_input_information):
                     else:
                         parameter_table['Porod Volume/MW'].append('N/A')
 
-
         return parameter_table
-
 
     def get_parameters_mw_many_dep(self):
         '''
@@ -691,7 +689,6 @@ class sas_validation(get_input_information):
         for key,val in data_dic.items():
             num += len(val['fits'])
         return num
-
 
     def get_fit_image(self):
         '''

@@ -15,17 +15,10 @@ from collections import Counter
 import argparse
 
 
-def dict_to_list(d):
-    L = []
-    if bool(d):
-        for k,v in d.items():
-            if isinstance(v, list):
-                L.append([k,v])
-            else:
-                L.append([k,[v]])
-    return L
-
 def dict_to_JSlist(d):
+    '''
+    convert dictionary to list of lists
+    '''
     L = []
     if bool(d):
         if len(list(d.keys()))>0:
@@ -38,24 +31,10 @@ def dict_to_JSlist(d):
                 L.append(ltt)
     return L
 
-def dict_to_JSlist_sas(d):
-    final_L=[]
-    for key,val in d.items():
-        L = []
-        if bool(val):
-            if len(list(val.keys()))>0:
-                L.append(list(val.keys()))
-                target=list(val.values())
-                for i in range(len(target[0])):
-                    ltt=[]
-                    for j in target:
-                        ltt.append(str(j[i]))
-                    L.append(ltt)
-        final_L.append(L)
-    return final_L
-
-
 def format_RB_text(tex):
+    '''
+    convert RB information to text for supp table
+    '''
     val=''
     for a in tex:
         for b in a:
@@ -70,6 +49,9 @@ def format_RB_text(tex):
     return val
 
 def format_flex_text(tex):
+    '''
+    convert flex information to text for supp table
+    '''
     val=''
     for a in tex:
         for b in a:
@@ -89,6 +71,8 @@ def format_tupple(tex):
 
 
 def dict_to_JSlist_rows(d1,d2):
+    '''
+    '''
     L=[]
     L.append(['Chain ID','Rigid bodies','Non-rigid segments'])
     for i,j in d1.items():

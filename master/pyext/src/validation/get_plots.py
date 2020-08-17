@@ -28,8 +28,11 @@ class plots(validation.get_input_information):
 		self.filename_add = os.path.join('static/images//')
 
 	def plot_quality_at_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit):
+		'''
+		plot quality of glance with multiple tabs
+		will be updated as validation report is updated
+		'''
 		output_file(self.ID+"quality_at_glance.html",mode="inline")
-		#print (clashscore,rama,sidechain,exv_data,sas_data,sas_fit)
 		tabsI=[]
 		if clashscore or rama or sidechain:
 			counts=[clashscore,rama,sidechain]
@@ -56,6 +59,10 @@ class plots(validation.get_input_information):
 			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=250, plot_width=700, title='Model quality: Excluded Volume Analysis')
 			p.hbar(y='Scores',right='counts', height=0.5, color='color', legend="legends", source=source,alpha=0.8)
 			p.xaxis.axis_label = 'Number of violations'
+		else:
+			Scores=[''];counts = [''];legends=['']
+			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends))
+			p = figure(y_range=Scores, x_range=(0,1), plot_height=250, plot_width=700)
 		
 		Scores=[''];counts = [''];legends=['']
 		source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends))

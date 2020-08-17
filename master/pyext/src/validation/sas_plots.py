@@ -35,6 +35,9 @@ class sas_validation_plots(sas.sas_validation):
         self.filename_add = os.path.join('static/images//')
 
     def plot_intensities(self,sasbdb,df):
+        '''
+        plot intensities with errors
+        '''
         output_file(self.ID+sasbdb+"intensities.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Log I(q) vs q with error bars ("+sasbdb+")")
@@ -57,6 +60,9 @@ class sas_validation_plots(sas.sas_validation):
 
 
     def plot_intensities_log(self,sasbdb,df):
+        '''
+        plot intensities on a log scale with errors
+        '''
         output_file(self.ID+sasbdb+"intensities_log.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Log I(q) vs Log q with error bars ("+sasbdb+")")
@@ -78,13 +84,13 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,height=500, width=500,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities_log.svg")
 
     def plot_kratky_dep(self,sasbdb,df):
+        '''
+        plot kratky plot, deprecated function
+        '''
         output_file(self.ID+sasbdb+"Kratky_dep.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Kratky plot ("+sasbdb+")")
         p.circle(x='Q',y='Ky',source=source,color='blue',fill_alpha=0.3,size=5)
-        #vline = Span(location=0.1732, dimension='height', line_color='red', line_width=3)
-        #hline = Span(location=0.1104, dimension='width', line_color='green', line_width=3)
-        #p.renderers.extend([vline, hline])
         p.xaxis.major_label_text_font_size="14pt"
         p.yaxis.major_label_text_font_size="14pt"
         p.title.text_font_size='12pt'
@@ -101,6 +107,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky_dep.svg")
 
     def plot_kratky(self,sasbdb,df):
+        '''
+        plot dimensionless kratky 
+        '''
         output_file(self.ID+sasbdb+"Kratky.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Dimensionless Kratky plot ("+sasbdb+")")
@@ -124,6 +133,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky.svg")
 
     def plot_porod_debye(self,sasbdb,df):
+        '''
+        porod debye plot for flexibility 
+        '''
         output_file(self.ID+sasbdb+"porod.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Porod-Debye plot ("+sasbdb+")")
@@ -144,6 +156,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"porod.svg")
 
     def plot_pddf(self,sasbdb,df):
+        '''
+        p(r) plot, deprecated function 
+        '''
         output_file(self.ID+sasbdb+"pddf.html",mode="inline") 
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Pair distance distribution function ("+sasbdb+")")
@@ -165,6 +180,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf.svg")
 
     def plot_pddf_residuals(self,sasbdb,df):
+        '''
+        p(r) residuals 
+        '''
         output_file(self.ID+sasbdb+"pddf_residuals.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Residuals for P(r) fit ("+sasbdb+")")
@@ -187,6 +205,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals.svg")
 
     def plot_pddf_residuals_wt(self,sasbdb,df):
+        '''
+        p(r) error weighted residuals
+        '''
         output_file(self.ID+sasbdb+"pddf_residuals_wt.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Error weighted residuals for P(r) fit ("+sasbdb+")")
@@ -209,6 +230,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.svg")
 
     def plot_pddf_int(self,sasbdb,df_int,df_pofr):
+        '''
+        p(r) with fit
+        '''
         output_file(self.ID+sasbdb+"pddf_int.html",mode="inline")
         source1 = ColumnDataSource(df_int)
         source2=ColumnDataSource(df_pofr)
@@ -235,6 +259,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_int.svg")
 
     def Guinier_plot_fit(self,sasbdb,df,score):
+        '''
+        Gunier plot with fit
+        '''
         output_file(self.ID+sasbdb+"guinier.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Guinier plot for "+sasbdb+" (R\u00B2="+str(score)+")")
@@ -259,6 +286,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier.svg")
 
     def Guinier_plot_residuals(self,sasbdb,df):
+        '''
+        Guinier plot residuals
+        '''
         output_file(self.ID+sasbdb+"guinier_residuals.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Residuals for Guinier plot fit ("+sasbdb+")")
@@ -281,6 +311,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier_residuals.svg")
 
     def plot_fit(self,sasbdb,fit,score,df):
+        '''
+        plot chi-squared fit
+        '''
         output_file(self.ID+sasbdb+str(fit)+"fit1.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Model fit for "+sasbdb)        
@@ -306,6 +339,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.svg")
 
     def plot_fit_residuals(self,sasbdb,fit,df):
+        '''
+        plot residuals for each fit
+        '''
         output_file(self.ID+sasbdb+str(fit)+"residuals.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Residuals for model fit ("+sasbdb+")")
@@ -328,6 +364,9 @@ class sas_validation_plots(sas.sas_validation):
         export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.svg")
 
     def plot_fit_residuals_wt(self,sasbdb,fit,df):
+        '''
+        plot error weighted residuals for each fit
+        '''
         output_file(self.ID+sasbdb+str(fit)+"residuals_wt.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Error-weighted residuals for model fit ("+sasbdb+")")

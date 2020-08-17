@@ -518,11 +518,11 @@ class get_input_information(object):
                 if len(j)<=index_occu:
                     j.extend(['1'])
                 elif j[index_occu]=='.':
-                    j[index_occu]='1'
+                    j[index_occu]='0.67'
                 if len(j)<=index_biso:
                     j.extend(['1'])
                 elif j[index_biso]=='.':
-                    j[index_biso]='1'
+                    j[index_biso]='0.00'
                 atoms[i]=j
             elif len(j)> 0 and  (i > list(atom_site.keys())[-1]):
                 if len(after_atom)==0:
@@ -536,7 +536,7 @@ class get_input_information(object):
         if os.path.isfile('test.cif'):
             os.remove('test.cif')
         file_re=open('test.cif','w')
-        for i, j in enumerate(before_atom_site):
+        for i, j in enumerate(before_atom_site[:-1]):
             file_re.write(' '.join(j)+'\n')
         for i, j in atom_site.items():
             file_re.write(''.join(j)+'\n')
