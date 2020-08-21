@@ -533,6 +533,33 @@ A 1 foo
 		I=cx_validation('test.cif')
 		self.assertEqual(5,int(I.get_distance(lst)['dist'].values[0]))
 
+	def test_label_inter_intra_1(self):
+		lst=pd.DataFrame([['C_4','C_5']],columns=['Res1','Res2'])
+		I=cx_validation('test.cif')
+		self.assertEqual(1,int(I.label_inter_intra(lst)['Intra'].values[0]))
+
+	def test_label_inter_intra_2(self):
+		lst=pd.DataFrame([['C_4','D_5']],columns=['Res1','Res2'])
+		I=cx_validation('test.cif')
+		self.assertEqual(0,int(I.label_inter_intra(lst)['Intra'].values[0]))
+
+	def test_get_violation(self):
+		I=cx_validation('test.cif')
+		print (I.get_violation('DSS',31))
+		self.assertEqual(0,I.get_violation('DSS',31))
+		self.assertEqual(1,I.get_violation('DSS',29))
+		self.assertEqual(1,I.get_violation('EDC',20))
+		self.assertEqual(0,I.get_violation('EDC',29))
+
+	def test_process_ambiguity(self):
+		lst=pd.DataFrame([['C_4',23],['C_4',11],['C_5',22]],columns=['XL_ID','dist'])
+		I=cx_validation('test.cif')
+		self.assertEqual(22,I.process_ambiguity(lst)['dist'].values[0])
+		self.assertEqual(11,I.process_ambiguity(lst)['dist'].values[1])
+		self.assertEqual('C_5',I.process_ambiguity(lst)['XL_ID'].values[0])
+		self.assertEqual('C_4',I.process_ambiguity(lst)['XL_ID'].values[1])
+
+
 if __name__ == '__main__':
 	unittest.main(warnings='ignore')
 

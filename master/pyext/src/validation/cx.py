@@ -9,6 +9,7 @@
 from validation import get_input_information
 import operator
 import pandas as pd
+import numpy as np
 pd.options.mode.chained_assignment = None
 from itertools import product
 
@@ -184,10 +185,51 @@ class cx_validation(get_input_information):
 					(df['Res1_Z']-df['Res2_Z'])**2)**0.5
 		return df
 
+
+	def process_ambiguity(self,df):
+		'''
+		pick the smallest distance/xl if there are multiple values for the xl
+		'''
+		xl_list=list(df['dist'].groupby(df['XL_ID']))
+		xl_dict={i[0]:sorted(i[1].values)[0] for i in xl_list if len(i[1].values)>1}
+		xl_no_ambiguity=[i[0] for i in xl_list if len(i[1].values)==1]
+		df_1=df[df['XL_ID'].isin(xl_no_ambiguity)]
+		for key,val in xl_dict.items():
+			df_2=df[(df['XL_ID']==key) & (df['dist']==val)]
+			df_1=pd.concat([df_1,df_2])
+		return df_1
+
+	def label_inter_intra(self,df):
+		'''
+		label inter and intra differently
+		'''
+		df['Chain_A']=df['Res1'].apply(lambda x:x.split('_')[0])
+		df['Chain_B']=df['Res2'].apply(lambda x:x.split('_')[0])
+		df['Intra']=df.apply(lambda x:1 if x['Chain_A']==x['Chain_B'] else 0, axis=1)
+		return df
+
+
+	def get_violation(self,linker,dist):
+		'''
+		define violations based on linkers,
+		needs to be updated with community standards
+		'''
+		if linker=='DSS' and dist<=30:
+			return 1
+		elif linker=='EDC' and dist<=20:
+			return 1
+		elif linker=='EDC' and dist>20:
+			return 0
+		elif dist<=30:
+			return 1
+		else:
+			return 0
+
 	def get_df_for_models(self,xl_df):
 		'''
 		get df for models 
 		'''
+		model_df=dict()
 		if self.check_sphere()>0:
 			model_dict=self.get_sphere_model_dict()
 			for i, j in model_dict.items():
@@ -196,15 +238,20 @@ class cx_validation(get_input_information):
 				final_df=pd.concat((comp_df,df_struc),ignore_index = True)
 				df_for_xl=self.get_complete_df_hybrid(xl_df,final_df)
 				df_dist=self.get_distance(df_for_xl)
-				print (df_dist.shape,xl_df.shape)
+				df_intra=self.label_inter_intra(df_dist)
+				df_intra['satisfaction']=df_intra.apply(lambda x: self.get_violation(x['Linker'], x['dist']), axis=1)
+				df_final=self.process_ambiguity(df_intra)
+				model_df[i]=df_final
 		else:
 			model_dict=self.get_atom_model_dict()
 			for i, j in model_dict.items():
 				df=self.get_xyzrseq_atoms(j)
 				df_for_xl=self.get_complete_df_atomic(xl_df,df)
 				df_dist=self.get_distance(df_for_xl)
-				print (df_dist.shape,xl_df.shape)
-
-
+				df_intra=self.label_inter_intra(df_dist)
+				df_intra['satisfaction']=df_intra.apply(lambda x: self.get_violation(x['Linker'], x['dist']), axis=1)
+				df_final=self.process_ambiguity(df_intra)
+				model_df[i]=df_final
+		return model_df
 
 
