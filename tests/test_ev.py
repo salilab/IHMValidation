@@ -28,7 +28,6 @@ class Testing(unittest.TestCase):
         self.IO=get_excluded_volume(self.mmcif_test_file)
 
     def test_get_all_spheres(self):
-        """Test AtomSiteHandler"""
         fh = StringIO("""
 loop_
 _ihm_model_list.model_id
@@ -67,7 +66,6 @@ _ihm_sphere_obj_site.model_id
         self.assertEqual(1,len(list(self.IO.get_all_spheres(filetemp=fh).keys())))
 
     def test_get_XYZ(self):
-        """Test AtomSiteHandler"""
         fh = StringIO("""
 loop_
 _ihm_model_list.model_id
@@ -111,7 +109,6 @@ _ihm_sphere_obj_site.model_id
 
 
     def test_get_violation_dict(self):
-        """Test AtomSiteHandler"""
         fh = StringIO("""
 loop_
 _ihm_model_list.model_id
