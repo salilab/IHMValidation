@@ -17,6 +17,7 @@ import validation
 from validation import excludedvolume,get_input_information
 from validation import molprobity
 from validation import get_plots,sas,sas_plots
+from validation import cx
 #import pdfkit
 import datetime,time
 import pickle
@@ -76,7 +77,6 @@ class WriteReport(object):
 		get molprobity info for atomic models
 		exception: models with DNA--we need a way to assess models with DNA
 		'''
-		print ("exo",self.I.check_sphere())
 		if self.I.check_sphere()<1:
 			#global clashscore; global rama; global sidechain;
 			exv_data=None
@@ -213,6 +213,14 @@ class WriteReport(object):
 			sas_data={}
 			sas_fit={}
 		return Template_Dict,sas_data,sas_fit
+
+	def run_cx_validation(self,Template_Dict):
+		if self.I.check_for_cx(self.I.get_dataset_comp()):
+			Template_Dict['cx']=["True"]
+			I_cx=cx.cx_validation(self.mmcif_file)
+			xl_df=I_cx.get_xl_data()
+			I_cx.get_df_for_models(xl_df)
+
 
 	def run_quality_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit):
 		'''
