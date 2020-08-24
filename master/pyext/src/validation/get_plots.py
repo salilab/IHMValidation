@@ -27,7 +27,7 @@ class plots(validation.get_input_information):
 		self.filename = os.path.join('Output/images//')
 		self.filename_add = os.path.join('static/images//')
 
-	def plot_quality_at_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit):
+	def plot_quality_at_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit):
 		'''
 		plot quality of glance with multiple tabs
 		will be updated as validation report is updated
@@ -139,7 +139,30 @@ class plots(validation.get_input_information):
 			export_svgs(pf,filename=self.filename_add+'/'+self.ID+"quality_at_glance_FQ.svg")
 			export_png(pf,filename=self.filename+'/'+self.ID+"quality_at_glance_FQ.png")
 
-		else:
+		if len(cx_fit.keys())>0:
+			Scores=['Model '+str(i) for i,j in cx_fit.items()]
+			counts=[float(j) for i,j in cx_fit.items()]
+			legends=[str(i) for i in counts]
+
+			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
+			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to XL-MS input: \u03C7\u00b2 Fit")
+			pf1.hbar(y='Scores',right='counts', height=0.25*len(list(cx_fit.values())), color='color', legend="legends", source=source,alpha=0.8)
+			pf1.legend.orientation = "vertical"
+			pf1.legend.location = "top_right"
+			pf1.ygrid.grid_line_color = None
+			pf1.xaxis.major_label_text_font_size="14pt"
+			pf1.yaxis.major_label_text_font_size="14pt"
+			pf1.title.text_font_size='14pt'
+			pf1.title.align="center"
+			pf1.output_backend="svg"
+			third1 = Panel(child=row(pf1), title='Fit to data: XL-MS')
+			tabsI.append(third1)
+			pf1.output_backend="svg"
+			export_svgs(pf1,filename=self.filename+'/'+self.ID+"quality_at_glance_FQ1.svg")
+			export_svgs(pf1,filename=self.filename_add+'/'+self.ID+"quality_at_glance_FQ1svg")
+			export_png(pf1,filename=self.filename+'/'+self.ID+"quality_at_glance_FQ1.png")
+
+		if (len(cx_fit.keys())<1) or (len(sas_fit.keys())<1) :
 			third = Panel(child=row(p1), title='Fit to input data')
 			tabsI.append(third)
 

@@ -17,7 +17,7 @@ import validation
 from validation import excludedvolume,get_input_information
 from validation import molprobity
 from validation import get_plots,sas,sas_plots
-from validation import cx
+from validation import cx,cx_plots
 #import pdfkit
 import datetime,time
 import pickle
@@ -219,15 +219,23 @@ class WriteReport(object):
 			Template_Dict['cx']=["True"]
 			I_cx=cx.cx_validation(self.mmcif_file)
 			xl_df=I_cx.get_xl_data()
-			I_cx.get_df_for_models(xl_df)
+			model_df=I_cx.get_df_for_models()
+			cx_fit=I_cx.get_violation_plot(model_df)
+			cx_plt=validation.cx_plots.cx_validation_plots(self.mmcif_file)
+			cx_plt.make_gridplot_intra()
+			cx_plt.make_gridplot_struc()
+			cx_plt.plot_distributions()
+		else:
+			cx_fit=dict()
 
+		return cx_fit
 
-	def run_quality_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit):
+	def run_quality_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit):
 		'''
 		get quality at glance image; will be updated as validation report is updated
 		'''
 		I_plt=get_plots.plots(self.mmcif_file)
-		I_plt.plot_quality_at_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit)
+		I_plt.plot_quality_at_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit)
 
 	def run_supplementary_table(self,
 								Template_Dict,

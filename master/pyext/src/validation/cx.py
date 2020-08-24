@@ -206,6 +206,7 @@ class cx_validation(get_input_information):
 		df['Chain_A']=df['Res1'].apply(lambda x:x.split('_')[0])
 		df['Chain_B']=df['Res2'].apply(lambda x:x.split('_')[0])
 		df['Intra']=df.apply(lambda x:1 if x['Chain_A']==x['Chain_B'] else 0, axis=1)
+		df['Inter']=df.apply(lambda x:0 if x['Chain_A']==x['Chain_B'] else 1, axis=1)
 		return df
 
 
@@ -225,11 +226,12 @@ class cx_validation(get_input_information):
 		else:
 			return 0
 
-	def get_df_for_models(self,xl_df):
+	def get_df_for_models(self):
 		'''
 		get df for models 
 		'''
 		model_df=dict()
+		xl_df=self.get_xl_data()
 		if self.check_sphere()>0:
 			model_dict=self.get_sphere_model_dict()
 			for i, j in model_dict.items():
@@ -239,7 +241,7 @@ class cx_validation(get_input_information):
 				df_for_xl=self.get_complete_df_hybrid(xl_df,final_df)
 				df_dist=self.get_distance(df_for_xl)
 				df_intra=self.label_inter_intra(df_dist)
-				df_intra['satisfaction']=df_intra.apply(lambda x: self.get_violation(x['Linker'], x['dist']), axis=1)
+				df_intra['Satisfied']=df_intra.apply(lambda x: self.get_violation(x['Linker'], x['dist']), axis=1)
 				df_final=self.process_ambiguity(df_intra)
 				model_df[i]=df_final
 		else:
@@ -249,9 +251,17 @@ class cx_validation(get_input_information):
 				df_for_xl=self.get_complete_df_atomic(xl_df,df)
 				df_dist=self.get_distance(df_for_xl)
 				df_intra=self.label_inter_intra(df_dist)
-				df_intra['satisfaction']=df_intra.apply(lambda x: self.get_violation(x['Linker'], x['dist']), axis=1)
+				df_intra['Satisfied']=df_intra.apply(lambda x: self.get_violation(x['Linker'], x['dist']), axis=1)
 				df_final=self.process_ambiguity(df_intra)
 				model_df[i]=df_final
 		return model_df
 
+	def get_violation_plot(self,model_df):
+		cx_fit=dict()
+		for model_id,df in model_df.items():
+			sat=(df[df['Satisfied']==1].shape[0]/df.shape[0])*100
+			cx_fit[model_id]=sat
+		return cx_fit
+
+		
 

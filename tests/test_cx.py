@@ -559,6 +559,11 @@ A 1 foo
 		self.assertEqual('C_5',I.process_ambiguity(lst)['XL_ID'].values[0])
 		self.assertEqual('C_4',I.process_ambiguity(lst)['XL_ID'].values[1])
 
+	def test_get_violation_plot(self):
+		lst=pd.DataFrame([['C_4',0],['C_4',1],['C_5',1]],columns=['XL_ID','Satisfied'])
+		model_df={1:lst}
+		I=cx_validation('test.cif')
+		self.assertEqual(66,int(I.get_violation_plot(model_df)[1]))
 
 if __name__ == '__main__':
 	unittest.main(warnings='ignore')
