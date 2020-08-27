@@ -141,12 +141,12 @@ class plots(validation.get_input_information):
 
 		if len(cx_fit.keys())>0:
 			Scores=['Model '+str(i) for i,j in cx_fit.items()]
-			counts=[float(j) for i,j in cx_fit.items()]
-			legends=[str(i) for i in counts]
-
+			counts=[round(float(j),2) for i,j in cx_fit.items()]
+			#legends=[str(i) for i in counts]
+			legends=['Model '+ str(i+1)+ ': ' +str(j)+'%'  for i,j in enumerate(counts)]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to XL-MS input: \u03C7\u00b2 Fit")
-			pf1.hbar(y='Scores',right='counts', height=0.25*len(list(cx_fit.values())), color='color', legend="legends", source=source,alpha=0.8)
+			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to XL-MS input")
+			pf1.hbar(y='Scores',right='counts', height=0.15*len(list(cx_fit.values())), color='color', legend="legends", source=source,alpha=0.8)
 			pf1.legend.orientation = "vertical"
 			pf1.legend.location = "top_right"
 			pf1.ygrid.grid_line_color = None

@@ -59,6 +59,11 @@ class cx_validation(get_input_information):
 										'Res2_Entity_ID','Res2_Seq_ID','Res2_Chain','Res2_ID'])
 		return xl_df
 
+	def get_unique_linkers(self):
+		xl_df=self.get_xl_data()
+		linkers=xl_df['Linker_Name'].unique()
+		return linkers
+
 	def get_asym_for_entity(self):
 		'''
 		convert entity ID to chain ID
@@ -264,4 +269,3 @@ class cx_validation(get_input_information):
 		return cx_fit
 
 		
-

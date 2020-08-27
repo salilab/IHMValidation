@@ -30,6 +30,7 @@ class cx_validation_plots(cx.cx_validation):
 		self.filename = os.path.join('Output/images//')
 		self.filename_add = os.path.join('static/images//')
 
+
 	def plot_linker_dist_I(self,df,intra=1,key='Intra'):
 		'''
 		plot distance distribution per linker
@@ -47,11 +48,11 @@ class cx_validation_plots(cx.cx_validation):
 			measured=df_c[df_c['Intra']==intra]['dist']
 			hist, edges = np.histogram(measured, density=False, bins=50)
 			#hist_l, edges_l = np.histogram(measured, density=False, bins=25)
-			p = figure(title=key+'-molecular distances/Linker '+i, tools='', 
-				plot_height=500, plot_width=500)
+			p = figure(title=key+'-molecular distances/Linker '+i, 
+				plot_height=400, plot_width=400)
 			p.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
 						fill_color="navy", line_color="white", alpha=0.3)
-			p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
+			#p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
 			vline = Span(location=loc, dimension='height', line_color='red', line_width=3,line_dash='dashed')
 			p.renderers.extend([vline])
 			p.xaxis.major_label_text_font_size="14pt"
@@ -86,11 +87,11 @@ class cx_validation_plots(cx.cx_validation):
 			measured=df_c[df_c['Structured']==struc]['dist']
 			hist, edges = np.histogram(measured, density=False, bins=50)
 			#hist_l, edges_l = np.histogram(measured, density=False, bins=25)
-			p = figure(title='Distances mapped to '+key+ ' regions/Linker '+i, 
-				plot_height=500, plot_width=500)
+			p = figure(title=key+ ' regions/Linker '+i, 
+				plot_height=350, plot_width=350)
 			p.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
 						fill_color="navy", line_color="white", alpha=0.3)
-			p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
+			#p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
 			vline = Span(location=loc, dimension='height', line_color='red', line_width=3,line_dash='dashed')
 			p.renderers.extend([vline])
 			p.xaxis.major_label_text_font_size="14pt"
@@ -120,7 +121,7 @@ class cx_validation_plots(cx.cx_validation):
 	    				Satisfied=self.get_satisfied(df,factors),
 	    				Violated=self.get_violated(df,factors), ))
 			fig_id = figure(x_range=FactorRange(*factors), plot_height=400,plot_width=500,
-	           			title='XL-MS Satisfaction for model:'+str(model_id))
+	           			title='CX-MS Satisfaction for model:'+str(model_id))
 
 			fig_id.vbar_stack(regions, x='x', width=0.9, alpha=0.5, color=["blue", "red"], source=source,
 	             				legend_label=regions)
@@ -244,20 +245,20 @@ class cx_validation_plots(cx.cx_validation):
     				x=factors,
     				Satisfied=self.get_satisfied(df,factors),
     				Violated=self.get_violated(df,factors), ))
-		fig_id = figure(x_range=FactorRange(*factors), plot_height=350,
-           			title='XL-MS Satisfaction for model:'+str(model_id))
+		fig_id = figure(x_range=FactorRange(*factors), plot_height=300,plot_width=350,
+           			title='Model:'+str(model_id))
 
 		fig_id.vbar_stack(regions, x='x', width=0.9, alpha=0.5, color=["blue", "red"], source=source,
              				legend_label=regions)
-		fig_id.xaxis.major_label_text_font_size="14pt"
-		fig_id.yaxis.major_label_text_font_size="14pt"
-		fig_id.yaxis.axis_label_text_font_size='14pt'
+		fig_id.xaxis.major_label_text_font_size="12pt"
+		fig_id.yaxis.major_label_text_font_size="12pt"
+		fig_id.yaxis.axis_label_text_font_size='12pt'
 		fig_id.title.text_font_size='12pt'
 		fig_id.title.align="center"
 		fig_id.title.vertical_align='top'
 		fig_id.yaxis.axis_label = 'Number of cross-links'
-		fig_id.y_range.start = 0
-		fig_id.y_range.end = df.shape[0]
+		#fig_id.y_range.start = 0
+		#fig_id.y_range.end = df.shape[0]
 		fig_id.x_range.range_padding = 0.1
 		fig_id.xaxis.major_label_orientation = 1
 		fig_id.xgrid.grid_line_color = None
@@ -289,20 +290,20 @@ class cx_validation_plots(cx.cx_validation):
     				x=factors,
     				Satisfied=self.get_satisfied_struc(df,factors),
     				Violated=self.get_violated_struc(df,factors), ))
-		fig_id = figure(x_range=FactorRange(*factors), plot_height=350,
-           			title='XL-MS Satisfaction for model:'+str(model_id))
+		fig_id = figure(x_range=FactorRange(*factors), plot_height=350, plot_width=400,
+           			title='Model:'+str(model_id))
 
 		fig_id.vbar_stack(regions, x='x', width=0.9, alpha=0.5, color=["blue", "red"], source=source,
              				legend_label=regions)
-		fig_id.xaxis.major_label_text_font_size="14pt"
-		fig_id.yaxis.major_label_text_font_size="14pt"
-		fig_id.yaxis.axis_label_text_font_size='14pt'
+		fig_id.xaxis.major_label_text_font_size="12pt"
+		fig_id.yaxis.major_label_text_font_size="12pt"
+		fig_id.yaxis.axis_label_text_font_size='12pt'
 		fig_id.title.text_font_size='12pt'
 		fig_id.title.align="center"
 		fig_id.title.vertical_align='top'
 		fig_id.yaxis.axis_label = 'Number of cross-links'
-		fig_id.y_range.start = 0
-		fig_id.y_range.end = df.shape[0]
+		#fig_id.y_range.start = 0
+		#fig_id.y_range.end = df.shape[0]
 		fig_id.x_range.range_padding = 0.1
 		fig_id.xaxis.major_label_orientation = 1
 		fig_id.xgrid.grid_line_color = None

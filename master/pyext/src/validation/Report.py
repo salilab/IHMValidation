@@ -196,6 +196,20 @@ class WriteReport(object):
 			Template_Dict['validation_input']=utility.get_rg_data_fits(I_sas.get_fits_for_plot())
 			if len(Template_Dict['validation_input'])<1:
 				Template_Dict['validation_input']=['Fit of model to data has not been deposited']
+			sas_data=I_sas.get_rg_for_plot()
+			sas_fit=I_sas.get_fits_for_plot()
+		else:
+			sas_data={}
+			sas_fit={}
+		return Template_Dict,sas_data,sas_fit
+
+	def run_sas_validation_plots(self,Template_Dict):
+		'''
+		get sas validation information from SASCIF or JSON files
+		'''
+		if self.I.check_for_sas(self.I.get_dataset_comp()):
+			Template_Dict['sas']=["True"]
+			I_sas=sas.sas_validation(self.mmcif_file)
 			try:
 				I_sas_plt=validation.sas_plots.sas_validation_plots(self.mmcif_file)
 				I_sas.modify_intensity()
@@ -207,12 +221,6 @@ class WriteReport(object):
 					I_sas_plt.plot_fits()
 			except:
 				pass
-			sas_data=I_sas.get_rg_for_plot()
-			sas_fit=I_sas.get_fits_for_plot()
-		else:
-			sas_data={}
-			sas_fit={}
-		return Template_Dict,sas_data,sas_fit
 
 	def run_cx_validation(self,Template_Dict):
 		if self.I.check_for_cx(self.I.get_dataset_comp()):
@@ -221,14 +229,19 @@ class WriteReport(object):
 			xl_df=I_cx.get_xl_data()
 			model_df=I_cx.get_df_for_models()
 			cx_fit=I_cx.get_violation_plot(model_df)
-			cx_plt=validation.cx_plots.cx_validation_plots(self.mmcif_file)
-			cx_plt.make_gridplot_intra()
-			cx_plt.make_gridplot_struc()
-			cx_plt.plot_distributions()
 		else:
 			cx_fit=dict()
 
 		return cx_fit
+
+	def run_cx_validation_plots(self,Template_Dict):
+		if self.I.check_for_cx(self.I.get_dataset_comp()):
+			Template_Dict['cx']=["True"]
+			cx_plt=validation.cx_plots.cx_validation_plots(self.mmcif_file)
+			cx_plt.make_gridplot_intra()
+			cx_plt.make_gridplot_struc()
+			cx_plt.plot_distributions()
+
 
 	def run_quality_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit):
 		'''
