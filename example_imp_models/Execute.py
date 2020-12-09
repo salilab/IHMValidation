@@ -173,8 +173,11 @@ if __name__ == "__main__":
     template_dict=report.run_entry_composition(Template_Dict)
     template_dict,clashscore,rama,sidechain,exv_data=report.run_model_quality(template_dict)
     template_dict,sas_data,sas_fit=report.run_sas_validation(template_dict)
-    report.run_quality_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit)
-    #write_pdf(args.f,template_dict,template_pdf,dirNames[0],dirNames[0])
+    cx_fit,template_dict=report.run_cx_validation(template_dict)
+    report.run_quality_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit)
+    report.run_sas_validation_plots(template_dict)
+    report.run_cx_validation_plots(template_dict)
+    write_pdf(args.f,template_dict,template_pdf,dirNames[0],dirNames[0])
     template_dict=report.run_supplementary_table(template_dict,
                                                 location=args.ls,
                                                 physics=physics,
@@ -185,9 +188,7 @@ if __name__ == "__main__":
                                                 Data_quality=args.dv,
                                                 clustering=args.c,
                                                 resolution=args.res)
-    #write_supplementary_table(args.f,template_dict,template_file_supp,dirNames[2],dirNames[2])
-    #for i in template_flask:
-    #    write_html(template_dict,template_flask_main,dirNames[-2])
+    write_supplementary_table(args.f,template_dict,template_file_supp,dirNames[2],dirNames[2])
     utility.clean_all()
 
 

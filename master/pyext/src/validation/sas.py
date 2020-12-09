@@ -246,7 +246,7 @@ class sas_validation(get_input_information):
                     fits.append(round(float(n[1]),2))
             if len(fits)>0:
                 fit_dict[code]=fits
-        print (fit_dict)
+        #print (fit_dict)
         return fit_dict
 
     def get_pofr(self):
@@ -312,7 +312,7 @@ class sas_validation(get_input_information):
                 pval_table['SASDB ID'].append(key)
                 pval_table['Model'].append('N/A')
                 pval_table['p-value'].append('N/A')
-        print (pval_table)
+        #print (pval_table)
         return pval_table
 
     def get_pofr_ext(self):
@@ -369,7 +369,7 @@ class sas_validation(get_input_information):
                         wt_delta_I=0
                     errors.append([Q,delta_I,wt_delta_I])
             errors_df=pd.DataFrame(errors,columns=['Q','R','WR'])
-            print (errors_df.head())
+            #print (errors_df.head())
             compiled_dict[code]=errors_df
         return compiled_dict
 
@@ -554,7 +554,7 @@ class sas_validation(get_input_information):
             pd_df['err_x']=pd_df.apply(lambda row: (row['R'],row['R']), axis=1)
             pd_df['err_y']=pd_df.apply(lambda row: (row['P']-row['E'],row['P']+row['E']),axis=1)
             pddf_dic[key]=pd_df
-            print (pd_df.head())
+            #print (pd_df.head())
         return pddf_dic
 
     def get_pddf_info(self):
@@ -607,7 +607,7 @@ class sas_validation(get_input_information):
         data_dic=self.get_data_from_SASBDB()
         chi_table={'SASDB ID':[],'Model':[],'\u03C7\u00b2':[]}        
         for key,val in data_dic.items():
-            print (self.get_number_of_fits())
+            #print (self.get_number_of_fits())
             num=self.get_number_of_fits()[key]
             if num>0:
                 for i in range(0,num):
@@ -616,7 +616,7 @@ class sas_validation(get_input_information):
                     chi_table['Model'].append(str(count))
                     chi_value=val['fits'][i]['chi_square_value']
                     chi_value_round=round(chi_value,2)
-                    print (chi_value,chi_value_round,"chi value after rounding")
+                    #print (chi_value,chi_value_round,"chi value after rounding")
                     chi_table['\u03C7'+'\u00b2'].append(chi_value_round)
             else:
                 chi_table['SASDB ID'].append(key)
@@ -629,7 +629,7 @@ class sas_validation(get_input_information):
         get number of fits per SASBDB ID
         '''
         fit_dict=self.get_number_of_fits()
-        print (list(fit_dict.values()))
+        #print (list(fit_dict.values()))
         return list(fit_dict.values())
 
     def get_fit_data(self):
@@ -661,8 +661,8 @@ class sas_validation(get_input_information):
                         f_df['rsigma']=0
                     else:
                         f_df['rsigma']=f_df['r']/f_df['E']
-                    print (key)
-                    print (f_df['rsigma'])
+                    #print (key)
+                    #print (f_df['rsigma'])
                     #f_df['rsigma']=f_df['r']/f_df['E']
                     f_df['logr']=f_df['logIe']-f_df['logIb']
                     f_df['r2a']=(f_df['Ib']-f_df['Ie'].mean())**2

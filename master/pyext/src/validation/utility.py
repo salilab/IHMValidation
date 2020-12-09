@@ -164,7 +164,7 @@ def get_subunits(sub_dict):
 
 def get_datasets(data_dict):
     n=len(data_dict['ID'])
-    print (data_dict)
+    #print (data_dict)
     datalist=['%s, %s' % (data_dict['Dataset type'][i],data_dict['Details'][i]) for i in range(0,n)]
     return datalist
 
@@ -218,7 +218,7 @@ def all_same(items):
 
 def exv_readable_format(exv):
     fin_string=[]
-    print (exv)
+    #print (exv)
     for i,j in enumerate(exv['Models']):
         fin_string.append('Model-'+str(j)+': '+'Number of violations-' + str(exv['Number of violations'][i]) + ' ')
     return fin_string
@@ -237,11 +237,19 @@ def get_rg_data_fits(rg_dict):
             fin_rg.append(key+': Fit '+ str(count) +' with &#x3A7;&#xb2; value '+ str(j))
     return fin_rg
 
+def get_cx_data_fits(cx_dict):
+    fin_cx=[];count=0
+    for key,val in cx_dict.items():
+        count+=1
+        fin_cx.append('CX-MS Fit of medioid: model # '+ str(count)+', percentage satisfied ' +str(round(val,2))+'%')
+    return fin_cx
+
+
 def clean_all():
     #dirname_ed='/Users/saijananiganesan/Desktop/PDB-dev/working'
     #dirname_ed=os.path.normpath(os.getcwd() + os.sep + os.pardir)
     dirname_ed=os.getcwd()
-    print ("dirname",dirname_ed)
+    #print ("dirname",dirname_ed)
     os.listdir(dirname_ed)
     for item in os.listdir(dirname_ed):
         if item.endswith('.txt'):

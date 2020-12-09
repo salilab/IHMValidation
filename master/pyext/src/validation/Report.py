@@ -106,7 +106,7 @@ class WriteReport(object):
 				a,b=I_mp.process_molprobity(d_mp['molprobity'])
 				Template_Dict['bond']=len(a); Template_Dict['angle']=len(b)
 				global clashscore;global rama;global sidechain
-				print (I_mp.get_data_for_quality_at_glance(d_mp['molprobity']))
+				#print (I_mp.get_data_for_quality_at_glance(d_mp['molprobity']))
 				clashscore,rama,sidechain=I_mp.get_data_for_quality_at_glance(d_mp['molprobity'])
 				Template_Dict['molp_b']=utility.dict_to_JSlist(I_mp.molprobity_detailed_table_bonds(a))
 				Template_Dict['molp_a']=utility.dict_to_JSlist(I_mp.molprobity_detailed_table_angles(b))
@@ -229,10 +229,16 @@ class WriteReport(object):
 			xl_df=I_cx.get_xl_data()
 			model_df=I_cx.get_df_for_models()
 			cx_fit=I_cx.get_violation_plot(model_df)
+			for key,value in cx_fit.items():
+				Template_Dict['Cx Fit '+str(key)]=value
+			try:
+				Template_Dict['validation_input'].extend(utility.get_cx_data_fits(cx_fit))
+			except:
+				Template_Dict['validation_input']=utility.get_cx_data_fits(cx_fit)
 		else:
 			cx_fit=dict()
 
-		return cx_fit
+		return cx_fit,Template_Dict
 
 	def run_cx_validation_plots(self,Template_Dict):
 		if self.I.check_for_cx(self.I.get_dataset_comp()):

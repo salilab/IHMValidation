@@ -40,7 +40,7 @@ class plots(validation.get_input_information):
 			legends=[str(counts[0]),str(counts[1])+'%',str(counts[2])+'%']
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(3)))
 			p = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Model Quality: Molprobity Analysis")
-			p.hbar(y='Scores',right='counts', height=0.75, color='color', legend="legends", source=source,alpha=0.8)
+			p.hbar(y='Scores',right='counts', height=0.75, color='color', legend_label="legends", source=source,alpha=0.8)
 		elif exv_data:
 			model=exv_data['Models']
 			satisfaction=exv_data['Number of violations']
@@ -57,7 +57,7 @@ class plots(validation.get_input_information):
 				upper=max(counts)+ 20
 				lower=min(counts)-20
 			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=250, plot_width=700, title='Model quality: Excluded Volume Analysis')
-			p.hbar(y='Scores',right='counts', height=0.5, color='color', legend="legends", source=source,alpha=0.8)
+			p.hbar(y='Scores',right='counts', height=0.5, color='color', legend_label="legends", source=source,alpha=0.8)
 			p.xaxis.axis_label = 'Number of violations'
 		else:
 			Scores=[''];counts = [''];legends=['']
@@ -99,7 +99,7 @@ class plots(validation.get_input_information):
 			legends=[str(i)+' nm' for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
 			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Data Quality: Rg Analysis")
-			pd.hbar(y='Scores',right='counts', height=0.5, color='color', legend="legends", source=source,alpha=0.8)
+			pd.hbar(y='Scores',right='counts', height=0.5, color='color', legend_label="legends", source=source,alpha=0.8)
 			pd.legend.orientation = "vertical"
 			pd.legend.location = "top_right"
 			pd.ygrid.grid_line_color = None
@@ -123,7 +123,7 @@ class plots(validation.get_input_information):
 			legends=[str(i) for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
 			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to SAS input: \u03C7\u00b2 Fit")
-			pf.hbar(y='Scores',right='counts', height=0.25*len(list(sas_fit.values())[0]), color='color', legend="legends", source=source,alpha=0.8)
+			pf.hbar(y='Scores',right='counts', height=0.25*len(list(sas_fit.values())[0]), color='color', legend_label="legends", source=source,alpha=0.8)
 			pf.legend.orientation = "vertical"
 			pf.legend.location = "top_right"
 			pf.ygrid.grid_line_color = None
@@ -146,7 +146,7 @@ class plots(validation.get_input_information):
 			legends=['Model '+ str(i+1)+ ': ' +str(j)+'%'  for i,j in enumerate(counts)]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
 			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to XL-MS input")
-			pf1.hbar(y='Scores',right='counts', height=0.15*len(list(cx_fit.values())), color='color', legend="legends", source=source,alpha=0.8)
+			pf1.hbar(y='Scores',right='counts', height=0.15*len(list(cx_fit.values())), color='color', legend_label="legends", source=source,alpha=0.8)
 			pf1.legend.orientation = "vertical"
 			pf1.legend.location = "top_right"
 			pf1.ygrid.grid_line_color = None

@@ -265,7 +265,7 @@ class cx_validation(get_input_information):
 		cx_fit=dict()
 		for model_id,df in model_df.items():
 			sat=(df[df['Satisfied']==1].shape[0]/df.shape[0])*100
-			cx_fit[model_id]=sat
+			cx_fit['Model #'+str(model_id)]=sat
 		return cx_fit
 
 		
