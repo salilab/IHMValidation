@@ -35,7 +35,7 @@
 - `sas_validation_plots`  class to plot results from validation of models built using SAS datasets
 
 ## Test site
-- [`test web page`](https://modbase.compbio.ucsf.edu/pdbdev-test/) 
+- [`test web page`](https://modbase.compbio.ucsf.edu/pdbdev-test/home/) 
 
 ## Information
 
