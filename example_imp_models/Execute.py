@@ -91,7 +91,7 @@ d=datetime.datetime.now();t=pytz.timezone("America/Los_Angeles");d1=t.localize(d
 timestamp=d1.strftime("%B %d, %Y --  %I:%M %p")
 
 # Create directory
-dirNames = ['Output','Output/images','Supplementary','static','templates','static/images']
+dirNames = ['Output','static/images','static/json','static/pdf','templates','static/images']
 for name in dirNames:
     try:
         os.mkdir(name)
@@ -122,12 +122,13 @@ Template_Dict['date']=timestamp
 # Jinja scripts
 #############################################################################################################################
 
-def write_html(Template_Dict, template_file,dirName):
-    template = templateEnv.get_template(template_file)
-    outputText=template.render(Template_Dict)
-    template_file=template_file.split('/')[1]
-    with open(os.path.join(os.path.join(dirName,template_file)),"w") as fh:
-        fh.write(outputText)
+def write_html(mmcif_file,Template_Dict,template_list,dirName):
+    for template_file in template_list:
+        template = templateEnv.get_template(template_file)
+        outputText=template.render(Template_Dict)
+    #template_file=template_file.split('/')[1]
+        with open(os.path.join(os.path.join(dirName,template_file)),"w") as fh:
+            fh.write(outputText)
 
 def write_pdf(mmcif_file,Template_Dict, template_file,dirName,dirName_Output):
     template = templateEnv.get_template(template_file)
@@ -149,8 +150,9 @@ def write_supplementary_table(mmcif_file,Template_Dict,template_file,dirName,dir
         os.path.join(os.path.join(dirName_supp,utility.get_supp_file_pdf(mmcif_file))) ,
         options=options_supp)
 
-def write_json(mmcif_file,Template_Dict):
-    j=json.dumps([{'Category': k, 'Itemized_List': v} for k,v in Template_Dict.items()], indent=4)
+def write_json(mmcif_file,Template_Dict,dirName):
+    #j=json.dumps([{'Category': k, 'Itemized_List': v} for k,v in Template_Dict.items()], indent=4)
+    j=json.dumps([{k: v} for k,v in Template_Dict.items()], indent=4)
     with open(os.path.join(os.path.join(dirName,utility.get_output_file_json(mmcif_file))),"w") as fh:
         fh.write(j)
     fh.close()
@@ -177,7 +179,7 @@ if __name__ == "__main__":
     report.run_quality_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit)
     report.run_sas_validation_plots(template_dict)
     report.run_cx_validation_plots(template_dict)
-    write_pdf(args.f,template_dict,template_pdf,dirNames[0],dirNames[0])
+    write_pdf(args.f,template_dict,template_pdf,dirNames[0],dirNames[3])
     template_dict=report.run_supplementary_table(template_dict,
                                                 location=args.ls,
                                                 physics=physics,
@@ -188,7 +190,9 @@ if __name__ == "__main__":
                                                 Data_quality=args.dv,
                                                 clustering=args.c,
                                                 resolution=args.res)
-    write_supplementary_table(args.f,template_dict,template_file_supp,dirNames[2],dirNames[2])
+    write_supplementary_table(args.f,template_dict,template_file_supp,dirNames[3],dirNames[3])
+    write_json(args.f,template_dict,dirNames[2])
+    #write_html(args.f,template_dict,template_flask,dirNames[4])
     utility.clean_all()
 
 
