@@ -51,7 +51,7 @@ class get_molprobity_information(get_input_information):
         with open(f,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
         d['rama']=line
-        filename = open(os.path.join(os.getcwd(), 'Output/results/',self.ID+'_temp_rama.txt'))
+        filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_rama.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['rama'],fp)
 
@@ -64,7 +64,7 @@ class get_molprobity_information(get_input_information):
         with open(f,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
         d['molprobity']=line
-        filename = open(os.path.join(os.getcwd(), 'Output/results/',self.ID+'_temp_mp.txt'))
+        filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_mp.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['molprobity'],fp)
 
@@ -77,7 +77,7 @@ class get_molprobity_information(get_input_information):
         with open(f,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
         d['clash']=line
-        filename = open(os.path.join(os.getcwd(), 'Output/results/',self.ID+'_temp_clash.txt'))
+        filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_clash.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['clash'],fp)
         
@@ -177,7 +177,7 @@ class get_molprobity_information(get_input_information):
 
     def rama_summary_table(self,models):
         """ write out summary table from rama, clash and other tables"""
-        f_rama=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_rama_summary.txt'),'w+')
+        f_rama=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rama_summary.txt'),'w+')
         dict1={'Model ID':[],'Analyzed':[],'Favored':[],'Allowed':[],'Outliers':[]}
         for i,j in models.items():
             dict1['Model ID'].append(i)
@@ -206,7 +206,7 @@ class get_molprobity_information(get_input_information):
 
     def clash_summary_table(self,line):
         """ format clash data to print to file """
-        f_clash=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_clash_summary.txt'),'w+')
+        f_clash=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_clash_summary.txt'),'w+')
         clashes=self.process_clash(line)
         if self.nos>1:
             clashscore_list=line[len(line)-self.nos:]
@@ -227,7 +227,7 @@ class get_molprobity_information(get_input_information):
     def rota_summary_table(self,models):
         """ format rota data to print to file """
         dict1={'Model ID':[],'Analyzed':[],'Favored':[],'Allowed':[],'Outliers':[]}
-        f_rota=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_rota_summary.txt'),'w+')        
+        f_rota=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rota_summary.txt'),'w+')        
         for i,j in models.items():
             dict1['Model ID'].append(i)
             F=[];A=[];U=[]
@@ -252,7 +252,7 @@ class get_molprobity_information(get_input_information):
     def rama_detailed_table(self,models):
         """ format rama information to print to file"""
         dict1={'Model ID':[],'Chain and res ID':[],'Residue type':[]}
-        f_rama_D=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_rama_detail.txt'),'w+')  
+        f_rama_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rama_detail.txt'),'w+')  
         for i,j in models.items():
             for k in j:
                 if k.strip().split()[-2]=='or':
@@ -273,7 +273,7 @@ class get_molprobity_information(get_input_information):
 
     def molprobity_detailed_table_bonds(self,bonds):
         """process molprobity bonded information and format to table"""
-        f_mp_D=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_molprobity_bond.txt'),'w+')
+        f_mp_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_molprobity_bond.txt'),'w+')
         if len(bonds)>0:
             bondtype_diff={};bondtype_dist={};bondtype_ex={};
             dict1={'Bond type':[],'Observed distance (&#8491)':[],'Ideal distance (&#8491)':[],'Number of outliers':[]}
@@ -308,7 +308,7 @@ class get_molprobity_information(get_input_information):
 
     def molprobity_detailed_table_angles(self,angles):
         """process molprobity angles information and format to table"""
-        f_mp_A=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_molprobity_angles.txt'),'w+')
+        f_mp_A=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_molprobity_angles.txt'),'w+')
         if len(angles)>0:
             angle_diff={};angle_dist={};angle_ex={};
             dict1={'Angle type':[],'Observed angle (&#176)':[],'Ideal angle (&#176)':[],'Number of outliers':[]}
@@ -343,7 +343,7 @@ class get_molprobity_information(get_input_information):
 
     def clash_detailed_table(self,line):
         """process molprobity clash information and format to table"""
-        f_clash_D=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_clash_detailed.txt'),'w+')
+        f_clash_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_clash_detailed.txt'),'w+')
         dict1={'Model ID':[],'Atom-1':[],'Atom-2':[],'Clash overlap (&#8491)':[]}
         clashes=self.process_clash(line)
         #clashes=self.cleanup_clashes(clashes,nos)
@@ -369,7 +369,7 @@ class get_molprobity_information(get_input_information):
 
     def rota_detailed_table(self,models):
         """process molprobity rotamers information and format to table"""
-        f_rota_D=open(os.path.join(os.getcwd(),'Output/results/',self.ID+'_rota_detailed.txt'),'w+')
+        f_rota_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rota_detailed.txt'),'w+')
         dict1={'Model ID':[],'Chain and res ID':[],'Residue type':[]}
         for i,j in models.items():
             for k in j:

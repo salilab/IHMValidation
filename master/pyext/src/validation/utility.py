@@ -197,9 +197,18 @@ def get_method_type(sample_dict):
 def get_restraints_info(restraints):
     n=len(restraints['Restraint type'])
     datalist=[]
-    dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,n)]
+    try:
+        dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,n)]
+    except:
+        new_restraints=dict()
+        for key,val in restraints.items():
+            new_restraints[key]=list(set(val))
+        n=min(len(new_restraints['Restraint info']),len(new_restraints['Restraint type']))
+        dataset=[(new_restraints['Restraint info'][i],new_restraints['Restraint type'][i]) for i in range(0,n)]
+
     for i,j in Counter(dataset).items():
         datalist.append(['%s unique %s: %s' % (j,i[1],i[0])])
+    print (datalist)
     return datalist
 
 def format_list_text(sublist):
