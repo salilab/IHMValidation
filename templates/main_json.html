@@ -1,18 +1,16 @@
+{% if data %}
 <!Template for writing main/home flask page>
 <! ganesans - Salilab - UCSF>
 <!ganesans@salilab.org>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>PDB-Dev Validation Report Landing Page</title>
     <!-- add bootstrap css file -->
-    {% raw %}
      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
      <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    {% endraw %}
 
     <style>
         @charset "UTF-8";
@@ -88,13 +86,12 @@
             <nav class="navbar navbar-expand-xl navbar-dark">
                 <div class="dropdown">
                     <a class="navbar-brand" href="main.html">
-                        <h5>Validation Report for {{ID_T}}</h5>
+                        <h5>Validation Report for {{data["ID_T"]}}</h5>
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
-                {% raw %}
 
                 <div class="dropdown">
                     <a class="navbar-brand" href="{{ url_for('home') }}">
@@ -106,7 +103,6 @@
                 </div>
 
             </nav>
-                {% endraw %}
 
 
             <!-- navbar -->
@@ -141,7 +137,7 @@
                             <div class="dropdown-menu">
 
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ('{{data['Data']}}'.includes('SAS DATA') >= 1) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
                                 document.write(ex);}
 
@@ -155,15 +151,15 @@
                         </li>                       
 
 
-			<li class="nav-item mr-4 dropdown">
+            <li class="nav-item mr-4 dropdown">
                             <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
                             </a>
                             <div class="dropdown-menu">
                             <script>
-                            if ({{sphere}}>0){
+                            if ('{{data['sphere']}}'>0){
                                 var ex='<a class=dropdown-item href=model_quality.html#ex>Excluded volume</a>';
                                 document.write(ex);}
-                            if ({{sphere}}<1){
+                            if ('{{data['sphere']}}'<1){
                                 var ex='<a class=dropdown-item href=model_quality.html#geometry>Standard geometry</a> <a class=dropdown-item href=model_quality.html#contacts>Close contacts</a> <a class=dropdown-item href=model_quality.html#torsion>Torsion angles</a> <a class=dropdown-item href=model_quality.html#outliers>Ramachandran outliers</a>';
                                 document.write(ex);}
                             </script>
@@ -174,9 +170,19 @@
                             </a>
                             <div class="dropdown-menu">
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ('{{data['Data']}}'.includes('SAS DATA') >= 1 && '{{data['Data']}}'.includes('CX-MS DATA')<1){
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
                                 document.write(ex);}
+                                else if ('{{data['Data']}}'.includes('CX-MS DATA')>=1 && '{{data['Data']}}'.includes('SAS DATA') < 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#second>CX-MS</a>'
+                                document.write(ex);       
+                                }
+                                else if ('{{data['Data']}}'.includes('CX-MS DATA')>=1 && '{{data['Data']}}'.includes('SAS DATA') >=1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
+                                 ex +='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#second>CX-MS</a>'
+                                document.write(ex);       
+                                }
+ 
                             else {
                                 var ex='<a class=dropdown-item href=formodeling.html#first>Data</a>'
                                 document.write(ex);
@@ -185,22 +191,6 @@
                             </div>
                         </li>
 
-                        <li class="nav-item mr-4 dropdown">
-                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="notformodeling.html"><span class="overview">Fit to data not used</span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="notformodeling.html#data">Data</a>
-                            </div>
-                        </li>
-
-                        <li class="nav-item mr-4 dropdown">
-                            <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" href="uncertainty.html"><span class="overview">Uncertainty</span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="uncertainty.html#data">Data</a>
-                                <a class="dropdown-item" href="uncertainty.html#model">Model</a>
-                            </div>
-                        </li>
                     </ul>
                 </div>
             </nav>
@@ -211,19 +201,18 @@
                     <div class="col-lg-4">
                         <div class="card-header" style="background-color: #E4E4E4; height: 27rem;">
                             <script>
-                            var section = '<h3 align=center><a href=https://pdb-dev.wwpdb.org/entry.html?' + {{ID_R}} + '>' + {{ID_R}} + '</a></h3>';
+                            var section = '<h3 align=center><a href=https://pdb-dev.wwpdb.org/entry.html?' + {{data[ID_R]}} + '>' + {{data[ID_R]}} + '</a></h3>';
                             document.write(section);
-                            var id = {{ID_T}};
+                            var id = {{data[ID_T]}};
                             </script>
-                            {% raw %}
-                            <div class="box text-center no-padding float-left" style="text-align: center" ><a href="{{ url_for('downloadFile',id='PDBDEV_00000002')}}"><button style="background-color: #669966; margin-top: 15px;margin-bottom:0px; margin-right:0px;color: #FFF;height: 50px; width: 12.5em; border-radius: 10px;cursor: pointer; font-size:0.9em;"><h5 align="center" style="text-align: center";>Download report</h5></button></a></div>
+                            <div class="box text-center no-padding float-left" style="text-align: center" ><a href="{{ url_for('downloadFile',id=data['ID_T'])}}"><button style="background-color: #669966; margin-top: 15px;margin-bottom:0px; margin-right:0px;color: #FFF;height: 50px; width: 11.5em; border-radius: 10px;cursor: pointer; font-size:0.9em;"><h5 align="center" style="text-align: center";>Download report</h5></button></a></div>
                             
-                            <div class="box text-center no-padding float-right" style="text-align: center" ><a href="{{ url_for('downloadTable',id='PDBDEV_00000002')}}"><button style="background-color: #669966; margin-top: 15px;margin-bottom:0px; margin-right:0px;color: #FFF;height: 50px; width: 12.5em; border-radius: 10px;cursor: pointer; font-size:0.9em;"><h5 align="center" style="text-align: center";>Download table</h5></button></a></div>
 
-                            {% endraw %}
+                            <div class="box text-center no-padding float-right" style="text-align: center" ><a href="{{ url_for('downloadTable',id=data['ID_T'])}}"><button style="background-color: #669966; margin-top: 15px;margin-bottom:0px; margin-right:0px;color: #FFF;height: 50px; width: 11.5em; border-radius: 10px;cursor: pointer; font-size:0.9em;"><h5 align="center" style="text-align: center";>Download table</h5></button></a></div>
+
                             <div class="box text-center container-fluid no-padding">
                                 <script>
-                                var section = '<img src=../../static/webimages/' + {{ID_R}} + '_transparent.png class=image-fluid alt=Model Image style=width:300px align=center>';
+                                var section = '<img src=../../static/webimages/' + '{{data['ID_T']}}' + '_transparent.png class=image-fluid alt=Model Image style=width:250px align=center>';
                                 document.write(section)
                                 </script>
                             </div>
@@ -238,20 +227,20 @@
                                     <thead>
                                         <tr>
                                             <th align="center" class="text-center">PDB ID</th>
-                                            <th align="center" class="text-center">{{ID_T}}</th>
+                                            <th align="center" class="text-center">{{data['ID_T']}}</th>
                                         </tr>
                                     </thead>
                                     <tr>
                                         <td class="align-middle" class="text-center">Molecule Name</td>
-                                        <td class="align-middle" class="text-center">{{Molecule}} </td>
+                                        <td class="align-middle" class="text-center">{{data['Molecule']}} </td>
                                     </tr>
                                     <tr>
                                         <td class="align-middle" class="text-center">Title</td>
-                                        <td class="align-middle" class="text-center">{{Title}}</td>
+                                        <td class="align-middle" class="text-center">{{data['Title']}}</td>
                                     </tr>
                                     <tr>
                                         <td class="align-middle" class="text-center">Authors</td>
-                                        <td class="align-middle" class="text-center">{{Authors}}</td>
+                                        <td class="align-middle" class="text-center">{{data['Authors']}}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -272,7 +261,7 @@
                             <h3 align="center"><a name='qual'>Overall quality</a></h3>
                             <div class="box text-center container-fluid no-padding" align='center'>
                                 <script>
-                                var section = '<iframe src=../../static/images/' + {{ID_w}} + 'quality_at_glance.html frameborder=0 scrolling=yes width=60% height=300vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
+                                var section = '<iframe src=../../static/images/' + '{{data['ID']}}'+ 'quality_at_glance.html frameborder=0 scrolling=yes width=60% height=300vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
                                 document.write(section);
                                 </script>
                             </div>
@@ -317,7 +306,6 @@
     </div>
     </footer>
     <!-- add Javasscript file from js file -->
-        {% raw %}
         <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
@@ -325,9 +313,8 @@
         <script type="text/javascript" src="{{ url_for('static', filename='js/popper1.12.9.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap4.1.3.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
-        {% endraw %}
 
     </div>
 </body>
-
 </html>
+{% endif%}
