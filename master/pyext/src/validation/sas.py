@@ -22,20 +22,22 @@ class sas_validation(get_input_information):
         self.ID=str(get_input_information.get_id(self))
         self.nos=get_input_information.get_number_of_models(self)
         self.dataset=get_input_information.get_dataset_comp(self) 
+        self.imagepath='static/images/'
+        self.saslink='https://www.sasbdb.org/media/sascif/sascif_files/'
+        self.sasentry='https://www.sasbdb.org/rest-api/entry/summary/'
     
-    def get_SASBDB_code(self):
+    def get_SASBDB_code(self)->list:
         '''
         function to get all SASBDB codes used in the model,
         returns a list of SASBDB codes
         '''
         SAS_db_codes=[]
-        for i,j in enumerate(self.dataset['Dataset type']):
-            if 'SAS' in str(j):
-                SAS_db_codes.append(self.dataset['Data access code'][i])
-        #print (SAS_db_codes)
+        for indx,datatype in enumerate(self.dataset['Dataset type']):
+            if 'SAS' in str(datatype):
+                SAS_db_codes.append(self.dataset['Data access code'][indx])
         return SAS_db_codes
 
-    def clean_SASBDB_code(self):
+    def clean_SASBDB_code(self)->list:
         '''
         function to clean SASBDB list of codes
         as some might have 'None' or can be repetitive 
@@ -43,22 +45,20 @@ class sas_validation(get_input_information):
         codes=list(set(self.get_SASBDB_code()))
         cleaned_code=[i for i in codes if i != 'None']
         return cleaned_code
-        
-    def get_data_from_SASBDB(self):
+
+    def get_data_from_SASBDB(self)->dict:
         '''
         get data from JSON
         '''
-        url='https://www.sasbdb.org/rest-api/entry/summary/'
         data_dic={}
-        for i in self.get_SASBDB_code():
-            if 'None' not in str(i):
-                url_f=url+i+'.json'
-                #print ('fetching data from: %s'%(url_f))
+        for code in self.get_SASBDB_code():
+            if 'None' not in str(code):
+                url_f=self.sasentry+code+'.json'
                 response=requests.get(url_f, data={'key':'value'});
                 if response.status_code!=200:
                     print ("Error....unable to fetch data from SASBDB, please check the entry ID")
-                data_dic[i]=response.json();
-                with open (i+'.json', 'w') as f:
+                data_dic[code]=response.json();
+                with open (code+'.json', 'w') as f:
                     formatted_data=json.dumps(response.json(), indent = 4, sort_keys=True);
                     f.write(formatted_data);
         return data_dic
@@ -67,28 +67,25 @@ class sas_validation(get_input_information):
         '''
         get data from SASCIF files
         '''
-        url='https://www.sasbdb.org/media/sascif/sascif_files/'
-        for i in self.get_SASBDB_code():
-            if 'None' not in str(i):
-                url_f=url+i+'.sascif'
+        for code in self.get_SASBDB_code():
+            if 'None' not in str(code):
+                url_f=self.saslink+code+'.sascif'
                 response=requests.get(url_f);
                 if response.status_code!=200:
                     print ("Error....unable to fetch data from SASBDB, please check the entry ID")
-                with open (i+'.sascif', 'w') as f:
+                with open (code+'.sascif', 'w') as f:
                     f.write(response.text);
 
-    def get_all_sascif(self,sasbdb):
+    def get_all_sascif(self,sasbdb)->list:
         '''
         get a list of all lines in a SASCIF file
         '''
         if 'None' not in str(sasbdb):
             file=open(sasbdb+'.sascif','r')
-            all_lines=[]
-            for i,j in enumerate(file.readlines()):
-                all_lines.append(j.strip().split())
+            all_lines=[data.strip().split() for indx,data in enumerate(file.readlines())]
         return all_lines
 
-    def get_intensities(self):
+    def get_intensities(self)->dict:
         '''
         get intensity data from SASCIF file
         if SASCIF file is not present, this information will not be present/used in the report
@@ -100,12 +97,12 @@ class sas_validation(get_input_information):
             #Int_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
-            for m,n in enumerate(all_lines):
-                if len(n)<2 and len(n)>0 and 'scan_intensity' in n[0]:
-                    data[(n[0].split('.')[1])]=[]
-                if len(n)>2 and len(all_lines[m-1])>0 and'scan_intensity' in all_lines[m-1][0]:
-                    for i,j in enumerate(all_lines[m:]):
-                        if len(j)>2 and '#' not in j and 'sas' not in j[0] :  
+            for indx,sascifline in enumerate(all_lines):
+                if len(sascifline)<2 and len(sascifline)>0 and 'scan_intensity' in sascifline[0]:
+                    data[(sascifline[0].split('.')[1])]=[]
+                if len(sascifline)>2 and len(all_lines[indx-1])>0 and'scan_intensity' in all_lines[indx-1][0]:
+                    for indx_sub,sascifline_sub in enumerate(all_lines[indx:]):
+                        if len(sascifline_sub)>2 and '#' not in sascifline_sub and 'sas' not in sascifline_sub[0] :  
                             for num,key in enumerate(list(data.keys())):
                                 data[key].append(j[num])
                         else:
@@ -116,7 +113,7 @@ class sas_validation(get_input_information):
             Int_dict[code]=I_df_re
         return Int_dict
 
-    def modify_intensity(self):
+    def modify_intensity(self)->dict:
         '''
         modify intensity data to calcualte errors and log values
         '''
@@ -144,7 +141,7 @@ class sas_validation(get_input_information):
             Int_dict_modify[key]=I_df
         return Int_dict_modify
 
-    def modify_intensity_dep(self):
+    def modify_intensity_dep(self)->dict:
         '''
         depreciated function to get intensities from JSON/raw data
         '''
@@ -167,7 +164,7 @@ class sas_validation(get_input_information):
             Int_dict_modify[key]=I_df
         return Int_dict_modify
 
-    def get_rg_for_plot(self):
+    def get_rg_for_plot(self)->dict:
         '''
         get Rg values from SASCIF file, if unavailabel, get it from JSON
         '''
@@ -176,12 +173,13 @@ class sas_validation(get_input_information):
         for code in self.clean_SASBDB_code():
             rg={};
             all_lines=self.get_all_sascif(code)
-            for m,n in enumerate(all_lines):
-                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_PR' in n[0] and'sas_result.Rg_from_PR_' not in n[0] :
-                    rg[n[0].split('.')[1]]=float(n[1])
-                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_Guinier' in n[0] and'sas_result.Rg_from_Guinier_' not in n[0] :
-                    rg[n[0].split('.')[1]]=float(n[1])
+            for indx,sascifline in enumerate(all_lines):
+                if len(sascifline)<3 and len(sascifline)>0 and 'sas_result.Rg_from_PR' in sascifline[0] and'sas_result.Rg_from_PR_' not in sascifline[0] :
+                    rg[sascifline[0].split('.')[1]]=float(sascifline[1])
+                if len(sascifline)<3 and len(sascifline)>0 and 'sas_result.Rg_from_Guinier' in sascifline[0] and'sas_result.Rg_from_Guinier_' not in sascifline[0] :
+                    rg[sascifline[0].split('.')[1]]=float(sascifline[1])
             Rg_dict[code]=list(rg.values())
+
         if len(list(rg.values()))<1:
             data_dic=self.get_data_from_SASBDB()
             for key,val in data_dic.items():
@@ -190,7 +188,7 @@ class sas_validation(get_input_information):
                 Rg_dict[key].append(round(float(val['pddf_rg']),2))
         return Rg_dict
 
-    def get_rg_and_io(self):
+    def get_rg_and_io(self)->dict:
         '''
         get rg information from SASCIF file
         '''
@@ -198,15 +196,15 @@ class sas_validation(get_input_information):
         rg_and_io={}
         for code in self.clean_SASBDB_code():
             all_lines=self.get_all_sascif(code)
-            for m,n in enumerate(all_lines):
-                if len(n)<3 and len(n)>0 and 'sas_result.Rg_from_PR' in n[0] and'sas_result.Rg_from_PR_' not in n[0] :
-                    rg=float(n[1])
-                if len(n)<3 and len(n)>0 and '_sas_result.I0_from_PR' in n[0] and'_sas_result.I0_from_PR_' not in n[0] :
-                    io=float(n[1])
+            for indx,sascifline in enumerate(all_lines):
+                if len(sascifline)<3 and len(sascifline)>0 and 'sas_result.Rg_from_PR' in sascifline[0] and'sas_result.Rg_from_PR_' not in sascifline[0] :
+                    rg=float(sascifline[1])
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_result.I0_from_PR' in sascifline[0] and'_sas_result.I0_from_PR_' not in sascifline[0] :
+                    io=float(sascifline[1])
             rg_and_io[code]=(rg,io)
         return rg_and_io
 
-    def get_rg_table_many(self):
+    def get_rg_table_many(self)->dict:
         '''
         get rg information from multiple SASCIF files
         '''
@@ -230,7 +228,7 @@ class sas_validation(get_input_information):
         return rg_table
 
 
-    def get_fits_for_plot(self):
+    def get_fits_for_plot(self)->dict:
         '''
         get chi-squared values from SASCIF files
         '''
@@ -239,33 +237,29 @@ class sas_validation(get_input_information):
         for code in self.clean_SASBDB_code():
             fits=[];
             all_lines=self.get_all_sascif(code)
-            for m,n in enumerate(all_lines):
-                #if len(n)<3 and len(n)>0 and 'sas_model_fitting_details.id' in n[0]:
-                #    fitid=int(n[1])
-                if (len(n)<3) and (len(n)>0) and ('sas_model_fitting_details.chi_square' in n[0]) and (float(n[1])>0.00000):
-                    fits.append(round(float(n[1]),2))
+            for indx,sascifline in enumerate(all_lines):
+                if (len(sascifline)<3) and (len(sascifline)>0) and ('sas_model_fitting_details.chi_square' in sascifline[0]) and (float(sascifline[1])>0.00000):
+                    fits.append(round(float(sascifline[1]),2))
             if len(fits)>0:
                 fit_dict[code]=fits
-        #print (fit_dict)
         return fit_dict
 
-    def get_pofr(self):
+    def get_pofr(self)->dict:
         '''
         get pair-dist distribution from SASCIF files
         '''
         pofr_dict={}
         for code in self.clean_SASBDB_code():
-            #pofr_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
-            for m,n in enumerate(all_lines):
-                if len(n)<2 and len(n)>0 and 'sas_p_of_R.' in n[0]:
-                    data[(n[0].split('.')[1])]=[]
-                if len(n)>2 and len(all_lines[m-1])>0 and 'sas_p_of_R.' in all_lines[m-1][0]:
-                    for i,j in enumerate(all_lines[m:]):
-                        if len(j)>2 and '#' not in j and 'sas' not in j[0] :
+            for indx,sascifline in enumerate(all_lines):
+                if len(sascifline)<2 and len(sascifline)>0 and 'sas_p_of_R.' in sascifline[0]:
+                    data[(sascifline[0].split('.')[1])]=[]
+                if len(sascifline)>2 and len(all_lines[indx-1])>0 and 'sas_p_of_R.' in all_lines[indx-1][0]:
+                    for subindx,subval in enumerate(all_lines[indx:]):
+                        if len(subval)>2 and '#' not in subval and 'sas' not in subval[0] :
                             for num,key in enumerate(list(data.keys())):
-                                data[key].append(j[num])
+                                data[key].append(subval[num])
                         else:
                             break
             pdf=pd.DataFrame(list(data.values()),index=list(data.keys())).T
@@ -274,7 +268,7 @@ class sas_validation(get_input_information):
             pofr_dict[code]=pdf_re
         return pofr_dict
 
-    def get_pvals(self):
+    def get_pvals(self)->dict:
         '''
         get p-values from ATSAS 
         '''
@@ -284,14 +278,14 @@ class sas_validation(get_input_information):
         for key,val in data_dic.items():
             num=num_of_fits[key]
             if num>0:
-                for i in range(0,num):
+                for fitnum in range(0,num):
                     pval_table['SASDB ID'].append(key)
-                    pval_table['Model'].append(i+1)
-                    target_url=val['fits'][i]['fit_data']      
+                    pval_table['Model'].append(fitnum+1)
+                    target_url=val['fits'][fitnum]['fit_data']      
                     fit = requests.get(target_url);
                     if fit.status_code !=200:
                         print ("Error....unable to fetch data from SASBDB, please check the entry ID")
-                    fname=key+str(i)+'fit.csv'
+                    fname=key+str(fitnum)+'fit.csv'
                     with open (fname,'w') as f:
                         f.write(fit.text)
                     f_df=pd.read_csv(fname, skiprows=3,delim_whitespace=True, names=['Q','Ie','Ib','E'])
@@ -303,7 +297,7 @@ class sas_validation(get_input_information):
                     fit_2.to_csv('fit2.csv',header=False,index=False)
                     f1=open('pval.txt','w+')
                     with f1 as outfile:
-                        run([r"/Users/saijananiganesan/Applications/ATSAS-3.0.1-1/bin/datcmp",'fit1.csv','fit2.csv'],stdout=outfile)
+                        run([r"/Users/saijananiganesan/ATSAS-3.0.3-1/bin/datcmp",'fit1.csv','fit2.csv'],stdout=outfile)
                     f2=open('pval.txt','r')
                     all_lines=[j.strip().split() for i,j in enumerate(f2.readlines())]
                     p_val=[all_lines[i+1][4] for i,j in enumerate(all_lines) if 'adj' in j][0]
@@ -312,26 +306,24 @@ class sas_validation(get_input_information):
                 pval_table['SASDB ID'].append(key)
                 pval_table['Model'].append('N/A')
                 pval_table['p-value'].append('N/A')
-        #print (pval_table)
         return pval_table
 
-    def get_pofr_ext(self):
+    def get_pofr_ext(self)->dict:
         '''
         get pair-distance details from SASCIF files
         '''
         pofr_dict={}
         for code in self.clean_SASBDB_code():
-            #pofr_dict={}
             all_lines=self.get_all_sascif(code)
             data={}
-            for m,n in enumerate(all_lines):
-                if len(n)<2 and len(n)>0 and '_sas_p_of_R_extrapolated_intensity.' in n[0]:
+            for indx,sascifline in enumerate(all_lines):
+                if len(sascifline)<2 and len(sascifline)>0 and '_sas_p_of_R_extrapolated_intensity.' in sascifline[0]:
                     data[(n[0].split('.')[1])]=[]
-                if len(n)>2 and len(all_lines[m-1])>0 and '_sas_p_of_R_extrapolated_intensity.' in all_lines[m-1][0]:
-                    for i,j in enumerate(all_lines[m:]):
-                        if len(j)>2 and '#' not in j and 'sas' not in j[0] :
+                if len(sascifline)>2 and len(all_lines[indx-1])>0 and '_sas_p_of_R_extrapolated_intensity.' in all_lines[indx-1][0]:
+                    for subindx,subval in enumerate(all_lines[indx:]):
+                        if len(subval)>2 and '#' not in j and 'sas' not in subval[0] :
                             for num,key in enumerate(list(data.keys())):
-                                data[key].append(j[num])
+                                data[key].append(subval[num])
                         else:
                             break
             pdf=pd.DataFrame(list(data.values()),index=list(data.keys())).T
@@ -341,10 +333,9 @@ class sas_validation(get_input_information):
             pdf_re['Q']=pdf_re['Q']*10
             pdf_re['logI']=np.log(pdf_re['I'])
             pofr_dict[code]=pdf_re
-            #print (pdf_re.head())
         return pofr_dict
 
-    def get_pofr_errors(self):
+    def get_pofr_errors(self)->dict:
         '''
         get pair-distance details and errors from JSON files
         '''
@@ -369,23 +360,21 @@ class sas_validation(get_input_information):
                         wt_delta_I=0
                     errors.append([Q,delta_I,wt_delta_I])
             errors_df=pd.DataFrame(errors,columns=['Q','R','WR'])
-            #print (errors_df.head())
             compiled_dict[code]=errors_df
         return compiled_dict
 
-    def findMinDiff(self,list1, num1): 
+    def findMinDiff(self,listn: list, num: int)-> int: 
         '''
         quick min diff operation for calculating errors
         '''
-        list_sub=[(i,abs(j-num1)) for i,j in enumerate(list1)]
+        list_sub=[(i,abs(j-num)) for i,j in enumerate(listn)]
         list_sort=sorted(list_sub, key=lambda x: x[1])
         if list_sort[0][1]<0.00001:
-        #print (list1[list_sort[0][0]])
-            return list1[list_sort[0][0]]
+            return listn[list_sort[0][0]]
         else:
             return 9999  
 
-    def get_Guinier_data(self):
+    def get_Guinier_data(self)->(dict,dict):
         '''
         get Guinier plot data from JSON files
         '''
@@ -394,7 +383,6 @@ class sas_validation(get_input_information):
         Guinier_dict={};Guinier_score={}
         for key,val in Int_dict.items():
             G_df=val.astype({'Q':float,'I':float,'E':float})
-            #G_df['Q']=G_df['Q']*10
             G_df['logI']=np.log(G_df['I'])
             rg=float(data_dic[key]['pddf_rg'])
             dmax=float(data_dic[key]['pddf_dmax'])
@@ -402,7 +390,6 @@ class sas_validation(get_input_information):
             index_high=int(data_dic[key]['guinier_point_last'])
             q_min=math.pi/(dmax*10)
             q_max=1.3/(rg*10)
-            #G_df_range=G_df.iloc[[index_low,index_high],:] 
             G_df_range=G_df[G_df['Q']<q_max].copy()
             G_df_range['Q']=G_df['Q']*10
             G_df_range['Q2']=G_df_range['Q']**2
@@ -418,7 +405,7 @@ class sas_validation(get_input_information):
             Guinier_dict[key]=G_df_range
         return Guinier_score,Guinier_dict
 
-    def get_parameters_vol_many_dep(self):
+    def get_parameters_vol_many_dep(self)->dict:
         '''
         get volume parameters from JSON files 
         '''
@@ -444,7 +431,7 @@ class sas_validation(get_input_information):
             parameter_table['SASDB ID'].append(key)
         return parameter_table
 
-    def get_parameters_vol_many(self):
+    def get_parameters_vol_many(self)->dict:
         '''
         get volume details from SASCIF files
         '''
@@ -454,37 +441,36 @@ class sas_validation(get_input_information):
         for code in self.clean_SASBDB_code():
             parameter_table['SASDB ID'].append(code)
             all_lines=self.get_all_sascif(code)
-            for m,n in enumerate(all_lines):
-                if len(n)<3 and len(n)>0 and '_sas_sample.specimen_concentration' in n[0]:
-                    if len(n[1])>1:
-                        parameter_table['Sample Concentration'].append(str(round(float(n[1]),2))+' mg/ml')
+            for indx,sascifline in enumerate(all_lines):
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_sample.specimen_concentration' in sascifline[0]:
+                    if len(sascifline[1])>1:
+                        parameter_table['Sample Concentration'].append(str(round(float(sascifline[1]),2))+' mg/ml')
                     else:
                         parameter_table['Sample Concentration'].append('N/A')
-                if len(n)<3 and len(n)>0 and '_sas_sample.contrast' in n[0] :
-                    if len(n[1])>1:
-                        parameter_table['Sample Contrast'].append(str(round(float(n[1]),2)))
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_sample.contrast' in sascifline[0] :
+                    if len(sascifline[1])>1:
+                        parameter_table['Sample Contrast'].append(str(round(float(sascifline[1]),2)))
                     else:
                         parameter_table['Sample Contrast'].append('N/A')
-                if len(n)<3 and len(n)>0 and '_sas_sample.specific_vol' in n[0]:
-                    if len(n[1])>1:
-                        parameter_table['Specific Volume'].append(str(round(float(n[1]),2))+' nm\u00b3')
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_sample.specific_vol' in sascifline[0]:
+                    if len(sascifline[1])>1:
+                        parameter_table['Specific Volume'].append(str(round(float(sascifline[1]),2))+' nm\u00b3')
                     else:
                         parameter_table['Specific Volume'].append('N/A')
-                if len(n)<3 and len(n)>0 and '_sas_result.Porod_volume' in n[0] and '_sas_result.Porod_volume_error' not in n[0]:
-                    if len(n[1])>1:
-                        parameter_table['Porod Volume'].append(str(round(float(n[1]),2))+' nm\u00b3')
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_result.Porod_volume' in sascifline[0] and '_sas_result.Porod_volume_error' not in sascifline[0]:
+                    if len(sascifline[1])>1:
+                        parameter_table['Porod Volume'].append(str(round(float(sascifline[1]),2))+' nm\u00b3')
                     else:
                         parameter_table['Porod Volume'].append('N/A')
-                if len(n)<3 and len(n)>0 and '_sas_result.estimated_volume' in n[0] and '_sas_result.estimated_volume_error' not in n[0]:
-                    if len(n[1])>1:
-                        parameter_table['Estimated Volume'].append(str(round(float(n[1]),2))+' nm\u00b3')
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_result.estimated_volume' in sascifline[0] and '_sas_result.estimated_volume_error' not in sascifline[0]:
+                    if len(sascifline[1])>1:
+                        parameter_table['Estimated Volume'].append(str(round(float(sascifline[1]),2))+' nm\u00b3')
                     else:
                         parameter_table['Estimated Volume'].append('N/A')
-
         return parameter_table
 
 
-    def get_parameters_mw_many(self):
+    def get_parameters_mw_many(self)->dict:
         '''
         get MW details from SASCIF files
         '''
@@ -493,32 +479,32 @@ class sas_validation(get_input_information):
         for code in self.clean_SASBDB_code():
             parameter_table['SASDB ID'].append(code)
             all_lines=self.get_all_sascif(code)
-            for m,n in enumerate(all_lines):
-                if len(n)<3 and len(n)>0 and '_sas_result.experimental_MW' in n[0] and '_sas_result.experimental_MW_error' not in n[0]:
-                    if len(n[1])>1:
-                        parameter_table['Chemical composition MW'].append(str(round(float(n[1]),2))+' kDa')
+            for indx,sascifline in enumerate(all_lines):
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_result.experimental_MW' in sascifline[0] and '_sas_result.experimental_MW_error' not in sascifline[0]:
+                    if len(sascifline[1])>1:
+                        parameter_table['Chemical composition MW'].append(str(round(float(sascifline[1]),2))+' kDa')
                     else:
                         parameter_table['Chemical composition MW'].append('N/A')
-                if len(n)<3 and len(n)>0 and '_sas_result.MW_standard' in n[0] and '_sas_result.MW_standard_error' not in n[0]:
-                    if len(n[1])>1:
-                        parameter_table['Standard MW'].append(str(round(float(n[1]),2))+' kDa')
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_result.MW_standard' in sascifline[0] and '_sas_result.MW_standard_error' not in sascifline[0]:
+                    if len(sascifline[1])>1:
+                        parameter_table['Standard MW'].append(str(round(float(sascifline[1]),2))+' kDa')
                     else:
                         parameter_table['Standard MW'].append('N/A')
-                if len(n)<3 and len(n)>0 and '_sas_result.MW_Porod' in n[0] and '_sas_result.MW_Porod_error' not in n[0]:
-                    if len(n[1])>1:
-                        Porod_MW=round(float(n[1]),2)
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_result.MW_Porod' in sascifline[0] and '_sas_result.MW_Porod_error' not in sascifline[0]:
+                    if len(sascifline[1])>1:
+                        Porod_MW=round(float(sascifline[1]),2)
                     else:
                         Porod_MW=0
-                if len(n)<3 and len(n)>0 and '_sas_result.Porod_volume' in n[0] and '_sas_result.Porod_volume_error' not in n[0]:
-                    if len(n[1])>1 and Porod_MW>0:
-                        Porod_V=round(float(n[1]),2)/Porod_MW
+                if len(sascifline)<3 and len(sascifline)>0 and '_sas_result.Porod_volume' in sascifline[0] and '_sas_result.Porod_volume_error' not in sascifline[0]:
+                    if len(sascifline[1])>1 and Porod_MW>0:
+                        Porod_V=round(float(sascifline[1]),2)/Porod_MW
                         parameter_table['Porod Volume/MW'].append(str(round(Porod_V,2))+' nm \u00b3/kDa')
                     else:
                         parameter_table['Porod Volume/MW'].append('N/A')
 
         return parameter_table
 
-    def get_parameters_mw_many_dep(self):
+    def get_parameters_mw_many_dep(self)->dict:
         '''
         depreciated function on getting MW from JSON
         '''
@@ -541,7 +527,7 @@ class sas_validation(get_input_information):
             parameter_table['SASDB ID'].append(key)
         return parameter_table
     
-    def get_pddf(self):
+    def get_pddf(self)->dict:
         '''
         get p(r) data from JSON
         '''
@@ -554,10 +540,9 @@ class sas_validation(get_input_information):
             pd_df['err_x']=pd_df.apply(lambda row: (row['R'],row['R']), axis=1)
             pd_df['err_y']=pd_df.apply(lambda row: (row['P']-row['E'],row['P']+row['E']),axis=1)
             pddf_dic[key]=pd_df
-            #print (pd_df.head())
         return pddf_dic
 
-    def get_pddf_info(self):
+    def get_pddf_info(self)->dict:
         '''
         get p(r) related info from JSON
         '''
@@ -569,7 +554,6 @@ class sas_validation(get_input_information):
                 pddf_info['Dmax'].append(str(val['pddf_dmax'])+' nm')
             except: 
                 pddf_info['Dmax'].append('N/A')
-
             try:
                 pddf_info['Rg'].append(str(val['pddf_rg'])+' nm')
             except:
@@ -579,18 +563,16 @@ class sas_validation(get_input_information):
                     pddf_info['Dmax error'].append('N/A')
                 else:
                     pddf_info['Dmax error'].append(str(val['pddf_dmax_error'])+' nm')
-
             except:
                 pddf_info['Dmax error'].append('N/A')
             try:
                 pddf_info['Rg error'].append(str(val['pddf_rg_error'])+' nm')
             except:
                 pddf_info['Rg error'].append('N/A')
-
             pddf_info['SASDB ID'].append(key)
         return pddf_info
 
-    def get_number_of_fits(self):
+    def get_number_of_fits(self)->dict:
         '''
         get number of fits from JSON, deprecated
         '''
@@ -600,23 +582,21 @@ class sas_validation(get_input_information):
             num_of_fits[key]=len(val['fits'])
         return num_of_fits
 
-    def get_chi_table(self):
+    def get_chi_table(self)->dict:
         '''
         get chi value from JSON, deprecated
         '''
         data_dic=self.get_data_from_SASBDB()
         chi_table={'SASDB ID':[],'Model':[],'\u03C7\u00b2':[]}        
         for key,val in data_dic.items():
-            #print (self.get_number_of_fits())
-            num=self.get_number_of_fits()[key]
-            if num>0:
-                for i in range(0,num):
-                    count=i+1
+            numoffits=self.get_number_of_fits()[key]
+            if numoffits>0:
+                for fitnum in range(0,numoffits):
+                    count=fitnum+1
                     chi_table['SASDB ID'].append(key)            
                     chi_table['Model'].append(str(count))
-                    chi_value=val['fits'][i]['chi_square_value']
+                    chi_value=val['fits'][fitnum]['chi_square_value']
                     chi_value_round=round(chi_value,2)
-                    #print (chi_value,chi_value_round,"chi value after rounding")
                     chi_table['\u03C7'+'\u00b2'].append(chi_value_round)
             else:
                 chi_table['SASDB ID'].append(key)
@@ -624,15 +604,14 @@ class sas_validation(get_input_information):
                 chi_table['\u03C7'+'\u00b2'].append('N/A')
         return chi_table
 
-    def get_sasdb_code_fits(self):
+    def get_sasdb_code_fits(self)->list:
         '''
         get number of fits per SASBDB ID
         '''
         fit_dict=self.get_number_of_fits()
-        #print (list(fit_dict.values()))
         return list(fit_dict.values())
 
-    def get_fit_data(self):
+    def get_fit_data(self)->dict:
         '''
         get fit information to make plots, from JSON
         '''
@@ -643,20 +622,23 @@ class sas_validation(get_input_information):
             num=num_of_fits[key]
             fits={}
             if num>0:
-                for i in range(0,num):
-                    target_url=val['fits'][i]['fit_data']      
+                for fitnum in range(0,num):
+                    target_url=val['fits'][fitnum]['fit_data']      
                     fit = requests.get(target_url);
                     if fit.status_code !=200:
                         print ("Error....unable to fetch data from SASBDB, please check the entry ID")
-                    fname=key+str(i)+'fit.csv'
+                    
+                    fname=key+str(fitnum)+'fit.csv'
                     with open (fname,'w') as f:
                         f.write(fit.text)
+                    
                     f_df=pd.read_csv(fname, skiprows=3,delim_whitespace=True, names=['Q','Ie','Ib','E'])
                     if abs(f_df.iloc[22,2]-f_df.iloc[22,1])>abs(f_df.iloc[22,3]-f_df.iloc[22,1]):
                         f_df.rename(columns={'Q':'Q','Ie':'Ie','Ib':'E','E':'Ib'},inplace=True)
                     f_df['logIe']=np.log(f_df['Ie'])
                     f_df['logIb']=np.log(f_df['Ib'])
                     f_df['r']=f_df['Ie']-f_df['Ib']
+                    
                     if f_df['E'].isnull().values.any():
                         f_df['rsigma']=0
                     else:
@@ -674,21 +656,19 @@ class sas_validation(get_input_information):
             data_fit[key]=fits 
         return data_fit
 
-    def get_fit_r2(self,df):
-        '''
-        '''
-        r2=df['r2a'].sum()/df['r2b'].sum()
-        return round(r2,2)
+    def get_fit_r2(self,df:pd.DataFrame)->int:
+        rsquared=df['r2a'].sum()/df['r2b'].sum()
+        return round(rsquared,2)
     
-    def get_total_fits(self):
+    def get_total_fits(self)->int:
         '''
         get number of fits
         '''
         data_dic=self.get_data_from_SASBDB()
-        num=0
+        num_of_fits=0
         for key,val in data_dic.items():
-            num += len(val['fits'])
-        return num
+            num_of_fits += len(val['fits'])
+        return num_of_fits
 
     def get_fit_image(self):
         '''
@@ -700,13 +680,13 @@ class sas_validation(get_input_information):
         for key,val in data_dic.items():
             num=num_of_fits[key]
             if num>0:
-                for i in range(0,num):    
-                    target_url=val['fits'][i]['models'][0]['model_plot']
-                    fit = requests.get(target_url);
-                    if fit.status_code !=200:
+                for fitnum in range(0,num):    
+                    target_url=val['fits'][fitnum]['models'][0]['model_plot']
+                    fitdata = requests.get(target_url);
+                    if fitdata.status_code !=200:
                         print ("Error....unable to fetch data from SASBDB, please check the entry ID")
                     dirname=os.path.dirname(os.path.abspath(__file__))
-                    filename = os.path.abspath(os.path.join(os.getcwd(), 'static/images/',self.ID+key+str(i)+'fit.png'))
+                    filename = os.path.abspath(os.path.join(os.getcwd(),self.imagepath,self.ID+key+str(fitnum)+'fit.png'))
                     with open (filename,'wb') as f:
-                        f.write(fit.content)
+                        f.write(fitdata.content)
 
