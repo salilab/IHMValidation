@@ -31,13 +31,13 @@ class sas_validation_plots(sas.sas_validation):
         self.pdf_ext_dict=sas.sas_validation.get_pofr_ext(self)
         self.pdf_dict_err=sas.sas_validation.get_pofr_errors(self)
         self.score,self.gdf=sas.sas_validation.get_Guinier_data(self)
-        self.filename = os.path.join('Output/images//')
-        self.filename_add = os.path.join('static/images//')
+        self.filename = os.path.join('../static/images//')
 
-    def plot_intensities(self,sasbdb,df):
+    def plot_intensities(self,sasbdb:str,df:pd.DataFrame):
         '''
         plot intensities with errors
         '''
+        print (type(df))
         output_file(self.ID+sasbdb+"intensities.html",mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500, title="Log I(q) vs q with error bars ("+sasbdb+")")
@@ -53,13 +53,12 @@ class sas_validation_plots(sas.sas_validation):
         p.yaxis.axis_label = 'Log I(q) [a.u]'
         p.yaxis.axis_label_text_font_size='14pt'
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"intensities.html")
+        print (self.filename+'/'+self.ID+sasbdb+"intensities.html")
         p.output_backend="svg"
         export_svgs(p,height=500, width=500,filename=self.filename+'/'+self.ID+sasbdb+"intensities.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities.html")
-        export_svgs(p,height=500, width=500,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities.svg")
 
 
-    def plot_intensities_log(self,sasbdb,df):
+    def plot_intensities_log(self,sasbdb:str,df:pd.DataFrame):
         '''
         plot intensities on a log scale with errors
         '''
@@ -80,10 +79,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"intensities_log.html")
         p.output_backend="svg"
         export_svgs(p,height=500, width=500,filename=self.filename+'/'+self.ID+sasbdb+"intensities_log.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities_log.html")
-        export_svgs(p,height=500, width=500,filename=self.filename_add+'/'+self.ID+sasbdb+"intensities_log.svg")
 
-    def plot_kratky_dep(self,sasbdb,df):
+    def plot_kratky_dep(self,sasbdb:str,df:pd.DataFrame):
         '''
         plot kratky plot, deprecated function
         '''
@@ -103,10 +100,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky_dep.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky_dep.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky_dep.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky_dep.svg")
 
-    def plot_kratky(self,sasbdb,df):
+    def plot_kratky(self,sasbdb:str,df:pd.DataFrame):
         '''
         plot dimensionless kratky 
         '''
@@ -129,10 +124,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"Kratky.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"Kratky.svg")
 
-    def plot_porod_debye(self,sasbdb,df):
+    def plot_porod_debye(self,sasbdb:str,df:pd.DataFrame):
         '''
         porod debye plot for flexibility 
         '''
@@ -152,10 +145,8 @@ class sas_validation_plots(sas.sas_validation):
         p.output_backend="svg"
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"porod.html")
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"porod.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"porod.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"porod.svg")
 
-    def plot_pddf(self,sasbdb,df):
+    def plot_pddf(self,sasbdb:str,df:pd.DataFrame):
         '''
         p(r) plot, deprecated function 
         '''
@@ -176,10 +167,8 @@ class sas_validation_plots(sas.sas_validation):
         p.output_backend="svg" 
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf.html")
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf.svg")
 
-    def plot_pddf_residuals(self,sasbdb,df):
+    def plot_pddf_residuals(self,sasbdb:str,df:pd.DataFrame):
         '''
         p(r) residuals 
         '''
@@ -201,10 +190,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals.svg")
 
-    def plot_pddf_residuals_wt(self,sasbdb,df):
+    def plot_pddf_residuals_wt(self,sasbdb:str,df:pd.DataFrame):
         '''
         p(r) error weighted residuals
         '''
@@ -226,10 +213,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals_wt.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals_wt.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_residuals_wt.svg")
 
-    def plot_pddf_int(self,sasbdb,df_int,df_pofr):
+    def plot_pddf_int(self,sasbdb:str,df_int:pd.DataFrame,df_pofr:pd.DataFrame):
         '''
         p(r) with fit
         '''
@@ -255,10 +240,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_int.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"pddf_int.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_int.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"pddf_int.svg")
 
-    def Guinier_plot_fit(self,sasbdb,df,score):
+    def Guinier_plot_fit(self,sasbdb:str,df:pd.DataFrame,score:int):
         '''
         Gunier plot with fit
         '''
@@ -282,10 +265,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier.svg")
 
-    def Guinier_plot_residuals(self,sasbdb,df):
+    def Guinier_plot_residuals(self,sasbdb:str,df:pd.DataFrame):
         '''
         Guinier plot residuals
         '''
@@ -307,10 +288,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier_residuals.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+"guinier_residuals.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier_residuals.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+"guinier_residuals.svg")
 
-    def plot_fit(self,sasbdb,fit,score,df):
+    def plot_fit(self,sasbdb:str,fit:int,score:int,df:pd.DataFrame):
         '''
         plot chi-squared fit
         '''
@@ -335,10 +314,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"fit1.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"fit1.svg")
 
-    def plot_fit_residuals(self,sasbdb,fit,df):
+    def plot_fit_residuals(self,sasbdb:str,fit:int,df:pd.DataFrame):
         '''
         plot residuals for each fit
         '''
@@ -360,10 +337,8 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals.svg")
 
-    def plot_fit_residuals_wt(self,sasbdb,fit,df):
+    def plot_fit_residuals_wt(self,sasbdb:str,fit:int,df:pd.DataFrame):
         '''
         plot error weighted residuals for each fit
         '''
@@ -385,8 +360,6 @@ class sas_validation_plots(sas.sas_validation):
         save(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.html")
         p.output_backend="svg"
         export_svgs(p,filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.svg")
-        save(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.html")
-        export_svgs(p,filename=self.filename_add+'/'+self.ID+sasbdb+str(fit)+"residuals_wt.svg")
 
     def plot_multiple(self):
         for key,val in self.df_dict.items():
@@ -396,7 +369,6 @@ class sas_validation_plots(sas.sas_validation):
             #self.plot_kratky_dim(key,val)
             self.plot_porod_debye(key,val)
             self.plot_pddf_int(key,val,self.pdf_ext_dict[key])
-
  
     def plot_Guinier(self):
         for key,val in self.gdf.items():
