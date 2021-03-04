@@ -22,7 +22,7 @@ class sas_validation(get_input_information):
         self.ID=str(get_input_information.get_id(self))
         self.nos=get_input_information.get_number_of_models(self)
         self.dataset=get_input_information.get_dataset_comp(self) 
-        self.imagepath='static/images/'
+        self.imagepath='../static/images/'
         self.saslink='https://www.sasbdb.org/media/sascif/sascif_files/'
         self.sasentry='https://www.sasbdb.org/rest-api/entry/summary/'
     
@@ -104,7 +104,7 @@ class sas_validation(get_input_information):
                     for indx_sub,sascifline_sub in enumerate(all_lines[indx:]):
                         if len(sascifline_sub)>2 and '#' not in sascifline_sub and 'sas' not in sascifline_sub[0] :  
                             for num,key in enumerate(list(data.keys())):
-                                data[key].append(j[num])
+                                data[key].append(sascifline_sub[num])
                         else:
                             break        
             I_df=pd.DataFrame(list(data.values()),index=list(data.keys())).T
@@ -125,7 +125,7 @@ class sas_validation(get_input_information):
             IO=rg_and_io[key][1]
             dim_num=Rg*Rg/IO
             I_df=val.astype({'Q':float,'I':float,'E':float})
-            I_df.head()
+            print (I_df.head())
             I_df=I_df[I_df['I']-I_df['E']>0]
             I_df['Q']=I_df['Q']*10
             I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1) 
@@ -318,10 +318,10 @@ class sas_validation(get_input_information):
             data={}
             for indx,sascifline in enumerate(all_lines):
                 if len(sascifline)<2 and len(sascifline)>0 and '_sas_p_of_R_extrapolated_intensity.' in sascifline[0]:
-                    data[(n[0].split('.')[1])]=[]
+                    data[(sascifline[0].split('.')[1])]=[]
                 if len(sascifline)>2 and len(all_lines[indx-1])>0 and '_sas_p_of_R_extrapolated_intensity.' in all_lines[indx-1][0]:
                     for subindx,subval in enumerate(all_lines[indx:]):
-                        if len(subval)>2 and '#' not in j and 'sas' not in subval[0] :
+                        if len(subval)>2 and '#' not in subval and 'sas' not in subval[0] :
                             for num,key in enumerate(list(data.keys())):
                                 data[key].append(subval[num])
                         else:
@@ -643,13 +643,11 @@ class sas_validation(get_input_information):
                         f_df['rsigma']=0
                     else:
                         f_df['rsigma']=f_df['r']/f_df['E']
-                    #print (key)
-                    #print (f_df['rsigma'])
                     #f_df['rsigma']=f_df['r']/f_df['E']
                     f_df['logr']=f_df['logIe']-f_df['logIb']
                     f_df['r2a']=(f_df['Ib']-f_df['Ie'].mean())**2
                     f_df['r2b']=(f_df['Ie']-f_df['Ie'].mean())**2
-                    fits[i]=(self.get_fit_r2(f_df),f_df)
+                    fits[fitnum]=(self.get_fit_r2(f_df),f_df)
             else:
                 fits[0]=(0,pd.DataFrame())
                 #data_fit=None
