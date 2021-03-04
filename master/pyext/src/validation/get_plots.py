@@ -19,7 +19,6 @@ from bokeh.palettes import GnBu3, Blues, OrRd3, Spectral, Set1,RdYlBu,Paired,Vir
 from bokeh.plotting import figure, output_file, save
 from bokeh.models.widgets import Tabs, Panel
 from bokeh.layouts import row,column,gridplot
-
 from bokeh.core.validation import silence
 from bokeh.core.validation.warnings import MISSING_RENDERERS,EMPTY_LAYOUT
 silence(MISSING_RENDERERS, True)
