@@ -18,7 +18,8 @@ from bokeh.models import ColumnDataSource, LinearAxis, Legend
 from bokeh.palettes import GnBu3, Blues, OrRd3, Spectral, Set1,RdYlBu,Paired,Viridis256,viridis
 from bokeh.plotting import figure, output_file, save
 from bokeh.models.widgets import Tabs, Panel
-from bokeh.layouts import row,column
+from bokeh.layouts import row,column,gridplot
+
 from bokeh.core.validation import silence
 from bokeh.core.validation.warnings import MISSING_RENDERERS,EMPTY_LAYOUT
 silence(MISSING_RENDERERS, True)
@@ -29,7 +30,7 @@ class plots(validation.get_input_information):
 		super().__init__(mmcif)
 		self.ID=str(validation.get_input_information.get_id(self))
 		self.dirname=os.path.dirname(os.path.abspath(__file__))
-		self.filename = os.path.join('static/images//')
+		self.filename = os.path.join('../static/images//')
 
 	def plot_quality_at_glance(self,clashscore: list,rama: list,sidechain: list, \
 		exv_data: dict,sas_data: dict,sas_fit: dict,cx_fit:dict)->bokeh.plotting.figure:
@@ -63,7 +64,7 @@ class plots(validation.get_input_information):
 			else:
 				upper=max(counts)+ 20
 				lower=min(counts)-20
-			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=250, plot_width=700, title='Model quality: Excluded Volume Analysis')
+			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=250, plot_width=700, title='Model quality: Excluded Volume Analysis',sizing_mode='stretch_both')
 			p.hbar(y='Scores',right='counts', height=0.5, color='color', legend_group='legends', source=source,alpha=0.8)
 			p.xaxis.axis_label = 'Number of violations'
 		else:
@@ -99,10 +100,12 @@ class plots(validation.get_input_information):
 			counts=[float(n)for i,j in sas_data.items() for m,n in enumerate(j) ];
 			legends=[str(i)+' nm' for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Data Quality: Rg Analysis")
+			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Data Quality: Rg Analysis",sizing_mode='stretch_both')
 			pd.hbar(y='Scores',right='counts', height=0.5, color='color', legend_group="legends", source=source,alpha=0.8)
 			pd.legend.orientation = "vertical"
 			pd.legend.location = "top_right"
+			pd.sizing_mode = 'stretch_both'
+			pd.legend.label_text_font_size = "8px"
 			pd.ygrid.grid_line_color = None
 			pd.xaxis.major_label_text_font_size="14pt"
 			pd.yaxis.major_label_text_font_size="14pt"
@@ -111,8 +114,9 @@ class plots(validation.get_input_information):
 			second = Panel(child=row(pd), title='Data quality: SAS') 
 			tabsI.append(second)
 			pd.output_backend="svg"
-			export_svgs(pd,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.svg")
-			export_png(pd,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.png")
+			p = gridplot([[pd]], sizing_mode='stretch_both',plot_height=450, plot_width=800)
+			export_svgs(p,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.svg")
+			export_png(p,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.png")
 		else:
 			second = Panel(child=row(p1), title='Data quality')
 			tabsI.append(second)
@@ -125,14 +129,15 @@ class plots(validation.get_input_information):
 			counts=[ float(n) for i,j in sas_fit.items() for m,n in enumerate(j)]
 			legends=[str(i) for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to SAS input: \u03C7\u00b2 Fit")
-			pf.hbar(y='Scores',right='counts', height=0.25*len(list(sas_fit.values())[0]), color='color', legend_label="legends", source=source,alpha=0.8)
+			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to SAS input: \u03C7\u00b2 Fit",sizing_mode='stretch_both')
+			pf.hbar(y='Scores',right='counts', height=0.25*len(list(sas_fit.values())[0]), color='color', legend_group="legends", source=source,alpha=0.8)
 			pf.legend.orientation = "vertical"
 			pf.legend.location = "top_right"
 			pf.ygrid.grid_line_color = None
 			pf.xaxis.major_label_text_font_size="14pt"
 			pf.yaxis.major_label_text_font_size="14pt"
 			pf.title.text_font_size='14pt'
+			pf.legend.label_text_font_size = "8px"
 			pf.title.align="center"
 			pf.output_backend="svg"
 			third = Panel(child=row(pf), title='Fit to data: SAS')
@@ -148,7 +153,7 @@ class plots(validation.get_input_information):
 			#legends=[str(i) for i in counts]
 			legends=['Model '+ str(i+1)+ ': ' +str(j)+'%'  for i,j in enumerate(counts)]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to XL-MS input")
+			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to XL-MS input",sizing_mode='stretch_both')
 			pf1.hbar(y='Scores',right='counts', height=0.15*len(list(cx_fit.values())), color='color', legend_group="legends", source=source,alpha=0.8)
 			pf1.legend.orientation = "vertical"
 			pf1.legend.location = "top_right"
