@@ -18,6 +18,7 @@ from validation import excludedvolume,get_input_information
 from validation import molprobity
 from validation import get_plots,sas,sas_plots
 from validation import cx,cx_plots
+from validation import utility
 #import pdfkit
 import datetime,time
 import pickle
@@ -25,14 +26,13 @@ from multiprocessing import Process, Queue, Pool, Manager
 from collections import Counter
 import argparse
 import json
-from validation import utility
 
 class WriteReport(object):
 	def __init__(self,mmcif_file):
 		self.mmcif_file = mmcif_file
 		self.I=get_input_information(self.mmcif_file)
 
-	def run_entry_composition(self,Template_Dict):
+	def run_entry_composition(self,Template_Dict:dict)->dict:
 		'''
 		get entry composition, relies on IHM library
 		'''
@@ -71,7 +71,7 @@ class WriteReport(object):
 		Template_Dict['num_chains']=int(len(self.I.get_composition()['Chain ID']))/int(len(list(Counter(self.I.get_composition()['Model ID']).keys())))
 		return Template_Dict
 
-	def run_model_quality(self,Template_Dict):
+	def run_model_quality(self,Template_Dict:dict)->dict,dict,dict,dict,dict:
 		'''
 		get excluded volume for multiscale models
 		get molprobity info for atomic models
@@ -106,7 +106,6 @@ class WriteReport(object):
 				a,b=I_mp.process_molprobity(d_mp['molprobity'])
 				Template_Dict['bond']=len(a); Template_Dict['angle']=len(b)
 				global clashscore;global rama;global sidechain
-				#print (I_mp.get_data_for_quality_at_glance(d_mp['molprobity']))
 				clashscore,rama,sidechain=I_mp.get_data_for_quality_at_glance(d_mp['molprobity'])
 				Template_Dict['molp_b']=utility.dict_to_JSlist(I_mp.molprobity_detailed_table_bonds(a))
 				Template_Dict['molp_a']=utility.dict_to_JSlist(I_mp.molprobity_detailed_table_angles(b))
@@ -170,7 +169,7 @@ class WriteReport(object):
 			sidechain=None
 		return Template_Dict,clashscore,rama,sidechain,exv_data
 
-	def run_sas_validation(self,Template_Dict):
+	def run_sas_validation(self,Template_Dict:dict)->dict,dict,dict:
 		'''
 		get sas validation information from SASCIF or JSON files
 		'''
@@ -203,7 +202,7 @@ class WriteReport(object):
 			sas_fit={}
 		return Template_Dict,sas_data,sas_fit
 
-	def run_sas_validation_plots(self,Template_Dict):
+	def run_sas_validation_plots(self,Template_Dict:dict):
 		'''
 		get sas validation information from SASCIF or JSON files
 		'''
@@ -222,7 +221,7 @@ class WriteReport(object):
 			except:
 				pass
 
-	def run_cx_validation(self,Template_Dict):
+	def run_cx_validation(self,Template_Dict:dict)->dict,dict:
 		if self.I.check_for_cx(self.I.get_dataset_comp()):
 			Template_Dict['cx']=["True"]
 			I_cx=cx.cx_validation(self.mmcif_file)
@@ -240,7 +239,7 @@ class WriteReport(object):
 
 		return cx_fit,Template_Dict
 
-	def run_cx_validation_plots(self,Template_Dict):
+	def run_cx_validation_plots(self,Template_Dict:dict):
 		if self.I.check_for_cx(self.I.get_dataset_comp()):
 			Template_Dict['cx']=["True"]
 			cx_plt=validation.cx_plots.cx_validation_plots(self.mmcif_file)
@@ -249,7 +248,10 @@ class WriteReport(object):
 			cx_plt.plot_distributions()
 
 
-	def run_quality_glance(self,clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit):
+	def run_quality_glance(self,clashscore:dict,rama:dict,
+								sidechain:dict,exv_data:dict,
+								sas_data:dict,sas_fit:dict,
+								cx_fit:dict):
 		'''
 		get quality at glance image; will be updated as validation report is updated
 		'''
