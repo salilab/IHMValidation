@@ -15,21 +15,21 @@ from collections import Counter
 import argparse
 
 
-def dict_to_JSlist(d):
+def dict_to_JSlist(d:dict)->list:
     '''
     convert dictionary to list of lists
     '''
-    L = []
+    output_list = []
     if bool(d):
         if len(list(d.keys()))>0:
-            L.append(list(d.keys()))
+            output_list.append(list(d.keys()))
             target=list(d.values())
-            for i in range(len(target[0])):
-                ltt=[]
-                for j in target:
-                    ltt.append(str(j[i]))
-                L.append(ltt)
-    return L
+            for ind in range(len(target[0])):
+                sublist=[]
+                for el in target:
+                    sublist.append(str(el[ind]))
+                output_list.append(sublist)
+    return output_list
 
 def format_RB_text(tex):
     '''
@@ -225,28 +225,27 @@ def format_list_text(sublist):
 def all_same(items):
     return all(x==items[0] for x in items)
 
-def exv_readable_format(exv):
+def exv_readable_format(exv:dict)->list:
     fin_string=[]
-    #print (exv)
-    for i,j in enumerate(exv['Models']):
-        fin_string.append('Model-'+str(j)+': '+'Number of violations-' + str(exv['Number of violations'][i]) + ' ')
+    for ind,el in enumerate(exv['Models']):
+        fin_string.append('Model-'+str(el)+': '+'Number of violations-' + str(exv['Number of violations'][ind]) + ' ')
     return fin_string
 
-def get_rg_data(rg_dict):
+def get_rg_data(rg_dict:dict)->list:
     fin_rg=[]
     for key,val in rg_dict.items():
         fin_rg.append(key+': Rg from Gunier is '+ str(val[0])+'nm and Rg from p(r) is '+ str(val[1])+'nm')
     return fin_rg
 
-def get_rg_data_fits(rg_dict):
+def get_rg_data_fits(rg_dict:dict)->list:
     fin_rg=[]
     for key,val in rg_dict.items():
-        for i,j in enumerate(val):
-            count=i+1
-            fin_rg.append(key+': Fit '+ str(count) +' with &#x3A7;&#xb2; value '+ str(j))
+        for ind,el in enumerate(val):
+            count=ind+1
+            fin_rg.append(key+': Fit '+ str(count) +' with &#x3A7;&#xb2; value '+ str(el))
     return fin_rg
 
-def get_cx_data_fits(cx_dict):
+def get_cx_data_fits(cx_dict:dict)->list:
     fin_cx=[];count=0
     for key,val in cx_dict.items():
         count+=1
@@ -255,10 +254,7 @@ def get_cx_data_fits(cx_dict):
 
 
 def clean_all():
-    #dirname_ed='/Users/saijananiganesan/Desktop/PDB-dev/working'
-    #dirname_ed=os.path.normpath(os.getcwd() + os.sep + os.pardir)
     dirname_ed=os.getcwd()
-    #print ("dirname",dirname_ed)
     os.listdir(dirname_ed)
     for item in os.listdir(dirname_ed):
         if item.endswith('.txt'):

@@ -71,7 +71,7 @@ class WriteReport(object):
 		Template_Dict['num_chains']=int(len(self.I.get_composition()['Chain ID']))/int(len(list(Counter(self.I.get_composition()['Model ID']).keys())))
 		return Template_Dict
 
-	def run_model_quality(self,Template_Dict:dict)->dict,dict,dict,dict,dict:
+	def run_model_quality(self,Template_Dict:dict)->(dict,dict,dict,dict,dict):
 		'''
 		get excluded volume for multiscale models
 		get molprobity info for atomic models
@@ -83,7 +83,6 @@ class WriteReport(object):
 			I_mp=molprobity.get_molprobity_information(self.mmcif_file)
 			if I_mp.check_for_molprobity():
 				filename = os.path.abspath(os.path.join(os.getcwd(), 'static/results/',str(Template_Dict['ID'])+'_temp_mp.txt'))
-				print (filename)
 				if os.path.exists(filename):
 					d_mp={}
 					print ("Molprobity analysis file already exists...\n...assuming clashscores, Ramachandran and rotamer outliers have already been calculated")
@@ -169,7 +168,7 @@ class WriteReport(object):
 			sidechain=None
 		return Template_Dict,clashscore,rama,sidechain,exv_data
 
-	def run_sas_validation(self,Template_Dict:dict)->dict,dict,dict:
+	def run_sas_validation(self,Template_Dict:dict)->(dict,dict,dict):
 		'''
 		get sas validation information from SASCIF or JSON files
 		'''
@@ -221,7 +220,7 @@ class WriteReport(object):
 			except:
 				pass
 
-	def run_cx_validation(self,Template_Dict:dict)->dict,dict:
+	def run_cx_validation(self,Template_Dict:dict)->(dict,dict):
 		if self.I.check_for_cx(self.I.get_dataset_comp()):
 			Template_Dict['cx']=["True"]
 			I_cx=cx.cx_validation(self.mmcif_file)

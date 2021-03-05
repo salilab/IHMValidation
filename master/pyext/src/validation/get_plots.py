@@ -14,7 +14,7 @@ import ihm.reader
 import validation
 import bokeh
 from bokeh.io import output_file, show, curdoc, export_png, export_svgs
-from bokeh.models import ColumnDataSource, LinearAxis, Legend
+from bokeh.models import ColumnDataSource, LinearAxis, Legend, LegendItem
 from bokeh.palettes import GnBu3, Blues, OrRd3, Spectral, Set1,RdYlBu,Paired,Viridis256,viridis
 from bokeh.plotting import figure, output_file, save
 from bokeh.models.widgets import Tabs, Panel
@@ -46,8 +46,14 @@ class plots(validation.get_input_information):
 			Scores = ['Clashscore', 'Ramachandran Outliers', 'Sidechain Outliers']
 			legends=[str(counts[0]),str(counts[1])+'%',str(counts[2])+'%']
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(Scores))))
-			p = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Model Quality: Molprobity Analysis")
-			p.hbar(y='Scores',right='counts', height=0.75, color='color', legend_group='legends', source=source,alpha=0.8)
+			p = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Model Quality: Molprobity Analysis")
+			r=p.hbar(y='Scores',right='counts', height=0.5, color='color', source=source,alpha=0.8)
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			p.add_layout(legend,'below')
+			p.legend.orientation = "horizontal"
+			p.legend.location='bottom_center'
+			p.legend.label_text_font_size = "8px"
+
 		elif exv_data:
 			# if excluded vol data, plot that
 			model=exv_data['Models']
@@ -63,19 +69,24 @@ class plots(validation.get_input_information):
 			else:
 				upper=max(counts)+ 20
 				lower=min(counts)-20
-			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=250, plot_width=700, title='Model quality: Excluded Volume Analysis')
-			p.hbar(y='Scores',right='counts', height=0.5, color='color', legend_group='legends', source=source,alpha=0.8)
+
+			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=300, plot_width=700, title='Model quality: Excluded Volume Analysis')
+			r=p.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
 			p.xaxis.axis_label = 'Number of violations'
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			p.add_layout(legend,'below')
+			p.legend.orientation = "horizontal"
+			p.legend.location='bottom_center'
+			p.legend.label_text_font_size = "8px"
+
 		else:
 			Scores=[''];counts = [''];legends=['']
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends))
-			p = figure(y_range=Scores, x_range=(0,1), plot_height=250, plot_width=700)
+			p = figure(y_range=Scores, x_range=(0,1), plot_height=300, plot_width=700)
 		# if neither: ie. atomic but unable to calculate molprobity, return empty plot
 		Scores=[''];counts = [''];legends=['']
 		source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends))
-		p1 = figure(y_range=Scores, x_range=(0,1), plot_height=250, plot_width=700)
-		p.legend.orientation=p1.legend.orientation = "vertical"
-		p.legend.location=p1.legend.location = "top_right"
+		p1 = figure(y_range=Scores, x_range=(0,1), plot_height=300, plot_width=700)
 		p.ygrid.grid_line_color=p1.ygrid.grid_line_color = None
 		p.xaxis.axis_label_text_font_size=p1.xaxis.axis_label_text_font_size="14pt"
 		p.yaxis.axis_label_text_font_size=p1.yaxis.axis_label_text_font_size="14pt"
@@ -99,23 +110,23 @@ class plots(validation.get_input_information):
 			counts=[float(n)for i,j in sas_data.items() for m,n in enumerate(j) ];
 			legends=[str(i)+' nm' for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Data Quality: Rg Analysis",)
-			pd.hbar(y='Scores',right='counts', height=0.5, color='color', legend_group="legends", source=source,alpha=0.8)
-			pd.legend.orientation = "vertical"
-			pd.legend.location = "top_right"
-			pd.sizing_mode = 'stretch_both'
-			pd.legend.label_text_font_size = "8px"
+			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Data Quality: Rg Analysis",)
+			r=pd.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
 			pd.ygrid.grid_line_color = None
 			pd.xaxis.major_label_text_font_size="14pt"
 			pd.yaxis.major_label_text_font_size="14pt"
 			pd.title.text_font_size='14pt'
 			pd.title.align="center"
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			pd.add_layout(legend,'below')
+			pd.legend.orientation = "horizontal"
+			pd.legend.location='bottom_center'
+			pd.legend.label_text_font_size = "8px"
 			second = Panel(child=row(pd), title='Data quality: SAS') 
 			tabsI.append(second)
 			pd.output_backend="svg"
-			p = gridplot([[pd]], sizing_mode='stretch_both',plot_height=450, plot_width=800)
-			export_svgs(p,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.svg")
-			export_png(p,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.png")
+			export_svgs(pd,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.svg")
+			export_png(pd,filename=self.filename+'/'+self.ID+"quality_at_glance_DQ.png")
 		else:
 			second = Panel(child=row(p1), title='Data quality')
 			tabsI.append(second)
@@ -128,17 +139,18 @@ class plots(validation.get_input_information):
 			counts=[ float(n) for i,j in sas_fit.items() for m,n in enumerate(j)]
 			legends=[str(i) for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to SAS input: \u03C7\u00b2 Fit")
-			pf.hbar(y='Scores',right='counts', height=0.25*len(list(sas_fit.values())[0]), color='color', legend_group="legends", source=source,alpha=0.8)
-			pf.legend.orientation = "vertical"
-			pf.legend.location = "top_right"
+			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Fit to SAS input: \u03C7\u00b2 Fit")
+			r=pf.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
 			pf.ygrid.grid_line_color = None
 			pf.xaxis.major_label_text_font_size="14pt"
 			pf.yaxis.major_label_text_font_size="14pt"
 			pf.title.text_font_size='14pt'
-			pf.legend.label_text_font_size = "8px"
 			pf.title.align="center"
-			pf.output_backend="svg"
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			pf.add_layout(legend,'below')
+			pf.legend.orientation = "horizontal"
+			pf.legend.location='bottom_center'
+			pf.legend.label_text_font_size = "8px"
 			third = Panel(child=row(pf), title='Fit to data: SAS')
 			tabsI.append(third)
 			pf.output_backend="svg"
@@ -152,16 +164,18 @@ class plots(validation.get_input_information):
 			#legends=[str(i) for i in counts]
 			legends=['Model '+ str(i+1)+ ': ' +str(j)+'%'  for i,j in enumerate(counts)]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=250, plot_width=700, title="Fit to XL-MS input")
-			pf1.hbar(y='Scores',right='counts', height=0.15*len(list(cx_fit.values())), color='color', legend_group="legends", source=source,alpha=0.8)
-			pf1.legend.orientation = "vertical"
-			pf1.legend.location = "top_right"
+			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Fit to XL-MS input")
+			r=pf1.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
 			pf1.ygrid.grid_line_color = None
 			pf1.xaxis.major_label_text_font_size="14pt"
 			pf1.yaxis.major_label_text_font_size="14pt"
 			pf1.title.text_font_size='14pt'
 			pf1.title.align="center"
-			pf1.output_backend="svg"
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			pf1.add_layout(legend,'below')
+			pf1.legend.orientation = "horizontal"
+			pf1.legend.label_text_font_size = "8px"
+			pf1.legend.location='bottom_center'
 			third1 = Panel(child=row(pf1), title='Fit to data: XL-MS')
 			tabsI.append(third1)
 			pf1.output_backend="svg"
