@@ -46,8 +46,8 @@ class plots(validation.get_input_information):
 			Scores = ['Clashscore', 'Ramachandran Outliers', 'Sidechain Outliers']
 			legends=[str(counts[0]),str(counts[1])+'%',str(counts[2])+'%']
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(Scores))))
-			p = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Model Quality: Molprobity Analysis")
-			r=p.hbar(y='Scores',right='counts', height=0.5, color='color', source=source,alpha=0.8)
+			p = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=800, title="Model Quality: Molprobity Analysis")
+			r=p.hbar(y='Scores',right='counts', height=0.5, color='color', source=source,alpha=0.8,line_color='black')
 			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
 			p.add_layout(legend,'below')
 			p.legend.orientation = "horizontal"
@@ -57,10 +57,12 @@ class plots(validation.get_input_information):
 		elif exv_data:
 			# if excluded vol data, plot that
 			model=exv_data['Models']
+			print (exv_data)
 			satisfaction=exv_data['Number of violations']
 			counts=[float(i) for i in satisfaction]
+			violations=exv_data['Excluded Volume Satisfaction']
 			Scores = ['Model '+ str(i+1) for i,j in enumerate (model)]
-			legends=['Model '+ str(i+1)+ ': ' +str(int(j))  for i,j in enumerate(counts)]
+			legends=['Model '+ str(i+1)+ ': ' +str(int(j)) + '('+str(violations[i])+' %)'  for i,j in enumerate(counts)]
 			n=3 if len(model)< 3 else len(model)
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(n)))
 			if len(model)>1:
@@ -70,8 +72,8 @@ class plots(validation.get_input_information):
 				upper=max(counts)+ 20
 				lower=min(counts)-20
 
-			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=300, plot_width=700, title='Model quality: Excluded Volume Analysis')
-			r=p.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
+			p = figure(y_range=Scores, x_range=(lower,upper), plot_height=300, plot_width=800, title='Model quality: Excluded Volume Analysis')
+			r=p.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8,line_color='black')
 			p.xaxis.axis_label = 'Number of violations'
 			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
 			p.add_layout(legend,'below')
@@ -110,14 +112,14 @@ class plots(validation.get_input_information):
 			counts=[float(n)for i,j in sas_data.items() for m,n in enumerate(j) ];
 			legends=[str(i)+' nm' for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Data Quality: Rg Analysis",)
-			r=pd.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
+			pd = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=800, title="Data Quality: Rg Analysis",)
+			rd=pd.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8,line_color='black')
 			pd.ygrid.grid_line_color = None
 			pd.xaxis.major_label_text_font_size="14pt"
 			pd.yaxis.major_label_text_font_size="14pt"
 			pd.title.text_font_size='14pt'
 			pd.title.align="center"
-			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[rd], index=i) for i in range(len(legends))])
 			pd.add_layout(legend,'below')
 			pd.legend.orientation = "horizontal"
 			pd.legend.location='bottom_center'
@@ -139,14 +141,14 @@ class plots(validation.get_input_information):
 			counts=[ float(n) for i,j in sas_fit.items() for m,n in enumerate(j)]
 			legends=[str(i) for i in counts]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Fit to SAS input: \u03C7\u00b2 Fit")
-			r=pf.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
+			pf = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=800, title="Fit to SAS input: \u03C7\u00b2 Fit")
+			rf=pf.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8,line_color='black')
 			pf.ygrid.grid_line_color = None
 			pf.xaxis.major_label_text_font_size="14pt"
 			pf.yaxis.major_label_text_font_size="14pt"
 			pf.title.text_font_size='14pt'
 			pf.title.align="center"
-			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[rf], index=i) for i in range(len(legends))])
 			pf.add_layout(legend,'below')
 			pf.legend.orientation = "horizontal"
 			pf.legend.location='bottom_center'
@@ -164,14 +166,14 @@ class plots(validation.get_input_information):
 			#legends=[str(i) for i in counts]
 			legends=['Model '+ str(i+1)+ ': ' +str(j)+'%'  for i,j in enumerate(counts)]
 			source = ColumnDataSource(data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=700, title="Fit to XL-MS input")
-			r=pf1.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8)
+			pf1 = figure(y_range=Scores, x_range=(0,max(counts)+1), plot_height=300, plot_width=800, title="Fit to XL-MS input")
+			rf1=pf1.hbar(y='Scores',right='counts', color='color', source=source,alpha=0.8,line_color='black')
 			pf1.ygrid.grid_line_color = None
 			pf1.xaxis.major_label_text_font_size="14pt"
 			pf1.yaxis.major_label_text_font_size="14pt"
 			pf1.title.text_font_size='14pt'
 			pf1.title.align="center"
-			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[r], index=i) for i in range(len(legends))])
+			legend = Legend(items=[ LegendItem(label=legends[i], renderers=[rf1], index=i) for i in range(len(legends))])
 			pf1.add_layout(legend,'below')
 			pf1.legend.orientation = "horizontal"
 			pf1.legend.label_text_font_size = "8px"
