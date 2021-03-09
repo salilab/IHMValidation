@@ -18,7 +18,6 @@ import argparse
 def dict_to_JSlist(d:dict)->list:
     '''
     convert dictionary to list of lists
-    '''
     output_list = []
     if bool(d):
         if len(list(d.keys()))>0:
@@ -30,80 +29,86 @@ def dict_to_JSlist(d:dict)->list:
                     sublist.append(str(el[ind]))
                 output_list.append(sublist)
     return output_list
+    '''
+    output_list = []
+    if bool(d) and len(list(d.keys()))>0:
+        #add headers for table, which are the keys of the dict
+        output_list.append(list(d.keys()))
+        #add each row of the table as a list
+        target=list(d.values())
+        for ind in range(len(target[0])):
+            sublist=[]
+            for el in target:
+                sublist.append(str(el[ind]))
+            output_list.append(sublist)
+    return output_list
 
-def format_RB_text(tex):
+def format_RB_text(tex:list)->str:
     '''
     convert RB information to text for supp table
     '''
     val=''
-    for a in tex:
-        for b in a:
-            if b==a[-1] and a==tex[-1]:
-                val+=str(b)+'. '
-            elif b==a[-1] and a!= tex[-1]:
-                val+=str(b)+', '
+    for el in tex:
+        for subel in el:
+            if subel==el[-1] and el==tex[-1]:
+                val+=str(subel)+'. '
+            elif subel==el[-1] and el!= tex[-1]:
+                val+=str(subel)+', '
             else:
-                val+=str(b)+':'
+                val+=str(subel)+':'
     if val=='':
         val='-'
     return val
 
-def format_flex_text(tex):
+def format_flex_text(tex:list)->str:
     '''
     convert flex information to text for supp table
     '''
     val=''
-    for a in tex:
-        for b in a:
-            if b==a[-1] and a==tex[-1]:
-                val+=str(b)+'. '
+    for el in tex:
+        for subel in el:
+            if subel==el[-1] and el==tex[-1]:
+                val+=str(subel)+'. '
             else:
-                val+=str(b)+', '
+                val+=str(subel)+', '
 
     if val=='':
         val='-'
 
     return val
 
-
-def format_tupple(tex):
+def format_tupple(tex:list)->str:
     return str(tex[0])+'-'+str(tex[1])
 
+def dict_to_JSlist_rows(dict1:dict,dict2:dict)->list:
+    output_list=[]
+    output_list.append(['Chain ID','Rigid bodies','Non-rigid segments'])
+    for ind,el in dict1.items():
+        output_list.append([ind,format_RB_text(el),format_flex_text(dict2[ind])])
+    return output_list
 
-def dict_to_JSlist_rows(d1,d2):
-    '''
-    '''
-    L=[]
-    L.append(['Chain ID','Rigid bodies','Non-rigid segments'])
-    for i,j in d1.items():
-        L.append([i,format_RB_text(j),format_flex_text(d2[i])])
-    return L
-
-def islistempty(inlist):
+def islistempty(inlist:list)->bool:
     if isinstance (inlist,list):
         return all(map(islistempty,inlist))
     return False
 
-def cat_list_string(listn):
+def cat_list_string(listn:list)->str:
     result=' '
-    for i in range(len(listn)):
-        if i==0:
-            result += str(listn[i])
+    for ind in range(len(listn)):
+        if ind==0:
+            result += str(listn[ind])
         else:
             result += ','
-            result += str(listn[i])
+            result += str(listn[ind])
     return result
 
-def get_key_from_val(dict1,val1):
+def get_key_from_val(dict1:dict,val1:str)->list:
     return dict1.keys()[dict1.values().index(val1)]
 
-def get_val_from_key(dict1,key1):
+def get_val_from_key(dict1:dict,key1:str)->list:
     return dict1[key1]
 
 def get_name(name):
-    #if str(name) in ['?','',1,'.']:
-    #    return 'None Listed'
-    #else:
     return str(name)
 
 def get_copy(name):
@@ -136,93 +141,92 @@ def runInParallel_noargs(*fns):
   for p in proc:
     p.join()
 
-def get_output_file_html(mmcif_file):
+def get_output_file_html(mmcif_file:str)->str:
     return 'ValidationReport_'+mmcif_file+'.html'
 
-def get_supp_file_html(mmcif_file):
+def get_supp_file_html(mmcif_file:str)->str:
     return 'Supplementary_'+mmcif_file+'.html'
 
-def get_output_file_temp_html(mmcif_file):
+def get_output_file_temp_html(mmcif_file:str)->str:
     return 'temp.html'
 
-def get_output_file_pdf(mmcif_file):
+def get_output_file_pdf(mmcif_file:str)->str:
     return mmcif_file+'.pdf'
 
-def get_output_file_json(mmcif_file):
+def get_output_file_json(mmcif_file:str)->str:
     return 'ValidationReport_'+mmcif_file+'.json'
 
-def get_supp_file_pdf(mmcif_file):
+def get_supp_file_pdf(mmcif_file:str)->str:
     return 'Supplementary_'+mmcif_file+'.pdf'
 
 def get_all_files(path_dir):
     return glob.glob(path_dir)
 
-def get_subunits(sub_dict):
-    n=len(sub_dict['Model ID'])
-    sublist=['%s: Chain %s (%d residues)' % (sub_dict['Subunit name'][i],sub_dict['Chain ID'][i],sub_dict['Total residues'][i]) for i in range(0,n)]
+def get_subunits(sub_dict:dict)->list:
+    model_number=len(sub_dict['Model ID'])
+    sublist=['%s: Chain %s (%d residues)' % (sub_dict['Subunit name'][i],sub_dict['Chain ID'][i],sub_dict['Total residues'][i]) for i in range(0,model_number)]
     return list(set(sublist))
 
-def get_datasets(data_dict):
-    n=len(data_dict['ID'])
+def get_datasets(data_dict:dict)->list:
+    dataset_number=len(data_dict['ID'])
     #print (data_dict)
-    datalist=['%s, %s' % (data_dict['Dataset type'][i],data_dict['Details'][i]) for i in range(0,n)]
+    datalist=['%s, %s' % (data_dict['Dataset type'][i],data_dict['Details'][i]) for i in range(0,dataset_number)]
     return datalist
 
-def get_software(data_dict):
+def get_software(data_dict:dict)->list:
     if len(data_dict)>0:
-        n=len(data_dict['ID'])
-        datalist=['%s (version %s)' % (data_dict['Software name'][i],data_dict['Software version'][i]) for i in range(0,n)]
+        dataset_number=len(data_dict['ID'])
+        datalist=['%s (version %s)' % (data_dict['Software name'][i],data_dict['Software version'][i]) for i in range(0,dataset_number)]
         return datalist
     else:
         return ['Software details not provided']
 
-def get_RB(data_list):
-    n=len(data_list)
-    datalist=['%s: %s ' % (data_list[i][0],data_list[i][1],) for i in range(1,n)]
+def get_RB(data_list:list)->list:
+    data_num=len(data_list)
+    datalist=['%s: %s ' % (data_list[i][0],data_list[i][1],) for i in range(1,data_num)]
     return datalist
 
-def get_flex(data_list):
-    n=len(data_list)
-    datalist=['%s: %s ' % (data_list[i][0],data_list[i][2],) for i in range(1,n)]
+def get_flex(data_list:list)->list:
+    data_num=len(data_list)
+    datalist=['%s: %s ' % (data_list[i][0],data_list[i][2],) for i in range(1,data_num)]
     return datalist
+  
+def get_method_name(sample_dict:dict)->str:
+    datastr='%s ' % (sample_dict['Method name'][0])
+    return datastr.replace('monte carlo','Monte Carlo')
 
-def get_method_name(sample_dict):
-    datalist='%s ' % (sample_dict['Method name'][0])
-    return datalist.replace('monte carlo','Monte Carlo')
+def get_method_type(sample_dict:dict)->str:
+    datastr='%s ' % (sample_dict['Method type'][0])
+    return datastr.replace('monte carlo','Monte Carlo')
 
-def get_method_type(sample_dict):
-    datalist='%s ' % (sample_dict['Method type'][0])
-    return datalist.replace('monte carlo','Monte Carlo')
-
-def get_restraints_info(restraints):
-    n=len(restraints['Restraint type'])
+def get_restraints_info(restraints:dict)->list:
+    restraints_num=len(restraints['Restraint type'])
     datalist=[]
     try:
-        dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,n)]
+        dataset=[(restraints['Restraint info'][i],restraints['Restraint type'][i]) for i in range(0,restraints_num)]
     except:
         new_restraints=dict()
         for key,val in restraints.items():
             new_restraints[key]=list(set(val))
-        n=min(len(new_restraints['Restraint info']),len(new_restraints['Restraint type']))
-        dataset=[(new_restraints['Restraint info'][i],new_restraints['Restraint type'][i]) for i in range(0,n)]
+        restraints_num=min(len(new_restraints['Restraint info']),len(new_restraints['Restraint type']))
+        dataset=[(new_restraints['Restraint info'][i],new_restraints['Restraint type'][i]) for i in range(0,restraints_num)]
 
     for i,j in Counter(dataset).items():
         datalist.append(['%s unique %s: %s' % (j,i[1],i[0])])
-    print (datalist)
     return datalist
 
-def format_list_text(sublist):
+def format_list_text(sublist:list)->str:
     val=''
-    for a in sublist:
-        if a==sublist[-1]:
-            val+=str(a)+'. '
+    for el in sublist:
+        if el==sublist[-1]:
+            val+=str(el)+'. '
         else:
-            val+=str(a)+', '
+            val+=str(el)+', '
     if val =='':
         val='-'
     return val
 
-def all_same(items):
+def all_same(items:list):
     return all(x==items[0] for x in items)
 
 def exv_readable_format(exv:dict)->list:
