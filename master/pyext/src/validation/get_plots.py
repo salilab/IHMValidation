@@ -53,6 +53,9 @@ class plots(validation.get_input_information):
 			p.legend.orientation = "horizontal"
 			p.legend.location='bottom_center'
 			p.legend.label_text_font_size = "8px"
+			p.xaxis.major_label_text_font_size="14pt"
+			p.yaxis.major_label_text_font_size="14pt"
+
 
 		elif exv_data:
 			# if excluded vol data, plot that
@@ -80,6 +83,8 @@ class plots(validation.get_input_information):
 			p.legend.orientation = "horizontal"
 			p.legend.location='bottom_center'
 			p.legend.label_text_font_size = "8px"
+			p.xaxis.major_label_text_font_size="14pt"
+			p.yaxis.major_label_text_font_size="14pt"
 
 		else:
 			Scores=[''];counts = [''];legends=['']
