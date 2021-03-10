@@ -42,45 +42,45 @@ class get_input_information(object):
 
     def get_id(self):
         """ get id from model name, eg: PDBDEV_00XX will be PDBDEV00XX"""
-        if self.system.id is 'model':
+        if self.system.id == 'model':
             id=self.get_id_from_entry()
         else:
             id=self.system.id.split('_')[0]+self.system.id.split('_')[1]
         return id
 
-    def get_id_from_entry(self):
+    def get_id_from_entry(self)->str:
         """ get id name from entry"""
         sf=open(self.mmcif_file,'r')
-        for i,ln in enumerate(sf.readlines()):
+        for ind,ln in enumerate(sf.readlines()):
             line =ln.strip().split(' ')
             if '_entry' in line[0]:
                 entry_init=line[-1]
                 entry=entry_init.split('_')[0]+entry_init.split('_')[1]
         return entry
 
-    def get_title(self):
+    def get_title(self)->str:
         """get title from citations """
         cit=self.system.citations
         title=cit[0].title
         return title
 
-    def get_authors(self):
+    def get_authors(self)->str:
         """get names of authors from citations """
         cit=self.system.citations
         aut=cit[0].authors
-        for i in range(0,len(aut)):
-            if i==0:
-                authors=str(aut[i])
+        for ind in range(0,len(aut)):
+            if ind==0:
+                authors=str(aut[ind])
             else:
-                authors+=';'+str(aut[i])
+                authors+=';'+str(aut[ind])
         return authors
 
-    def get_struc_title(self):
+    def get_struc_title(self)->str:
         """get name of molecule"""
         strc=self.system.title
         if strc is None:
-            e=self.system.entities
-            mol_name=e.description
+            entities=self.system.entities
+            mol_name=entities.description
         else:
             mol_name=strc
         return mol_name
@@ -93,17 +93,17 @@ class get_input_information(object):
         else:
             return 0 
 
-    def get_assembly_ID_of_models(self):
+    def get_assembly_ID_of_models(self)->list:
         """Assembly info i.e. model assemblies in the file """
         assembly_id=[b.assembly._id for i in self.system.state_groups for j in i for a in j for b in a]
         return assembly_id
 
-    def get_representation_ID_of_models(self):
+    def get_representation_ID_of_models(self)->list:
         """Number of representations in model """
         representation_id=[b.representation._id for i in self.system.state_groups for j in i for a in j for b in a]
         return representation_id
 
-    def get_model_names(self):
+    def get_model_names(self)->list:
         """ Names of models"""
         model_name1=[a.name for i in self.system.state_groups for j in i for a in j]
         model_name2=[b.name for i in self.system.state_groups for j in i for a in j for b in a]
@@ -113,14 +113,14 @@ class get_input_information(object):
             model_name=model_name2
         return model_name
     
-    def get_model_assem_dict(self):
+    def get_model_assem_dict(self)->dict:
         """Map models to assemblies """
         model_id=map(int,[b._id for i in self.system.state_groups for j in i for a in j for b in a])
         assembly_id=map(int,self.get_assembly_ID_of_models())
         model_assembly=dict(zip(model_id,assembly_id))
         return model_assembly
 
-    def get_model_rep_dict(self):
+    def get_model_rep_dict(self)->dict:
         """Map models to representations 
         useful especially for multi-state systems"""
         model_id=map(int,[b._id for i in self.system.state_groups for j in i for a in j for b in a])
@@ -128,7 +128,7 @@ class get_input_information(object):
         model_rep=dict(zip(model_id,rep_id))
         return model_rep
 
-    def get_number_of_models(self):
+    def get_number_of_models(self)->int:
         """ Get total number of models """
         models=[b._id for i in self.system.state_groups for j in i for a in j for b in a]
         return len(models)
@@ -141,7 +141,7 @@ class get_input_information(object):
             residues='None listed'
         return residues
     
-    def get_composition(self):
+    def get_composition(self)->dict:
         """Get composition dictionary"""
         entry_comp={'Model ID':[],'Subunit number':[],'Subunit ID':[],
                     'Subunit name':[],'Chain ID':[],
@@ -163,11 +163,11 @@ class get_input_information(object):
                             break
         return entry_comp
 
-    def get_protocol_number(self):
+    def get_protocol_number(self)->int:
         """ number of protocols/methods used to create model"""
         return len(self.system.orphan_protocols)
 
-    def get_sampling(self):
+    def get_sampling(self)->dict:
         """ sampling composition/details """
         sampling_comp={'Step number':[], 'Protocol ID':[],'Method name':[],'Method type':[],'Number of computed models':[],'Multi state modeling':[],
                         'Multi scale modeling':[]}
@@ -189,177 +189,175 @@ class get_input_information(object):
         types of representation listed """
         representation_comp={'Chain ID':[],'Subunit name':[],'Rigid bodies':[],
                     'Non-rigid regions':[]}
-        for i in self.system.orphan_representations:
-            print (["%s:%d-%d" % ((x.asym_unit._id,) + x.asym_unit.seq_id_range) for x in i if not x.rigid])
+        for rep in self.system.orphan_representations:
+            print (["%s:%d-%d" % ((x.asym_unit._id,) + x.asym_unit.seq_id_range) for x in rep if not x.rigid])
 
-    def get_RB_flex_dict(self):
+    def get_RB_flex_dict(self)->(dict,dict,int,int):
         """ get RB and flexible segments from model information""" 
         RB=self.get_empty_chain_dict();RB_nos=[];all_nos=[];flex=self.get_empty_chain_dict()
-        for i in self.system.orphan_representations:
-            for j in i:
-                all_nos.append(j.asym_unit.seq_id_range)
-                if j.rigid and j.starting_model:
-                    RB_nos.append(j.asym_unit.seq_id_range)
-                    RB[j.starting_model.asym_unit._id].append([utility.format_tupple(j.asym_unit.seq_id_range),
-                        utility.get_val_from_key(self.get_dataset_dict(),j.starting_model.dataset._id)])
-                elif j.rigid and not j.starting_model:
-                    RB_nos.append(j.asym_unit.seq_id_range)
-                    RB[j.asym_unit._id].append([utility.format_tupple(j.asym_unit.seq_id_range),'None'])
+        for rep in self.system.orphan_representations:
+            for el in rep:
+                all_nos.append(el.asym_unit.seq_id_range)
+                if el.rigid and el.starting_model:
+                    RB_nos.append(el.asym_unit.seq_id_range)
+                    RB[el.starting_model.asym_unit._id].append([utility.format_tupple(el.asym_unit.seq_id_range),
+                        utility.get_val_from_key(self.get_dataset_dict(),el.starting_model.dataset._id)])
+                elif el.rigid and not el.starting_model:
+                    RB_nos.append(el.asym_unit.seq_id_range)
+                    RB[el.asym_unit._id].append([utility.format_tupple(el.asym_unit.seq_id_range),'None'])
                 else:
-                    flex[j.asym_unit._id].append([utility.format_tupple(j.asym_unit.seq_id_range)])
+                    flex[el.asym_unit._id].append([utility.format_tupple(el.asym_unit.seq_id_range)])
         return RB,flex,len(RB_nos),len(all_nos)      
 
-    def get_number_of_assemblies(self):
+    def get_number_of_assemblies(self)->int:
         return (len(self.system.orphan_assemblies))
 
-    def get_number_of_entities (self):
+    def get_number_of_entities (self)->int:
         return (len(self.system.entities))
 
-    def get_number_of_chains(self):
+    def get_number_of_chains(self)->int:
         """get number of chains per protein per assembly """
         used=[];assembly={}
         lists= self.system.orphan_assemblies
-        for i,k in enumerate(self.system.orphan_assemblies):
+        for ind,assembly in enumerate(self.system.orphan_assemblies):
             chain=[]
-            for l in k:
-                chain.append(l._id)
-            assembly[i]=chain
+            for el in assembly:
+                chain.append(el._id)
+            assembly[ind]=chain
             unique=[used.append(x) for x in chain if x not in used]
         number_of_chains=[len(i) for i in assembly.values()]
         return number_of_chains
 
-    def get_all_asym(self):
+    def get_all_asym(self)->list:
         """ get all asym units"""
         parents=[(a._id,a.details,a.entity.description,a.entity._id,i) for i,a in enumerate(self.system.asym_units)]
         return parents
 
-    def get_empty_chain_dict(self):
-        empty_chain_dict={}
-        for i,a in enumerate(self.system.asym_units):
-            empty_chain_dict[a._id]=[]
+    def get_empty_chain_dict(self)->dict:
+        empty_chain_dict=defaultdict()
+        for ind,el in enumerate(self.system.asym_units):
+            empty_chain_dict[el._id]=[]
         return empty_chain_dict
 
-    def get_chain_subunit_dict(self):
+    def get_chain_subunit_dict(self)->dict:
         """ Get chains of subunits"""
-        chain_subunit_dict={}
-        for i,a in enumerate(self.system.asym_units):
-            chain_subunit_dict[a._id]=a.details.split('.')[0]
+        chain_subunit_dict=defaultdict()
+        for ind,el in enumerate(self.system.asym_units):
+            chain_subunit_dict[el._id]=a.details.split('.')[0]
         return chain_subunit_dict
 
-    def get_residues_subunit_dict(self):
+    def get_residues_subunit_dict(self)->dict:
         """Get residues of chains in subunits"""
-        residues_subunit_dict={}
-        for i,a in enumerate(self.system.asym_units):
-            residues_subunit_dict[a._id]=self.get_residues(a)
+        residues_subunit_dict=defaultdict()
+        for _,el in enumerate(self.system.asym_units):
+            residues_subunit_dict[el._id]=self.get_residues(el)
         return residues_subunit_dict
 
-    def get_software_length(self):
+    def get_software_length(self)->int:
         lists=self.system.software
         if lists is None:
             return 0
         else:
             return len(lists)
 
-    def get_software_comp (self):
+    def get_software_comp (self)->dict:
         """get software composition to write out as a table"""
         software_comp={'ID':[],'Software name':[],'Software version':[],'Software classification':[],'Software location':[]}
         lists=self.system.software
         if len(lists)>0:
-            for i in lists:
-                software_comp['ID'].append(i._id)
-                software_comp['Software name'].append(i.name)
-                software_comp['Software location'].append(i.location)
-                if str(i.version) is '?':
+            for _ in lists:
+                software_comp['ID'].append(_._id)
+                software_comp['Software name'].append(_.name)
+                software_comp['Software location'].append(_.location)
+                if str(_.version) == '?':
                     vers='None'
                 else:
-                    vers=str(i.version)
+                    vers=str(_.version)
                 software_comp['Software version'].append(vers)
-                software_comp['Software classification'].append(i.classification)
+                software_comp['Software classification'].append(_.classification)
             final_software_composition=software_comp
         else:
             final_software_composition={}
         return final_software_composition
 
-    def check_ensembles(self):
+    def check_ensembles(self)->int:
         """check if ensembles exist"""
-        a=self.system.ensembles
-        return len(a)
+        return len(self.system.ensembles)
 
     def get_ensembles(self):
         """details on ensembles, if it exists"""
-        s=self.system.ensembles
-        if len(s)>0:
+        if len(self.system.ensembles)>0:
             ensemble_comp={'Ensemble number':[],'Ensemble name':[],'Model ID':[],'Number of models':[],
                         'Clustering method': [], 'Clustering feature': [], 'Cluster precision':[]}
-            for i in s:
-                ensemble_comp['Ensemble number'].append(str(i._id))
-                ensemble_comp['Ensemble name'].append(str(i.name))
-                ensemble_comp['Model ID'].append(str(i.model_group._id))
-                ensemble_comp['Number of models'].append(str(i.num_models))
-                ensemble_comp['Clustering method'].append(str(i.clustering_method))
-                ensemble_comp['Clustering feature'].append(str(i.clustering_feature))
-                ensemble_comp['Cluster precision'].append(str(i.precision))
+            for _ in self.system.ensembles:
+                ensemble_comp['Ensemble number'].append(str(_._id))
+                ensemble_comp['Ensemble name'].append(str(_.name))
+                ensemble_comp['Model ID'].append(str(_.model_group._id))
+                ensemble_comp['Number of models'].append(str(_.num_models))
+                ensemble_comp['Clustering method'].append(str(_.clustering_method))
+                ensemble_comp['Clustering feature'].append(str(_.clustering_feature))
+                ensemble_comp['Cluster precision'].append(str(_.precision))
             return ensemble_comp
         else:
             return None
 
-    def get_dataset_xl_info(self,id):
+    def get_dataset_xl_info(self,id:int)->str:
         """Get dataset XL info given dataset ID"""
         restraints=self.get_restraints()
-        lt='Linker name and number of cross-links: %s' % (restraints['Restraint info'][restraints['Dataset ID'].index(id)])
-        return (lt)
+        return 'Linker name and number of cross-links: %s' % (restraints['Restraint info'][restraints['Dataset ID'].index(id)])
+        
 
     def get_dataset_dict(self):
         """get dataset dictionary """
-        dataset_dict={}
+        dataset_dict=defaultdict()
         lists=self.system.orphan_datasets
         if len(lists)>0:
-            for i in lists:
+            for _ in lists:
                 try:
-                    loc=i.location.db_name
+                    loc=_.location.db_name
                 except AttributeError as error:
                     loc=str('Not listed')
                 try:
-                    acc=i.location.access_code
+                    acc=_.location.access_code
                 except AttributeError as error:
                     acc=str('None')
-                dataset_dict[i._id]=str(i.data_type)+'/'+str(acc)
+                dataset_dict[_._id]=str(_.data_type)+'/'+str(acc)
         return dataset_dict 
 
-    def get_dataset_length(self):
+    def get_dataset_length(self)->int:
         lists=self.system.orphan_datasets
         if lists is None:
             return 0
         else:
             return len(lists)
 
-    def get_dataset_comp (self):
+    def get_dataset_comp (self)->dict:
         """detailed dataset composition"""
         dataset_comp={'ID':[],'Dataset type':[],'Database name':[],'Data access code':[]}
         lists=self.system.orphan_datasets
         if len(lists)>0:
-            for i in lists:
+            for _ in lists:
                 try:
-                    loc=i.location.db_name
+                    loc=_.location.db_name
                 except AttributeError as error:
                     loc=str('Not listed')
                 try:
-                    acc=i.location.access_code
+                    acc=_.location.access_code
                 except AttributeError as error:
                     acc=str('None')
-                dataset_comp['ID'].append(i._id)
+                dataset_comp['ID'].append(_._id)
                 #if i.data_type=='unspecified' and 'None' not in i.details:
                 #    dataset_comp['Dataset type'].append(i.details)
                 #else:
-                dataset_comp['Dataset type'].append(i.data_type)
+                dataset_comp['Dataset type'].append(_.data_type)
                 dataset_comp['Database name'].append(str(loc))
                 dataset_comp['Data access code'].append(acc)
                 #print (dataset_comp)
         return dataset_comp
 
-    def dataset_id_type_dic(self):
+    def dataset_id_type_dic(self)->dict:
         """dataset id and data items"""
-        dataset_dic={}
+        dataset_dic=defaultdict
         if len(self.system.orphan_datasets)>0:
             for i in self.system.orphan_datasets:
                 if i.data_type =='unspecified':
@@ -368,7 +366,7 @@ class get_input_information(object):
                     dataset_dic[str(i._id)]=str(i.data_type)
         return dataset_dic
         
-    def get_restraints(self):
+    def get_restraints(self)->dict:
         """ get restraints table from cif file"""
         r=self.system.restraints
         restraints_comp={'ID':[],'Dataset ID':[],'Restraint type':[],'Restraint info':[]}
@@ -397,9 +395,9 @@ class get_input_information(object):
                     restraints_comp['Restraint info'].append(('Upper Bound Distance: '+str(i.distance.distance)))
                 else:
                     restraints_comp['Restraint info'].append(['restraint type '+ str(i.distance.__class__.__name__),dic[ID]])
-        return (restraints_comp) 
+        return restraints_comp 
     
-    def get_dataset_details(self):
+    def get_dataset_details(self)->dict:
         """get information on dataset and databases"""
         dataset_comp={'ID':[],'Dataset type':[],'Database name':[],'Details':[]}
         lists=self.system.orphan_datasets
@@ -436,18 +434,18 @@ class get_input_information(object):
                     
         return dataset_comp
     
-    def get_atomic_coverage(self):
+    def get_atomic_coverage(self)->str:
         """Measure amount of atomic residues"""
-        for i in self.system.orphan_representations:
+        for _ in self.system.orphan_representations:
             if self.check_sphere()==1:
-                flex=sum([int(x.asym_unit.seq_id_range[1])-int(x.asym_unit.seq_id_range[0])+1 for x in i if not x.rigid])
-                rigid=sum([int(x.asym_unit.seq_id_range[1])-int(x.asym_unit.seq_id_range[0])+1 for x in i if x.rigid])
+                flex=sum([int(x.asym_unit.seq_id_range[1])-int(x.asym_unit.seq_id_range[0])+1 for x in _ if not x.rigid])
+                rigid=sum([int(x.asym_unit.seq_id_range[1])-int(x.asym_unit.seq_id_range[0])+1 for x in _ if x.rigid])
                 percentage=str(round(rigid/(rigid+flex)*100))+'%'
             else:
                 percentage='100%'
         return percentage
 
-    def check_for_sas(self,dataset):
+    def check_for_sas(self,dataset:dict)->bool:
         """check if sas is in the dataset"""
         dataset=self.get_dataset_comp()
         data_type=dataset['Dataset type']
@@ -457,7 +455,7 @@ class get_input_information(object):
         else:
             return False
 
-    def check_for_sas_i(self,dataset):
+    def check_for_sas_i(self,dataset:dict)->bool:
         """check if sas is in the dataset"""
         dataset=self.get_dataset_comp()
         data_type=dataset['Dataset type']
@@ -467,7 +465,7 @@ class get_input_information(object):
         else:
             return False
 
-    def check_for_cx(self,dataset):
+    def check_for_cx(self,dataset:dict)->bool:
         """check if CX-XL is in the dataset"""
         dataset=self.get_dataset_comp()
         data_type=dataset['Dataset type']
@@ -476,7 +474,7 @@ class get_input_information(object):
         else:
             return False
 
-    def check_for_em(self,dataset):
+    def check_for_em(self,dataset:dict)->bool:
         """check if em is in the dataset"""
         dataset=self.get_dataset_comp()
         data_type=dataset['Dataset type']
@@ -485,7 +483,7 @@ class get_input_information(object):
         else:
             return False
 
-    def mmcif_get_lists(self,filetemp=None):
+    def mmcif_get_lists(self,filetemp=None)->(list,dict,dict,list):
         """function to help re-write mmcif file for molprobity
         this function reads the atom_site dictionary terms and returns a list"""
         if filetemp is None:
@@ -493,7 +491,6 @@ class get_input_information(object):
         else:
             file=filetemp
             filetemp.seek(0)
-            #print (file.readline())
         all_lines=[]
         for i,j in enumerate(file.readlines()):
             all_lines.append(j.strip().split())
