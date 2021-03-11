@@ -8,19 +8,26 @@
 
 - `src`  relevant source code for execution
 
-- `static`  relevant css/js files for flaskapp
+- `static`  relevant css, js files for static and dynamic HTML reports along with output files from validation [htmls,images,pdfs,json,results,supplementary]
 
-- `templates`  all HTML templates for HTML and PDF reports
+- `templates`  all HTML templates for static HTML reports, PDF files and supplementary table
+
+- `templates_for_flask`  all HTML templates for dynamic HTML reports
 
 - `tests`  tests for classes
 
-- `example`  example script to create PDF files
+- `example_sas`  example script to create validation reports for SAS data
+
+- `example_imp_models`  example script to create validation reports for IMP models
+
+- `example_summary_table`  example script to create validation reports for summary table 
+
 
 ## List of classes:
 
 - `WriteReport`  class to write dictionary for jinja2, HTML and PDF outputs
 
-- `plots`  plots from analysis
+- `plots`  quality at glance plots from all different analysis
 
 - `get_excluded_volume` class to calculate excluded volume and other relevant statistics   
 
@@ -28,11 +35,13 @@
 
 - `sas_validation` class to perform validation of models built using SAS datasets
 
+- `sas_validation_plots` plots based on SAS validation analysis
+
 - `cx_validation`  class to perform validation of models built using CX-MS datasets  
 
-- `em_validation`  class to perform validation of models built using EM datasets
+- `cx_validation_plots`  plots based on CX-MS validation analysis  
 
-- `sas_validation_plots`  class to plot results from validation of models built using SAS datasets
+- `em_validation`  class to perform validation of models built using EM datasets
 
 ## Test site
 - [`test web page`](https://modbase.compbio.ucsf.edu/pdbdev-test/home/) 
