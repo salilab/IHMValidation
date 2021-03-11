@@ -7,3 +7,4 @@ flask==1.1.2
 json==2.0.9
 ihm==0.18
 bokeh==2.2.3
+python-decouple
