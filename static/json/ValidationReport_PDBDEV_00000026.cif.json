@@ -1,0 +1,880 @@
+[
+    {
+        "Category": "date",
+        "Itemized_List": "March 04, 2021 --  12:23 PM"
+    },
+    {
+        "Category": "ensemble_info",
+        "Itemized_List": [
+            [
+                "Ensemble number",
+                "Ensemble name",
+                "Model ID",
+                "Number of models",
+                "Clustering method",
+                "Clustering feature",
+                "Cluster precision"
+            ],
+            [
+                "1",
+                "Cluster 0 in state State_0",
+                "1",
+                "11980",
+                "None",
+                "dRMSD",
+                "60.0"
+            ],
+            [
+                "2",
+                "Cluster 1 in state State_0",
+                "2",
+                "6261",
+                "None",
+                "dRMSD",
+                "60.0"
+            ]
+        ]
+    },
+    {
+        "Category": "sphere",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "num_ensembles",
+        "Itemized_List": 2
+    },
+    {
+        "Category": "Rigid_Body",
+        "Itemized_List": 7
+    },
+    {
+        "Category": "Flexible_Unit",
+        "Itemized_List": 101
+    },
+    {
+        "Category": "RB_list",
+        "Itemized_List": [
+            [
+                "Chain ID",
+                "Rigid bodies",
+                "Non-rigid segments"
+            ],
+            [
+                "A",
+                "-",
+                "1-23, 24-250, 251-266, 267-397, 398-406. "
+            ],
+            [
+                "B",
+                "-",
+                "1-14, 15-389. "
+            ],
+            [
+                "C",
+                "-",
+                "1-43, 44-99, 100-119, 120-439. "
+            ],
+            [
+                "D",
+                "-",
+                "1-64, 65-84, 85-90, 91-429, 430-440. "
+            ],
+            [
+                "E",
+                "-",
+                "1-38, 39-418. "
+            ],
+            [
+                "F",
+                "-",
+                "1-46, 47-72, 73-79, 80-433. "
+            ],
+            [
+                "G",
+                "-",
+                "1-88, 89-130, 131-134, 135-350. "
+            ],
+            [
+                "H",
+                "-",
+                "1-193, 194-377. "
+            ],
+            [
+                "I",
+                "-",
+                "1-27, 28-163, 164-189, 190-310. "
+            ],
+            [
+                "J",
+                "-",
+                "1-2, 3-27, 28-34, 35-68, 69-70. "
+            ],
+            [
+                "K",
+                "-",
+                "1-105, 106-170, 171-178, 179-301, 302-308, 309-618, 619-652, 653-848, 849-870, 871-908. "
+            ],
+            [
+                "L",
+                "-",
+                "1-2, 3-272, 273-320, 321-750, 751-752, 753-816, 817-877, 878-917, 918-922, 923-939, 940-953. "
+            ],
+            [
+                "M",
+                "-",
+                "1-56, 57-101, 102-103, 104-116, 117-159, 160-496, 497-499, 500-525, 526-534. "
+            ],
+            [
+                "N",
+                "-",
+                "1-4, 5-24, 25-39, 40-94, 95-98, 99-112, 113-116, 117-132, 133-138, 139-332, 333-340, 341-454, 455-456. "
+            ],
+            [
+                "O",
+                "-",
+                "1-1, 2-422. "
+            ],
+            [
+                "P",
+                "-",
+                "1-13, 14-389. "
+            ],
+            [
+                "Q",
+                "-",
+                "1-3, 4-142, 143-151, 152-295, 296-324. "
+            ],
+            [
+                "R",
+                "-",
+                "1-2, 3-54, 55-56, 57-376. "
+            ],
+            [
+                "S",
+                "352-504:Comparative model/None, 686-760:Comparative model/None, 788-911:Comparative model/None, 934-1035:Comparative model/None, 1062-1306:Comparative model/None, 1331-1666:Comparative model/None, 1689-1738:Comparative model/None. ",
+                "1-351, 505-685, 761-787, 912-933, 1036-1061, 1307-1330, 1667-1688, 1739-1845. "
+            ]
+        ]
+    },
+    {
+        "Category": "RB",
+        "Itemized_List": [
+            "A: - ",
+            "B: - ",
+            "C: - ",
+            "D: - ",
+            "E: - ",
+            "F: - ",
+            "G: - ",
+            "H: - ",
+            "I: - ",
+            "J: - ",
+            "K: - ",
+            "L: - ",
+            "M: - ",
+            "N: - ",
+            "O: - ",
+            "P: - ",
+            "Q: - ",
+            "R: - ",
+            "S: 352-504:Comparative model/None, 686-760:Comparative model/None, 788-911:Comparative model/None, 934-1035:Comparative model/None, 1062-1306:Comparative model/None, 1331-1666:Comparative model/None, 1689-1738:Comparative model/None.  "
+        ]
+    },
+    {
+        "Category": "flex",
+        "Itemized_List": [
+            "A: 1-23, 24-250, 251-266, 267-397, 398-406.  ",
+            "B: 1-14, 15-389.  ",
+            "C: 1-43, 44-99, 100-119, 120-439.  ",
+            "D: 1-64, 65-84, 85-90, 91-429, 430-440.  ",
+            "E: 1-38, 39-418.  ",
+            "F: 1-46, 47-72, 73-79, 80-433.  ",
+            "G: 1-88, 89-130, 131-134, 135-350.  ",
+            "H: 1-193, 194-377.  ",
+            "I: 1-27, 28-163, 164-189, 190-310.  ",
+            "J: 1-2, 3-27, 28-34, 35-68, 69-70.  ",
+            "K: 1-105, 106-170, 171-178, 179-301, 302-308, 309-618, 619-652, 653-848, 849-870, 871-908.  ",
+            "L: 1-2, 3-272, 273-320, 321-750, 751-752, 753-816, 817-877, 878-917, 918-922, 923-939, 940-953.  ",
+            "M: 1-56, 57-101, 102-103, 104-116, 117-159, 160-496, 497-499, 500-525, 526-534.  ",
+            "N: 1-4, 5-24, 25-39, 40-94, 95-98, 99-112, 113-116, 117-132, 133-138, 139-332, 333-340, 341-454, 455-456.  ",
+            "O: 1-1, 2-422.  ",
+            "P: 1-13, 14-389.  ",
+            "Q: 1-3, 4-142, 143-151, 152-295, 296-324.  ",
+            "R: 1-2, 3-54, 55-56, 57-376.  ",
+            "S: 1-351, 505-685, 761-787, 912-933, 1036-1061, 1307-1330, 1667-1688, 1739-1845.  "
+        ]
+    },
+    {
+        "Category": "ID",
+        "Itemized_List": "PDBDEV00000026"
+    },
+    {
+        "Category": "ID_w",
+        "Itemized_List": [
+            "PDBDEV00000026"
+        ]
+    },
+    {
+        "Category": "ID_T",
+        "Itemized_List": "PDBDEV_00000026"
+    },
+    {
+        "Category": "ID_R",
+        "Itemized_List": [
+            "PDBDEV_00000026"
+        ]
+    },
+    {
+        "Category": "Molecule",
+        "Itemized_List": "The proteasome-interacting Ecm29 protein disassembles the 26S proteasome in response to oxidative stress"
+    },
+    {
+        "Category": "Title",
+        "Itemized_List": "The proteasome-interacting Ecm29 protein disassembles the 26S proteasome in response to oxidative stress."
+    },
+    {
+        "Category": "Authors",
+        "Itemized_List": "Wang X;Chemmama IE;Yu C;Huszagh A;Xu Y;Viner R;Block SA;Cimermancic P;Rychnovsky SD;Ye Y;Sali A;Huang L"
+    },
+    {
+        "Category": "Entry_list",
+        "Itemized_List": [
+            [
+                "Model ID",
+                "Subunit number",
+                "Subunit ID",
+                "Subunit name",
+                "Chain ID",
+                "Total residues"
+            ],
+            [
+                "1",
+                "1",
+                "1",
+                "Rpt6",
+                "A",
+                "406"
+            ],
+            [
+                "1",
+                "2",
+                "2",
+                "Rpt4",
+                "B",
+                "389"
+            ],
+            [
+                "1",
+                "3",
+                "3",
+                "Rpt5",
+                "C",
+                "439"
+            ],
+            [
+                "1",
+                "4",
+                "4",
+                "Rpt2",
+                "D",
+                "440"
+            ],
+            [
+                "1",
+                "5",
+                "5",
+                "Rpt3",
+                "E",
+                "418"
+            ],
+            [
+                "1",
+                "6",
+                "6",
+                "Rpt1",
+                "F",
+                "433"
+            ],
+            [
+                "1",
+                "7",
+                "7",
+                "Rpn12",
+                "G",
+                "350"
+            ],
+            [
+                "1",
+                "8",
+                "8",
+                "Rpn10",
+                "H",
+                "377"
+            ],
+            [
+                "1",
+                "9",
+                "9",
+                "Rpn11",
+                "I",
+                "310"
+            ],
+            [
+                "1",
+                "10",
+                "10",
+                "Rpn15",
+                "J",
+                "70"
+            ],
+            [
+                "1",
+                "11",
+                "11",
+                "Rpn1",
+                "K",
+                "908"
+            ],
+            [
+                "1",
+                "12",
+                "12",
+                "Rpn2",
+                "L",
+                "953"
+            ],
+            [
+                "1",
+                "13",
+                "13",
+                "Rpn3",
+                "M",
+                "534"
+            ],
+            [
+                "1",
+                "14",
+                "14",
+                "Rpn5",
+                "N",
+                "456"
+            ],
+            [
+                "1",
+                "15",
+                "15",
+                "Rpn6",
+                "O",
+                "422"
+            ],
+            [
+                "1",
+                "16",
+                "16",
+                "Rpn7",
+                "P",
+                "389"
+            ],
+            [
+                "1",
+                "17",
+                "17",
+                "Rpn8",
+                "Q",
+                "324"
+            ],
+            [
+                "1",
+                "18",
+                "18",
+                "Rpn9",
+                "R",
+                "376"
+            ],
+            [
+                "1",
+                "19",
+                "19",
+                "ecm29",
+                "S",
+                "1845"
+            ],
+            [
+                "2",
+                "1",
+                "1",
+                "Rpt6",
+                "A",
+                "406"
+            ],
+            [
+                "2",
+                "2",
+                "2",
+                "Rpt4",
+                "B",
+                "389"
+            ],
+            [
+                "2",
+                "3",
+                "3",
+                "Rpt5",
+                "C",
+                "439"
+            ],
+            [
+                "2",
+                "4",
+                "4",
+                "Rpt2",
+                "D",
+                "440"
+            ],
+            [
+                "2",
+                "5",
+                "5",
+                "Rpt3",
+                "E",
+                "418"
+            ],
+            [
+                "2",
+                "6",
+                "6",
+                "Rpt1",
+                "F",
+                "433"
+            ],
+            [
+                "2",
+                "7",
+                "7",
+                "Rpn12",
+                "G",
+                "350"
+            ],
+            [
+                "2",
+                "8",
+                "8",
+                "Rpn10",
+                "H",
+                "377"
+            ],
+            [
+                "2",
+                "9",
+                "9",
+                "Rpn11",
+                "I",
+                "310"
+            ],
+            [
+                "2",
+                "10",
+                "10",
+                "Rpn15",
+                "J",
+                "70"
+            ],
+            [
+                "2",
+                "11",
+                "11",
+                "Rpn1",
+                "K",
+                "908"
+            ],
+            [
+                "2",
+                "12",
+                "12",
+                "Rpn2",
+                "L",
+                "953"
+            ],
+            [
+                "2",
+                "13",
+                "13",
+                "Rpn3",
+                "M",
+                "534"
+            ],
+            [
+                "2",
+                "14",
+                "14",
+                "Rpn5",
+                "N",
+                "456"
+            ],
+            [
+                "2",
+                "15",
+                "15",
+                "Rpn6",
+                "O",
+                "422"
+            ],
+            [
+                "2",
+                "16",
+                "16",
+                "Rpn7",
+                "P",
+                "389"
+            ],
+            [
+                "2",
+                "17",
+                "17",
+                "Rpn8",
+                "Q",
+                "324"
+            ],
+            [
+                "2",
+                "18",
+                "18",
+                "Rpn9",
+                "R",
+                "376"
+            ],
+            [
+                "2",
+                "19",
+                "19",
+                "ecm29",
+                "S",
+                "1845"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_molecules",
+        "Itemized_List": 2
+    },
+    {
+        "Category": "model_names",
+        "Itemized_List": [
+            "Cluster 0 in state State_0/None",
+            "Cluster 1 in state State_0/None"
+        ]
+    },
+    {
+        "Category": "number_of_software",
+        "Itemized_List": 3
+    },
+    {
+        "Category": "soft_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Software name",
+                "Software version",
+                "Software classification",
+                "Software location"
+            ],
+            [
+                "1",
+                "IMP PMI module",
+                "develop-7c7c0f4348",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "2",
+                "Integrative Modeling Platform (IMP)",
+                "develop-0a5706e202",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "3",
+                "MODELLER",
+                "9.17",
+                "comparative modeling",
+                "https://salilab.org/modeller/"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_datasets",
+        "Itemized_List": 7
+    },
+    {
+        "Category": "Data",
+        "Itemized_List": [
+            "CX-MS DATA"
+        ]
+    },
+    {
+        "Category": "Datasets_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Dataset type",
+                "Database name",
+                "Data access code"
+            ],
+            [
+                "1",
+                "Experimental model",
+                "PDB",
+                "5GJR"
+            ],
+            [
+                "2",
+                "Experimental model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "3",
+                "Experimental model",
+                "PDB",
+                "1U6G"
+            ],
+            [
+                "4",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "5",
+                "Experimental model",
+                "PDB",
+                "3W3W"
+            ],
+            [
+                "6",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "7",
+                "CX-MS data",
+                "Not listed",
+                "None"
+            ]
+        ]
+    },
+    {
+        "Category": "Protocols_number",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "Sampling_list",
+        "Itemized_List": [
+            [
+                "Step number",
+                "Protocol ID",
+                "Method name",
+                "Method type",
+                "Number of computed models",
+                "Multi state modeling",
+                "Multi scale modeling"
+            ],
+            [
+                "1",
+                "1",
+                "Replica exchange monte carlo",
+                "Sampling",
+                "3750000",
+                "False",
+                "True"
+            ]
+        ]
+    },
+    {
+        "Category": "num_chains",
+        "Itemized_List": 19.0
+    },
+    {
+        "Category": "assess_atomic_segments",
+        "Itemized_List": "Not applicable"
+    },
+    {
+        "Category": "excluded_volume",
+        "Itemized_List": [
+            [
+                "Models",
+                "Excluded Volume Satisfaction",
+                "Number of violations"
+            ],
+            [
+                "1",
+                "99.93",
+                "22257.0"
+            ],
+            [
+                "2",
+                "99.93",
+                "22180.0"
+            ]
+        ]
+    },
+    {
+        "Category": "assess_excluded_volume",
+        "Itemized_List": [
+            "Model-1: Number of violations-22257.0 ",
+            "Model-2: Number of violations-22180.0 "
+        ]
+    },
+    {
+        "Category": "cx",
+        "Itemized_List": [
+            "True"
+        ]
+    },
+    {
+        "Category": "Cx Fit Model #1",
+        "Itemized_List": 61.904761904761905
+    },
+    {
+        "Category": "Cx Fit Model #2",
+        "Itemized_List": 63.49206349206349
+    },
+    {
+        "Category": "validation_input",
+        "Itemized_List": [
+            "CX-MS Fit of medioid: model # 1, percentage satisfied 61.9%",
+            "CX-MS Fit of medioid: model # 2, percentage satisfied 63.49%"
+        ]
+    },
+    {
+        "Category": "clustering",
+        "Itemized_List": "Distance threshold-based clustering used if ensembles are deposited"
+    },
+    {
+        "Category": "location",
+        "Itemized_List": [
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "complex_name",
+        "Itemized_List": "the proteasome-interacting ecm29 protein disassembles the 26s proteasome in response to oxidative stress"
+    },
+    {
+        "Category": "PDB_ID",
+        "Itemized_List": "PDBDEV00000026"
+    },
+    {
+        "Category": "Subunits",
+        "Itemized_List": [
+            "Rpt3: Chain E (418 residues)",
+            "Rpt1: Chain F (433 residues)",
+            "Rpn1: Chain K (908 residues)",
+            "ecm29: Chain S (1845 residues)",
+            "Rpn12: Chain G (350 residues)",
+            "Rpn6: Chain O (422 residues)",
+            "Rpn8: Chain Q (324 residues)",
+            "Rpn7: Chain P (389 residues)",
+            "Rpn2: Chain L (953 residues)",
+            "Rpn3: Chain M (534 residues)",
+            "Rpt5: Chain C (439 residues)",
+            "Rpn15: Chain J (70 residues)",
+            "Rpn10: Chain H (377 residues)",
+            "Rpt4: Chain B (389 residues)",
+            "Rpn5: Chain N (456 residues)",
+            "Rpt2: Chain D (440 residues)",
+            "Rpt6: Chain A (406 residues)",
+            "Rpn9: Chain R (376 residues)",
+            "Rpn11: Chain I (310 residues)"
+        ]
+    },
+    {
+        "Category": "datasets",
+        "Itemized_List": [
+            "Experimental model, PDB ID: 5GJR",
+            "Experimental model, PDB ID: Not listed",
+            "Experimental model, PDB ID: 1U6G",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3W3W",
+            "Comparative model, template PDB ID: Not listed",
+            "CX-MS data, Linker name and number of cross-links: DSSO, 63 cross-links"
+        ]
+    },
+    {
+        "Category": "physics",
+        "Itemized_List": "Information about physical principles was not provided"
+    },
+    {
+        "Category": "software",
+        "Itemized_List": [
+            "IMP PMI module (version develop-7c7c0f4348)",
+            "Integrative Modeling Platform (IMP) (version develop-0a5706e202)",
+            "MODELLER (version 9.17)",
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "struc",
+        "Itemized_List": "11%"
+    },
+    {
+        "Category": "method",
+        "Itemized_List": "Replica exchange Monte Carlo "
+    },
+    {
+        "Category": "method_type",
+        "Itemized_List": "Sampling "
+    },
+    {
+        "Category": "method_details",
+        "Itemized_List": [
+            "Method details unspecified"
+        ]
+    },
+    {
+        "Category": "models",
+        "Itemized_List": "11980, 6261"
+    },
+    {
+        "Category": "sampling_validation",
+        "Itemized_List": [
+            "Information related to sampling validation has not been provided"
+        ]
+    },
+    {
+        "Category": "feature",
+        "Itemized_List": "dRMSD"
+    },
+    {
+        "Category": "cross_validation",
+        "Itemized_List": [
+            "Fit of model to information not used to compute it has not been determined"
+        ]
+    },
+    {
+        "Category": "model_precision",
+        "Itemized_List": "60.0&#8491, 60.0&#8491"
+    },
+    {
+        "Category": "restraint_info",
+        "Itemized_List": [
+            [
+                "1 unique CrossLinkRestraint: DSSO, 63 cross-links"
+            ]
+        ]
+    },
+    {
+        "Category": "Data_quality",
+        "Itemized_List": [
+            "Quality of input data has not be assessed"
+        ]
+    },
+    {
+        "Category": "resolution",
+        "Itemized_List": [
+            "Rigid bodies: 1 residue per bead.",
+            "Flexible regions: N/A"
+        ]
+    }
+]

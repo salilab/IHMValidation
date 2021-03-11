@@ -1,0 +1,780 @@
+[
+    {
+        "Category": "date",
+        "Itemized_List": "March 09, 2021 --  05:55 PM"
+    },
+    {
+        "Category": "ensemble_info",
+        "Itemized_List": [
+            [
+                "Ensemble number",
+                "Ensemble name",
+                "Model ID",
+                "Number of models",
+                "Clustering method",
+                "Clustering feature",
+                "Cluster precision"
+            ],
+            [
+                "1",
+                "Cluster 1",
+                "1",
+                "1257",
+                "None",
+                "dRMSD",
+                "15.4"
+            ],
+            [
+                "2",
+                "Cluster 2",
+                "2",
+                "1010",
+                "None",
+                "dRMSD",
+                "12.7"
+            ]
+        ]
+    },
+    {
+        "Category": "sphere",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "num_ensembles",
+        "Itemized_List": 2
+    },
+    {
+        "Category": "Rigid_Body",
+        "Itemized_List": 40
+    },
+    {
+        "Category": "Flexible_Unit",
+        "Itemized_List": 42
+    },
+    {
+        "Category": "RB_list",
+        "Itemized_List": [
+            [
+                "Chain ID",
+                "Rigid bodies",
+                "Non-rigid segments"
+            ],
+            [
+                "A",
+                "7-20:Comparative model/None, 27-80:Comparative model/None, 96-126:Comparative model/None, 136-364:Comparative model/None, 372-483:Comparative model/None, 506-562:Comparative model/None, 575-726:Comparative model/None. ",
+                "1-6, 21-26, 81-95, 127-135, 365-371, 484-505, 563-574. "
+            ],
+            [
+                "B",
+                "67-122:Comparative model/None, 135-427:Comparative model/None, 461-529:Comparative model/None, 533-602:Comparative model/None, 620-671:Comparative model/None, 680-743:Comparative model/None. ",
+                "1-66, 123-134, 428-460, 530-532, 603-619, 672-679, 744-744. "
+            ],
+            [
+                "C",
+                "1-29:Comparative model/None, 53-212:Comparative model/None, 221-305:Comparative model/None, 311-429:Comparative model/None, 440-710:Comparative model/None, 711-712:Comparative model/None, 727-781:Comparative model/None, 805-892:Comparative model/None, 903-910:Comparative model/None, 921-1010:Comparative model/None, 1023-1037:Comparative model/None. ",
+                "30-52, 213-220, 306-310, 430-439, 713-726, 782-804, 893-902, 911-920, 1011-1022. "
+            ],
+            [
+                "D",
+                "56-78:Comparative model/None, 86-125:Comparative model/None, 133-144:Comparative model/None, 162-184:Comparative model/None, 193-200:Comparative model/None, 206-249:Comparative model/None, 258-480:Comparative model/None, 490-763:Comparative model/None, 772-1155:Comparative model/None. ",
+                "1-55, 79-85, 126-132, 145-161, 185-192, 201-205, 250-257, 481-489, 764-771, 1156-1157. "
+            ],
+            [
+                "E",
+                "126-144:Comparative model/None, 151-175:Comparative model/None, 182-553:Comparative model/None. ",
+                "1-125, 145-150, 176-181, 554-712. "
+            ],
+            [
+                "F",
+                "1-248:Experimental model/3F3F, 288-346:Experimental model/3F3F. ",
+                "249-287, 347-349. "
+            ],
+            [
+                "G",
+                "2-158:Experimental model/2PM7, 166-296:Experimental model/2PM7. ",
+                "1-1, 159-165, 297-297. "
+            ]
+        ]
+    },
+    {
+        "Category": "RB",
+        "Itemized_List": [
+            "A: 7-20:Comparative model/None, 27-80:Comparative model/None, 96-126:Comparative model/None, 136-364:Comparative model/None, 372-483:Comparative model/None, 506-562:Comparative model/None, 575-726:Comparative model/None.  ",
+            "B: 67-122:Comparative model/None, 135-427:Comparative model/None, 461-529:Comparative model/None, 533-602:Comparative model/None, 620-671:Comparative model/None, 680-743:Comparative model/None.  ",
+            "C: 1-29:Comparative model/None, 53-212:Comparative model/None, 221-305:Comparative model/None, 311-429:Comparative model/None, 440-710:Comparative model/None, 711-712:Comparative model/None, 727-781:Comparative model/None, 805-892:Comparative model/None, 903-910:Comparative model/None, 921-1010:Comparative model/None, 1023-1037:Comparative model/None.  ",
+            "D: 56-78:Comparative model/None, 86-125:Comparative model/None, 133-144:Comparative model/None, 162-184:Comparative model/None, 193-200:Comparative model/None, 206-249:Comparative model/None, 258-480:Comparative model/None, 490-763:Comparative model/None, 772-1155:Comparative model/None.  ",
+            "E: 126-144:Comparative model/None, 151-175:Comparative model/None, 182-553:Comparative model/None.  ",
+            "F: 1-248:Experimental model/3F3F, 288-346:Experimental model/3F3F.  ",
+            "G: 2-158:Experimental model/2PM7, 166-296:Experimental model/2PM7.  "
+        ]
+    },
+    {
+        "Category": "flex",
+        "Itemized_List": [
+            "A: 1-6, 21-26, 81-95, 127-135, 365-371, 484-505, 563-574.  ",
+            "B: 1-66, 123-134, 428-460, 530-532, 603-619, 672-679, 744-744.  ",
+            "C: 30-52, 213-220, 306-310, 430-439, 713-726, 782-804, 893-902, 911-920, 1011-1022.  ",
+            "D: 1-55, 79-85, 126-132, 145-161, 185-192, 201-205, 250-257, 481-489, 764-771, 1156-1157.  ",
+            "E: 1-125, 145-150, 176-181, 554-712.  ",
+            "F: 249-287, 347-349.  ",
+            "G: 1-1, 159-165, 297-297.  "
+        ]
+    },
+    {
+        "Category": "ID",
+        "Itemized_List": "PDBDEV00000001"
+    },
+    {
+        "Category": "ID_w",
+        "Itemized_List": [
+            "PDBDEV00000001"
+        ]
+    },
+    {
+        "Category": "ID_T",
+        "Itemized_List": "PDBDEV_00000001"
+    },
+    {
+        "Category": "ID_R",
+        "Itemized_List": [
+            "PDBDEV_00000001"
+        ]
+    },
+    {
+        "Category": "Molecule",
+        "Itemized_List": "Structure of the Nup84 sub-complex of the Nuclear Pore Complex"
+    },
+    {
+        "Category": "Title",
+        "Itemized_List": "Structural characterization by cross-linking reveals the detailed architecture of a coatomer-related heptameric module from the nuclear pore complex."
+    },
+    {
+        "Category": "Authors",
+        "Itemized_List": "Shi Y;Fernandez-Martinez J;Tjioe E;Pellarin R;Kim SJ;Williams R;Schneidman-Duhovny D;Sali A;Rout MP;Chait BT"
+    },
+    {
+        "Category": "Entry_list",
+        "Itemized_List": [
+            [
+                "Model ID",
+                "Subunit number",
+                "Subunit ID",
+                "Subunit name",
+                "Chain ID",
+                "Total residues"
+            ],
+            [
+                "1",
+                "1",
+                "1",
+                "Nup84",
+                "A",
+                "726"
+            ],
+            [
+                "1",
+                "2",
+                "2",
+                "Nup85",
+                "B",
+                "744"
+            ],
+            [
+                "1",
+                "3",
+                "3",
+                "Nup120",
+                "C",
+                "1037"
+            ],
+            [
+                "1",
+                "4",
+                "4",
+                "Nup133",
+                "D",
+                "1157"
+            ],
+            [
+                "1",
+                "5",
+                "5",
+                "Nup145c",
+                "E",
+                "712"
+            ],
+            [
+                "1",
+                "6",
+                "6",
+                "Seh1",
+                "F",
+                "349"
+            ],
+            [
+                "1",
+                "7",
+                "7",
+                "Sec13",
+                "G",
+                "297"
+            ],
+            [
+                "2",
+                "1",
+                "1",
+                "Nup84",
+                "A",
+                "726"
+            ],
+            [
+                "2",
+                "2",
+                "2",
+                "Nup85",
+                "B",
+                "744"
+            ],
+            [
+                "2",
+                "3",
+                "3",
+                "Nup120",
+                "C",
+                "1037"
+            ],
+            [
+                "2",
+                "4",
+                "4",
+                "Nup133",
+                "D",
+                "1157"
+            ],
+            [
+                "2",
+                "5",
+                "5",
+                "Nup145c",
+                "E",
+                "712"
+            ],
+            [
+                "2",
+                "6",
+                "6",
+                "Seh1",
+                "F",
+                "349"
+            ],
+            [
+                "2",
+                "7",
+                "7",
+                "Sec13",
+                "G",
+                "297"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_molecules",
+        "Itemized_List": 2
+    },
+    {
+        "Category": "model_names",
+        "Itemized_List": [
+            "Cluster 1/Best scoring model",
+            "Cluster 2/Best scoring model"
+        ]
+    },
+    {
+        "Category": "number_of_software",
+        "Itemized_List": 6
+    },
+    {
+        "Category": "soft_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Software name",
+                "Software version",
+                "Software classification",
+                "Software location"
+            ],
+            [
+                "1",
+                "Integrative Modeling Platform (IMP)",
+                "develop-0a5706e202",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "2",
+                "IMP PMI module",
+                "67456c0",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "3",
+                "HHpred",
+                "2.0.16",
+                "protein homology detection",
+                "https://toolkit.tuebingen.mpg.de/hhpred"
+            ],
+            [
+                "4",
+                "PSIPRED",
+                "4.0",
+                "secondary structure prediction",
+                "http://bioinf.cs.ucl.ac.uk/psipred/"
+            ],
+            [
+                "5",
+                "DISOPRED",
+                "3",
+                "disorder prediction",
+                "http://bioinf.cs.ucl.ac.uk/psipred/?disopred=1"
+            ],
+            [
+                "6",
+                "MODELLER",
+                "9.12",
+                "comparative modeling",
+                "https://salilab.org/modeller/"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_datasets",
+        "Itemized_List": 28
+    },
+    {
+        "Category": "Data",
+        "Itemized_List": [
+            "2DEM CLASS AVERAGE",
+            "EM RAW MICROGRAPHS",
+            "CX-MS DATA"
+        ]
+    },
+    {
+        "Category": "Datasets_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Dataset type",
+                "Database name",
+                "Data access code"
+            ],
+            [
+                "1",
+                "Experimental model",
+                "PDB",
+                "3JRO"
+            ],
+            [
+                "2",
+                "Experimental model",
+                "PDB",
+                "3F3F"
+            ],
+            [
+                "3",
+                "Experimental model",
+                "PDB",
+                "3IKO"
+            ],
+            [
+                "4",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "5",
+                "Experimental model",
+                "PDB",
+                "3CQC"
+            ],
+            [
+                "6",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "7",
+                "Experimental model",
+                "PDB",
+                "4LCT"
+            ],
+            [
+                "8",
+                "Experimental model",
+                "PDB",
+                "2QX5"
+            ],
+            [
+                "9",
+                "Experimental model",
+                "PDB",
+                "3EWE"
+            ],
+            [
+                "10",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "11",
+                "Experimental model",
+                "PDB",
+                "3F7F"
+            ],
+            [
+                "12",
+                "Experimental model",
+                "PDB",
+                "3HXR"
+            ],
+            [
+                "13",
+                "Experimental model",
+                "PDB",
+                "4FHN"
+            ],
+            [
+                "14",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "15",
+                "Experimental model",
+                "PDB",
+                "4Q9T"
+            ],
+            [
+                "16",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "17",
+                "Experimental model",
+                "PDB",
+                "3I4R"
+            ],
+            [
+                "18",
+                "Experimental model",
+                "PDB",
+                "3KFO"
+            ],
+            [
+                "19",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "20",
+                "Experimental model",
+                "PDB",
+                "3BG1"
+            ],
+            [
+                "21",
+                "Experimental model",
+                "PDB",
+                "3BG0"
+            ],
+            [
+                "22",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "23",
+                "Experimental model",
+                "PDB",
+                "3F3F"
+            ],
+            [
+                "24",
+                "Experimental model",
+                "PDB",
+                "2PM7"
+            ],
+            [
+                "25",
+                "CX-MS data",
+                "Not listed",
+                "None"
+            ],
+            [
+                "26",
+                "CX-MS data",
+                "Not listed",
+                "None"
+            ],
+            [
+                "27",
+                "EM raw micrographs",
+                "Not listed",
+                "None"
+            ],
+            [
+                "28",
+                "2DEM class average",
+                "Not listed",
+                "None"
+            ]
+        ]
+    },
+    {
+        "Category": "Protocols_number",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "Sampling_list",
+        "Itemized_List": [
+            [
+                "Step number",
+                "Protocol ID",
+                "Method name",
+                "Method type",
+                "Number of computed models",
+                "Multi state modeling",
+                "Multi scale modeling"
+            ],
+            [
+                "1",
+                "1",
+                "Replica exchange monte carlo",
+                "Sampling",
+                "500",
+                "False",
+                "True"
+            ],
+            [
+                "2",
+                "1",
+                "Replica exchange monte carlo",
+                "Sampling",
+                "5000",
+                "False",
+                "True"
+            ]
+        ]
+    },
+    {
+        "Category": "num_chains",
+        "Itemized_List": 7.0
+    },
+    {
+        "Category": "assess_atomic_segments",
+        "Itemized_List": "Not applicable"
+    },
+    {
+        "Category": "excluded_volume",
+        "Itemized_List": [
+            [
+                "Models",
+                "Excluded Volume Satisfaction",
+                "Number of violations"
+            ],
+            [
+                "1",
+                "99.88",
+                "10899.0"
+            ],
+            [
+                "2",
+                "99.88",
+                "10935.0"
+            ]
+        ]
+    },
+    {
+        "Category": "assess_excluded_volume",
+        "Itemized_List": [
+            "Model-1: Number of violations-10899.0 ",
+            "Model-2: Number of violations-10935.0 "
+        ]
+    },
+    {
+        "Category": "cx",
+        "Itemized_List": [
+            "True"
+        ]
+    },
+    {
+        "Category": "Cx Fit Model #1",
+        "Itemized_List": 81.33802816901408
+    },
+    {
+        "Category": "Cx Fit Model #2",
+        "Itemized_List": 81.69014084507043
+    },
+    {
+        "Category": "validation_input",
+        "Itemized_List": [
+            "CX-MS Fit of medioid: model # 1, percentage satisfied 81.34%",
+            "CX-MS Fit of medioid: model # 2, percentage satisfied 81.69%"
+        ]
+    },
+    {
+        "Category": "clustering",
+        "Itemized_List": "Distance threshold-based clustering used if ensembles are deposited"
+    },
+    {
+        "Category": "location",
+        "Itemized_List": [
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "complex_name",
+        "Itemized_List": "structure of the nup84 sub-complex of the nuclear pore complex"
+    },
+    {
+        "Category": "PDB_ID",
+        "Itemized_List": "PDBDEV00000001"
+    },
+    {
+        "Category": "Subunits",
+        "Itemized_List": [
+            "Nup133: Chain D (1157 residues)",
+            "Nup145c: Chain E (712 residues)",
+            "Seh1: Chain F (349 residues)",
+            "Sec13: Chain G (297 residues)",
+            "Nup84: Chain A (726 residues)",
+            "Nup85: Chain B (744 residues)",
+            "Nup120: Chain C (1037 residues)"
+        ]
+    },
+    {
+        "Category": "datasets",
+        "Itemized_List": [
+            "Experimental model, PDB ID: 3JRO",
+            "Experimental model, PDB ID: 3F3F",
+            "Experimental model, PDB ID: 3IKO",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3CQC",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 4LCT",
+            "Experimental model, PDB ID: 2QX5",
+            "Experimental model, PDB ID: 3EWE",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3F7F",
+            "Experimental model, PDB ID: 3HXR",
+            "Experimental model, PDB ID: 4FHN",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 4Q9T",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3I4R",
+            "Experimental model, PDB ID: 3KFO",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3BG1",
+            "Experimental model, PDB ID: 3BG0",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3F3F",
+            "Experimental model, PDB ID: 2PM7",
+            "CX-MS data, Linker name and number of cross-links: DSS, 164 cross-links",
+            "CX-MS data, Linker name and number of cross-links: EDC, 127 cross-links",
+            "EM raw micrographs, EMDB ID: Not listed",
+            "2DEM class average, EMDB ID: Not listed"
+        ]
+    },
+    {
+        "Category": "physics",
+        "Itemized_List": "Information about physical principles was not provided"
+    },
+    {
+        "Category": "software",
+        "Itemized_List": [
+            "Integrative Modeling Platform (IMP) (version develop-0a5706e202)",
+            "IMP PMI module (version 67456c0)",
+            "HHpred (version 2.0.16)",
+            "PSIPRED (version 4.0)",
+            "DISOPRED (version 3)",
+            "MODELLER (version 9.12)",
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "struc",
+        "Itemized_List": "84%"
+    },
+    {
+        "Category": "method",
+        "Itemized_List": "Replica exchange Monte Carlo "
+    },
+    {
+        "Category": "method_type",
+        "Itemized_List": "Sampling "
+    },
+    {
+        "Category": "method_details",
+        "Itemized_List": [
+            "Method details unspecified"
+        ]
+    },
+    {
+        "Category": "models",
+        "Itemized_List": "1257, 1010"
+    },
+    {
+        "Category": "sampling_validation",
+        "Itemized_List": [
+            "Information related to sampling validation has not been provided"
+        ]
+    },
+    {
+        "Category": "feature",
+        "Itemized_List": "dRMSD"
+    },
+    {
+        "Category": "cross_validation",
+        "Itemized_List": [
+            "Fit of model to information not used to compute it has not been determined"
+        ]
+    },
+    {
+        "Category": "model_precision",
+        "Itemized_List": "15.4&#8491, 12.7&#8491"
+    },
+    {
+        "Category": "restraint_info",
+        "Itemized_List": [
+            [
+                "1 unique CrossLinkRestraint: DSS, 164 cross-links"
+            ],
+            [
+                "1 unique CrossLinkRestraint: EDC, 127 cross-links"
+            ],
+            [
+                "1 unique EM2DRestraint: Number of micrographs: 800, Image resolution: 30.0"
+            ]
+        ]
+    },
+    {
+        "Category": "Data_quality",
+        "Itemized_List": [
+            "Quality of input data has not be assessed"
+        ]
+    },
+    {
+        "Category": "resolution",
+        "Itemized_List": [
+            "Rigid bodies: 1 residue per bead.",
+            "Flexible regions: N/A"
+        ]
+    }
+]

@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 03, 2021 --  06:31 PM"
+        "Itemized_List": "March 09, 2021 --  11:13 AM"
     },
     {
         "Category": "ensemble_info",
@@ -177,8 +177,8 @@
         "Category": "Data",
         "Itemized_List": [
             "3DEM VOLUME",
-            "2DEM CLASS AVERAGE",
-            "SAS DATA"
+            "SAS DATA",
+            "2DEM CLASS AVERAGE"
         ]
     },
     {
@@ -487,6 +487,12 @@
                 "Porod Volume/MW"
             ],
             [
+                "SASDBX9",
+                "12.5 kDa",
+                "14.7 kDa",
+                "N/A"
+            ],
+            [
                 "SASDBV9",
                 "12.6 kDa",
                 "12.2 kDa",
@@ -502,12 +508,6 @@
                 "SASDBY9",
                 "25.9 kDa",
                 "25.2 kDa",
-                "N/A"
-            ],
-            [
-                "SASDBX9",
-                "12.5 kDa",
-                "14.7 kDa",
                 "N/A"
             ],
             [
@@ -675,21 +675,21 @@
     {
         "Category": "Data_quality",
         "Itemized_List": [
+            "SASDBX9: Rg from Gunier is 2.636nm and Rg from p(r) is 2.78nm",
             "SASDBV9: Rg from Gunier is 1.824nm and Rg from p(r) is 1.77nm",
             "SASDBW9: Rg from Gunier is 2.787nm and Rg from p(r) is 2.71nm",
             "SASDBY9: Rg from Gunier is 2.976nm and Rg from p(r) is 2.95nm",
-            "SASDBX9: Rg from Gunier is 2.636nm and Rg from p(r) is 2.78nm",
             "SASDBZ9: Rg from Gunier is 4.629nm and Rg from p(r) is 4.34nm"
         ]
     },
     {
         "Category": "validation_input",
         "Itemized_List": [
+            "SASDBX9: Fit 1 with &#x3A7;&#xb2; value 2.86",
             "SASDBV9: Fit 1 with &#x3A7;&#xb2; value 1.28",
             "SASDBV9: Fit 2 with &#x3A7;&#xb2; value 1.1",
             "SASDBW9: Fit 1 with &#x3A7;&#xb2; value 1.97",
             "SASDBY9: Fit 1 with &#x3A7;&#xb2; value 2.02",
-            "SASDBX9: Fit 1 with &#x3A7;&#xb2; value 2.86",
             "SASDBZ9: Fit 1 with &#x3A7;&#xb2; value 1.94"
         ]
     },
