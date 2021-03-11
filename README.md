@@ -46,6 +46,36 @@
 ## Test site
 - [`test web page`](https://modbase.compbio.ucsf.edu/pdbdev-test/home/) 
 
+## Initial setup 
+
+This initial setup is performed once.
+
+Create and activate a Python3.6 virtual environment.
+
+.. code-block:: RST
+
+    $ python3 -m venv .venv
+    $ source .venv/bin/activate
+
+.. code-block:: RST
+
+    $ pip3 install -r dependencies.txt
+
+Create a local environment file and add the relevant variables.
+
+.. code-block:: RST
+
+    $ touch .env
+    $ nano .env
+
+The variables to add to the .env file can be seen below (fill in the quotations with paths to the relevant values).
+
+.. code-block:: RST
+
+    ATSAS=""
+    MOLPROBITY=""
+    PDFKIT=""
+
 ## Information
 
 _Author(s)_: Sai J. Ganesan
