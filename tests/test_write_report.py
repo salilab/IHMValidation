@@ -4,7 +4,7 @@ from io import StringIO, BytesIO
 sys.path.insert(0, "../master/pyext/src/")
 from collections import defaultdict
 from validation import get_input_information,utility
-from validation.write_report import WriteReport
+from validation.Report import WriteReport
 import warnings,tempfile
 
 def ignore_warnings(test_func):
