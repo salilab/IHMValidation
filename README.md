@@ -70,12 +70,15 @@ Install the following packages based on your OS.
 Create a local environment file and add the relevant variables.
 
     $ touch .env
-    $ nano .env
+    $ nano/vi .env
 
 The variables to add to the .env file can be seen below (fill in the quotations with paths to the relevant values).
 
     ATSAS=""
-    Molprobity=""
+    Molprobity_ramalyze=""
+    Molprobity_molprobity=""
+    Molprobity_clashscore=""
+    Molprobity_rotalyze=""
     wkhtmltopdf=""
 
 ## Information
