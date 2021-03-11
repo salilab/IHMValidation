@@ -1,13 +1,5 @@
 import os,sys
 import unittest  
-import ihm
-import ihm.reader
-import pandas as pd
-import glob
-import os,shutil
-import numpy as np
-import re
-from collections import defaultdict
 from io import StringIO, BytesIO
 sys.path.insert(0, "../master/pyext/src/")
 from validation import get_input_information,utility
