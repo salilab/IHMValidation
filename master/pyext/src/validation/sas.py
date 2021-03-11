@@ -15,6 +15,9 @@ from sklearn.linear_model import LinearRegression
 from decimal import Decimal
 from validation import get_input_information 
 from subprocess import run, call, PIPE
+from decouple import config
+
+
 
 class sas_validation(get_input_information):
     def __init__(self,mmcif_file):
@@ -125,7 +128,6 @@ class sas_validation(get_input_information):
             IO=rg_and_io[key][1]
             dim_num=Rg*Rg/IO
             I_df=val.astype({'Q':float,'I':float,'E':float})
-            print (I_df.head())
             I_df=I_df[I_df['I']-I_df['E']>0]
             I_df['Q']=I_df['Q']*10
             I_df['err_x']=I_df.apply(lambda row: (row['Q'],row['Q']), axis=1) 
@@ -297,7 +299,7 @@ class sas_validation(get_input_information):
                     fit_2.to_csv('fit2.csv',header=False,index=False)
                     f1=open('pval.txt','w+')
                     with f1 as outfile:
-                        run([r"/Users/saijananiganesan/ATSAS-3.0.3-1/bin/datcmp",'fit1.csv','fit2.csv'],stdout=outfile)
+                        run([config('ATSAS'),'fit1.csv','fit2.csv'],stdout=outfile)
                     f2=open('pval.txt','r')
                     all_lines=[j.strip().split() for i,j in enumerate(f2.readlines())]
                     p_val=[all_lines[i+1][4] for i,j in enumerate(all_lines) if 'adj' in j][0]

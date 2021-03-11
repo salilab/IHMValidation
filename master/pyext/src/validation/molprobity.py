@@ -12,6 +12,8 @@ from subprocess import run, call, PIPE
 from validation import get_input_information,utility
 import ihm
 import ihm.reader
+from decouple import config
+
 
 
 class get_molprobity_information(get_input_information):
@@ -47,7 +49,7 @@ class get_molprobity_information(get_input_information):
         f=str(self.ID)+'_temp_rama.txt'
         f1=open(f,'w+')
         with f1 as outfile:
-            run([r"/home/ganesans/PDB-dev-test/MolProbity-master/build/bin/molprobity.ramalyze",self.mmcif_file],stdout=outfile)
+            run([config('Molprobity_ramalyze'),self.mmcif_file],stdout=outfile)
         with open(f,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
         d['rama']=line
@@ -58,9 +60,9 @@ class get_molprobity_information(get_input_information):
     def run_molprobity(self,d):
         """run molprobity"""
         f=str(self.ID)+'_temp_mp.txt'
-        f1=open(f,'w+')
+        f1=open(f,'w+') 
         with f1 as outfile:
-            run([r"/home/ganesans/PDB-dev-test/MolProbity-master/build/bin/molprobity.molprobity",self.mmcif_file],stdout=outfile)
+            run([config('Molprobity_molprobity'),self.mmcif_file],stdout=outfile)
         with open(f,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
         d['molprobity']=line
@@ -73,7 +75,7 @@ class get_molprobity_information(get_input_information):
         f=str(self.ID)+'_temp_clash.txt'
         f1=open(f,'w+')
         with f1 as outfile:
-            run([r"/home/ganesans/PDB-dev-test/MolProbity-master/build/bin/molprobity.clashscore",self.mmcif_file],stdout=outfile)
+            run([config('Molprobity_clashscore'),self.mmcif_file],stdout=outfile)
         with open(f,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
         d['clash']=line
@@ -86,7 +88,7 @@ class get_molprobity_information(get_input_information):
         f=str(self.ID)+'_temp_rota.txt'
         f1=open(f,'w+')
         with f1 as outfile:
-            run([r"/home/ganesans/PDB-dev-test/MolProbity-master/build/bin/molprobity.rotalyze",self.mmcif_file],stdout=outfile)
+            run([config('Molprobity_rotalyze'),self.mmcif_file],stdout=outfile)
         with open(f,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
         d['rota']=line
