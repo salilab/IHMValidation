@@ -59,18 +59,24 @@ Create and activate a Python3.6 virtual environment.
 
     $ pip3 install -r dependencies.txt
 
-Create a local environment file and add the relevant variables.
+Install the following packages based on your OS.
 
+- [`ATSAS`](https://www.embl-hamburg.de/biosaxs/download.html) 
+
+- [`Molprobity`](https://github.com/rlabduke/MolProbity) 
+
+- [`wkhtmltopdf`](https://wkhtmltopdf.org/) 
+
+Create a local environment file and add the relevant variables.
 
     $ touch .env
     $ nano .env
 
 The variables to add to the .env file can be seen below (fill in the quotations with paths to the relevant values).
 
-
     ATSAS=""
-    MOLPROBITY=""
-    PDFKIT=""
+    Molprobity=""
+    wkhtmltopdf=""
 
 ## Information
 
