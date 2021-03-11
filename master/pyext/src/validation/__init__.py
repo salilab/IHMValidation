@@ -169,12 +169,11 @@ class get_input_information(object):
 
     def get_sampling(self)->dict:
         """ sampling composition/details """
-        sampling_comp={'Step number':[], 'Protocol ID':[],'Method name':[],'Method type':[],'Number of computed models':[],'Multi state modeling':[],
+        sampling_comp={'Step number':[], 'Protocol ID':[],'Method name':[],'Method type':[], \
+                        'Number of computed models':[],'Multi state modeling':[], \
                         'Multi scale modeling':[]}
         for prot in self.system.orphan_protocols:
-            #print (prot,prot._id)
             for step in prot.steps:
-                #print (step._id)
                 sampling_comp['Step number'].append(step._id)
                 sampling_comp['Multi state modeling'].append(str(step.multi_state))
                 sampling_comp['Multi scale modeling'].append(str(step.multi_scale))                
@@ -190,6 +189,7 @@ class get_input_information(object):
         representation_comp={'Chain ID':[],'Subunit name':[],'Rigid bodies':[],
                     'Non-rigid regions':[]}
         for rep in self.system.orphan_representations:
+            #print (rep,rep[0].rigid,rep[0].asym_unit.seq_id_range,rep[0].asym_unit._id)
             print (["%s:%d-%d" % ((x.asym_unit._id,) + x.asym_unit.seq_id_range) for x in rep if not x.rigid])
 
     def get_RB_flex_dict(self)->(dict,dict,int,int):
@@ -217,11 +217,11 @@ class get_input_information(object):
 
     def get_number_of_chains(self)->int:
         """get number of chains per protein per assembly """
-        used=[];assembly={}
+        used=[];assembly=defaultdict()
         lists= self.system.orphan_assemblies
-        for ind,assembly in enumerate(self.system.orphan_assemblies):
+        for ind,ass in enumerate(self.system.orphan_assemblies):
             chain=[]
-            for el in assembly:
+            for el in ass:
                 chain.append(el._id)
             assembly[ind]=chain
             unique=[used.append(x) for x in chain if x not in used]
@@ -243,13 +243,14 @@ class get_input_information(object):
         """ Get chains of subunits"""
         chain_subunit_dict=defaultdict()
         for ind,el in enumerate(self.system.asym_units):
-            chain_subunit_dict[el._id]=a.details.split('.')[0]
+            chain_subunit_dict[el._id]=el.details.split('.')[0]
         return chain_subunit_dict
 
     def get_residues_subunit_dict(self)->dict:
         """Get residues of chains in subunits"""
         residues_subunit_dict=defaultdict()
         for _,el in enumerate(self.system.asym_units):
+            print (self.get_residues(el))
             residues_subunit_dict[el._id]=self.get_residues(el)
         return residues_subunit_dict
 
@@ -446,16 +447,6 @@ class get_input_information(object):
         return percentage
 
     def check_for_sas(self,dataset:dict)->bool:
-        """check if sas is in the dataset"""
-        dataset=self.get_dataset_comp()
-        data_type=dataset['Dataset type']
-        database=dataset['Database name']
-        if 'SAS' in str(data_type) and 'SAS' in str(database):
-            return True
-        else:
-            return False
-
-    def check_for_sas_i(self,dataset:dict)->bool:
         """check if sas is in the dataset"""
         dataset=self.get_dataset_comp()
         data_type=dataset['Dataset type']
