@@ -50,7 +50,7 @@
 
 This initial setup is performed once.
 
-Create and activate a Python3.6 virtual environment.
+Create and activate a Python3.8 virtual environment.
 
 
     $ python3 -m venv .venv
