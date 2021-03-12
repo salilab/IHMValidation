@@ -22,7 +22,7 @@ class get_molprobity_information(get_input_information):
         self.ID=str(get_input_information.get_id(self))
         self.nos=get_input_information.get_number_of_models(self)
 
-    def check_for_molprobity(self,filetemp=None):
+    def check_for_molprobity(self,filetemp=None)->bool:
         """ Check the biso and occupancy columns for mmcif files"""
         if filetemp is not None:
             model=ihm.model.Model
@@ -44,94 +44,102 @@ class get_molprobity_information(get_input_information):
             print ("File is not in the appropriate format for molprobity")  
             return False
 
-    def run_ramalyze(self,d):
+    def run_ramalyze(self,d:dict):
         """run ramalyze to get outliers """
-        f=str(self.ID)+'_temp_rama.txt'
-        f1=open(f,'w+')
-        with f1 as outfile:
+        f_name=str(self.ID)+'_temp_rama.txt'
+        f_name_handle=open(f_name,'w+')
+        with f_name_handle as outfile:
             run([config('Molprobity_ramalyze'),self.mmcif_file],stdout=outfile)
-        with open(f,'r+') as inf:
+        
+        with open(f_name,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
+
         d['rama']=line
         filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_rama.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['rama'],fp)
 
-    def run_molprobity(self,d):
+    def run_molprobity(self,d:dict):
         """run molprobity"""
-        f=str(self.ID)+'_temp_mp.txt'
-        f1=open(f,'w+') 
-        with f1 as outfile:
+        f_name=str(self.ID)+'_temp_mp.txt'
+        f_name_handle=open(f_name,'w+') 
+        with f_name_handle as outfile:
             run([config('Molprobity_molprobity'),self.mmcif_file],stdout=outfile)
-        with open(f,'r+') as inf:
+        
+        with open(f_name,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
+        
         d['molprobity']=line
         filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_mp.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['molprobity'],fp)
 
-    def run_clashscore(self,d):
+    def run_clashscore(self,d:dict):
         """run clashscore to get information on steric clashes"""
-        f=str(self.ID)+'_temp_clash.txt'
-        f1=open(f,'w+')
-        with f1 as outfile:
+        f_name=str(self.ID)+'_temp_clash.txt'
+        f_name_handle=open(f_name,'w+')
+        with f_name_handle as outfile:
             run([config('Molprobity_clashscore'),self.mmcif_file],stdout=outfile)
-        with open(f,'r+') as inf:
+        
+        with open(f_name,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
+       
         d['clash']=line
         filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_clash.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['clash'],fp)
         
-    def run_rotalyze(self,d):
+    def run_rotalyze(self,d:dict):
         """run rotalyZe to get rotameric outliers"""
-        f=str(self.ID)+'_temp_rota.txt'
-        f1=open(f,'w+')
-        with f1 as outfile:
+        f_name=str(self.ID)+'_temp_rota.txt'
+        f_name_handle=open(f_name,'w+')
+        with f_name_handle as outfile:
             run([config('Molprobity_rotalyze'),self.mmcif_file],stdout=outfile)
-        with open(f,'r+') as inf:
+        
+        with open(f_name,'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()]
+        
         d['rota']=line
         filename = open(os.path.join(os.getcwd(), 'Output/static/results/',self.ID+'_temp_rota.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['rota'],fp)
 
-    def write_all_lines(self,file_handle):
+    def write_all_lines(self,file_handle)->list:
         with open(file_handle.name, 'r+') as inf:
             line=[ln.strip() for ln in inf.readlines()] 
         return line
 
-    def process_rama(self,line):
+    def process_rama(self,line:list)->dict:
         """ reading and processing molprobity output from rama outliers.
         Outputs information specific to models """
         line_new=line[1:-3];count=1
         models={i:[] for i in range(1,self.nos+1)}
         cutoff=len(line_new)/self.nos
-        for i,k in enumerate(line_new):
-            if self.nos>1 and i <len(line_new)-1:
-                if i<count*cutoff:
+        for ind,el in enumerate(line_new):
+            if self.nos>1 and ind <len(line_new)-1:
+                if ind<count*cutoff:
                 #if (abs(int(line_new[i+1].strip().split()[1])-int(line_new[i].strip().split()[1]))<10 or (line_new[i+1].strip().split()[0] != line_new[i].strip().split()[0])) and i<count*cutoff :
                     #print (i,count,cutoff, int(line_new[i+1].strip().split()[1]),int(line_new[i].strip().split()[1]),abs(int(line_new[i+1].strip().split()[1])-int(line_new[i].strip().split()[1])))
-                    models[count].append(k)
+                    models[count].append(el)
                     #print (line_new[i+1].strip().split()[0])
                 else:
                     count=count+1
                     #print (i,count,int(line_new[i+1].strip().split()[1]),int(line_new[i].strip().split()[1]),abs(int(line_new[i+1].strip().split()[1])-int(line_new[i].strip().split()[1])))
-                    models[count].append(k)
+                    models[count].append(el)
             else:
-                models[count].append(k) 
+                models[count].append(el) 
         return models
 
-    def process_molprobity(self,line):
+    def process_molprobity(self,line:list)->(list,list):
         """ process molprobity files to extract relevant information """
         bond_index=angle_index=None
-        for i,j in enumerate(line):
-            if 'Bond outliers' in j:
-                bond_index=i
-            if 'Angle outliers' in j:
-                angle_index=i
-            if 'Molprobity validation' in j:
-                end=i
+        for ind,el in enumerate(line):
+            if 'Bond outliers' in el:
+                bond_index=ind
+            if 'Angle outliers' in el:
+                angle_index=ind
+            if 'Molprobity validation' in el:
+                end=ind
         if angle_index is None and bond_index is not None:
             bond_outliers=line[bond_index+2:end-1]
             return (bond_outliers,[])
@@ -146,7 +154,7 @@ class get_molprobity_information(get_input_information):
             return (bond_outliers,angle_outliers)
 
 
-    def process_clash(self,line):
+    def process_clash(self,line:list)->dict:
         """ process clash files to extract relevant information """
         count=[i for i,j in enumerate(line) if 'Bad Clashes' in j]
         if self.nos>1:
@@ -155,36 +163,36 @@ class get_molprobity_information(get_input_information):
         else:
             clashes={'Model 1':[]}
         count.append(len(line)-self.nos)
-        for i in range(0,len(clashes.keys())):
-            l=[j for k,j in enumerate(line) if k>int(count[i]) and k<int(count[i+1])]
-            clashes[list(clashes.keys())[i]].append(l)
+        for ind in range(0,len(clashes.keys())):
+            output_line=[j for k,j in enumerate(line) if k>int(count[i]) and k<int(count[i+1])]
+            clashes[list(clashes.keys())[ind]].append(output_line)
         clashes_ordered=dict(sorted(clashes.items()))
         return clashes_ordered
 
-    def process_rota(self,line):
+    def process_rota(self,line:list)->dict:
         """ process rota files to extract relevant information """
         line_new=line[1:-1];count=1
         models={i:[] for i in range(1,self.nos+1)}
         cutoff=len(line_new)/self.nos
-        for i,k in enumerate(line_new):
-            if self.nos>1 and i <len(line_new)-1:
-                if i<count*cutoff:
-                    models[count].append(k)
+        for ind,el in enumerate(line_new):
+            if self.nos>1 and ind <len(line_new)-1:
+                if ind<count*cutoff:
+                    models[count].append(el)
                 else:
                     count=count+1
-                    models[count].append(k)
+                    models[count].append(el)
             else:
-                models[count].append(k)
+                models[count].append(el)
         return models
 
-    def rama_summary_table(self,models):
+    def rama_summary_table(self,models:dict)->dict:
         """ write out summary table from rama, clash and other tables"""
         f_rama=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rama_summary.txt'),'w+')
         dict1={'Model ID':[],'Analyzed':[],'Favored':[],'Allowed':[],'Outliers':[]}
-        for i,j in models.items():
-            dict1['Model ID'].append(i)
+        for ind,el in models.items():
+            dict1['Model ID'].append(ind)
             F=[];A=[];U=[]
-            for k in j:
+            for k in el:
                 if k.strip().split()[-2]=='or':
                     a=':'.join(k.strip().split()[-3:])
                 else:
