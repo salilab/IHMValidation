@@ -21,6 +21,8 @@ class get_molprobity_information(get_input_information):
         super().__init__(mmcif_file)
         self.ID=str(get_input_information.get_id(self))
         self.nos=get_input_information.get_number_of_models(self)
+        self.resultpath='../static/results/'
+
 
     def check_for_molprobity(self,filetemp=None)->bool:
         """ Check the biso and occupancy columns for mmcif files"""
@@ -52,10 +54,10 @@ class get_molprobity_information(get_input_information):
             run([config('Molprobity_ramalyze'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
-            line=[ln.strip() for ln in inf.readlines()]
+            line=[_.strip() for _ in inf.readlines()]
 
         d['rama']=line
-        filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_rama.txt'))
+        filename = open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_rama.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['rama'],fp)
 
@@ -67,10 +69,10 @@ class get_molprobity_information(get_input_information):
             run([config('Molprobity_molprobity'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
-            line=[ln.strip() for ln in inf.readlines()]
+            line=[_.strip() for _ in inf.readlines()]
         
         d['molprobity']=line
-        filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_mp.txt'))
+        filename = open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_mp.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['molprobity'],fp)
 
@@ -82,10 +84,10 @@ class get_molprobity_information(get_input_information):
             run([config('Molprobity_clashscore'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
-            line=[ln.strip() for ln in inf.readlines()]
+            line=[_.strip() for _ in inf.readlines()]
        
         d['clash']=line
-        filename = open(os.path.join(os.getcwd(), 'static/results/',self.ID+'_temp_clash.txt'))
+        filename = open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_clash.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['clash'],fp)
         
@@ -97,34 +99,30 @@ class get_molprobity_information(get_input_information):
             run([config('Molprobity_rotalyze'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
-            line=[ln.strip() for ln in inf.readlines()]
+            line=[_.strip() for _ in inf.readlines()]
         
         d['rota']=line
-        filename = open(os.path.join(os.getcwd(), 'Output/static/results/',self.ID+'_temp_rota.txt'))
+        filename = open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_rota.txt'))
         with open(filename,'wb') as fp:
             pickle.dump(d['rota'],fp)
 
     def write_all_lines(self,file_handle)->list:
         with open(file_handle.name, 'r+') as inf:
-            line=[ln.strip() for ln in inf.readlines()] 
+            line=[_.strip() for _ in inf.readlines()] 
         return line
 
     def process_rama(self,line:list)->dict:
         """ reading and processing molprobity output from rama outliers.
         Outputs information specific to models """
         line_new=line[1:-3];count=1
-        models={i:[] for i in range(1,self.nos+1)}
+        models={_:[] for _ in range(1,self.nos+1)}
         cutoff=len(line_new)/self.nos
         for ind,el in enumerate(line_new):
             if self.nos>1 and ind <len(line_new)-1:
                 if ind<count*cutoff:
-                #if (abs(int(line_new[i+1].strip().split()[1])-int(line_new[i].strip().split()[1]))<10 or (line_new[i+1].strip().split()[0] != line_new[i].strip().split()[0])) and i<count*cutoff :
-                    #print (i,count,cutoff, int(line_new[i+1].strip().split()[1]),int(line_new[i].strip().split()[1]),abs(int(line_new[i+1].strip().split()[1])-int(line_new[i].strip().split()[1])))
                     models[count].append(el)
-                    #print (line_new[i+1].strip().split()[0])
                 else:
                     count=count+1
-                    #print (i,count,int(line_new[i+1].strip().split()[1]),int(line_new[i].strip().split()[1]),abs(int(line_new[i+1].strip().split()[1])-int(line_new[i].strip().split()[1])))
                     models[count].append(el)
             else:
                 models[count].append(el) 
@@ -157,12 +155,15 @@ class get_molprobity_information(get_input_information):
     def process_clash(self,line:list)->dict:
         """ process clash files to extract relevant information """
         count=[i for i,j in enumerate(line) if 'Bad Clashes' in j]
+
         if self.nos>1:
             vals=[j.split(' ')[5] for i,j in enumerate(line) if 'Bad Clashes' in j]
-            clashes={j[-1]:[] for j in vals}
+            clashes={_[-1]:[] for _ in vals}
         else:
             clashes={'Model 1':[]}
+
         count.append(len(line)-self.nos)
+
         for ind in range(0,len(clashes.keys())):
             output_line=[j for k,j in enumerate(line) if k>int(count[i]) and k<int(count[i+1])]
             clashes[list(clashes.keys())[ind]].append(output_line)
@@ -172,7 +173,7 @@ class get_molprobity_information(get_input_information):
     def process_rota(self,line:list)->dict:
         """ process rota files to extract relevant information """
         line_new=line[1:-1];count=1
-        models={i:[] for i in range(1,self.nos+1)}
+        models={_:[] for _ in range(1,self.nos+1)}
         cutoff=len(line_new)/self.nos
         for ind,el in enumerate(line_new):
             if self.nos>1 and ind <len(line_new)-1:
@@ -187,22 +188,22 @@ class get_molprobity_information(get_input_information):
 
     def rama_summary_table(self,models:dict)->dict:
         """ write out summary table from rama, clash and other tables"""
-        f_rama=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rama_summary.txt'),'w+')
+        f_rama=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_rama_summary.txt'),'w+')
         dict1={'Model ID':[],'Analyzed':[],'Favored':[],'Allowed':[],'Outliers':[]}
         for ind,el in models.items():
             dict1['Model ID'].append(ind)
             F=[];A=[];U=[]
-            for k in el:
-                if k.strip().split()[-2]=='or':
-                    a=':'.join(k.strip().split()[-3:])
+            for line in el:
+                if line.strip().split()[-2]=='or':
+                    subline=':'.join(line.strip().split()[-3:])
                 else:
-                    a=k.strip().split()[-1]
-                if a.split(':')[4] =='Favored':
-                    F.append(a.split(':')[4])
-                elif a.split(':')[4]=='Allowed':
-                    A.append(a.split(':')[4])
+                    subline=line.strip().split()[-1]
+                if subline.split(':')[4] =='Favored':
+                    F.append(subline.split(':')[4])
+                elif subline.split(':')[4]=='Allowed':
+                    A.append(subline.split(':')[4])
                 else:
-                    U.append(a.split(':')[4])
+                    U.append(subline.split(':')[4])
             dict1['Analyzed'].append(len(F)+len(A)+len(U))
             dict1['Favored'].append(len(F))
             dict1['Allowed'].append(len(A)) 
@@ -214,40 +215,43 @@ class get_molprobity_information(get_input_information):
         print (dict1['Outliers'],file=f_rama)
         return dict1
 
-    def clash_summary_table(self,line):
+    def clash_summary_table(self,line:list)->(dict,int):
         """ format clash data to print to file """
-        f_clash=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_clash_summary.txt'),'w+')
+        f_clash=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_clash_summary.txt'),'w+')
         clashes=self.process_clash(line)
         if self.nos>1:
             clashscore_list=line[len(line)-self.nos:]
         else:
             clashscore_list=['Model 1 ' + (line[len(line)-self.nos:])[0]]
         dict1={'Model ID':[],'Clash score':[],'Number of clashes':[]}
-        for i in clashscore_list:
-            dict1['Model ID'].append(str(i.split(' ')[0].title()+' '+i.split(' ')[1]))
-            dict1['Clash score'].append(i.split(' ')[-1])
-        for j in list(clashes.values()):
-            dict1['Number of clashes'].append(len(j[0]))
+        
+        for _ in clashscore_list:
+            dict1['Model ID'].append(str(_.split(' ')[0].title()+' '+_.split(' ')[1]))
+            dict1['Clash score'].append(_.split(' ')[-1])
+
+        for _ in list(clashes.values()):
+            dict1['Number of clashes'].append(len(_[0]))
+
         clash_total=(sum(dict1['Number of clashes']))
         print (dict1['Model ID'], file=f_clash)
         print (dict1['Clash score'],file=f_clash)
         print (dict1['Number of clashes'], file=f_clash)
         return dict1,clash_total
 
-    def rota_summary_table(self,models):
+    def rota_summary_table(self,models:dict)->dict:
         """ format rota data to print to file """
         dict1={'Model ID':[],'Analyzed':[],'Favored':[],'Allowed':[],'Outliers':[]}
-        f_rota=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rota_summary.txt'),'w+')        
-        for i,j in models.items():
-            dict1['Model ID'].append(i)
+        f_rota=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_rota_summary.txt'),'w+')        
+        for ind,el in models.items():
+            dict1['Model ID'].append(ind)
             F=[];A=[];U=[]
-            for k in j:
-                if k.strip().split()[-1].split(':')[-2] =='Favored':
-                    F.append(k.strip().split()[-1].split(':')[-2])
-                elif k.strip().split()[-1].split(':')[-2]=='Allowed':
-                    A.append(k.strip().split()[-1].split(':')[-2])
+            for line in el:
+                if line.strip().split()[-1].split(':')[-2] =='Favored':
+                    F.append(line.strip().split()[-1].split(':')[-2])
+                elif line.strip().split()[-1].split(':')[-2]=='Allowed':
+                    A.append(line.strip().split()[-1].split(':')[-2])
                 else:
-                    U.append(k.strip().split()[-1].split(':')[-2])
+                    U.append(line.strip().split()[-1].split(':')[-2])
             dict1['Analyzed'].append(len(F)+len(A)+len(U))
             dict1['Favored'].append(len(F))
             dict1['Allowed'].append(len(A))
@@ -259,31 +263,31 @@ class get_molprobity_information(get_input_information):
         print (dict1['Outliers'],file=f_rota)
         return dict1
 
-    def rama_detailed_table(self,models):
+    def rama_detailed_table(self,models:dict)->dict:
         """ format rama information to print to file"""
         dict1={'Model ID':[],'Chain and res ID':[],'Residue type':[]}
-        f_rama_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rama_detail.txt'),'w+')  
-        for i,j in models.items():
-            for k in j:
-                if k.strip().split()[-2]=='or':
-                    a=':'.join(k.strip().split()[-3:])
+        f_rama_D=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_rama_detail.txt'),'w+')  
+        for ind,el in models.items():
+            for line in el:
+                if line.strip().split()[-2]=='or':
+                    subline=':'.join(line.strip().split()[-3:])
                 else:
-                    a=k.strip().split()[-1]
-                if a.split(':')[4] =='OUTLIER':
-                    dict1['Model ID'].append(i)
-                    dict1['Residue type'].append(a.split(':')[0])
-                    if len(k.strip().split()[0])>2:
-                        dict1['Chain and res ID'].append(k.strip().split()[0])
+                    subline=line.strip().split()[-1]
+                if subline.split(':')[4] =='OUTLIER':
+                    dict1['Model ID'].append(ind)
+                    dict1['Residue type'].append(subline.split(':')[0])
+                    if len(line.strip().split()[0])>2:
+                        dict1['Chain and res ID'].append(line.strip().split()[0])
                     else:
-                        dict1['Chain and res ID'].append(':'.join(k.strip().split()[:2]))
+                        dict1['Chain and res ID'].append(':'.join(line.strip().split()[:2]))
         print (dict1['Model ID'], file=f_rama_D)
         print (dict1['Chain and res ID'],file=f_rama_D)
         print (dict1['Residue type'], file=f_rama_D)
         return dict1
 
-    def molprobity_detailed_table_bonds(self,bonds):
+    def molprobity_detailed_table_bonds(self,bonds:list)->dict:
         """process molprobity bonded information and format to table"""
-        f_mp_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_molprobity_bond.txt'),'w+')
+        f_mp_D=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_molprobity_bond.txt'),'w+')
         if len(bonds)>0:
             bondtype_diff={};bondtype_dist={};bondtype_ex={};
             dict1={'Bond type':[],'Observed distance (&#8491)':[],'Ideal distance (&#8491)':[],'Number of outliers':[]}
@@ -302,12 +306,11 @@ class get_molprobity_information(get_input_information):
                         bondtype_ex[j.replace(',','').replace(':','').split()[5]]=[]
                     else:
                         bondtype_ex[j.replace(',','').replace(':','').split()[5]].append(float(j.replace(',','').replace(':','').split()[7]))
-            for m,n in bondtype_dist.items():
-                dict1['Bond type'].append(m)
-                dict1['Observed distance (&#8491)'].append(n)
-                #ideal=sum(abs(bondtype_diff[i]))/len(bondtype_diff[i])
-                dict1['Ideal distance (&#8491)'].append(round(n+bondtype_diff[m],2))
-                dict1['Number of outliers'].append(len(bondtype_ex[m]))
+            for ind,val in bondtype_dist.items():
+                dict1['Bond type'].append(ind)
+                dict1['Observed distance (&#8491)'].append(val)
+                dict1['Ideal distance (&#8491)'].append(round(n+bondtype_diff[ind],2))
+                dict1['Number of outliers'].append(len(bondtype_ex[ind]))
             print (dict1['Bond type'], file=f_mp_D)
             print (dict1['Observed distance (&#8491)'],file=f_mp_D)
             print (dict1['Ideal distance (&#8491)'], file=f_mp_D)
@@ -316,12 +319,13 @@ class get_molprobity_information(get_input_information):
         else:
             return {}
 
-    def molprobity_detailed_table_angles(self,angles):
+    def molprobity_detailed_table_angles(self,angles:list)->dict:
         """process molprobity angles information and format to table"""
-        f_mp_A=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_molprobity_angles.txt'),'w+')
+        f_mp_A=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_molprobity_angles.txt'),'w+')
         if len(angles)>0:
             angle_diff={};angle_dist={};angle_ex={};
             dict1={'Angle type':[],'Observed angle (&#176)':[],'Ideal angle (&#176)':[],'Number of outliers':[]}
+            
             for i,j in enumerate(angles):
                 if len(j.replace(',','').replace(':','').split()[0])>2:
                     angle_dist[j.replace(',','').replace(':','').split()[4]]=float(j.replace(',','').replace(':','').split()[6])
@@ -337,39 +341,39 @@ class get_molprobity_information(get_input_information):
                         angle_ex[j.replace(',','').replace(':','').split()[5]]=[]
                     else:
                         angle_ex[j.replace(',','').replace(':','').split()[5]].append(float(j.replace(',','').replace(':','').split()[7]))
-            for i,j in angle_dist.items():
-                dict1['Angle type'].append(i)
-                dict1['Observed angle (&#176)'].append(j)
-                #ideal=sum(abs(bondtype_diff[i]))/len(bondtype_diff[i])
-                dict1['Ideal angle (&#176)'].append(round(j+angle_diff[i],2))
-                dict1['Number of outliers'].append(len(angle_ex[i]))
+            
+            for ind,val in angle_dist.items():
+                dict1['Angle type'].append(ind)
+                dict1['Observed angle (&#176)'].append(val)
+                dict1['Ideal angle (&#176)'].append(round(val+angle_diff[ind],2))
+                dict1['Number of outliers'].append(len(angle_ex[ind]))
+
             print (dict1['Angle type'], file=f_mp_A)
             print (dict1['Observed angle (&#176)'],file=f_mp_A)
             print (dict1['Ideal angle (&#176)'], file=f_mp_A)
             print (dict1['Number of outliers'], file=f_mp_A)           
             return dict1
         else:
-            return {}
+            return defaultdict()
 
-    def clash_detailed_table(self,line):
+    def clash_detailed_table(self,line:list)->dict:
         """process molprobity clash information and format to table"""
-        f_clash_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_clash_detailed.txt'),'w+')
+        f_clash_D=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_clash_detailed.txt'),'w+')
         dict1={'Model ID':[],'Atom-1':[],'Atom-2':[],'Clash overlap (&#8491)':[]}
         clashes=self.process_clash(line)
-        #clashes=self.cleanup_clashes(clashes,nos)
-        for i,j in clashes.items():
-            for k in j[0]:
-                k1=[i for i in k.split(' ') if i not in '']
-                dict1['Model ID'].append(i.title()[-1])
-                if len(k1)<9 and len(k1[0])>2:
-                    dict1['Atom-1'].append(':'.join(k1[0:3]))
+        for ind,el in clashes.items():
+            for line in el[0]:
+                subline=[_ for _ in line.split(' ') if _ not in '']
+                dict1['Model ID'].append(ind.title()[-1])
+                if len(subline)<9 and len(subline[0])>2:
+                    dict1['Atom-1'].append(':'.join(subline[0:3]))
                 else:
-                    dict1['Atom-1'].append(':'.join(k1[0:4]))
-                if len(k1)<9 and len(k1[3])>4:
-                    dict1['Atom-2'].append(':'.join(k1[3:-1]))
+                    dict1['Atom-1'].append(':'.join(subline[0:4]))
+                if len(subline)<9 and len(subline[3])>4:
+                    dict1['Atom-2'].append(':'.join(subline[3:-1]))
                 else: 
-                    dict1['Atom-2'].append(':'.join(k1[4:-1]))
-                dict1['Clash overlap (&#8491)'].append(k1[-1].replace(':',''))
+                    dict1['Atom-2'].append(':'.join(subline[4:-1]))
+                dict1['Clash overlap (&#8491)'].append(subline[-1].replace(':',''))
 
         print (dict1['Model ID'], file=f_clash_D)
         print (dict1['Atom-1'],file=f_clash_D)
@@ -377,36 +381,35 @@ class get_molprobity_information(get_input_information):
         print (dict1['Clash overlap (&#8491)'], file=f_clash_D)
         return dict1 
 
-    def rota_detailed_table(self,models):
+    def rota_detailed_table(self,models:dict)->dict:
         """process molprobity rotamers information and format to table"""
-        f_rota_D=open(os.path.join(os.getcwd(),'static/results/',self.ID+'_rota_detailed.txt'),'w+')
+        f_rota_D=open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_rota_detailed.txt'),'w+')
         dict1={'Model ID':[],'Chain and res ID':[],'Residue type':[]}
-        for i,j in models.items():
-            for k in j:
-                if k.strip().split()[-1].split(':')[-2] =='OUTLIER':
-                    dict1['Model ID'].append(i)
-                    dict1['Residue type'].append(k.strip().split()[-1].split(':')[0])
-                    if len(k.strip().split()[0])>2:
-                        dict1['Chain and res ID'].append(k.strip().split()[0])
+        for ind,el in models.items():
+            for line in el:
+                if line.strip().split()[-1].split(':')[-2] =='OUTLIER':
+                    dict1['Model ID'].append(ind)
+                    dict1['Residue type'].append(line.strip().split()[-1].split(':')[0])
+                    if len(line.strip().split()[0])>2:
+                        dict1['Chain and res ID'].append(line.strip().split()[0])
                     else:
-                        dict1['Chain and res ID'].append(':'.join(k.strip().split()[:2]))
+                        dict1['Chain and res ID'].append(':'.join(line.strip().split()[:2]))
         print (dict1['Model ID'], file=f_rota_D)
         print (dict1['Chain and res ID'],file=f_rota_D)
         print (dict1['Residue type'], file=f_rota_D)
         return dict1
 
-    def get_data_for_quality_at_glance(self,line):
+    def get_data_for_quality_at_glance(self,line:list)->(float,float,float):
         """format mean information of models for quality at glance plots, read from temp_mp file"""
         count=[i for i,j in enumerate(line) if 'Summary' in j]
         info=[(i,line[i+1],line[i+2],line[i+3]) for i,j in enumerate(line) if 'Summary' in j]
-        print (info)
-        for i in range(count[0]+2,len(line)):
-            m=line[i].strip().split('=')
-            if 'Ramachandran outliers' in m[0]:
-                rama=float(m[1].replace(' ','').replace('%',''))
-            if 'Rotamer outliers' in m[0]:
-                sidechain=float(m[1].replace(' ','').replace('%',''))
-            if 'Clashscore' in m[0]:
-                clashscore=float(m[1].replace(' ',''))
+        for ind in range(count[0]+2,len(line)):
+            subline=line[ind].strip().split('=')
+            if 'Ramachandran outliers' in subline[0]:
+                rama=float(subline[1].replace(' ','').replace('%',''))
+            if 'Rotamer outliers' in subline[0]:
+                sidechain=float(subline[1].replace(' ','').replace('%',''))
+            if 'Clashscore' in subline[0]:
+                clashscore=float(subline[1].replace(' ',''))
         return clashscore,rama,sidechain
 
