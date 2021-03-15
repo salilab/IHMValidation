@@ -18,6 +18,7 @@ from multiprocessing import Process, Queue, Pool, Manager
 from collections import Counter
 import argparse
 import json
+from decouple import config
 from validation import excludedvolume,get_input_information
 from validation import molprobity
 from validation import get_plots,sas,sas_plots
@@ -53,8 +54,7 @@ else:
 #############################################################################################################################
 # Input for Jinja
 ####################################################################################
-config = pdfkit.configuration(wkhtmltopdf='/Users/saijananiganesan/Desktop/PDB-dev/IHMValidation/master/pyext/wkhtmltopdf')
-#config = pdfkit.configuration(wkhtmltopdf='/home/ganesans/PDB-dev/master/pyext/wkhtmltox/bin/wkhtmltopdf')
+config=pdfkit.configuration(wkhtmltopdf=config('wkhtmltopdf'))
 options = {
     'page-size': 'Letter',
     'margin-top': '0.5in',

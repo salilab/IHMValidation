@@ -11,11 +11,6 @@ import jinja2
 import pandas as pd
 import sys,os,glob
 import numpy as np
-from validation import excludedvolume,get_input_information
-from validation import molprobity
-from validation import get_plots,sas,sas_plots
-from validation import utility
-from validation.Report import WriteReport
 import pdfkit
 import datetime,time
 import pickle
@@ -23,6 +18,12 @@ from multiprocessing import Process, Queue, Pool, Manager
 from collections import Counter
 import argparse
 import json
+from decouple import config
+from validation import excludedvolume,get_input_information
+from validation import molprobity
+from validation import get_plots,sas,sas_plots
+from validation import utility
+from validation.Report import WriteReport
 #from validation.WKhtmlToPdf import  wkhtmltopdf
 #import utility
 
@@ -53,8 +54,7 @@ else:
 #############################################################################################################################
 # Input for Jinja
 ####################################################################################
-#config = pdfkit.configuration(wkhtmltopdf='/usr/local/include/wkhtmltox/')
-config = pdfkit.configuration(wkhtmltopdf='/home/ganesans/PDB-dev/master/pyext/wkhtmltox/bin/wkhtmltopdf')
+config=pdfkit.configuration(wkhtmltopdf=config('wkhtmltopdf'))
 options = {
     'page-size': 'Letter',
     'margin-top': '0.5in',
@@ -64,11 +64,12 @@ options = {
     'enable-javascript': None,
     'javascript-delay':'50000',
     'header-left':'[page] of [topage]',
-    'footer-center':'Full wwPDB IM Structure Validation Report',
+    'footer-center':'Full RCSB IM Structure Validation Report',
     'footer-line':'',
     'header-line':'',
     'footer-spacing':'5',
-    'header-spacing':'5'
+    'header-spacing':'5',
+    "enable-local-file-access": "",
 }
 
 options_supp = {
@@ -80,57 +81,59 @@ options_supp = {
     'enable-javascript': None,
     'javascript-delay':'500',
     'header-left':'[page] of [topage]',
-    'footer-center':'wwPDB IM Methods Table',
+    'footer-center':'RCSB IM Methods Table',
     'footer-line':'',
     'header-line':'',
     'footer-spacing':'5',
     'header-spacing':'5'
 }
 
-d=datetime.datetime.now();t=pytz.timezone("America/Los_Angeles");d1=t.localize(d)
-timestamp=d1.strftime("%B %d, %Y --  %I:%M %p")
-
-# Create directory
-dirNames = ['Output','static/images','static/json','static/pdf','templates','static/images']
-for name in dirNames:
-    try:
-        os.mkdir(name)
-        print("Directory " , name ,  " Created ") 
-    except FileExistsError:
-        print("Directory " , name ,  " already exists")
-
-templateLoader = jinja2.FileSystemLoader(searchpath="../templates/")
-templateEnv = jinja2.Environment(loader=templateLoader)
-
-template_pdf = "template_pdf.html"
-template_file_supp= "supplementary_template.html"
-
 template_flask= ["main.html",
                 "data_quality.html",
                 "model_quality.html",
                 "model_composition.html",
-                "formodeling.html",
-                "notformodeling.html",
-                "uncertainty.html"]
+                "formodeling.html"]
+
+
+d=datetime.datetime.now();t=pytz.timezone("America/Los_Angeles");d1=t.localize(d)
+timestamp=d1.strftime("%B %d, %Y --  %I:%M %p")
+
+dirNames = {
+            'images':'../static/images',
+            'pdf':'../static/pdf',
+            'json':'../static/json',
+            'supp':'../static/supplementary',
+            'template':'../static/htmls'
+            }
+
+templateLoader = jinja2.FileSystemLoader(searchpath="../templates/")
+templateEnv = jinja2.Environment(loader=templateLoader)
+template_pdf = "template_pdf.html"
+template_file_supp= "supplementary_template.html"
 
 
 Template_Dict={}
 Template_Dict['date']=timestamp
-
-
 #############################################################################################################################
 # Jinja scripts
 #############################################################################################################################
+def createdirs(dirNames:dict):
+    for name in list(dirNames.values()):
+        try:
+            os.mkdir(name)
+            print("Directory " , name ,  " Created ") 
+        except FileExistsError:
+            print("Directory " , name ,  " already exists")
+
 
 def write_html(mmcif_file,Template_Dict,template_list,dirName):
     for template_file in template_list:
         template = templateEnv.get_template(template_file)
         outputText=template.render(Template_Dict)
-    #template_file=template_file.split('/')[1]
         with open(os.path.join(os.path.join(dirName,template_file)),"w") as fh:
             fh.write(outputText)
 
-def write_pdf(mmcif_file,Template_Dict, template_file,dirName,dirName_Output):
+def write_pdf(mmcif_file:str,Template_Dict:dict, template_file:str,dirName:str,dirName_Output:str):
     template = templateEnv.get_template(template_file)
     outputText=template.render(Template_Dict)
     with open(os.path.join(os.path.join(dirName,utility.get_output_file_temp_html(mmcif_file))),"w") as fh:
@@ -142,7 +145,6 @@ def write_pdf(mmcif_file,Template_Dict, template_file,dirName,dirName_Output):
 
 def write_supplementary_table(mmcif_file,Template_Dict,template_file,dirName,dirName_supp):
     template = templateEnv.get_template(template_file)
-    #(str(root_path / 'templates')
     outputText=template.render(Template_Dict)
     with open(os.path.join(os.path.join(dirName,utility.get_supp_file_html(mmcif_file))),"w") as fh:
         fh.write(outputText)
@@ -150,9 +152,8 @@ def write_supplementary_table(mmcif_file,Template_Dict,template_file,dirName,dir
         os.path.join(os.path.join(dirName_supp,utility.get_supp_file_pdf(mmcif_file))) ,
         options=options_supp)
 
-def write_json(mmcif_file,Template_Dict,dirName):
-    #j=json.dumps([{'Category': k, 'Itemized_List': v} for k,v in Template_Dict.items()], indent=4)
-    j=json.dumps([{k: v} for k,v in Template_Dict.items()], indent=4)
+def write_json(mmcif_file,Template_Dict,dirName,dirName_Output):
+    j=json.dumps([{'Category': k, 'Itemized_List': v} for k,v in Template_Dict.items()], indent=4)
     with open(os.path.join(os.path.join(dirName,utility.get_output_file_json(mmcif_file))),"w") as fh:
         fh.write(j)
     fh.close()
@@ -169,6 +170,7 @@ def convert_html_to_pdf(template_file,pdf_name,dirName,dirName_Output):
 
 if __name__ == "__main__":
     utility.clean_all()
+    createdirs(dirNames)
     manager = Manager() # create only 1 mgr
     d = manager.dict() # create only 1 dict
     report=WriteReport(args.f)
@@ -178,8 +180,7 @@ if __name__ == "__main__":
     cx_fit,template_dict=report.run_cx_validation(template_dict)
     report.run_quality_glance(clashscore,rama,sidechain,exv_data,sas_data,sas_fit,cx_fit)
     report.run_sas_validation_plots(template_dict)
-    report.run_cx_validation_plots(template_dict)
-    write_pdf(args.f,template_dict,template_pdf,dirNames[0],dirNames[3])
+    write_pdf(args.f,template_dict,template_pdf,dirNames['pdf'],dirNames['pdf'])
     template_dict=report.run_supplementary_table(template_dict,
                                                 location=args.ls,
                                                 physics=physics,
@@ -190,9 +191,9 @@ if __name__ == "__main__":
                                                 Data_quality=args.dv,
                                                 clustering=args.c,
                                                 resolution=args.res)
-    write_supplementary_table(args.f,template_dict,template_file_supp,dirNames[3],dirNames[3])
-    write_json(args.f,template_dict,dirNames[2])
-    #write_html(args.f,template_dict,template_flask,dirNames[4])
+    write_supplementary_table(args.f,template_dict,template_file_supp,dirNames['supp'],dirNames['supp'])
+    write_json(args.f,template_dict,dirNames['json'],dirNames['json'])
+    write_html(args.f,template_dict,template_flask,dirNames['template'])
     utility.clean_all()
 
 
