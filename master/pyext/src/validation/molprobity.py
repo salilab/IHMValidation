@@ -72,7 +72,7 @@ class get_molprobity_information(get_input_information):
             line=[_.strip() for _ in inf.readlines()]
         
         d['molprobity']=line
-        filename = open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_mp.txt'))
+        filename = os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_mp.txt')
         with open(filename,'wb') as fp:
             pickle.dump(d['molprobity'],fp)
 
@@ -87,7 +87,7 @@ class get_molprobity_information(get_input_information):
             line=[_.strip() for _ in inf.readlines()]
        
         d['clash']=line
-        filename = open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_clash.txt'))
+        filename = os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_clash.txt')
         with open(filename,'wb') as fp:
             pickle.dump(d['clash'],fp)
         
@@ -102,7 +102,7 @@ class get_molprobity_information(get_input_information):
             line=[_.strip() for _ in inf.readlines()]
         
         d['rota']=line
-        filename = open(os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_rota.txt'))
+        filename = os.path.join(os.getcwd(),self.resultpath,self.ID+'_temp_rota.txt')
         with open(filename,'wb') as fp:
             pickle.dump(d['rota'],fp)
 
