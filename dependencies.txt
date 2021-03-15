@@ -6,4 +6,7 @@ pdfkit==0.6.1
 flask==1.1.2
 ihm==0.18
 bokeh==2.2.3
+requests==2.24.0
+sklearn==0.23.2
 python-decouple
+
