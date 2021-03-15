@@ -83,11 +83,18 @@ The variables to add to the .env file can be seen below (fill in the quotations 
 
 ## Common errors in the installation process
 
-One common error, depending on your OS and webdriver is from bokeh/selenium. This error is usually displayed as:
+1. One common error, depending on your OS and webdriver is from bokeh/selenium. This error is usually displayed as:
 
 - `RuntimeError: Neither firefox and geckodriver nor a variant of chromium browser and chromedriver are available on system PATH. You can install the former with 'conda install -c conda-forge firefox geckodriver'.` 
 
 This error originates from converting htmls to svgs. Please install/update your webdriver. You can do this by adding pre-installed binaries to path variable or install packages using the suggested conda command. 
+
+2. Another potential error could arise from having another env variable file or not having the file in the same directory. This error is displayed as:
+
+- `ValueError: UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option)).` 
+
+A solution to this error is using Autoconfig of decouple library to add the path to your .env file. See this [`stackoverflow post`](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths) for specific details.
+
 
 ## Information
 
