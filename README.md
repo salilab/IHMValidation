@@ -81,6 +81,14 @@ The variables to add to the .env file can be seen below (fill in the quotations 
     Molprobity_rotalyze=""
     wkhtmltopdf=""
 
+## Common errors in the installation process
+
+One common error, depending on your OS and webdriver is from bokeh/selenium. This error is usually displayed as:
+
+- `RuntimeError: Neither firefox and geckodriver nor a variant of chromium browser and chromedriver are available on system PATH. You can install the former with 'conda install -c conda-forge firefox geckodriver'.` 
+
+This error originates from converting htmls to svgs. Please install/update your webdriver. You can do this by adding pre-installed binaries to path variable or install packages using the suggested conda command. 
+
 ## Information
 
 _Author(s)_: Sai J. Ganesan
