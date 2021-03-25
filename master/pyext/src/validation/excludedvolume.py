@@ -6,7 +6,7 @@
 # ganesans - Salilab - UCSF
 # ganesans@salilab.org
 ###################################
-from validation import get_input_information
+from validation import GetInputInformation
 import ihm
 import multiprocessing as mp
 import pandas as pd
@@ -15,11 +15,11 @@ import math,os
 from multiprocessing import Process, Queue, Pool, Manager
 
 
-class get_excluded_volume(get_input_information):
+class GetExcludedVolume(GetInputInformation):
     def __init__(self,mmcif_file):
         super().__init__(mmcif_file)
-        self.ID=str(get_input_information.get_id(self))
-        self.nos=get_input_information.get_number_of_models(self)
+        self.ID=str(GetInputInformation.get_id(self))
+        self.nos=GetInputInformation.get_number_of_models(self)
         
     def get_all_spheres (self,filetemp=None):
         """get information on all spheres for each model"""

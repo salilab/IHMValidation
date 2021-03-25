@@ -12,7 +12,7 @@ import glob
 import sys,os,math
 import numpy as np
 import pandas as pd
-from validation import sas, get_input_information
+from validation import sas, GetInputInformation
 from bokeh.io import output_file, show, curdoc, export_png, export_svgs
 from bokeh.models import Span,ColumnDataSource, LinearAxis, Legend
 from bokeh.palettes import GnBu3, RdBu,OrRd3,Blues,YlOrBr, Spectral6, Set1
@@ -21,16 +21,16 @@ from bokeh.models.widgets import Tabs, Panel
 from bokeh.layouts import row,column
 import multiprocessing as mp
 
-class sas_validation_plots(sas.sas_validation):
+class SasValidationPlots(sas.SasValidation):
     def __init__(self,mmcif_file):
         super().__init__(mmcif_file)
-        self.ID=str(get_input_information.get_id(self))
-        self.df_dict=sas.sas_validation.modify_intensity(self)
-        self.pdf_dict=sas.sas_validation.get_pddf(self)
-        self.fdf_dict=sas.sas_validation.get_fit_data(self)
-        self.pdf_ext_dict=sas.sas_validation.get_pofr_ext(self)
-        self.pdf_dict_err=sas.sas_validation.get_pofr_errors(self)
-        self.score,self.gdf=sas.sas_validation.get_Guinier_data(self)
+        self.ID=str(GetInputInformation.get_id(self))
+        self.df_dict=sas.SasValidation.modify_intensity(self)
+        self.pdf_dict=sas.SasValidation.get_pddf(self)
+        self.fdf_dict=sas.SasValidation.get_fit_data(self)
+        self.pdf_ext_dict=sas.SasValidation.get_pofr_ext(self)
+        self.pdf_dict_err=sas.SasValidation.get_pofr_errors(self)
+        self.score,self.gdf=sas.SasValidation.get_Guinier_data(self)
         self.filename = os.path.join('../static/images//')
 
     def plot_intensities(self,sasbdb:str,df:pd.DataFrame):

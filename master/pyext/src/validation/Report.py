@@ -10,7 +10,7 @@
 
 import os
 import validation
-from validation import excludedvolume, get_input_information
+from validation import excludedvolume, GetInputInformation
 from validation import molprobity
 from validation import get_plots, sas
 from validation import cx
@@ -23,7 +23,7 @@ from collections import Counter
 class WriteReport(object):
     def __init__(self, mmcif_file):
         self.mmcif_file = mmcif_file
-        self.Input = get_input_information(self.mmcif_file)
+        self.Input = GetInputInformation(self.mmcif_file)
 
     def run_entry_composition(self, Template_Dict: dict) -> dict:
         '''
@@ -80,7 +80,7 @@ class WriteReport(object):
         if self.Input.check_sphere() < 1:
             # global clashscore; global rama; global sidechain;
             exv_data = None
-            I_mp = molprobity.get_molprobity_information(self.mmcif_file)
+            I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
             if I_mp.check_for_molprobity():
                 filename = os.path.abspath(os.path.join(
                     os.getcwd(), 'static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
@@ -197,7 +197,7 @@ class WriteReport(object):
                     line[1], 'Number of violations': line[2]}
             else:
                 print("Excluded volume is being calculated...")
-                I_ev = excludedvolume.get_excluded_volume(self.mmcif_file)
+                I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file)
                 model_dict = I_ev.get_all_spheres()
                 exv_data = I_ev.run_exc_vol_parallel(model_dict)
 
@@ -215,7 +215,7 @@ class WriteReport(object):
         '''
         if self.Input.check_for_sas(self.Input.get_dataset_comp()):
             Template_Dict['sas'] = ["True"]
-            I_sas = sas.sas_validation(self.mmcif_file)
+            I_sas = sas.SasValidation(self.mmcif_file)
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
             Template_Dict['sasdb_code'] = I_sas.get_SASBDB_code()
             try:
@@ -258,9 +258,9 @@ class WriteReport(object):
         '''
         if self.Input.check_for_sas(self.Input.get_dataset_comp()):
             Template_Dict['sas'] = ["True"]
-            I_sas = sas.sas_validation(self.mmcif_file)
+            I_sas = sas.SasValidation(self.mmcif_file)
             try:
-                I_sas_plt = validation.sas_plots.sas_validation_plots(
+                I_sas_plt = validation.sas_plots.SasValidationPlots(
                     self.mmcif_file)
                 I_sas.modify_intensity()
                 I_sas.get_pofr_errors()
@@ -275,7 +275,7 @@ class WriteReport(object):
     def run_cx_validation(self, Template_Dict: dict) -> (dict, dict):
         if self.Input.check_for_cx(self.Input.get_dataset_comp()):
             Template_Dict['cx'] = ["True"]
-            I_cx = cx.cx_validation(self.mmcif_file)
+            I_cx = cx.CxValidation(self.mmcif_file)
             # xl_df = I_cx.get_xl_data()
             model_df = I_cx.get_df_for_models()
             cx_fit = I_cx.get_violation_plot(model_df)
@@ -284,7 +284,7 @@ class WriteReport(object):
             try:
                 Template_Dict['validation_input'].extend(
                     utility.get_cx_data_fits(cx_fit))
-            except:
+            except :
                 Template_Dict['validation_input'] = utility.get_cx_data_fits(
                     cx_fit)
         else:
@@ -295,7 +295,7 @@ class WriteReport(object):
     def run_cx_validation_plots(self, Template_Dict: dict):
         if self.Input.check_for_cx(self.Input.get_dataset_comp()):
             Template_Dict['cx'] = ["True"]
-            cx_plt = validation.cx_plots.cx_validation_plots(self.mmcif_file)
+            cx_plt = validation.cx_plots.CxValidationPlots(self.mmcif_file)
             cx_plt.make_gridplot_intra()
             cx_plt.make_gridplot_struc()
             cx_plt.plot_distributions()
@@ -307,7 +307,7 @@ class WriteReport(object):
         '''
         get quality at glance image; will be updated as validation report is updated
         '''
-        I_plt = get_plots.plots(self.mmcif_file)
+        I_plt = get_plots.Plots(self.mmcif_file)
         I_plt.plot_quality_at_glance(
             clashscore, rama, sidechain, exv_data, sas_data, sas_fit, cx_fit)
 

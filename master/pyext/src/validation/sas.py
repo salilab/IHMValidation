@@ -13,19 +13,18 @@ import pandas as pd
 import re,pickle,requests,json
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
-from validation import get_input_information 
+from validation import GetInputInformation 
 from subprocess import run, call, PIPE
-from decouple import config,AutoConfig
-config = AutoConfig(search_path='env')#os.path.join(os.getcwd(), "../../../../tests/env/"))
+from decouple import config
 
 
 
-class sas_validation(get_input_information):
+class SasValidation(GetInputInformation):
     def __init__(self,mmcif_file):
         super().__init__(mmcif_file)
-        self.ID=str(get_input_information.get_id(self))
-        self.nos=get_input_information.get_number_of_models(self)
-        self.dataset=get_input_information.get_dataset_comp(self) 
+        self.ID=str(GetInputInformation.get_id(self))
+        self.nos=GetInputInformation.get_number_of_models(self)
+        self.dataset=GetInputInformation.get_dataset_comp(self) 
         self.imagepath='../static/images/'
         self.saslink='https://www.sasbdb.org/media/sascif/sascif_files/'
         self.sasentry='https://www.sasbdb.org/rest-api/entry/summary/'
@@ -300,7 +299,7 @@ class sas_validation(get_input_information):
                     fit_2.to_csv('fit2.csv',header=False,index=False)
                     f1=open('pval.txt','w+')
                     with f1 as outfile:
-                        run([config('ATSAS1'),'fit1.csv','fit2.csv'],stdout=outfile)
+                        run([config('ATSAS'),'fit1.csv','fit2.csv'],stdout=outfile)
                     f2=open('pval.txt','r')
                     all_lines=[j.strip().split() for i,j in enumerate(f2.readlines())]
                     p_val=[all_lines[i+1][4] for i,j in enumerate(all_lines) if 'adj' in j][0]
