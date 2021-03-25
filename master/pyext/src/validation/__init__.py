@@ -66,20 +66,14 @@ class GetInputInformation(object):
     def get_authors(self) -> str:
         """get names of authors from citations """
         cit = self.system.citations
-        aut = cit[0].authors
-        for ind in range(0, len(aut)):
-            if ind == 0:
-                authors = str(aut[ind])
-            else:
-                authors += ';'+str(aut[ind])
-        return authors
+        return '; '.join(cit[0].authors)
 
     def get_struc_title(self) -> str:
         """get name of molecule"""
         strc = self.system.title
         if strc is None:
             entities = self.system.entities
-            mol_name = entities.description
+            mol_name = entities[0].description
         else:
             mol_name = strc
         return mol_name
@@ -126,7 +120,7 @@ class GetInputInformation(object):
         """Map models to assemblies """
         model_id = map(int, [b._id for i in self.system.state_groups
                        for j in i for a in j for b in a])
-        assembly_id = map(int, self.get_assembly_ID_of_models())
+        assembly_id = [int(asmb) for asmb in self.get_assembly_ID_of_models()]
         model_assembly = dict(zip(model_id, assembly_id))
         return model_assembly
 
@@ -135,7 +129,7 @@ class GetInputInformation(object):
             useful especially for multi-state systems"""
         model_id = map(int, [b._id for i in self.system.state_groups
                        for j in i for a in j for b in a])
-        rep_id = map(int, self.get_representation_ID_of_models())
+        rep_id = [int(repr) for repr in self.get_representation_ID_of_models()]
         model_rep = dict(zip(model_id, rep_id))
         return model_rep
 
@@ -250,15 +244,10 @@ class GetInputInformation(object):
 
     def get_number_of_chains(self) -> int:
         """get number of chains per protein per assembly """
-        # used = []
         assembly = defaultdict()
-        # lists = self.system.orphan_assemblies
         for ind, ass in enumerate(self.system.orphan_assemblies):
-            chain = []
-            for el in ass:
-                chain.append(el._id)
+            chain = [el._id for el in ass]
             assembly[ind] = chain
-            # unique = [used.append(x) for x in chain if x not in used]
         number_of_chains = [len(i) for i in assembly.values()]
         return number_of_chains
 
@@ -284,8 +273,7 @@ class GetInputInformation(object):
     def get_residues_subunit_dict(self) -> dict:
         """Get residues of chains in subunits"""
         residues_subunit_dict = defaultdict()
-        for _, el in enumerate(self.system.asym_units):
-            print(self.get_residues(el))
+        for el in self.system.asym_units:
             residues_subunit_dict[el._id] = self.get_residues(el)
         return residues_subunit_dict
 
@@ -302,17 +290,17 @@ class GetInputInformation(object):
         ], 'Software classification': [], 'Software location': []}
         lists = self.system.software
         if len(lists) > 0:
-            for _ in lists:
-                software_comp['ID'].append(_._id)
-                software_comp['Software name'].append(_.name)
-                software_comp['Software location'].append(_.location)
-                if str(_.version) == '?':
+            for software in lists:
+                software_comp['ID'].append(software._id)
+                software_comp['Software name'].append(software.name)
+                software_comp['Software location'].append(software.location)
+                if str(software.version) == ihm.unknown:
                     vers = 'None'
                 else:
-                    vers = str(_.version)
+                    vers = str(software.version)
                 software_comp['Software version'].append(vers)
                 software_comp['Software classification'].append(
-                    _.classification)
+                    software.classification)
             final_software_composition = software_comp
         else:
             final_software_composition = {}
@@ -332,16 +320,16 @@ class GetInputInformation(object):
                              'Clustering method': [],
                              'Clustering feature': [],
                              'Cluster precision': []}
-            for _ in self.system.ensembles:
-                ensemble_comp['Ensemble number'].append(str(_._id))
-                ensemble_comp['Ensemble name'].append(str(_.name))
-                ensemble_comp['Model ID'].append(str(_.model_group._id))
-                ensemble_comp['Number of models'].append(str(_.num_models))
+            for ensm in self.system.ensembles:
+                ensemble_comp['Ensemble number'].append(str(ensm._id))
+                ensemble_comp['Ensemble name'].append(str(ensm.name))
+                ensemble_comp['Model ID'].append(str(ensm.model_group._id))
+                ensemble_comp['Number of models'].append(str(ensm.num_models))
                 ensemble_comp['Clustering method'].append(
-                    str(_.clustering_method))
+                    str(ensm.clustering_method))
                 ensemble_comp['Clustering feature'].append(
-                    str(_.clustering_feature))
-                ensemble_comp['Cluster precision'].append(str(_.precision))
+                    str(ensm.clustering_feature))
+                ensemble_comp['Cluster precision'].append(str(ensm.precision))
             return ensemble_comp
         else:
             return None
@@ -360,10 +348,6 @@ class GetInputInformation(object):
         lists = self.system.orphan_datasets
         if len(lists) > 0:
             for _ in lists:
-                # try:
-                # loc = _.location.db_name
-                # except AttributeError:
-                # acc = str('Not listed')
                 try:
                     acc = _.location.access_code
                 except AttributeError:
@@ -408,7 +392,7 @@ class GetInputInformation(object):
         dataset_dic = defaultdict
         if len(self.system.orphan_datasets) > 0:
             for i in self.system.orphan_datasets:
-                if i.data_type == 'unspecified':
+                if i.data_type == 'other':
                     dataset_dic[str(i._id)] = str(i.details)
                 else:
                     dataset_dic[str(i._id)] = str(i.data_type)
@@ -423,31 +407,32 @@ class GetInputInformation(object):
             restraints_comp['ID'].append(j+1)
             restraints_comp['Restraint type'].append(str(i.__class__.__name__))
             restraints_comp['Dataset ID'].append(str(i.dataset._id))
-            if 'CrossLink' in str(i.__class__.__name__):
+            # print (i.__class__.__name__,i,i.__class__,type(i))
+            # print (isinstance(i,ihm.restraint.CrossLinkRestraint))
+            if isinstance(i, ihm.restraint.CrossLinkRestraint):
                 restraints_comp['Restraint info'].append(
                     str(i.linker.auth_name) + ', ' +
                     str(len(i.experimental_cross_links)) + ' cross-links')
-            if 'EM3D' in str(i.__class__.__name__):
+            if isinstance(i, ihm.restraint.EM3DRestraint):
                 restraints_comp['Restraint info'].append(
                     str(i.fitting_method) + ', '+str(i.number_of_gaussians))
-            if 'EM2D' in str(i.__class__.__name__):
+            if isinstance(i, ihm.restraint.EM2DRestraint):
                 restraints_comp['Restraint info'].append('Number \
                                                           of micrographs: '
                                                          + str(i.number_raw_micrographs)
                                                          + ',' + ' Image resolution: '
                                                          + str(i.image_resolution))
-            if 'SAS' in str(i.__class__.__name__):
+            if isinstance(i, ihm.restraint.SASRestraint):
                 restraints_comp['Restraint info'].append('Assembly name: '+str(
                     i.assembly.name)+' Fitting method: ' +
                     str(i.fitting_method) + ' Multi-state: ' + str(i.multi_state))
-            if 'UpperBound' in str(i.__class__.__name__):
-
+            if isinstance(i, ihm.restraint.UpperBoundDistanceRestraint):
                 restraints_comp['Restraint info'].append(
                     'Distance: '+str(i.distance))
             if 'Mutagenesis' in str(i.__class__.__name__):
                 restraints_comp['Restraint info'].append(
                     'Details: '+str(i.details))
-            if 'DerivedDistance' in str(i.__class__.__name__):
+            if isinstance(i, ihm.restraint.DerivedDistanceRestraint):
                 dic = self.dataset_id_type_dic()
                 ID = str(i.dataset._id)
                 # restraints_comp['Restraint info'].append(dic[ID])
@@ -515,10 +500,7 @@ class GetInputInformation(object):
         dataset = self.get_dataset_comp()
         data_type = dataset['Dataset type']
         database = dataset['Database name']
-        if 'SAS' in str(data_type) and 'SAS' in str(database):
-            return True
-        else:
-            return False
+        return 'SAS' in str(data_type) and 'SAS' in str(database)
 
     def check_for_cx(self, dataset: dict) -> bool:
         """check if CX-XL is in the dataset"""
