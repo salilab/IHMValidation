@@ -21,14 +21,14 @@ from validation import utility
 # Get information from IHM reader
 #########################
 
-class get_input_information(object):
+class GetInputInformation(object):
     def __init__(self, mmcif_file):
         self.mmcif_file = mmcif_file
         self.datasets = {}
         self.entities = {}
         self.model = ihm.model.Model
-        self.system, = ihm.reader.read(open(self.mmcif_file),
-                                       model_class=self.model)
+        with open(self.mmcif_file) as fh:
+            self.system, = ihm.reader.read(fh, model_class=self.model)
 
     def get_databases(self):
         """ get all datasets from the mmcif file"""
@@ -40,7 +40,8 @@ class get_input_information(object):
         if self.system.id == 'model':
             id = self.get_id_from_entry()
         else:
-            id = self.system.id.split('_')[0]+self.system.id.split('_')[1]
+            id = self.system.id.split('_')[0] + \
+                self.system.id.split('_')[1]
         return id
 
     def get_id_from_entry(self) -> str:
@@ -50,7 +51,8 @@ class get_input_information(object):
             line = ln.strip().split(' ')
             if '_entry' in line[0]:
                 entry_init = line[-1]
-                entry = entry_init.split('_')[0]+entry_init.split('_')[1]
+                entry = entry_init.split('_')[0] + \
+                    entry_init.split('_')[1]
         return entry
 
     def get_title(self) -> str:
@@ -81,9 +83,10 @@ class get_input_information(object):
         return mol_name
 
     def check_sphere(self):
-        """check resolution of structure,returns 0 if its atomic and 1 if the model is multires"""
-        spheres = [len(b._spheres)
-                   for i in self.system.state_groups for j in i for a in j for b in a]
+        """check resolution of structure,
+        returns 0 if its atomic and 1 if the model is multires"""
+        spheres = [len(b._spheres) for i in self.system.state_groups
+                   for j in i for a in j for b in a]
         if 0 not in spheres:
             return 1
         else:
@@ -92,13 +95,15 @@ class get_input_information(object):
     def get_assembly_ID_of_models(self) -> list:
         """Assembly info i.e. model assemblies in the file """
         assembly_id = [
-            b.assembly._id for i in self.system.state_groups for j in i for a in j for b in a]
+            b.assembly._id for i in self.system.state_groups
+            for j in i for a in j for b in a]
         return assembly_id
 
     def get_representation_ID_of_models(self) -> list:
         """Number of representations in model """
         representation_id = [
-            b.representation._id for i in self.system.state_groups for j in i for a in j for b in a]
+            b.representation._id for i in self.system.state_groups
+            for j in i for a in j for b in a]
         return representation_id
 
     def get_model_names(self) -> list:
@@ -106,7 +111,8 @@ class get_input_information(object):
         model_name1 = [
             a.name for i in self.system.state_groups for j in i for a in j]
         model_name2 = [
-            b.name for i in self.system.state_groups for j in i for a in j for b in a]
+            b.name for i in self.system.state_groups
+            for j in i for a in j for b in a]
         if len(model_name1) == len(model_name2):
             model_name = [str(t[0])+'/'+str(t[1])
                           for t in zip(model_name1, model_name2)]
@@ -116,17 +122,17 @@ class get_input_information(object):
 
     def get_model_assem_dict(self) -> dict:
         """Map models to assemblies """
-        model_id = map(
-            int, [b._id for i in self.system.state_groups for j in i for a in j for b in a])
+        model_id = map(int, [b._id for i in self.system.state_groups
+                       for j in i for a in j for b in a])
         assembly_id = map(int, self.get_assembly_ID_of_models())
         model_assembly = dict(zip(model_id, assembly_id))
         return model_assembly
 
     def get_model_rep_dict(self) -> dict:
-        """Map models to representations 
+        """Map models to representations
             useful especially for multi-state systems"""
-        model_id = map(
-            int, [b._id for i in self.system.state_groups for j in i for a in j for b in a])
+        model_id = map(int, [b._id for i in self.system.state_groups
+                       for j in i for a in j for b in a])
         rep_id = map(int, self.get_representation_ID_of_models())
         model_rep = dict(zip(model_id, rep_id))
         return model_rep
@@ -134,7 +140,8 @@ class get_input_information(object):
     def get_number_of_models(self) -> int:
         """ Get total number of models """
         models = [
-            b._id for i in self.system.state_groups for j in i for a in j for b in a]
+            b._id for i in self.system.state_groups
+            for j in i for a in j for b in a]
         return len(models)
 
     def get_residues(self, asym):
@@ -175,8 +182,10 @@ class get_input_information(object):
 
     def get_sampling(self) -> dict:
         """ sampling composition/details """
-        sampling_comp = {'Step number': [], 'Protocol ID': [], 'Method name': [], 'Method type': [],
-                         'Number of computed models': [], 'Multi state modeling': [],
+        sampling_comp = {'Step number': [], 'Protocol ID': [],
+                         'Method name': [], 'Method type': [],
+                         'Number of computed models': [],
+                         'Multi state modeling': [],
                          'Multi scale modeling': []}
         for prot in self.system.orphan_protocols:
             for step in prot.steps:
@@ -194,12 +203,14 @@ class get_input_information(object):
         return sampling_comp
 
     def get_representation(self):
-        """ get details on number of model composition based on 
+        """ get details on number of model composition based on
         types of representation listed """
-        # representation_comp = {'Chain ID': [], 'Subunit name': [], 'Rigid bodies': [],
-        #                       'Non-rigid regions': []}
+        # representation_comp = {'Chain ID': [],
+        # 'Subunit name': [], 'Rigid bodies': [],
+        #  'Non-rigid regions': []}
         for rep in self.system.orphan_representations:
-            # print (rep,rep[0].rigid,rep[0].asym_unit.seq_id_range,rep[0].asym_unit._id)
+            # print (rep,rep[0].rigid,rep[0].
+            # asym_unit.seq_id_range,rep[0].asym_unit._id)
             print(["%s:%d-%d" % ((x.asym_unit._id,) + x.asym_unit.seq_id_range)
                    for x in rep if not x.rigid])
 
@@ -214,12 +225,16 @@ class get_input_information(object):
                 all_nos.append(el.asym_unit.seq_id_range)
                 if el.rigid and el.starting_model:
                     RB_nos.append(el.asym_unit.seq_id_range)
-                    RB[el.starting_model.asym_unit._id].append([utility.format_tupple(el.asym_unit.seq_id_range),
-                                                                utility.get_val_from_key(self.get_dataset_dict(), el.starting_model.dataset._id)])
+                    RB[el.starting_model.asym_unit._id].append(
+                      [utility.format_tupple(el.asym_unit.seq_id_range),
+                       utility.get_val_from_key(self.get_dataset_dict(),
+                                                el.starting_model.dataset._id)]
+                                                )
                 elif el.rigid and not el.starting_model:
                     RB_nos.append(el.asym_unit.seq_id_range)
                     RB[el.asym_unit._id].append(
-                        [utility.format_tupple(el.asym_unit.seq_id_range), 'None'])
+                        [utility.format_tupple(el.asym_unit.seq_id_range),
+                         'None'])
                 else:
                     flex[el.asym_unit._id].append(
                         [utility.format_tupple(el.asym_unit.seq_id_range)])
@@ -308,8 +323,13 @@ class get_input_information(object):
     def get_ensembles(self):
         """details on ensembles, if it exists"""
         if len(self.system.ensembles) > 0:
-            ensemble_comp = {'Ensemble number': [], 'Ensemble name': [], 'Model ID': [], 'Number of models': [],
-                             'Clustering method': [], 'Clustering feature': [], 'Cluster precision': []}
+            ensemble_comp = {'Ensemble number': [],
+                             'Ensemble name': [],
+                             'Model ID': [],
+                             'Number of models': [],
+                             'Clustering method': [],
+                             'Clustering feature': [],
+                             'Cluster precision': []}
             for _ in self.system.ensembles:
                 ensemble_comp['Ensemble number'].append(str(_._id))
                 ensemble_comp['Ensemble name'].append(str(_.name))
@@ -327,7 +347,10 @@ class get_input_information(object):
     def get_dataset_xl_info(self, id: int) -> str:
         """Get dataset XL info given dataset ID"""
         restraints = self.get_restraints()
-        return 'Linker name and number of cross-links: %s' % (restraints['Restraint info'][restraints['Dataset ID'].index(id)])
+        return 'Linker name and number of cross-links: %s' % (restraints
+                                                              ['Restraint info']
+                                                              [restraints['Dataset ID']
+                                                               .index(id)])
 
     def get_dataset_dict(self):
         """get dataset dictionary """
@@ -335,10 +358,10 @@ class get_input_information(object):
         lists = self.system.orphan_datasets
         if len(lists) > 0:
             for _ in lists:
-                try:
-                    loc = _.location.db_name
-                except AttributeError:
-                    loc = str('Not listed')
+                # try:
+                # loc = _.location.db_name
+                # except AttributeError:
+                # acc = str('Not listed')
                 try:
                     acc = _.location.access_code
                 except AttributeError:
@@ -400,16 +423,21 @@ class get_input_information(object):
             restraints_comp['Dataset ID'].append(str(i.dataset._id))
             if 'CrossLink' in str(i.__class__.__name__):
                 restraints_comp['Restraint info'].append(
-                    str(i.linker.auth_name)+', '+str(len(i.experimental_cross_links))+' cross-links')
+                    str(i.linker.auth_name) + ', ' +
+                    str(len(i.experimental_cross_links)) + ' cross-links')
             if 'EM3D' in str(i.__class__.__name__):
                 restraints_comp['Restraint info'].append(
                     str(i.fitting_method) + ', '+str(i.number_of_gaussians))
             if 'EM2D' in str(i.__class__.__name__):
-                restraints_comp['Restraint info'].append('Number of micrographs: '+str(
-                    i.number_raw_micrographs)+','+' Image resolution: '+str(i.image_resolution))
+                restraints_comp['Restraint info'].append('Number \
+                                                          of micrographs: '
+                                                         + str(i.number_raw_micrographs)
+                                                         + ',' + ' Image resolution: '
+                                                         + str(i.image_resolution))
             if 'SAS' in str(i.__class__.__name__):
                 restraints_comp['Restraint info'].append('Assembly name: '+str(
-                    i.assembly.name)+' Fitting method: '+str(i.fitting_method) + ' Multi-state: '+str(i.multi_state))
+                    i.assembly.name)+' Fitting method: ' +
+                    str(i.fitting_method) + ' Multi-state: ' + str(i.multi_state))
             if 'UpperBound' in str(i.__class__.__name__):
 
                 restraints_comp['Restraint info'].append(
