@@ -19,7 +19,7 @@ from collections import Counter
 import argparse
 import json
 import decouple 
-from validation import excludedvolume,get_input_information
+from validation import excludedvolume,GetInputInformation
 from validation import molprobity
 from validation import get_plots,sas,sas_plots
 from validation import utility
