@@ -16,9 +16,10 @@ from itertools import product
 class CxValidation(GetInputInformation):
 	def __init__(self,mmcif_file):
 		super().__init__(mmcif_file)
-		self.ID=str(GetInputInformation.get_id(self))
-		self.nos=GetInputInformation.get_number_of_models(self)
-		self.dataset=GetInputInformation.get_dataset_comp(self) 
+		self.ID=str(self.get_id())
+		self.nos=self.get_number_of_models()
+		self.dataset=self.get_dataset_comp() 
+		self.cutoff={'DSS':[0,30],'EDC':[0,20]}
 	
 	def get_xl_data (self):
 		'''
@@ -50,7 +51,6 @@ class CxValidation(GetInputInformation):
 							lst.append([linker_name,res1_res2,
 								res1_entity,res1_seq,res1_asym,res1_id,
 								res2_entity,res2_seq,res2_asym,res2_id])
-
 					except: 
 						pass
 
@@ -220,13 +220,8 @@ class CxValidation(GetInputInformation):
 		define violations based on linkers,
 		needs to be updated with community standards
 		'''
-		if linker=='DSS' and dist<=30:
-			return 1
-		elif linker=='EDC' and dist<=20:
-			return 1
-		elif linker=='EDC' and dist>20:
-			return 0
-		elif dist<=30:
+		min_dist,max_dist=self.cutoff.get(linker,[0,30])
+		if dist >= min_dist and dist <= max_dist:
 			return 1
 		else:
 			return 0

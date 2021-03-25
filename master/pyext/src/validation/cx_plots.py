@@ -27,8 +27,7 @@ class CxValidationPlots(cx.CxValidation):
 		self.ID=str(GetInputInformation.get_id(self))
 		self.xl_df=cx.CxValidation.get_xl_data(self)
 		self.model_df=cx.CxValidation.get_df_for_models(self)        
-		self.filename = os.path.join('Output/images//')
-		self.filename_add = os.path.join('static/images//')
+		self.filename = os.path.join('../static/images//')
 
 
 	def plot_linker_dist_I(self,df,intra=1,key='Intra'):
@@ -67,8 +66,6 @@ class CxValidationPlots(cx.CxValidation):
 			p.output_backend="svg"
 			save(p,filename=self.filename+'/'+self.ID+i+key+"linker.html")
 			export_svgs(p,filename=self.filename+'/'+self.ID+i+key+"linker.svg")
-			save(p,filename=self.filename_add+'/'+self.ID+i+key+"linker.html")
-			export_svgs(p,filename=self.filename_add+'/'+self.ID+i+key+"linker.svg")
 
 	def plot_linker_dist_S(self,df,struc=1,key='Structured'):
 		'''
@@ -106,8 +103,6 @@ class CxValidationPlots(cx.CxValidation):
 			p.output_backend="svg"
 			save(p,filename=self.filename+'/'+self.ID+i+key+"linker.html")
 			export_svgs(p,filename=self.filename+'/'+self.ID+i+key+"linker.svg")
-			save(p,filename=self.filename_add+'/'+self.ID+i+key+"linker.html")
-			export_svgs(p,filename=self.filename_add+'/'+self.ID+i+key+"linker.svg")
 
 	def plot_intra_summary_deprecated(self):
 		'''
@@ -142,8 +137,6 @@ class CxValidationPlots(cx.CxValidation):
 			fig_id.output_backend="svg"
 			save(fig_id,filename=self.filename+'/'+self.ID+str(model_id)+"IS.html")
 			export_svgs(fig_id,filename=self.filename+'/'+self.ID+str(model_id)+"IS.svg")
-			save(fig_id,filename=self.filename_add+'/'+self.ID+str(model_id)+"IS.html")
-			export_svgs(fig_id,filename=self.filename_add+'/'+self.ID+str(model_id)+"IS.svg")
 
 
 	def plot_distributions(self):
@@ -231,8 +224,6 @@ class CxValidationPlots(cx.CxValidation):
 		gridP=gridplot(grid, ncols=len(grid))
 		save(gridP,filename=self.filename+'/'+self.ID+"IS.html")
 		export_png(gridP,filename=self.filename+'/'+self.ID+"IS.png")
-		save(gridP,filename=self.filename_add+'/'+self.ID+"IS.html")
-		export_png(gridP,filename=self.filename_add+'/'+self.ID+"IS.png")
 
 
 	def plot_intra_summary(self,df,model_id):
