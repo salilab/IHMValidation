@@ -253,7 +253,7 @@ _ihm_sphere_obj_site.model_id
 
         model_dict=self.IO.get_all_spheres(filetemp=fh)
         output={'Models': [1, 2], 'Excluded Volume Satisfaction': [0.0, 100.0]}
-        self.assertEqual(output,(self.IO.get_exc_vol_for_models_normalized(model_dict))
+        self.assertEqual(output,(self.IO.get_exc_vol_for_models_normalized(model_dict)))
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
