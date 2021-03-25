@@ -37,15 +37,17 @@ class GetInputInformation(object):
 
     def get_id(self):
         """ get id from model name, eg: PDBDEV_00XX will be PDBDEV00XX"""
-        if self.system.id == 'model':
-            id = self.get_id_from_entry()
-        else:
-            id = self.system.id.split('_')[0] + \
-                self.system.id.split('_')[1]
+        # if self.system.id == 'model':
+        #    print (self.system.id)
+        #    id = self.get_id_from_entry()
+        # else:
+        #    print (self.system.id,self.get_id_from_entry())
+        id = self.system.id.split('_')[0] + self.system.id.split('_')[1]
         return id
 
     def get_id_from_entry(self) -> str:
-        """ get id name from entry"""
+        """ get id name from entry for cif files
+            deprecated """
         sf = open(self.mmcif_file, 'r')
         for ind, ln in enumerate(sf.readlines()):
             line = ln.strip().split(' ')
