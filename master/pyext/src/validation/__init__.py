@@ -12,14 +12,9 @@
 
 import ihm
 import ihm.reader
-import pandas as pd
-import glob
 import os
-import numpy as np
-import re
 from collections import defaultdict
 from validation import utility
-from io import StringIO, BytesIO
 
 
 #########################
@@ -129,7 +124,7 @@ class get_input_information(object):
 
     def get_model_rep_dict(self) -> dict:
         """Map models to representations 
-        useful especially for multi-state systems"""
+            useful especially for multi-state systems"""
         model_id = map(
             int, [b._id for i in self.system.state_groups for j in i for a in j for b in a])
         rep_id = map(int, self.get_representation_ID_of_models())
@@ -201,10 +196,10 @@ class get_input_information(object):
     def get_representation(self):
         """ get details on number of model composition based on 
         types of representation listed """
-        representation_comp = {'Chain ID': [], 'Subunit name': [], 'Rigid bodies': [],
-                               'Non-rigid regions': []}
+        # representation_comp = {'Chain ID': [], 'Subunit name': [], 'Rigid bodies': [],
+        #                       'Non-rigid regions': []}
         for rep in self.system.orphan_representations:
-            #print (rep,rep[0].rigid,rep[0].asym_unit.seq_id_range,rep[0].asym_unit._id)
+            # print (rep,rep[0].rigid,rep[0].asym_unit.seq_id_range,rep[0].asym_unit._id)
             print(["%s:%d-%d" % ((x.asym_unit._id,) + x.asym_unit.seq_id_range)
                    for x in rep if not x.rigid])
 
@@ -238,15 +233,15 @@ class get_input_information(object):
 
     def get_number_of_chains(self) -> int:
         """get number of chains per protein per assembly """
-        used = []
+        # used = []
         assembly = defaultdict()
-        lists = self.system.orphan_assemblies
+        # lists = self.system.orphan_assemblies
         for ind, ass in enumerate(self.system.orphan_assemblies):
             chain = []
             for el in ass:
                 chain.append(el._id)
             assembly[ind] = chain
-            unique = [used.append(x) for x in chain if x not in used]
+            # unique = [used.append(x) for x in chain if x not in used]
         number_of_chains = [len(i) for i in assembly.values()]
         return number_of_chains
 
@@ -342,11 +337,11 @@ class get_input_information(object):
             for _ in lists:
                 try:
                     loc = _.location.db_name
-                except AttributeError as error:
+                except AttributeError:
                     loc = str('Not listed')
                 try:
                     acc = _.location.access_code
-                except AttributeError as error:
+                except AttributeError:
                     acc = str('None')
                 dataset_dict[_._id] = str(_.data_type)+'/'+str(acc)
         return dataset_dict
@@ -367,11 +362,11 @@ class get_input_information(object):
             for _ in lists:
                 try:
                     loc = _.location.db_name
-                except AttributeError as error:
+                except AttributeError:
                     loc = str('Not listed')
                 try:
                     acc = _.location.access_code
-                except AttributeError as error:
+                except AttributeError:
                     acc = str('None')
                 dataset_comp['ID'].append(_._id)
                 # if i.data_type=='unspecified' and 'None' not in i.details:
@@ -380,7 +375,7 @@ class get_input_information(object):
                 dataset_comp['Dataset type'].append(_.data_type)
                 dataset_comp['Database name'].append(str(loc))
                 dataset_comp['Data access code'].append(acc)
-                #print (dataset_comp)
+                # print (dataset_comp)
         return dataset_comp
 
     def dataset_id_type_dic(self) -> dict:
@@ -425,7 +420,7 @@ class get_input_information(object):
             if 'DerivedDistance' in str(i.__class__.__name__):
                 dic = self.dataset_id_type_dic()
                 ID = str(i.dataset._id)
-                #restraints_comp['Restraint info'].append(dic[ID])
+                # restraints_comp['Restraint info'].append(dic[ID])
                 if 'UpperBound' in str(i.distance.__class__.__name__):
                     restraints_comp['Restraint info'].append(
                         ('Upper Bound Distance: '+str(i.distance.distance)))
@@ -443,11 +438,11 @@ class get_input_information(object):
             for i in lists:
                 try:
                     loc = i.location.db_name
-                except AttributeError as error:
+                except AttributeError:
                     loc = str('')
                 try:
                     acc = i.location.access_code
-                except AttributeError as error:
+                except AttributeError:
                     acc = str('Not listed')
                 dataset_comp['ID'].append(i._id)
                 if i.data_type == 'unspecified' and i.details is not None:
