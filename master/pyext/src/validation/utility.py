@@ -1,5 +1,5 @@
 ###################################
-# Script :
+# Script:
 # 1) Contains trivial and useful
 # functions
 #
@@ -7,14 +7,10 @@
 # ganesans@salilab.org
 ###################################
 
-import pandas as pd
-import sys
 import os
 import glob
-import numpy as np
-import pickle
 from collections import Counter
-import argparse
+from multiprocessing import Process
 
 
 def dict_to_JSlist(d: dict) -> list:
@@ -138,7 +134,7 @@ def get_all_files(path_dir):
     return glob.glob(path_dir)
 
 
-def runInParallel(*fns):
+def runInParallel(*fns, d):
     proc = []
     for fn in fns:
         p = Process(target=fn, args=d)
@@ -182,10 +178,6 @@ def get_supp_file_pdf(mmcif_file: str) -> str:
     return 'Supplementary_'+mmcif_file+'.pdf'
 
 
-def get_all_files(path_dir):
-    return glob.glob(path_dir)
-
-
 def get_subunits(sub_dict: dict) -> list:
     model_number = len(sub_dict['Model ID'])
     sublist = ['%s: Chain %s (%d residues)' % (sub_dict['Subunit name'][i], sub_dict['Chain ID']
@@ -195,7 +187,7 @@ def get_subunits(sub_dict: dict) -> list:
 
 def get_datasets(data_dict: dict) -> list:
     dataset_number = len(data_dict['ID'])
-    #print (data_dict)
+    # print (data_dict)
     datalist = ['%s, %s' % (data_dict['Dataset type'][i], data_dict['Details'][i])
                 for i in range(0, dataset_number)]
     return datalist
