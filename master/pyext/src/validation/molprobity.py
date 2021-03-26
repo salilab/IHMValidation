@@ -49,8 +49,7 @@ class GetMolprobityInformation(GetInputInformation):
     def run_ramalyze(self,d:dict):
         """run ramalyze to get outliers """
         f_name=str(self.ID)+'_temp_rama.txt'
-        f_name_handle=open(f_name,'w+')
-        with f_name_handle as outfile:
+        with open(f_name,'w+') as outfile:
             run([config('Molprobity_ramalyze'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
@@ -64,8 +63,7 @@ class GetMolprobityInformation(GetInputInformation):
     def run_molprobity(self,d:dict):
         """run molprobity"""
         f_name=str(self.ID)+'_temp_mp.txt'
-        f_name_handle=open(f_name,'w+') 
-        with f_name_handle as outfile:
+        with open(f_name,'w+') as outfile:
             run([config('Molprobity_molprobity'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
@@ -79,8 +77,7 @@ class GetMolprobityInformation(GetInputInformation):
     def run_clashscore(self,d:dict):
         """run clashscore to get information on steric clashes"""
         f_name=str(self.ID)+'_temp_clash.txt'
-        f_name_handle=open(f_name,'w+')
-        with f_name_handle as outfile:
+        with open(f_name,'w+') as outfile:
             run([config('Molprobity_clashscore'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
@@ -94,8 +91,7 @@ class GetMolprobityInformation(GetInputInformation):
     def run_rotalyze(self,d:dict):
         """run rotalyZe to get rotameric outliers"""
         f_name=str(self.ID)+'_temp_rota.txt'
-        f_name_handle=open(f_name,'w+')
-        with f_name_handle as outfile:
+        with open(f_name,'w+') as outfile:
             run([config('Molprobity_rotalyze'),self.mmcif_file],stdout=outfile)
         
         with open(f_name,'r+') as inf:
@@ -292,32 +288,37 @@ class GetMolprobityInformation(GetInputInformation):
             bondtype_diff={};bondtype_dist={};bondtype_ex={};
             dict1={'Bond type':[],'Observed distance (&#8491)':[],'Ideal distance (&#8491)':[],'Number of outliers':[]}
             for i,j in enumerate(bonds):
-                if len(j.replace(',','').replace(':','').split()[0])>2:
-                    bondtype_dist[j.replace(',','').replace(':','').split()[4]]=float(j.replace(',','').replace(':','').split()[6])
-                    bondtype_diff[j.replace(',','').replace(':','').split()[4]]=float(j.replace(',','').replace(':','').split()[10])
-                    if j.replace(',','').replace(':','').split()[4] not in list(bondtype_ex.keys()):
-                        bondtype_ex[j.replace(',','').replace(':','').split()[4]]=[]
+                if len(self.edittext(j).split()[0])>2:
+                    bondtype_dist[self.edittext(j).split()[4]]=float(self.edittext(j).split()[6])
+                    bondtype_diff[self.edittext(j).split()[4]]=float(self.edittext(j).split()[10])
+                    if jself.edittext(j).split()[4] not in list(bondtype_ex.keys()):
+                        bondtype_ex[self.edittext(j).split()[4]]=[]
                     else:
-                        bondtype_ex[j.replace(',','').replace(':','').split()[4]].append(float(j.replace(',','').replace(':','').split()[6]))
+                        bondtype_ex[self.edittext(j).split()[4]].append(float(self.edittext(j).split()[6]))
                 else:
-                    bondtype_dist[j.replace(',','').replace(':','').split()[5]]=float(j.replace(',','').replace(':','').split()[7])
-                    bondtype_diff[j.replace(',','').replace(':','').split()[5]]=float(j.replace(',','').replace(':','').split()[11])
-                    if j.replace(',','').replace(':','').split()[5] not in list(bondtype_ex.keys()):
-                        bondtype_ex[j.replace(',','').replace(':','').split()[5]]=[]
+                    bondtype_dist[self.edittext(j).split()[5]]=float(self.edittext(j).split()[7])
+                    bondtype_diff[self.edittext(j).split()[5]]=float(self.edittext(j).split()[11])
+                    if self.edittext(j).split()[5] not in list(bondtype_ex.keys()):
+                        bondtype_ex[self.edittext(j).split()[5]]=[]
                     else:
-                        bondtype_ex[j.replace(',','').replace(':','').split()[5]].append(float(j.replace(',','').replace(':','').split()[7]))
+                        bondtype_ex[self.edittext(j)split()[5]].append(float(self.edittext(j).split()[7]))
             for ind,val in bondtype_dist.items():
                 dict1['Bond type'].append(ind)
+                # (&#8491) is the code for angstrom
                 dict1['Observed distance (&#8491)'].append(val)
                 dict1['Ideal distance (&#8491)'].append(round(n+bondtype_diff[ind],2))
                 dict1['Number of outliers'].append(len(bondtype_ex[ind]))
             print (dict1['Bond type'], file=f_mp_D)
+            # (&#8491) is the code for angstrom
             print (dict1['Observed distance (&#8491)'],file=f_mp_D)
             print (dict1['Ideal distance (&#8491)'], file=f_mp_D)
             print (dict1['Number of outliers'], file=f_mp_D)
             return dict1
         else:
             return {}
+
+    def edittext(self,some_text:str)->str:
+        return some_text.replace(',','').replace(':','')
 
     def molprobity_detailed_table_angles(self,angles:list)->dict:
         """process molprobity angles information and format to table"""
@@ -327,27 +328,28 @@ class GetMolprobityInformation(GetInputInformation):
             dict1={'Angle type':[],'Observed angle (&#176)':[],'Ideal angle (&#176)':[],'Number of outliers':[]}
             
             for i,j in enumerate(angles):
-                if len(j.replace(',','').replace(':','').split()[0])>2:
-                    angle_dist[j.replace(',','').replace(':','').split()[4]]=float(j.replace(',','').replace(':','').split()[6])
-                    angle_diff[j.replace(',','').replace(':','').split()[4]]=float(j.replace(',','').replace(':','').split()[10])
-                    if j.replace(',','').replace(':','').split()[4] not in list(angle_ex.keys()):
-                        angle_ex[j.replace(',','').replace(':','').split()[4]]=[]
+                if len(self.edittext(j).split()[0])>2:
+                    angle_dist[self.edittext(j).split()[4]]=float(self.edittext(j).split()[6])
+                    angle_diff[self.edittext(j).split()[4]]=float(self.edittext(j).split()[10])
+                    if self.edittext(j).split()[4] not in list(angle_ex.keys()):
+                        angle_ex[self.edittext(j).split()[4]]=[]
                     else:
-                        angle_ex[j.replace(',','').replace(':','').split()[4]].append(float(j.replace(',','').replace(':','').split()[6]))
+                        angle_ex[self.edittext(j).split()[4]].append(float(self.edittext(j).split()[6]))
                 else:
-                    angle_dist[j.replace(',','').replace(':','').split()[5]]=float(j.replace(',','').replace(':','').split()[7])
-                    angle_diff[j.replace(',','').replace(':','').split()[5]]=float(j.replace(',','').replace(':','').split()[11])
-                    if j.replace(',','').replace(':','').split()[5] not in list(angle_ex.keys()):
-                        angle_ex[j.replace(',','').replace(':','').split()[5]]=[]
+                    angle_dist[self.edittext(j).split()[5]]=float(self.edittext(j).split()[7])
+                    angle_diff[self.edittext(j).split()[5]]=float(self.edittext(j).split()[11])
+                    if self.edittext(j).split()[5] not in list(angle_ex.keys()):
+                        angle_ex[self.edittext(j).split()[5]]=[]
                     else:
-                        angle_ex[j.replace(',','').replace(':','').split()[5]].append(float(j.replace(',','').replace(':','').split()[7]))
+                        angle_ex[self.edittext(j).split()[5]].append(float(self.edittext(j).split()[7]))
             
             for ind,val in angle_dist.items():
                 dict1['Angle type'].append(ind)
+                # (&#176 is the code for degree
                 dict1['Observed angle (&#176)'].append(val)
                 dict1['Ideal angle (&#176)'].append(round(val+angle_diff[ind],2))
                 dict1['Number of outliers'].append(len(angle_ex[ind]))
-
+                # (&#176 is the code for degree
             print (dict1['Angle type'], file=f_mp_A)
             print (dict1['Observed angle (&#176)'],file=f_mp_A)
             print (dict1['Ideal angle (&#176)'], file=f_mp_A)
