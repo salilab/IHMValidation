@@ -10,10 +10,10 @@
 import os
 import itertools
 import numpy as np
-from validation import cx,get_input_information
+from validation import cx, get_input_information
 from bokeh.io import output_file, export_png, export_svgs
 from bokeh.models import Span, ColumnDataSource, FactorRange
-from bokeh.plotting import figure, output_file, save
+from bokeh.plotting import figure, save
 from bokeh.layouts import gridplot
 
 
@@ -41,12 +41,12 @@ class CxValidationPlots(cx.CxValidation):
             output_file(self.ID+i+"linker.html", mode="inline")
             measured = df_c[df_c['Intra'] == intra]['dist']
             hist, edges = np.histogram(measured, density=False, bins=50)
-            #hist_l, edges_l = np.histogram(measured, density=False, bins=25)
+            # hist_l, edges_l = np.histogram(measured, density=False, bins=25)
             p = figure(title=key+'-molecular distances/Linker '+i,
                        plot_height=400, plot_width=400)
             p.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
                    fill_color="navy", line_color="white", alpha=0.3)
-            #p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
+            # p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
             vline = Span(location=loc, dimension='height',
                          line_color='red', line_width=3, line_dash='dashed')
             p.renderers.extend([vline])
@@ -80,12 +80,12 @@ class CxValidationPlots(cx.CxValidation):
             output_file(self.ID+i+"linker.html", mode="inline")
             measured = df_c[df_c['Structured'] == struc]['dist']
             hist, edges = np.histogram(measured, density=False, bins=50)
-            #hist_l, edges_l = np.histogram(measured, density=False, bins=25)
+            # hist_l, edges_l = np.histogram(measured, density=False, bins=25)
             p = figure(title=key + ' regions/Linker '+i,
                        plot_height=350, plot_width=350)
             p.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
                    fill_color="navy", line_color="white", alpha=0.3)
-            #p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
+            # p.line(edges, hist, line_color="navy", line_width=4, alpha=0.7, legend_label=key+"/"+i)
             vline = Span(location=loc, dimension='height',
                          line_color='red', line_width=3, line_dash='dashed')
             p.renderers.extend([vline])
@@ -247,8 +247,8 @@ class CxValidationPlots(cx.CxValidation):
         fig_id.title.align = "center"
         fig_id.title.vertical_align = 'top'
         fig_id.yaxis.axis_label = 'Number of cross-links'
-        #fig_id.y_range.start = 0
-        #fig_id.y_range.end = df.shape[0]
+        # fig_id.y_range.start = 0
+        # fig_id.y_range.end = df.shape[0]
         fig_id.x_range.range_padding = 0.1
         fig_id.xaxis.major_label_orientation = 1
         fig_id.xgrid.grid_line_color = None
@@ -291,11 +291,13 @@ class CxValidationPlots(cx.CxValidation):
         fig_id.title.align = "center"
         fig_id.title.vertical_align = 'top'
         fig_id.yaxis.axis_label = 'Number of cross-links'
-        #fig_id.y_range.start = 0
-        #fig_id.y_range.end = df.shape[0]
+        # fig_id.y_range.start = 0
+        # fig_id.y_range.end = df.shape[0]
         fig_id.x_range.range_padding = 0.1
         fig_id.xaxis.major_label_orientation = 1
         fig_id.xgrid.grid_line_color = None
         fig_id.legend.location = "top_center"
         fig_id.legend.orientation = "horizontal"
         return fig_id
+
+
