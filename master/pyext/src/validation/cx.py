@@ -1,13 +1,13 @@
 ###################################
-# Script:
+# Script :
 # 1) Contains class for XL-MS validation
 #
 # ganesans - Salilab - UCSF
 # ganesans@salilab.org
 ###################################
 
-from validation import GetInputInformation
 from itertools import product
+from validation import GetInputInformation
 import pandas as pd
 pd.options.mode.chained_assignment = None
 
@@ -51,7 +51,7 @@ class CxValidation(GetInputInformation):
                             lst.append([linker_name, res1_res2,
                                         res1_entity, res1_seq, res1_asym, res1_id,
                                         res2_entity, res2_seq, res2_asym, res2_id])
-                    except:
+                    except (TypeError, KeyError, ValueError):
                         pass
 
         xl_df = pd.DataFrame(lst, columns=['Linker_Name', 'XL_ID',
@@ -168,7 +168,7 @@ class CxValidation(GetInputInformation):
                             df_res1['X'].values[0], df_res1['Y'].values[0], df_res1['Z'].values[0], row['Res2_ID'],
                             df_res2['X'].values[0], df_res2['Y'].values[0], df_res2['Z'].values[0]]
                 lst.append(row_info)
-            except:
+            except (TypeError, KeyError, ValueError, IndexError):
                 pass
 
         xl_df_comp = pd.DataFrame(lst, columns=['Linker', 'XL_ID', 'Res1', 'Structured', 'Res1_X', 'Res1_Y', 'Res1_Z',
@@ -177,7 +177,7 @@ class CxValidation(GetInputInformation):
 
     def get_complete_df_atomic(self, xl_df, df):
         '''
-        get complete df 
+        get complete df
         all labels are struc
         extract XYZ of only xl residues
         '''
@@ -190,7 +190,7 @@ class CxValidation(GetInputInformation):
                             df_res1['X'].values[0], df_res1['Y'].values[0], df_res1['Z'].values[0], row['Res2_ID'],
                             df_res2['X'].values[0], df_res2['Y'].values[0], df_res2['Z'].values[0]]
                 lst.append(row_info)
-            except:
+            except (TypeError, KeyError, ValueError):
                 pass
         xl_df_comp = pd.DataFrame(lst, columns=['Linker', 'XL_ID', 'Res1', 'Structured', 'Res1_X', 'Res1_Y', 'Res1_Z',
                                                 'Res2', 'Res2_X', 'Res2_Y', 'Res2_Z'])

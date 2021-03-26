@@ -237,7 +237,7 @@ class SasValidation(GetInputInformation):
             except (TypeError, KeyError, ValueError):
                 rg_table['MW'].append('N/A')
             try:
-                rg_table['MW error'].append(str(round(float(val['guinier_i0_mw_error']), 2))  + ' nm')
+                rg_table['MW error'].append(str(round(float(val['guinier_i0_mw_error']), 2)) + ' nm')
             except (TypeError, KeyError, ValueError):
                 rg_table['MW error'].append('N/A')
             rg_table['SASDB ID'].append(key)
