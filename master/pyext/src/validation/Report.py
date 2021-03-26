@@ -284,7 +284,7 @@ class WriteReport(object):
             try:
                 Template_Dict['validation_input'].extend(
                     utility.get_cx_data_fits(cx_fit))
-            except :
+            except:
                 Template_Dict['validation_input'] = utility.get_cx_data_fits(
                     cx_fit)
         else:

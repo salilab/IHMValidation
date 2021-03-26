@@ -53,15 +53,21 @@ class GetExcludedVolume(GetInputInformation):
 
     def get_xyzr(self,spheres:pd.DataFrame)->pd.DataFrame:
         """ get X,Y, Z coords from sphere objects"""
-        model_spheres={i+1:[j.x,j.y,j.z,j.radius] for i,j in enumerate(spheres)}
-        model_spheres_df=pd.DataFrame(model_spheres, index=['X','Y','Z','R'])
-        return model_spheres_df
+        # model_spheres={i+1:[j.x,j.y,j.z,j.radius] for i,j in enumerate(spheres)}
+        # model_spheres_df=pd.DataFrame(model_spheres, index=['X','Y','Z','R'])
+        model_spheres_df=pd.DataFrame.from_records([(j.x,j.y,j.z,j.radius) 
+                for i,j in enumerate(spheres)],columns=['X','Y','Z','R'])
+        model_spheres_df.index += 1 
+        return model_spheres_df.T
 
     def get_xyzr_complete(self,model_ID,spheres:list)->pd.DataFrame:
         """ get X,Y,Z,R, chain and model ID from sphere objects"""
 
-        model_spheres={i+1:[j.x,j.y,j.z,j.radius,j.asym_unit._id,model_ID] for i,j in enumerate(spheres)}
-        model_spheres_df=pd.DataFrame(model_spheres, index=['X','Y','Z','R','Chain_ID','Model_ID'])
+        # model_spheres={i+1:[j.x,j.y,j.z,j.radius,j.asym_unit._id,model_ID] for i,j in enumerate(spheres)}
+        # model_spheres_df=pd.DataFrame(model_spheres, index=['X','Y','Z','R','Chain_ID','Model_ID'])
+        model_spheres_df=pd.DataFrame.from_records([(j.x,j.y,j.z,j.radius,j.asym_unit._id,model_ID) 
+            for i,j in enumerate(spheres)],columns=['X','Y','Z','R'])
+        model_spheres_df.index += 1 
         return model_spheres_df
 
     def get_violation_dict(self,model_spheres_df:pd.DataFrame)->dict:
