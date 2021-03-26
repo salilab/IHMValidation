@@ -178,7 +178,7 @@ class WriteReport(object):
                             Sidechain outliers: '+str(sidechain)+'%'
                         Template_Dict['assess_excluded_volume'] = [
                             'Not applicable']
-                    except:
+                    except (TypeError, KeyError, ValueError):
                         print("Molprobity cannot be calculated...")
                         clashscore = None
                         rama = None
@@ -221,13 +221,13 @@ class WriteReport(object):
             try:
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many())
-            except:
+            except (TypeError, KeyError, ValueError):
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many_dep())
             try:
                 Template_Dict['parameters_mw'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_mw_many())
-            except:
+            except (TypeError, KeyError, ValueError):
                 Template_Dict['parameters_mw'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_mw_many_dep())
             Template_Dict['pddf_info'] = utility.dict_to_JSlist(
@@ -269,7 +269,7 @@ class WriteReport(object):
                 I_sas_plt.plot_Guinier()
                 if Template_Dict['number_of_fits'] > 0:
                     I_sas_plt.plot_fits()
-            except:
+            except (TypeError, KeyError, ValueError):
                 pass
 
     def run_cx_validation(self, Template_Dict: dict) -> (dict, dict):
@@ -284,7 +284,7 @@ class WriteReport(object):
             try:
                 Template_Dict['validation_input'].extend(
                     utility.get_cx_data_fits(cx_fit))
-            except:
+            except (TypeError, KeyError, ValueError):
                 Template_Dict['validation_input'] = utility.get_cx_data_fits(
                     cx_fit)
         else:
