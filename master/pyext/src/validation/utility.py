@@ -46,39 +46,40 @@ def format_RB_text(tex: list) -> str:
     '''
     convert RB information to text for supp table
     '''
-    val = ''
+    val = []
     for el in tex:
         for subel in el:
             if subel == el[-1] and el == tex[-1]:
-                val += str(subel)+'. '
+                val.append(str(subel)+'. ')
             elif subel == el[-1] and el != tex[-1]:
-                val += str(subel)+', '
+                val.append(str(subel)+', ')
             else:
-                val += str(subel)+':'
+                val.append(str(subel)+':')
+
     if val == '':
-        val = '-'
-    return val
+        val = ['-']
+    return ''.join(val)
 
 
 def format_flex_text(tex: list) -> str:
     '''
     convert flex information to text for supp table
     '''
-    val = ''
+    val = []
     for el in tex:
         for subel in el:
             if subel == el[-1] and el == tex[-1]:
-                val += str(subel)+'. '
+                val.append(str(subel)+'. ')
             else:
-                val += str(subel)+', '
+                val.append(str(subel)+', ')
 
     if val == '':
-        val = '-'
+        val = ['-']
 
-    return val
+    return ''.join(val)
 
 
-def format_tupple(tex: list) -> str:
+def format_tuple(tex: list) -> str:
     return str(tex[0])+'-'+str(tex[1])
 
 
@@ -181,7 +182,7 @@ def get_supp_file_pdf(mmcif_file: str) -> str:
 def get_subunits(sub_dict: dict) -> list:
     model_number = len(sub_dict['Model ID'])
     sublist = ['%s: Chain %s (%d residues)' % (sub_dict['Subunit name'][i], sub_dict['Chain ID']
-                                               [i], sub_dict['Total residues'][i]) for i in range(0, model_number)]
+                                               [i], sub_dict['Total residues'][i]) for i in range(model_number)]
     return list(set(sublist))
 
 
@@ -189,7 +190,7 @@ def get_datasets(data_dict: dict) -> list:
     dataset_number = len(data_dict['ID'])
     # print (data_dict)
     datalist = ['%s, %s' % (data_dict['Dataset type'][i], data_dict['Details'][i])
-                for i in range(0, dataset_number)]
+                for i in range(dataset_number)]
     return datalist
 
 
@@ -197,7 +198,7 @@ def get_software(data_dict: dict) -> list:
     if len(data_dict) > 0:
         dataset_number = len(data_dict['ID'])
         datalist = ['%s (version %s)' % (data_dict['Software name'][i],
-                                         data_dict['Software version'][i]) for i in range(0, dataset_number)]
+                                         data_dict['Software version'][i]) for i in range(dataset_number)]
         return datalist
     else:
         return ['Software details not provided']
@@ -232,15 +233,14 @@ def get_restraints_info(restraints: dict) -> list:
     datalist = []
     try:
         dataset = [(restraints['Restraint info'][i], restraints['Restraint type'][i])
-                   for i in range(0, restraints_num)]
-    except:
-        new_restraints = dict()
-        for key, val in restraints.items():
-            new_restraints[key] = list(set(val))
+                   for i in range(restraints_num)]
+    except (ValueError,TypeError):
+        new_restraints = {key: list(set(val))
+                          for key, val in restraints.items()}
         restraints_num = min(len(new_restraints['Restraint info']), len(
             new_restraints['Restraint type']))
         dataset = [(new_restraints['Restraint info'][i], new_restraints['Restraint type'][i])
-                   for i in range(0, restraints_num)]
+                   for i in range(restraints_num)]
 
     for i, j in Counter(dataset).items():
         datalist.append(['%s unique %s: %s' % (j, i[1], i[0])])
@@ -300,9 +300,9 @@ def get_cx_data_fits(cx_dict: dict) -> list:
 
 
 def clean_all():
-    dirname_ed = os.getcwd()
-    os.listdir(dirname_ed)
-    for item in os.listdir(dirname_ed):
+    # dirname_ed = os.getcwd()
+    os.listdir('.')
+    for item in os.listdir('.'):
         if item.endswith('.txt'):
             os.remove(item)
         if item.endswith('.csv'):
