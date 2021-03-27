@@ -222,18 +222,18 @@ class GetInputInformation(object):
                 if el.rigid and el.starting_model:
                     RB_nos.append(el.asym_unit.seq_id_range)
                     RB[el.starting_model.asym_unit._id].append(
-                      [utility.format_tupple(el.asym_unit.seq_id_range),
+                      [utility.format_tuple(el.asym_unit.seq_id_range),
                        utility.get_val_from_key(self.get_dataset_dict(),
                                                 el.starting_model.dataset._id)]
                                                 )
                 elif el.rigid and not el.starting_model:
                     RB_nos.append(el.asym_unit.seq_id_range)
                     RB[el.asym_unit._id].append(
-                        [utility.format_tupple(el.asym_unit.seq_id_range),
+                        [utility.format_tuple(el.asym_unit.seq_id_range),
                          'None'])
                 else:
                     flex[el.asym_unit._id].append(
-                        [utility.format_tupple(el.asym_unit.seq_id_range)])
+                        [utility.format_tuple(el.asym_unit.seq_id_range)])
         return RB, flex, len(RB_nos), len(all_nos)
 
     def get_number_of_assemblies(self) -> int:
