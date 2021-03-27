@@ -7,8 +7,6 @@
 import os
 import datetime
 import decouple
-from validation.Report import WriteReport
-from validation import utility
 import json
 import argparse
 from multiprocessing import Manager
@@ -17,6 +15,9 @@ import jinja2
 import pytz
 import sys
 sys.path.insert(0, "../master/pyext/src/")
+from validation.Report import WriteReport
+from validation import utility
+
 # from validation.WKhtmlToPdf import  wkhtmltopdf
 # import utility
 
