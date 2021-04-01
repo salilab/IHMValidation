@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 04, 2021 --  12:20 PM"
+        "Itemized_List": "March 30, 2021 --  01:49 PM"
     },
     {
         "Category": "ensemble_info",
@@ -52,67 +52,67 @@
             ],
             [
                 "A",
-                "-",
+                "",
                 "1-265, 266-270, 271-320, 321-336, 337-354, 355-421, 422-437, 438-1108, 1109-1114, 1115-1267, 1268-1277, 1278-1424, 1425-1427, 1428-1428, 1429-1450, 1451-1458, 1459-1460, 1461-1487, 1488-1970. "
             ],
             [
                 "B",
-                "-",
+                "",
                 "1-15, 16-68, 69-80, 81-833, 834-843, 844-874, 875-888, 889-1063, 1064-1076, 1077-1080, 1081-1082, 1083-1110, 1111-1174. "
             ],
             [
                 "C",
-                "-",
+                "",
                 "1-1, 2-73, 74-74, 75-132, 133-145, 146-271, 272-275. "
             ],
             [
                 "D",
-                "-",
+                "",
                 "1-13, 14-141, 142-142. "
             ],
             [
                 "E",
-                "-",
+                "",
                 "1-1, 2-31, 32-32, 33-45, 46-46, 47-111, 112-113, 114-131, 132-132, 133-156, 157-157, 158-185, 186-186, 187-210. "
             ],
             [
                 "F",
-                "-",
+                "",
                 "1-45, 46-127. "
             ],
             [
                 "G",
-                "-",
+                "",
                 "1-171, 172-172. "
             ],
             [
                 "H",
-                "-",
+                "",
                 "1-1, 2-149, 150-150. "
             ],
             [
                 "I",
-                "-",
+                "",
                 "1-11, 12-125. "
             ],
             [
                 "J",
-                "-",
+                "",
                 "1-67. "
             ],
             [
                 "K",
-                "-",
+                "",
                 "1-115, 116-117. "
             ],
             [
                 "L",
-                "-",
+                "",
                 "1-14, 15-58. "
             ],
             [
                 "M",
-                "-",
+                "",
                 "1-368. "
             ]
         ]
@@ -120,19 +120,19 @@
     {
         "Category": "RB",
         "Itemized_List": [
-            "A: - ",
-            "B: - ",
-            "C: - ",
-            "D: - ",
-            "E: - ",
-            "F: - ",
-            "G: - ",
-            "H: - ",
-            "I: - ",
-            "J: - ",
-            "K: - ",
-            "L: - ",
-            "M: - "
+            "A:  ",
+            "B:  ",
+            "C:  ",
+            "D:  ",
+            "E:  ",
+            "F:  ",
+            "G:  ",
+            "H:  ",
+            "I:  ",
+            "J:  ",
+            "K:  ",
+            "L:  ",
+            "M:  "
         ]
     },
     {
@@ -183,7 +183,7 @@
     },
     {
         "Category": "Authors",
-        "Itemized_List": "Jishage M;Yu X;Shi Y;Ganesan SJ;Chen WY;Sali A;Chait BT;Asturias FJ;Roeder RG"
+        "Itemized_List": "Jishage M; Yu X; Shi Y; Ganesan SJ; Chen WY; Sali A; Chait BT; Asturias FJ; Roeder RG"
     },
     {
         "Category": "Entry_list",
@@ -474,19 +474,19 @@
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "RPB7: Chain G (172 residues)",
-            "RPB10: Chain J (67 residues)",
-            "RPB12: Chain L (58 residues)",
-            "RPB9: Chain I (125 residues)",
-            "RPB2: Chain B (1174 residues)",
-            "RPB1: Chain A (1970 residues)",
-            "RPB6: Chain F (127 residues)",
-            "RPB11: Chain K (117 residues)",
             "RPB3: Chain C (275 residues)",
-            "RPB8: Chain H (150 residues)",
+            "RPB7: Chain G (172 residues)",
+            "RPB6: Chain F (127 residues)",
             "RPB4: Chain D (142 residues)",
-            "GDOWN1: Chain M (368 residues)",
-            "RPB5: Chain E (210 residues)"
+            "RPB9: Chain I (125 residues)",
+            "RPB10: Chain J (67 residues)",
+            "RPB1: Chain A (1970 residues)",
+            "RPB8: Chain H (150 residues)",
+            "RPB5: Chain E (210 residues)",
+            "RPB2: Chain B (1174 residues)",
+            "RPB12: Chain L (58 residues)",
+            "RPB11: Chain K (117 residues)",
+            "GDOWN1: Chain M (368 residues)"
         ]
     },
     {

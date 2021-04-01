@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 09, 2021 --  05:55 PM"
+        "Itemized_List": "March 29, 2021 --  10:08 PM"
     },
     {
         "Category": "ensemble_info",
@@ -150,7 +150,7 @@
     },
     {
         "Category": "Authors",
-        "Itemized_List": "Shi Y;Fernandez-Martinez J;Tjioe E;Pellarin R;Kim SJ;Williams R;Schneidman-Duhovny D;Sali A;Rout MP;Chait BT"
+        "Itemized_List": "Shi Y; Fernandez-Martinez J; Tjioe E; Pellarin R; Kim SJ; Williams R; Schneidman-Duhovny D; Sali A; Rout MP; Chait BT"
     },
     {
         "Category": "Entry_list",
@@ -353,9 +353,9 @@
     {
         "Category": "Data",
         "Itemized_List": [
-            "2DEM CLASS AVERAGE",
+            "CX-MS DATA",
             "EM RAW MICROGRAPHS",
-            "CX-MS DATA"
+            "2DEM CLASS AVERAGE"
         ]
     },
     {
@@ -650,13 +650,13 @@
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "Nup133: Chain D (1157 residues)",
-            "Nup145c: Chain E (712 residues)",
-            "Seh1: Chain F (349 residues)",
-            "Sec13: Chain G (297 residues)",
             "Nup84: Chain A (726 residues)",
+            "Nup145c: Chain E (712 residues)",
             "Nup85: Chain B (744 residues)",
-            "Nup120: Chain C (1037 residues)"
+            "Nup133: Chain D (1157 residues)",
+            "Nup120: Chain C (1037 residues)",
+            "Seh1: Chain F (349 residues)",
+            "Sec13: Chain G (297 residues)"
         ]
     },
     {
@@ -760,7 +760,7 @@
                 "1 unique CrossLinkRestraint: EDC, 127 cross-links"
             ],
             [
-                "1 unique EM2DRestraint: Number of micrographs: 800, Image resolution: 30.0"
+                "1 unique EM2DRestraint: Number                                                           of micrographs: 800, Image resolution: 30.0"
             ]
         ]
     },

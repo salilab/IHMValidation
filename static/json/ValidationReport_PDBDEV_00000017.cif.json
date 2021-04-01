@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 09, 2021 --  11:13 AM"
+        "Itemized_List": "March 31, 2021 --  11:25 AM"
     },
     {
         "Category": "ensemble_info",
@@ -99,7 +99,7 @@
     },
     {
         "Category": "Authors",
-        "Itemized_List": "Upla P;Kim SJ;Sampathkumar P;Dutta K;Cahill SM;Chemmama IE;Williams R;Bonanno JB;Rice WJ;Stokes DL;Cowburn D;Almo SC;Sali A;Rout MP;Fernandez-Martinez J"
+        "Itemized_List": "Upla P; Kim SJ; Sampathkumar P; Dutta K; Cahill SM; Chemmama IE; Williams R; Bonanno JB; Rice WJ; Stokes DL; Cowburn D; Almo SC; Sali A; Rout MP; Fernandez-Martinez J"
     },
     {
         "Category": "Entry_list",
@@ -487,15 +487,9 @@
                 "Porod Volume/MW"
             ],
             [
-                "SASDBX9",
-                "12.5 kDa",
-                "14.7 kDa",
-                "N/A"
-            ],
-            [
-                "SASDBV9",
-                "12.6 kDa",
-                "12.2 kDa",
+                "SASDBY9",
+                "25.9 kDa",
+                "25.2 kDa",
                 "N/A"
             ],
             [
@@ -505,9 +499,15 @@
                 "N/A"
             ],
             [
-                "SASDBY9",
-                "25.9 kDa",
-                "25.2 kDa",
+                "SASDBV9",
+                "12.6 kDa",
+                "12.2 kDa",
+                "N/A"
+            ],
+            [
+                "SASDBX9",
+                "12.5 kDa",
+                "14.7 kDa",
                 "N/A"
             ],
             [
@@ -533,7 +533,7 @@
                 "SASDBV9",
                 "ATSAS GNOM",
                 "6.66 nm",
-                "N/A",
+                "None nm",
                 "1.824 nm",
                 "0.006 nm"
             ],
@@ -541,7 +541,7 @@
                 "SASDBW9",
                 "ATSAS GNOM",
                 "9.37 nm",
-                "N/A",
+                "None nm",
                 "2.787 nm",
                 "0.007 nm"
             ],
@@ -549,7 +549,7 @@
                 "SASDBX9",
                 "ATSAS GNOM",
                 "7.93 nm",
-                "N/A",
+                "None nm",
                 "2.636 nm",
                 "0.008 nm"
             ],
@@ -557,7 +557,7 @@
                 "SASDBY9",
                 "ATSAS GNOM",
                 "10.45 nm",
-                "N/A",
+                "None nm",
                 "2.976 nm",
                 "0.005 nm"
             ],
@@ -565,7 +565,7 @@
                 "SASDBZ9",
                 "ATSAS GNOM",
                 "15.43 nm",
-                "N/A",
+                "None nm",
                 "4.629 nm",
                 "0.011 nm"
             ]
@@ -628,36 +628,36 @@
             [
                 "SASDBV9",
                 "1.77 nm",
-                "N/A",
-                "N/A",
+                "0.05 nm",
+                "12.2 nm",
                 "N/A"
             ],
             [
                 "SASDBW9",
                 "2.71 nm",
-                "N/A",
-                "N/A",
+                "0.06 nm",
+                "25.2 nm",
                 "N/A"
             ],
             [
                 "SASDBX9",
                 "2.78 nm",
-                "N/A",
-                "N/A",
+                "0.18 nm",
+                "14.7 nm",
                 "N/A"
             ],
             [
                 "SASDBY9",
                 "2.95 nm",
-                "N/A",
-                "N/A",
+                "0.11 nm",
+                "25.2 nm",
                 "N/A"
             ],
             [
                 "SASDBZ9",
                 "4.34 nm",
-                "N/A",
-                "N/A",
+                "0.17 nm",
+                "48.3 nm",
                 "N/A"
             ]
         ]
@@ -675,21 +675,21 @@
     {
         "Category": "Data_quality",
         "Itemized_List": [
-            "SASDBX9: Rg from Gunier is 2.636nm and Rg from p(r) is 2.78nm",
-            "SASDBV9: Rg from Gunier is 1.824nm and Rg from p(r) is 1.77nm",
-            "SASDBW9: Rg from Gunier is 2.787nm and Rg from p(r) is 2.71nm",
             "SASDBY9: Rg from Gunier is 2.976nm and Rg from p(r) is 2.95nm",
+            "SASDBW9: Rg from Gunier is 2.787nm and Rg from p(r) is 2.71nm",
+            "SASDBV9: Rg from Gunier is 1.824nm and Rg from p(r) is 1.77nm",
+            "SASDBX9: Rg from Gunier is 2.636nm and Rg from p(r) is 2.78nm",
             "SASDBZ9: Rg from Gunier is 4.629nm and Rg from p(r) is 4.34nm"
         ]
     },
     {
         "Category": "validation_input",
         "Itemized_List": [
-            "SASDBX9: Fit 1 with &#x3A7;&#xb2; value 2.86",
+            "SASDBY9: Fit 1 with &#x3A7;&#xb2; value 2.02",
+            "SASDBW9: Fit 1 with &#x3A7;&#xb2; value 1.97",
             "SASDBV9: Fit 1 with &#x3A7;&#xb2; value 1.28",
             "SASDBV9: Fit 2 with &#x3A7;&#xb2; value 1.1",
-            "SASDBW9: Fit 1 with &#x3A7;&#xb2; value 1.97",
-            "SASDBY9: Fit 1 with &#x3A7;&#xb2; value 2.02",
+            "SASDBX9: Fit 1 with &#x3A7;&#xb2; value 2.86",
             "SASDBZ9: Fit 1 with &#x3A7;&#xb2; value 1.94"
         ]
     },
@@ -806,10 +806,10 @@
                 "1 unique EM3DRestraint: Gaussian mixture models, 50"
             ],
             [
-                "6 unique EM2DRestraint: Number of micrographs: None, Image resolution: 50.0"
+                "6 unique EM2DRestraint: Number                                                           of micrographs: None, Image resolution: 50.0"
             ],
             [
-                "2 unique EM2DRestraint: Number of micrographs: None, Image resolution: 60.0"
+                "2 unique EM2DRestraint: Number                                                           of micrographs: None, Image resolution: 60.0"
             ],
             [
                 "5 unique SASRestraint: Assembly name: SAXS subassembly Fitting method: FoXS Multi-state: False"

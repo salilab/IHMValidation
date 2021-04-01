@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 10, 2021 --  05:26 PM"
+        "Itemized_List": "March 29, 2021 --  10:10 PM"
     },
     {
         "Category": "ensemble_info",
@@ -110,7 +110,7 @@
             [
                 "G",
                 "1-265:Experimental model/4IFD. ",
-                "-"
+                ""
             ],
             [
                 "H",
@@ -129,7 +129,7 @@
             ],
             [
                 "K",
-                "-",
+                "",
                 "1-184. "
             ],
             [
@@ -139,7 +139,7 @@
             ],
             [
                 "M",
-                "-",
+                "",
                 "1-186. "
             ],
             [
@@ -162,9 +162,9 @@
             "H: 1-242:Experimental model/4IFD.  ",
             "I: 1-223:Experimental model/4IFD, 247-475:Experimental model/1GFL.  ",
             "J: 7-99:Experimental model/4IFD, 121-193:Experimental model/4IFD, 206-309:Experimental model/4IFD, 327-394:Experimental model/4IFD.  ",
-            "K: - ",
+            "K:  ",
             "L: 127-516:Experimental model/2HBJ, 532-557:Experimental model/4IFD, 565-619:Experimental model/4IFD.  ",
-            "M: - ",
+            "M:  ",
             "N: 259-747:Comparative model/None.  "
         ]
     },
@@ -177,7 +177,7 @@
             "D: 72-98, 114-125, 163-184, 292-292.  ",
             "E: 1-3, 23-41, 150-162, 249-250.  ",
             "F: 237-240.  ",
-            "G: - ",
+            "G:  ",
             "H: 243-265.  ",
             "I: 224-246.  ",
             "J: 1-6, 100-120, 194-205, 310-326.  ",
@@ -217,7 +217,7 @@
     },
     {
         "Category": "Authors",
-        "Itemized_List": "Shi Y;Pellarin R;Fridy PC;Fernandez-Martinez J;Thompson MK;Li Y;Wang QJ;Sali A;Rout MP;Chait BT"
+        "Itemized_List": "Shi Y; Pellarin R; Fridy PC; Fernandez-Martinez J; Thompson MK; Li Y; Wang QJ; Sali A; Rout MP; Chait BT"
     },
     {
         "Category": "Entry_list",
@@ -852,20 +852,20 @@
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "Rrp42: Chain G (265 residues)",
             "Rrp40: Chain F (240 residues)",
-            "Dis3: Chain A (1001 residues)",
-            "Rrp46_gfp: Chain I (475 residues)",
-            "MPP6: Chain M (186 residues)",
-            "Rrp4: Chain C (359 residues)",
             "Rrp6: Chain L (733 residues)",
-            "Ski7: Chain N (747 residues)",
-            "Ski6: Chain H (265 residues)",
-            "Rrp45: Chain B (305 residues)",
             "Mtr3: Chain E (250 residues)",
-            "Lrp1: Chain K (184 residues)",
+            "MPP6: Chain M (186 residues)",
+            "Ski6: Chain H (265 residues)",
+            "Ski7: Chain N (747 residues)",
+            "Csl4: Chain D (292 residues)",
+            "Rrp46_gfp: Chain I (475 residues)",
+            "Dis3: Chain A (1001 residues)",
+            "Rrp4: Chain C (359 residues)",
             "Rrp43: Chain J (394 residues)",
-            "Csl4: Chain D (292 residues)"
+            "Lrp1: Chain K (184 residues)",
+            "Rrp45: Chain B (305 residues)",
+            "Rrp42: Chain G (265 residues)"
         ]
     },
     {

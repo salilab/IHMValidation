@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 04, 2021 --  12:48 PM"
+        "Itemized_List": "March 30, 2021 --  07:26 PM"
     },
     {
         "Category": "ensemble_info",
@@ -62,7 +62,7 @@
             [
                 "A",
                 "1-4128:Experimental model/5LUQ. ",
-                "-"
+                ""
             ]
         ]
     },
@@ -75,7 +75,7 @@
     {
         "Category": "flex",
         "Itemized_List": [
-            "A: - "
+            "A:  "
         ]
     },
     {
@@ -108,7 +108,7 @@
     },
     {
         "Category": "Authors",
-        "Itemized_List": "Saltzberg DJ;Hepburn M;Pilla KB;Schriemer DC;Lees-Miller SP;Blundell TL;Sali A"
+        "Itemized_List": "Saltzberg DJ; Hepburn M; Pilla KB; Schriemer DC; Lees-Miller SP; Blundell TL; Sali A"
     },
     {
         "Category": "Entry_list",

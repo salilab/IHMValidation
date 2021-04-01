@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 30, 2021 --  09:23 PM"
+        "Itemized_List": "March 30, 2021 --  09:30 PM"
     },
     {
         "Category": "ensemble_info",
@@ -19,64 +19,10 @@
                 "1",
                 "Cluster 0BMSO+DHSO+DSSO in state State_0",
                 "1",
-                "54702",
-                "None",
-                "dRMSD",
-                "16.0"
-            ],
-            [
-                "2",
-                "Cluster 0BMSO+DHSO in state State_0",
-                "2",
-                "132407",
+                "125750",
                 "None",
                 "dRMSD",
                 "22.0"
-            ],
-            [
-                "3",
-                "Cluster 0DHSO+DSSO in state State_0",
-                "3",
-                "98186",
-                "None",
-                "dRMSD",
-                "24.0"
-            ],
-            [
-                "4",
-                "Cluster 0BMSO+DSSO in state State_0",
-                "4",
-                "87368",
-                "None",
-                "dRMSD",
-                "27.0"
-            ],
-            [
-                "5",
-                "Cluster 0DSSO in state State_0",
-                "5",
-                "243067",
-                "None",
-                "dRMSD",
-                "27.0"
-            ],
-            [
-                "6",
-                "Cluster 0DHSO in state State_0",
-                "6",
-                "312515",
-                "None",
-                "dRMSD",
-                "29.0"
-            ],
-            [
-                "7",
-                "Cluster 0BMSO in state State_0",
-                "7",
-                "357350",
-                "None",
-                "dRMSD",
-                "37.0"
             ]
         ]
     },
@@ -86,7 +32,7 @@
     },
     {
         "Category": "num_ensembles",
-        "Itemized_List": 7
+        "Itemized_List": 1
     },
     {
         "Category": "Rigid_Body",
@@ -94,7 +40,7 @@
     },
     {
         "Category": "Flexible_Unit",
-        "Itemized_List": 28
+        "Itemized_List": 29
     },
     {
         "Category": "RB_list",
@@ -143,6 +89,11 @@
                 "H",
                 "11-164:Experimental model/4D10, 194-209:Experimental model/4D10. ",
                 "1-10, 165-193. "
+            ],
+            [
+                "I",
+                "",
+                "1-57. "
             ]
         ]
     },
@@ -156,7 +107,8 @@
             "E: 25-283:Experimental model/4D10, 296-333:Experimental model/4D10.  ",
             "F: 29-207:Experimental model/4D10, 215-267:Experimental model/4D10, 271-316:Experimental model/4D10.  ",
             "G: 8-158:Comparative model/None, 163-212:Comparative model/None.  ",
-            "H: 11-164:Experimental model/4D10, 194-209:Experimental model/4D10.  "
+            "H: 11-164:Experimental model/4D10, 194-209:Experimental model/4D10.  ",
+            "I:  "
         ]
     },
     {
@@ -169,32 +121,33 @@
             "E: 1-24, 284-295, 334-334.  ",
             "F: 1-28, 208-214, 268-270, 317-327.  ",
             "G: 1-7, 159-162, 213-264.  ",
-            "H: 1-10, 165-193.  "
+            "H: 1-10, 165-193.  ",
+            "I: 1-57.  "
         ]
     },
     {
         "Category": "ID",
-        "Itemized_List": "PDBDEV00000037"
+        "Itemized_List": "PDBDEV00000038"
     },
     {
         "Category": "ID_w",
         "Itemized_List": [
-            "PDBDEV00000037"
+            "PDBDEV00000038"
         ]
     },
     {
         "Category": "ID_T",
-        "Itemized_List": "PDBDEV_00000037"
+        "Itemized_List": "PDBDEV_00000038"
     },
     {
         "Category": "ID_R",
         "Itemized_List": [
-            "PDBDEV_00000037"
+            "PDBDEV_00000038"
         ]
     },
     {
         "Category": "Molecule",
-        "Itemized_List": "Integrative structure of the canonical human COP9 Signalosome"
+        "Itemized_List": "Integrative structure of the non-canonical human COP9 Signalosome"
     },
     {
         "Category": "Title",
@@ -280,405 +233,23 @@
                 "209"
             ],
             [
-                "2",
                 "1",
-                "1",
-                "CSN1",
-                "A",
-                "491"
-            ],
-            [
-                "2",
-                "2",
-                "2",
-                "CSN2",
-                "B",
-                "443"
-            ],
-            [
-                "2",
-                "3",
-                "3",
-                "CSN3",
-                "C",
-                "423"
-            ],
-            [
-                "2",
-                "4",
-                "4",
-                "CSN4",
-                "D",
-                "406"
-            ],
-            [
-                "2",
-                "5",
-                "5",
-                "CSN5",
-                "E",
-                "334"
-            ],
-            [
-                "2",
-                "6",
-                "6",
-                "CSN6",
-                "F",
-                "327"
-            ],
-            [
-                "2",
-                "7",
-                "7",
-                "CSN7",
-                "G",
-                "264"
-            ],
-            [
-                "2",
-                "8",
-                "8",
-                "CSN8",
-                "H",
-                "209"
-            ],
-            [
-                "3",
-                "1",
-                "1",
-                "CSN1",
-                "A",
-                "491"
-            ],
-            [
-                "3",
-                "2",
-                "2",
-                "CSN2",
-                "B",
-                "443"
-            ],
-            [
-                "3",
-                "3",
-                "3",
-                "CSN3",
-                "C",
-                "423"
-            ],
-            [
-                "3",
-                "4",
-                "4",
-                "CSN4",
-                "D",
-                "406"
-            ],
-            [
-                "3",
-                "5",
-                "5",
-                "CSN5",
-                "E",
-                "334"
-            ],
-            [
-                "3",
-                "6",
-                "6",
-                "CSN6",
-                "F",
-                "327"
-            ],
-            [
-                "3",
-                "7",
-                "7",
-                "CSN7",
-                "G",
-                "264"
-            ],
-            [
-                "3",
-                "8",
-                "8",
-                "CSN8",
-                "H",
-                "209"
-            ],
-            [
-                "4",
-                "1",
-                "1",
-                "CSN1",
-                "A",
-                "491"
-            ],
-            [
-                "4",
-                "2",
-                "2",
-                "CSN2",
-                "B",
-                "443"
-            ],
-            [
-                "4",
-                "3",
-                "3",
-                "CSN3",
-                "C",
-                "423"
-            ],
-            [
-                "4",
-                "4",
-                "4",
-                "CSN4",
-                "D",
-                "406"
-            ],
-            [
-                "4",
-                "5",
-                "5",
-                "CSN5",
-                "E",
-                "334"
-            ],
-            [
-                "4",
-                "6",
-                "6",
-                "CSN6",
-                "F",
-                "327"
-            ],
-            [
-                "4",
-                "7",
-                "7",
-                "CSN7",
-                "G",
-                "264"
-            ],
-            [
-                "4",
-                "8",
-                "8",
-                "CSN8",
-                "H",
-                "209"
-            ],
-            [
-                "5",
-                "1",
-                "1",
-                "CSN1",
-                "A",
-                "491"
-            ],
-            [
-                "5",
-                "2",
-                "2",
-                "CSN2",
-                "B",
-                "443"
-            ],
-            [
-                "5",
-                "3",
-                "3",
-                "CSN3",
-                "C",
-                "423"
-            ],
-            [
-                "5",
-                "4",
-                "4",
-                "CSN4",
-                "D",
-                "406"
-            ],
-            [
-                "5",
-                "5",
-                "5",
-                "CSN5",
-                "E",
-                "334"
-            ],
-            [
-                "5",
-                "6",
-                "6",
-                "CSN6",
-                "F",
-                "327"
-            ],
-            [
-                "5",
-                "7",
-                "7",
-                "CSN7",
-                "G",
-                "264"
-            ],
-            [
-                "5",
-                "8",
-                "8",
-                "CSN8",
-                "H",
-                "209"
-            ],
-            [
-                "6",
-                "1",
-                "1",
-                "CSN1",
-                "A",
-                "491"
-            ],
-            [
-                "6",
-                "2",
-                "2",
-                "CSN2",
-                "B",
-                "443"
-            ],
-            [
-                "6",
-                "3",
-                "3",
-                "CSN3",
-                "C",
-                "423"
-            ],
-            [
-                "6",
-                "4",
-                "4",
-                "CSN4",
-                "D",
-                "406"
-            ],
-            [
-                "6",
-                "5",
-                "5",
-                "CSN5",
-                "E",
-                "334"
-            ],
-            [
-                "6",
-                "6",
-                "6",
-                "CSN6",
-                "F",
-                "327"
-            ],
-            [
-                "6",
-                "7",
-                "7",
-                "CSN7",
-                "G",
-                "264"
-            ],
-            [
-                "6",
-                "8",
-                "8",
-                "CSN8",
-                "H",
-                "209"
-            ],
-            [
-                "7",
-                "1",
-                "1",
-                "CSN1",
-                "A",
-                "491"
-            ],
-            [
-                "7",
-                "2",
-                "2",
-                "CSN2",
-                "B",
-                "443"
-            ],
-            [
-                "7",
-                "3",
-                "3",
-                "CSN3",
-                "C",
-                "423"
-            ],
-            [
-                "7",
-                "4",
-                "4",
-                "CSN4",
-                "D",
-                "406"
-            ],
-            [
-                "7",
-                "5",
-                "5",
-                "CSN5",
-                "E",
-                "334"
-            ],
-            [
-                "7",
-                "6",
-                "6",
-                "CSN6",
-                "F",
-                "327"
-            ],
-            [
-                "7",
-                "7",
-                "7",
-                "CSN7",
-                "G",
-                "264"
-            ],
-            [
-                "7",
-                "8",
-                "8",
-                "CSN8",
-                "H",
-                "209"
+                "9",
+                "9",
+                "CSN9",
+                "I",
+                "57"
             ]
         ]
     },
     {
         "Category": "number_of_molecules",
-        "Itemized_List": 7
+        "Itemized_List": 1
     },
     {
         "Category": "model_names",
         "Itemized_List": [
-            "Cluster 0BMSO+DHSO+DSSO in state State_0/None",
-            "Cluster 0BMSO+DHSO in state State_0/None",
-            "Cluster 0DHSO+DSSO in state State_0/None",
-            "Cluster 0BMSO+DSSO in state State_0/None",
-            "Cluster 0DSSO in state State_0/None",
-            "Cluster 0DHSO in state State_0/None",
-            "Cluster 0BMSO in state State_0/None"
+            "Cluster 0BMSO+DHSO+DSSO in state State_0/None"
         ]
     },
     {
@@ -826,7 +397,7 @@
                 "1",
                 "Replica exchange monte carlo",
                 "Sampling",
-                "5250000",
+                "7500000",
                 "False",
                 "True"
             ]
@@ -834,7 +405,7 @@
     },
     {
         "Category": "num_chains",
-        "Itemized_List": 8.0
+        "Itemized_List": 9.0
     },
     {
         "Category": "assess_atomic_segments",
@@ -851,50 +422,14 @@
             [
                 "1",
                 "99.79",
-                "6767.0"
-            ],
-            [
-                "2",
-                "99.78",
-                "6862.0"
-            ],
-            [
-                "3",
-                "99.79",
-                "6769.0"
-            ],
-            [
-                "4",
-                "99.79",
-                "6810.0"
-            ],
-            [
-                "5",
-                "99.78",
-                "6831.0"
-            ],
-            [
-                "6",
-                "99.78",
-                "6840.0"
-            ],
-            [
-                "7",
-                "99.78",
-                "6830.0"
+                "6806.0"
             ]
         ]
     },
     {
         "Category": "assess_excluded_volume",
         "Itemized_List": [
-            "Model-1: Number of violations-6767.0 ",
-            "Model-2: Number of violations-6862.0 ",
-            "Model-3: Number of violations-6769.0 ",
-            "Model-4: Number of violations-6810.0 ",
-            "Model-5: Number of violations-6831.0 ",
-            "Model-6: Number of violations-6840.0 ",
-            "Model-7: Number of violations-6830.0 "
+            "Model-1: Number of violations-6806.0 "
         ]
     },
     {
@@ -905,42 +440,12 @@
     },
     {
         "Category": "Cx Fit Model #1",
-        "Itemized_List": 71.05263157894737
-    },
-    {
-        "Category": "Cx Fit Model #2",
-        "Itemized_List": 71.9298245614035
-    },
-    {
-        "Category": "Cx Fit Model #3",
-        "Itemized_List": 72.36842105263158
-    },
-    {
-        "Category": "Cx Fit Model #4",
-        "Itemized_List": 67.76315789473685
-    },
-    {
-        "Category": "Cx Fit Model #5",
-        "Itemized_List": 63.1578947368421
-    },
-    {
-        "Category": "Cx Fit Model #6",
-        "Itemized_List": 65.78947368421053
-    },
-    {
-        "Category": "Cx Fit Model #7",
-        "Itemized_List": 51.53508771929825
+        "Itemized_List": 74.7557003257329
     },
     {
         "Category": "validation_input",
         "Itemized_List": [
-            "CX-MS Fit of medioid: model # 1, percentage satisfied 71.05%",
-            "CX-MS Fit of medioid: model # 2, percentage satisfied 71.93%",
-            "CX-MS Fit of medioid: model # 3, percentage satisfied 72.37%",
-            "CX-MS Fit of medioid: model # 4, percentage satisfied 67.76%",
-            "CX-MS Fit of medioid: model # 5, percentage satisfied 63.16%",
-            "CX-MS Fit of medioid: model # 6, percentage satisfied 65.79%",
-            "CX-MS Fit of medioid: model # 7, percentage satisfied 51.54%"
+            "CX-MS Fit of medioid: model # 1, percentage satisfied 74.76%"
         ]
     },
     {
@@ -955,23 +460,24 @@
     },
     {
         "Category": "complex_name",
-        "Itemized_List": "integrative structure of the canonical human cop9 signalosome"
+        "Itemized_List": "integrative structure of the non-canonical human cop9 signalosome"
     },
     {
         "Category": "PDB_ID",
-        "Itemized_List": "PDBDEV00000037"
+        "Itemized_List": "PDBDEV00000038"
     },
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "CSN4: Chain D (406 residues)",
+            "CSN6: Chain F (327 residues)",
+            "CSN9: Chain I (57 residues)",
+            "CSN5: Chain E (334 residues)",
             "CSN1: Chain A (491 residues)",
             "CSN7: Chain G (264 residues)",
-            "CSN6: Chain F (327 residues)",
-            "CSN8: Chain H (209 residues)",
+            "CSN4: Chain D (406 residues)",
+            "CSN3: Chain C (423 residues)",
             "CSN2: Chain B (443 residues)",
-            "CSN5: Chain E (334 residues)",
-            "CSN3: Chain C (423 residues)"
+            "CSN8: Chain H (209 residues)"
         ]
     },
     {
@@ -982,12 +488,12 @@
             "Experimental model, PDB ID: 4D10",
             "Experimental model, PDB ID: Not listed",
             "Comparative model, template PDB ID: Not listed",
-            "CX-MS data, Linker name and number of cross-links: DSSO, 74 cross-links",
-            "CX-MS data, Linker name and number of cross-links: DSSO, 141 cross-links",
-            "CX-MS data, Linker name and number of cross-links: BMSO, 40 cross-links",
-            "CX-MS data, Linker name and number of cross-links: BMSO, 31 cross-links",
-            "CX-MS data, Linker name and number of cross-links: DHSO, 91 cross-links",
-            "CX-MS data, Linker name and number of cross-links: DHSO, 79 cross-links"
+            "CX-MS data, Linker name and number of cross-links: DSSO, 86 cross-links",
+            "CX-MS data, Linker name and number of cross-links: DSSO, 186 cross-links",
+            "CX-MS data, Linker name and number of cross-links: BMSO, 75 cross-links",
+            "CX-MS data, Linker name and number of cross-links: BMSO, 34 cross-links",
+            "CX-MS data, Linker name and number of cross-links: DHSO, 107 cross-links",
+            "CX-MS data, Linker name and number of cross-links: DHSO, 131 cross-links"
         ]
     },
     {
@@ -1005,7 +511,7 @@
     },
     {
         "Category": "struc",
-        "Itemized_List": "85%"
+        "Itemized_List": "83%"
     },
     {
         "Category": "method",
@@ -1023,7 +529,7 @@
     },
     {
         "Category": "models",
-        "Itemized_List": "54702, 132407, 98186, 87368, 243067, 312515, 357350"
+        "Itemized_List": "125750"
     },
     {
         "Category": "sampling_validation",
@@ -1043,28 +549,28 @@
     },
     {
         "Category": "model_precision",
-        "Itemized_List": "16.0&#8491, 22.0&#8491, 24.0&#8491, 27.0&#8491, 27.0&#8491, 29.0&#8491, 37.0&#8491"
+        "Itemized_List": "22.0&#8491"
     },
     {
         "Category": "restraint_info",
         "Itemized_List": [
             [
-                "1 unique CrossLinkRestraint: DSSO, 74 cross-links"
+                "1 unique CrossLinkRestraint: DSSO, 86 cross-links"
             ],
             [
-                "1 unique CrossLinkRestraint: DSSO, 141 cross-links"
+                "1 unique CrossLinkRestraint: DSSO, 186 cross-links"
             ],
             [
-                "1 unique CrossLinkRestraint: BMSO, 40 cross-links"
+                "1 unique CrossLinkRestraint: BMSO, 75 cross-links"
             ],
             [
-                "1 unique CrossLinkRestraint: BMSO, 31 cross-links"
+                "1 unique CrossLinkRestraint: BMSO, 34 cross-links"
             ],
             [
-                "1 unique CrossLinkRestraint: DHSO, 91 cross-links"
+                "1 unique CrossLinkRestraint: DHSO, 107 cross-links"
             ],
             [
-                "1 unique CrossLinkRestraint: DHSO, 79 cross-links"
+                "1 unique CrossLinkRestraint: DHSO, 131 cross-links"
             ]
         ]
     },

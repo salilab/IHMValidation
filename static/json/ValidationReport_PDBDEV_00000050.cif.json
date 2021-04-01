@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 30, 2021 --  01:44 PM"
+        "Itemized_List": "March 30, 2021 --  11:57 PM"
     },
     {
         "Category": "ensemble_info",
@@ -17,39 +17,12 @@
             ],
             [
                 "1",
-                "C3 cluster 1",
+                "Cluster 0 in state State_0",
                 "1",
-                "200",
+                "9999",
                 "None",
-                "RMSD",
-                "18.709"
-            ],
-            [
-                "2",
-                "C3b cluster 1",
-                "2",
-                "200",
-                "None",
-                "RMSD",
-                "10.436"
-            ],
-            [
-                "3",
-                "iC3 cluster 1",
-                "3",
-                "89",
-                "None",
-                "RMSD",
-                "16.24"
-            ],
-            [
-                "4",
-                "iC3 cluster 2",
-                "4",
-                "111",
-                "None",
-                "RMSD",
-                "14.615"
+                "dRMSD",
+                "8.3"
             ]
         ]
     },
@@ -59,15 +32,15 @@
     },
     {
         "Category": "num_ensembles",
-        "Itemized_List": 4
+        "Itemized_List": 1
     },
     {
         "Category": "Rigid_Body",
-        "Itemized_List": 13
+        "Itemized_List": 11
     },
     {
         "Category": "Flexible_Unit",
-        "Itemized_List": 12
+        "Itemized_List": 14
     },
     {
         "Category": "RB_list",
@@ -79,61 +52,89 @@
             ],
             [
                 "A",
-                "1-73:Experimental model/2A73, 80-289:Experimental model/2A73, 292-643:Experimental model/2A73. ",
-                "74-79, 290-291, 644-645. "
+                "33-202:Comparative model/None. ",
+                "21-32, 203-222. "
             ],
             [
                 "B",
-                "2-70:Experimental model/2A73, 80-96:Experimental model/2A73, 97-155:Experimental model/2A73, 158-261:Experimental model/2A73, 264-312:Experimental model/2A73, 315-457:Experimental model/2A73, 464-618:Experimental model/2A73, 621-680:Experimental model/2A73, 683-824:Experimental model/2A73, 827-992:Experimental model/2A73. ",
-                "1-1, 71-79, 156-157, 262-263, 313-314, 458-463, 619-620, 681-682, 825-826. "
+                "405-418:Comparative model/None. ",
+                "394-404, 419-419. "
+            ],
+            [
+                "C",
+                "9-619:Comparative model/None. ",
+                "1-8, 620-627. "
+            ],
+            [
+                "D",
+                "1-124:Comparative model/None. ",
+                "125-135. "
+            ],
+            [
+                "E",
+                "1-142:Comparative model/None. ",
+                ""
+            ],
+            [
+                "F",
+                "15-23:Comparative model/None, 29-43:Comparative model/None, 49-61:Comparative model/None, 64-78:Comparative model/None, 81-86:Comparative model/None, 91-583:Comparative model/None. ",
+                "1-14, 24-28, 44-48, 62-63, 79-80, 87-90, 584-591. "
             ]
         ]
     },
     {
         "Category": "RB",
         "Itemized_List": [
-            "A: 1-73:Experimental model/2A73, 80-289:Experimental model/2A73, 292-643:Experimental model/2A73.  ",
-            "B: 2-70:Experimental model/2A73, 80-96:Experimental model/2A73, 97-155:Experimental model/2A73, 158-261:Experimental model/2A73, 264-312:Experimental model/2A73, 315-457:Experimental model/2A73, 464-618:Experimental model/2A73, 621-680:Experimental model/2A73, 683-824:Experimental model/2A73, 827-992:Experimental model/2A73.  "
+            "A: 33-202:Comparative model/None.  ",
+            "B: 405-418:Comparative model/None.  ",
+            "C: 9-619:Comparative model/None.  ",
+            "D: 1-124:Comparative model/None.  ",
+            "E: 1-142:Comparative model/None.  ",
+            "F: 15-23:Comparative model/None, 29-43:Comparative model/None, 49-61:Comparative model/None, 64-78:Comparative model/None, 81-86:Comparative model/None, 91-583:Comparative model/None.  "
         ]
     },
     {
         "Category": "flex",
         "Itemized_List": [
-            "A: 74-79, 290-291, 644-645.  ",
-            "B: 1-1, 71-79, 156-157, 262-263, 313-314, 458-463, 619-620, 681-682, 825-826.  "
+            "A: 21-32, 203-222.  ",
+            "B: 394-404, 419-419.  ",
+            "C: 1-8, 620-627.  ",
+            "D: 125-135.  ",
+            "E:  ",
+            "F: 1-14, 24-28, 44-48, 62-63, 79-80, 87-90, 584-591.  "
         ]
     },
     {
         "Category": "ID",
-        "Itemized_List": "PDBDEV00000021"
+        "Itemized_List": "PDBDEV00000050"
     },
     {
         "Category": "ID_w",
         "Itemized_List": [
-            "PDBDEV00000021"
+            "PDBDEV00000050"
         ]
     },
     {
         "Category": "ID_T",
-        "Itemized_List": "PDBDEV_00000021"
+        "Itemized_List": "PDBDEV_00000050"
     },
     {
         "Category": "ID_R",
         "Itemized_List": [
-            "PDBDEV_00000021"
+            "PDBDEV_00000050"
         ]
     },
     {
         "Category": "Molecule",
-        "Itemized_List": "Structure of complement C3(H2O) revealed by quantitative cross-linking/mass spectrometry and modeling"
+        "Itemized_List": "Structural basis of CD4 downregulation by HIV-1 Nef"
     },
     {
         "Category": "Title",
-        "Itemized_List": "Structure of Complement C3(H2O) Revealed By Quantitative Cross-Linking/Mass Spectrometry And Modeling."
+        "Itemized_List": "Structural basis of CD4 downregulation by HIV-1 Nef."
     },
     {
         "Category": "Authors",
-        "Itemized_List": "Chen ZA; Pellarin R; Fischer L; Sali A; Nilges M; Barlow PN; Rappsilber J"
+        "Itemized_List": "Kwon Y; Kaake RM; Echeverria I; Suarez M; Karimian Shamsabadi M; Stoneham C; Ramirez PW; Kress J; Singh R; Sali A; Krogan N; Guatelli J; Jia X"
     },
     {
         "Category": "Entry_list",
@@ -150,84 +151,65 @@
                 "1",
                 "1",
                 "1",
-                "beta",
+                "Nef",
                 "A",
-                "645"
+                "242"
             ],
             [
                 "1",
                 "2",
                 "2",
-                "alpha",
+                "CD4mut",
                 "B",
-                "992"
+                "419"
             ],
             [
-                "2",
                 "1",
-                "1",
-                "beta",
-                "A",
-                "645"
-            ],
-            [
-                "2",
-                "2",
-                "2",
-                "alpha",
-                "B",
-                "992"
-            ],
-            [
                 "3",
-                "1",
-                "1",
-                "beta",
-                "A",
-                "645"
-            ],
-            [
                 "3",
-                "2",
-                "2",
-                "alpha",
-                "B",
-                "992"
+                "AP2alpha2",
+                "C",
+                "627"
             ],
             [
+                "1",
                 "4",
-                "1",
-                "1",
-                "beta",
-                "A",
-                "645"
+                "4",
+                "AP2mu2",
+                "D",
+                "135"
             ],
             [
-                "4",
-                "2",
-                "2",
-                "alpha",
-                "B",
-                "992"
+                "1",
+                "5",
+                "5",
+                "AP2sigma",
+                "E",
+                "142"
+            ],
+            [
+                "1",
+                "6",
+                "6",
+                "AP2beta2",
+                "F",
+                "591"
             ]
         ]
     },
     {
         "Category": "number_of_molecules",
-        "Itemized_List": 4
+        "Itemized_List": 1
     },
     {
         "Category": "model_names",
         "Itemized_List": [
-            "C3 cluster 1/Best scoring model",
-            "C3b cluster 1/Best scoring model",
-            "iC3 cluster 1/Best scoring model",
-            "iC3 cluster 2/Best scoring model"
+            "Cluster 0 in state State_0/None"
         ]
     },
     {
         "Category": "number_of_software",
-        "Itemized_List": 2
+        "Itemized_List": 3
     },
     {
         "Category": "soft_list",
@@ -241,29 +223,36 @@
             ],
             [
                 "1",
-                "Integrative Modeling Platform (IMP)",
-                "develop-0a5706e202",
+                "IMP PMI module",
+                "develop-29bf2b61d4",
                 "integrative model building",
                 "https://integrativemodeling.org"
             ],
             [
                 "2",
-                "IMP PMI module",
-                "67456c0",
+                "Integrative Modeling Platform (IMP)",
+                "develop-29bf2b61d4",
                 "integrative model building",
                 "https://integrativemodeling.org"
+            ],
+            [
+                "3",
+                "MODELLER",
+                "9.22",
+                "comparative modeling",
+                "https://salilab.org/modeller/"
             ]
         ]
     },
     {
         "Category": "number_of_datasets",
-        "Itemized_List": 4
+        "Itemized_List": 5
     },
     {
         "Category": "Data",
         "Itemized_List": [
-            "MASS SPECTROMETRY DATA",
-            "CX-MS DATA"
+            "CX-MS DATA",
+            "MASS SPECTROMETRY DATA"
         ]
     },
     {
@@ -278,23 +267,29 @@
             [
                 "1",
                 "Experimental model",
-                "PDB",
-                "2A73"
+                "Not listed",
+                "None"
             ],
             [
                 "2",
                 "Experimental model",
                 "PDB",
-                "2I07"
+                "2VGL"
             ],
             [
                 "3",
-                "Mass Spectrometry data",
-                "PRIDE",
-                "PXD003486"
+                "Comparative model",
+                "Not listed",
+                "None"
             ],
             [
                 "4",
+                "Mass Spectrometry data",
+                "PRIDE",
+                "PXD019338"
+            ],
+            [
+                "5",
                 "CX-MS data",
                 "Not listed",
                 "None"
@@ -303,7 +298,7 @@
     },
     {
         "Category": "Protocols_number",
-        "Itemized_List": 3
+        "Itemized_List": 1
     },
     {
         "Category": "Sampling_list",
@@ -322,33 +317,15 @@
                 "1",
                 "Replica exchange monte carlo",
                 "Sampling",
-                "200000",
-                "True",
-                "True"
-            ],
-            [
-                "1",
-                "2",
-                "Replica exchange monte carlo",
-                "Sampling",
-                "200000",
-                "True",
-                "True"
-            ],
-            [
-                "1",
-                "3",
-                "Replica exchange monte carlo",
-                "Sampling",
-                "200000",
-                "True",
+                "2007800",
+                "False",
                 "True"
             ]
         ]
     },
     {
         "Category": "num_chains",
-        "Itemized_List": 2.0
+        "Itemized_List": 6.0
     },
     {
         "Category": "assess_atomic_segments",
@@ -364,33 +341,15 @@
             ],
             [
                 "1",
-                "99.73",
-                "3677.0"
-            ],
-            [
-                "2",
                 "99.71",
-                "3514.0"
-            ],
-            [
-                "3",
-                "99.72",
-                "3754.0"
-            ],
-            [
-                "4",
-                "99.72",
-                "3684.0"
+                "4163.0"
             ]
         ]
     },
     {
         "Category": "assess_excluded_volume",
         "Itemized_List": [
-            "Model-1: Number of violations-3677.0 ",
-            "Model-2: Number of violations-3514.0 ",
-            "Model-3: Number of violations-3754.0 ",
-            "Model-4: Number of violations-3684.0 "
+            "Model-1: Number of violations-4163.0 "
         ]
     },
     {
@@ -401,27 +360,12 @@
     },
     {
         "Category": "Cx Fit Model #1",
-        "Itemized_List": 80.8695652173913
-    },
-    {
-        "Category": "Cx Fit Model #2",
-        "Itemized_List": 89.65517241379311
-    },
-    {
-        "Category": "Cx Fit Model #3",
-        "Itemized_List": 83.47826086956522
-    },
-    {
-        "Category": "Cx Fit Model #4",
-        "Itemized_List": 84.34782608695653
+        "Itemized_List": 66.66666666666666
     },
     {
         "Category": "validation_input",
         "Itemized_List": [
-            "CX-MS Fit of medioid: model # 1, percentage satisfied 80.87%",
-            "CX-MS Fit of medioid: model # 2, percentage satisfied 89.66%",
-            "CX-MS Fit of medioid: model # 3, percentage satisfied 83.48%",
-            "CX-MS Fit of medioid: model # 4, percentage satisfied 84.35%"
+            "CX-MS Fit of medioid: model # 1, percentage satisfied 66.67%"
         ]
     },
     {
@@ -436,26 +380,31 @@
     },
     {
         "Category": "complex_name",
-        "Itemized_List": "structure of complement c3(h2o) revealed by quantitative cross-linking/mass spectrometry and modeling"
+        "Itemized_List": "structural basis of cd4 downregulation by hiv-1 nef"
     },
     {
         "Category": "PDB_ID",
-        "Itemized_List": "PDBDEV00000021"
+        "Itemized_List": "PDBDEV00000050"
     },
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "alpha: Chain B (992 residues)",
-            "beta: Chain A (645 residues)"
+            "AP2sigma: Chain E (142 residues)",
+            "Nef: Chain A (242 residues)",
+            "AP2alpha2: Chain C (627 residues)",
+            "CD4mut: Chain B (419 residues)",
+            "AP2mu2: Chain D (135 residues)",
+            "AP2beta2: Chain F (591 residues)"
         ]
     },
     {
         "Category": "datasets",
         "Itemized_List": [
-            "Experimental model, PDB ID: 2A73",
-            "Experimental model, PDB ID: 2I07",
-            "Mass Spectrometry data, PXD003486",
-            "CX-MS data, Linker name and number of cross-links: BS3, 115 cross-links"
+            "Experimental model, PDB ID: Not listed",
+            "Experimental model, PDB ID: 2VGL",
+            "Comparative model, template PDB ID: Not listed",
+            "Mass Spectrometry data, PXD019338",
+            "CX-MS data, Linker name and number of cross-links: DSSO, 90 cross-links"
         ]
     },
     {
@@ -465,14 +414,15 @@
     {
         "Category": "software",
         "Itemized_List": [
-            "Integrative Modeling Platform (IMP) (version develop-0a5706e202)",
-            "IMP PMI module (version 67456c0)",
+            "IMP PMI module (version develop-29bf2b61d4)",
+            "Integrative Modeling Platform (IMP) (version develop-29bf2b61d4)",
+            "MODELLER (version 9.22)",
             "No location specified"
         ]
     },
     {
         "Category": "struc",
-        "Itemized_List": "98%"
+        "Itemized_List": "94%"
     },
     {
         "Category": "method",
@@ -490,7 +440,7 @@
     },
     {
         "Category": "models",
-        "Itemized_List": "200, 200, 89, 111"
+        "Itemized_List": "9999"
     },
     {
         "Category": "sampling_validation",
@@ -500,7 +450,7 @@
     },
     {
         "Category": "feature",
-        "Itemized_List": "RMSD"
+        "Itemized_List": "dRMSD"
     },
     {
         "Category": "cross_validation",
@@ -510,13 +460,13 @@
     },
     {
         "Category": "model_precision",
-        "Itemized_List": "18.709&#8491, 10.436&#8491, 16.24&#8491, 14.615&#8491"
+        "Itemized_List": "8.3&#8491"
     },
     {
         "Category": "restraint_info",
         "Itemized_List": [
             [
-                "1 unique CrossLinkRestraint: BS3, 115 cross-links"
+                "1 unique CrossLinkRestraint: DSSO, 90 cross-links"
             ]
         ]
     },

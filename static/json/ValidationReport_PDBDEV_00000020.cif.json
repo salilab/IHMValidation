@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 04, 2021 --  12:11 PM"
+        "Itemized_List": "March 30, 2021 --  01:23 PM"
     },
     {
         "Category": "ensemble_info",
@@ -162,7 +162,7 @@
     },
     {
         "Category": "Authors",
-        "Itemized_List": "Fernandez-Martinez J;Kim SJ;Shi Y;Upla P;Pellarin R;Gagnon M;Chemmama IE;Wang J;Nudelman I;Zhang W;Williams R;Rice WJ;Stokes DL;Zenklusen D;Chait BT;Sali A;Rout MP"
+        "Itemized_List": "Fernandez-Martinez J; Kim SJ; Shi Y; Upla P; Pellarin R; Gagnon M; Chemmama IE; Wang J; Nudelman I; Zhang W; Williams R; Rice WJ; Stokes DL; Zenklusen D; Chait BT; Sali A; Rout MP"
     },
     {
         "Category": "Entry_list",
@@ -353,8 +353,8 @@
     {
         "Category": "Data",
         "Itemized_List": [
-            "CX-MS DATA",
             "2DEM CLASS AVERAGE",
+            "CX-MS DATA",
             "SAS DATA"
         ]
     },
@@ -703,15 +703,15 @@
         "Category": "Subunits",
         "Itemized_List": [
             "Dyn2: Chain A (92 residues)",
-            "Nsp1: Chain G (823 residues)",
-            "Nup82: Chain C (713 residues)",
+            "Nup116: Chain I (1113 residues)",
+            "Nsp1: Chain H (823 residues)",
             "Nup159: Chain F (1460 residues)",
+            "Nup159: Chain E (1460 residues)",
             "Dyn2: Chain B (92 residues)",
             "Nup116: Chain J (1113 residues)",
-            "Nup116: Chain I (1113 residues)",
+            "Nup82: Chain C (713 residues)",
             "Nup82: Chain D (713 residues)",
-            "Nup159: Chain E (1460 residues)",
-            "Nsp1: Chain H (823 residues)"
+            "Nsp1: Chain G (823 residues)"
         ]
     },
     {
@@ -830,7 +830,7 @@
                 "1 unique CrossLinkRestraint: EDC, 81 cross-links"
             ],
             [
-                "21 unique EM2DRestraint: Number of micrographs: None, Image resolution: 35.0"
+                "21 unique EM2DRestraint: Number                                                           of micrographs: None, Image resolution: 35.0"
             ],
             [
                 "3 unique SASRestraint: Assembly name: SAXS subassembly Fitting method: FoXS Multi-state: False"

@@ -1,0 +1,1086 @@
+[
+    {
+        "Category": "date",
+        "Itemized_List": "March 30, 2021 --  11:53 PM"
+    },
+    {
+        "Category": "ensemble_info",
+        "Itemized_List": [
+            [
+                "Ensemble number",
+                "Ensemble name",
+                "Model ID",
+                "Number of models",
+                "Clustering method",
+                "Clustering feature",
+                "Cluster precision"
+            ],
+            [
+                "1",
+                "Cluster 0",
+                "1",
+                "20131",
+                "None",
+                "None",
+                "None"
+            ]
+        ]
+    },
+    {
+        "Category": "sphere",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "num_ensembles",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "Rigid_Body",
+        "Itemized_List": 39
+    },
+    {
+        "Category": "Flexible_Unit",
+        "Itemized_List": 47
+    },
+    {
+        "Category": "RB_list",
+        "Itemized_List": [
+            [
+                "Chain ID",
+                "Rigid bodies",
+                "Non-rigid segments"
+            ],
+            [
+                "A",
+                "12-141:Comparative model/None, 145-212:Comparative model/None, 216-364:Comparative model/None. ",
+                "1-11, 142-144, 213-215, 365-540. "
+            ],
+            [
+                "B",
+                "29-233:Comparative model/None, 234-239:Comparative model/None, 266-325:Comparative model/None. ",
+                "1-28, 240-265, 326-327. "
+            ],
+            [
+                "C",
+                "29-233:Comparative model/None, 234-325:Comparative model/None. ",
+                "1-28, 240-265, 326-327. "
+            ],
+            [
+                "D",
+                "14-980:Comparative model/None, 990-998:Comparative model/None, 1006-1356:Comparative model/None. ",
+                "1-13, 225-342, 398-498, 981-989, 999-1005, 1357-1391. "
+            ],
+            [
+                "E",
+                "14-1280:Comparative model/None. ",
+                "1-13, 137-237, 266-272, 658-690, 836-848, 1027-1047, 1056-1056, 1064-1068, 1117-1120, 1281-1290. "
+            ],
+            [
+                "F",
+                "7-146:Comparative model/None. ",
+                "1-6, 48-91, 147-150. "
+            ],
+            [
+                "G",
+                "70-212:Comparative model/None. ",
+                "1-69, 213-219. "
+            ],
+            [
+                "H",
+                "20-241:Comparative model/None. ",
+                "1-19, 242-294. "
+            ],
+            [
+                "I",
+                "12-107:Comparative model/None. ",
+                "1-11, 108-108. "
+            ],
+            [
+                "J",
+                "2-206:Comparative model/None. ",
+                "1-1, 207-273. "
+            ],
+            [
+                "K",
+                "2-202:Comparative model/None. ",
+                "1-1, 203-205. "
+            ],
+            [
+                "L",
+                "10-142:Comparative model/None. ",
+                "1-9. "
+            ],
+            [
+                "M",
+                "6-132:Comparative model/None. ",
+                "1-5. "
+            ],
+            [
+                "N",
+                "1-38:Comparative model/None. ",
+                "16-24, 39-39. "
+            ],
+            [
+                "O",
+                "1-9:Comparative model/None. ",
+                "10-11. "
+            ],
+            [
+                "P",
+                "37-46:Comparative model/None. ",
+                ""
+            ],
+            [
+                "Q",
+                "2-39:Comparative model/None. ",
+                "1-1. "
+            ],
+            [
+                "R",
+                "9-74:Comparative model/None. ",
+                "1-8, 75-85. "
+            ],
+            [
+                "S",
+                "1-92:Comparative model/None. ",
+                ""
+            ],
+            [
+                "T",
+                "1-153:Comparative model/None. ",
+                ""
+            ],
+            [
+                "U",
+                "1-118:Comparative model/None. ",
+                ""
+            ],
+            [
+                "V",
+                "1-135:Comparative model/None. ",
+                ""
+            ],
+            [
+                "W",
+                "1-119:Comparative model/None. ",
+                ""
+            ],
+            [
+                "X",
+                "1-60:Comparative model/None. ",
+                ""
+            ],
+            [
+                "Y",
+                "1-84:Comparative model/None. ",
+                ""
+            ],
+            [
+                "Z",
+                "1-80:Comparative model/None. ",
+                ""
+            ],
+            [
+                "AA",
+                "1-83:Comparative model/None. ",
+                ""
+            ],
+            [
+                "AB",
+                "1-71:Comparative model/None. ",
+                ""
+            ],
+            [
+                "AC",
+                "1-83:Comparative model/None. ",
+                ""
+            ],
+            [
+                "AD",
+                "1-1544:Comparative model/None. ",
+                ""
+            ],
+            [
+                "AE",
+                "1-77:Comparative model/None. ",
+                ""
+            ],
+            [
+                "AF",
+                "1-77:Comparative model/None. ",
+                ""
+            ]
+        ]
+    },
+    {
+        "Category": "RB",
+        "Itemized_List": [
+            "A: 12-141:Comparative model/None, 145-212:Comparative model/None, 216-364:Comparative model/None.  ",
+            "B: 29-233:Comparative model/None, 234-239:Comparative model/None, 266-325:Comparative model/None.  ",
+            "C: 29-233:Comparative model/None, 234-325:Comparative model/None.  ",
+            "D: 14-980:Comparative model/None, 990-998:Comparative model/None, 1006-1356:Comparative model/None.  ",
+            "E: 14-1280:Comparative model/None.  ",
+            "F: 7-146:Comparative model/None.  ",
+            "G: 70-212:Comparative model/None.  ",
+            "H: 20-241:Comparative model/None.  ",
+            "I: 12-107:Comparative model/None.  ",
+            "J: 2-206:Comparative model/None.  ",
+            "K: 2-202:Comparative model/None.  ",
+            "L: 10-142:Comparative model/None.  ",
+            "M: 6-132:Comparative model/None.  ",
+            "N: 1-38:Comparative model/None.  ",
+            "O: 1-9:Comparative model/None.  ",
+            "P: 37-46:Comparative model/None.  ",
+            "Q: 2-39:Comparative model/None.  ",
+            "R: 9-74:Comparative model/None.  ",
+            "S: 1-92:Comparative model/None.  ",
+            "T: 1-153:Comparative model/None.  ",
+            "U: 1-118:Comparative model/None.  ",
+            "V: 1-135:Comparative model/None.  ",
+            "W: 1-119:Comparative model/None.  ",
+            "X: 1-60:Comparative model/None.  ",
+            "Y: 1-84:Comparative model/None.  ",
+            "Z: 1-80:Comparative model/None.  ",
+            "AA: 1-83:Comparative model/None.  ",
+            "AB: 1-71:Comparative model/None.  ",
+            "AC: 1-83:Comparative model/None.  ",
+            "AD: 1-1544:Comparative model/None.  ",
+            "AE: 1-77:Comparative model/None.  ",
+            "AF: 1-77:Comparative model/None.  "
+        ]
+    },
+    {
+        "Category": "flex",
+        "Itemized_List": [
+            "A: 1-11, 142-144, 213-215, 365-540.  ",
+            "B: 1-28, 240-265, 326-327.  ",
+            "C: 1-28, 240-265, 326-327.  ",
+            "D: 1-13, 225-342, 398-498, 981-989, 999-1005, 1357-1391.  ",
+            "E: 1-13, 137-237, 266-272, 658-690, 836-848, 1027-1047, 1056-1056, 1064-1068, 1117-1120, 1281-1290.  ",
+            "F: 1-6, 48-91, 147-150.  ",
+            "G: 1-69, 213-219.  ",
+            "H: 1-19, 242-294.  ",
+            "I: 1-11, 108-108.  ",
+            "J: 1-1, 207-273.  ",
+            "K: 1-1, 203-205.  ",
+            "L: 1-9.  ",
+            "M: 1-5.  ",
+            "N: 16-24, 39-39.  ",
+            "O: 10-11.  ",
+            "P:  ",
+            "Q: 1-1.  ",
+            "R: 1-8, 75-85.  ",
+            "S:  ",
+            "T:  ",
+            "U:  ",
+            "V:  ",
+            "W:  ",
+            "X:  ",
+            "Y:  ",
+            "Z:  ",
+            "AA:  ",
+            "AB:  ",
+            "AC:  ",
+            "AD:  ",
+            "AE:  ",
+            "AF:  "
+        ]
+    },
+    {
+        "Category": "ID",
+        "Itemized_List": "PDBDEV00000049"
+    },
+    {
+        "Category": "ID_w",
+        "Itemized_List": [
+            "PDBDEV00000049"
+        ]
+    },
+    {
+        "Category": "ID_T",
+        "Itemized_List": "PDBDEV_00000049"
+    },
+    {
+        "Category": "ID_R",
+        "Itemized_List": [
+            "PDBDEV_00000049"
+        ]
+    },
+    {
+        "Category": "Molecule",
+        "Itemized_List": "In-cell architecture of an actively transcribing-translating expressome from M. pneumoniae"
+    },
+    {
+        "Category": "Title",
+        "Itemized_List": "In-cell architecture of an actively transcribing-translating expressome"
+    },
+    {
+        "Category": "Authors",
+        "Itemized_List": "OReilly FJ; Xue L; Graziadei A; Sinn L; Lenz S; Tegunov D; Bloetz C; Singh N; Hagen WJH; Cramer P; Stuelke J; Mahamid J; Rappsilber J"
+    },
+    {
+        "Category": "Entry_list",
+        "Itemized_List": [
+            [
+                "Model ID",
+                "Subunit number",
+                "Subunit ID",
+                "Subunit name",
+                "Chain ID",
+                "Total residues"
+            ],
+            [
+                "1",
+                "1",
+                "1",
+                "P75591",
+                "A",
+                "540"
+            ],
+            [
+                "1",
+                "2",
+                "2",
+                "Q50295",
+                "B",
+                "327"
+            ],
+            [
+                "1",
+                "3",
+                "2",
+                "Q50295",
+                "C",
+                "327"
+            ],
+            [
+                "1",
+                "4",
+                "3",
+                "P78013",
+                "D",
+                "1391"
+            ],
+            [
+                "1",
+                "5",
+                "4",
+                "P75271",
+                "E",
+                "1290"
+            ],
+            [
+                "1",
+                "6",
+                "5",
+                "P75049",
+                "F",
+                "320"
+            ],
+            [
+                "1",
+                "7",
+                "6",
+                "Q50301",
+                "G",
+                "219"
+            ],
+            [
+                "1",
+                "8",
+                "7",
+                "P75560",
+                "H",
+                "294"
+            ],
+            [
+                "1",
+                "9",
+                "8",
+                "P75581",
+                "I",
+                "108"
+            ],
+            [
+                "1",
+                "10",
+                "9",
+                "P41205",
+                "J",
+                "273"
+            ],
+            [
+                "1",
+                "11",
+                "10",
+                "P46775",
+                "K",
+                "205"
+            ],
+            [
+                "1",
+                "12",
+                "11",
+                "Q50304",
+                "L",
+                "142"
+            ],
+            [
+                "1",
+                "13",
+                "12",
+                "P75179",
+                "M",
+                "132"
+            ],
+            [
+                "1",
+                "14",
+                "13",
+                "DNA1N",
+                "N",
+                "39"
+            ],
+            [
+                "1",
+                "15",
+                "14",
+                "longRNAR1",
+                "O",
+                "46"
+            ],
+            [
+                "1",
+                "16",
+                "14",
+                "longRNAR1",
+                "P",
+                "46"
+            ],
+            [
+                "1",
+                "17",
+                "15",
+                "DNA1T",
+                "Q",
+                "39"
+            ],
+            [
+                "1",
+                "18",
+                "16",
+                "P75090",
+                "R",
+                "144"
+            ],
+            [
+                "1",
+                "19",
+                "17",
+                "30SsubunitE",
+                "S",
+                "92"
+            ],
+            [
+                "1",
+                "20",
+                "18",
+                "30SsubunitF",
+                "T",
+                "153"
+            ],
+            [
+                "1",
+                "21",
+                "19",
+                "30SsubunitJ",
+                "U",
+                "118"
+            ],
+            [
+                "1",
+                "22",
+                "20",
+                "30SsubunitK",
+                "V",
+                "135"
+            ],
+            [
+                "1",
+                "23",
+                "21",
+                "30SsubunitL",
+                "W",
+                "119"
+            ],
+            [
+                "1",
+                "24",
+                "22",
+                "30SsubunitM",
+                "X",
+                "60"
+            ],
+            [
+                "1",
+                "25",
+                "23",
+                "30SsubunitN",
+                "Y",
+                "84"
+            ],
+            [
+                "1",
+                "26",
+                "24",
+                "30SsubunitO",
+                "Z",
+                "80"
+            ],
+            [
+                "1",
+                "27",
+                "25",
+                "30SsubunitP",
+                "AA",
+                "83"
+            ],
+            [
+                "1",
+                "28",
+                "26",
+                "30SsubunitQ",
+                "AB",
+                "71"
+            ],
+            [
+                "1",
+                "29",
+                "27",
+                "30SsubunitR",
+                "AC",
+                "83"
+            ],
+            [
+                "1",
+                "30",
+                "28",
+                "30SsubunitT",
+                "AD",
+                "1544"
+            ],
+            [
+                "1",
+                "31",
+                "29",
+                "30Ssubunitj",
+                "AE",
+                "77"
+            ],
+            [
+                "1",
+                "32",
+                "30",
+                "30SsubunitZ",
+                "AF",
+                "77"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_molecules",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "model_names",
+        "Itemized_List": [
+            "Cluster 0/None"
+        ]
+    },
+    {
+        "Category": "number_of_software",
+        "Itemized_List": 6
+    },
+    {
+        "Category": "soft_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Software name",
+                "Software version",
+                "Software classification",
+                "Software location"
+            ],
+            [
+                "1",
+                "IMP PMI module",
+                "2.12.0",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "2",
+                "Integrative Modeling Platform (IMP)",
+                "2.12.0",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "3",
+                "SWISS-MODEL",
+                "2019-11-21",
+                "comparative modeling",
+                "https://swissmodel.expasy.org/"
+            ],
+            [
+                "4",
+                "MODELLER",
+                "9.21",
+                "comparative modeling",
+                "https://salilab.org/modeller/"
+            ],
+            [
+                "5",
+                "SWISS-MODEL",
+                "2.0.0",
+                "protein homology modeling",
+                "https://swissmodel.expasy.org/"
+            ],
+            [
+                "6",
+                "SWISS-MODEL",
+                "1.3.0",
+                "protein homology modeling",
+                "https://swissmodel.expasy.org/"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_datasets",
+        "Itemized_List": 27
+    },
+    {
+        "Category": "Data",
+        "Itemized_List": [
+            "CX-MS DATA",
+            "3DEM VOLUME"
+        ]
+    },
+    {
+        "Category": "Datasets_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Dataset type",
+                "Database name",
+                "Data access code"
+            ],
+            [
+                "1",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "2",
+                "Experimental model",
+                "PDB",
+                "6flq"
+            ],
+            [
+                "3",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "4",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "5",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "6",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "7",
+                "Experimental model",
+                "PDB",
+                "3j9w"
+            ],
+            [
+                "8",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "9",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "10",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "11",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "12",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "13",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "14",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "15",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "16",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "17",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "18",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "19",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "20",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "21",
+                "CX-MS data",
+                "PRIDE",
+                "PXD017695"
+            ],
+            [
+                "22",
+                "CX-MS data",
+                "PRIDE",
+                "PXD017711"
+            ],
+            [
+                "23",
+                "3DEM volume",
+                "EMDB",
+                "EMD-10680"
+            ],
+            [
+                "24",
+                "3DEM volume",
+                "Not listed",
+                "None"
+            ],
+            [
+                "25",
+                "Experimental model",
+                "PDB",
+                "6FLQ"
+            ],
+            [
+                "26",
+                "Experimental model",
+                "PDB",
+                "6C6U"
+            ],
+            [
+                "27",
+                "Experimental model",
+                "PDB",
+                "3J9W"
+            ]
+        ]
+    },
+    {
+        "Category": "Protocols_number",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "Sampling_list",
+        "Itemized_List": [
+            [
+                "Step number",
+                "Protocol ID",
+                "Method name",
+                "Method type",
+                "Number of computed models",
+                "Multi state modeling",
+                "Multi scale modeling"
+            ],
+            [
+                "1",
+                "1",
+                "Replica exchange monte carlo",
+                "Sampling",
+                "14400000",
+                "False",
+                "True"
+            ]
+        ]
+    },
+    {
+        "Category": "num_chains",
+        "Itemized_List": 32.0
+    },
+    {
+        "Category": "assess_atomic_segments",
+        "Itemized_List": "Not applicable"
+    },
+    {
+        "Category": "excluded_volume",
+        "Itemized_List": [
+            [
+                "Models",
+                "Excluded Volume Satisfaction",
+                "Number of violations"
+            ],
+            [
+                "1",
+                "99.95",
+                "12929.0"
+            ]
+        ]
+    },
+    {
+        "Category": "assess_excluded_volume",
+        "Itemized_List": [
+            "Model-1: Number of violations-12929.0 "
+        ]
+    },
+    {
+        "Category": "cx",
+        "Itemized_List": [
+            "True"
+        ]
+    },
+    {
+        "Category": "Cx Fit Model #1",
+        "Itemized_List": 89.56158663883089
+    },
+    {
+        "Category": "validation_input",
+        "Itemized_List": [
+            "CX-MS Fit of medioid: model # 1, percentage satisfied 89.56%"
+        ]
+    },
+    {
+        "Category": "clustering",
+        "Itemized_List": "Distance threshold-based clustering used if ensembles are deposited"
+    },
+    {
+        "Category": "location",
+        "Itemized_List": [
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "complex_name",
+        "Itemized_List": "in-cell architecture of an actively transcribing-translating expressome from m. pneumoniae"
+    },
+    {
+        "Category": "PDB_ID",
+        "Itemized_List": "PDBDEV00000049"
+    },
+    {
+        "Category": "Subunits",
+        "Itemized_List": [
+            "P75560: Chain H (294 residues)",
+            "P46775: Chain K (205 residues)",
+            "30SsubunitP: Chain AA (83 residues)",
+            "P75591: Chain A (540 residues)",
+            "longRNAR1: Chain P (46 residues)",
+            "30SsubunitN: Chain Y (84 residues)",
+            "30SsubunitE: Chain S (92 residues)",
+            "30SsubunitM: Chain X (60 residues)",
+            "30SsubunitO: Chain Z (80 residues)",
+            "Q50295: Chain B (327 residues)",
+            "30SsubunitK: Chain V (135 residues)",
+            "P75090: Chain R (144 residues)",
+            "30SsubunitZ: Chain AF (77 residues)",
+            "P41205: Chain J (273 residues)",
+            "P78013: Chain D (1391 residues)",
+            "30SsubunitJ: Chain U (118 residues)",
+            "Q50295: Chain C (327 residues)",
+            "30Ssubunitj: Chain AE (77 residues)",
+            "30SsubunitL: Chain W (119 residues)",
+            "P75049: Chain F (320 residues)",
+            "DNA1T: Chain Q (39 residues)",
+            "P75179: Chain M (132 residues)",
+            "30SsubunitF: Chain T (153 residues)",
+            "30SsubunitR: Chain AC (83 residues)",
+            "P75271: Chain E (1290 residues)",
+            "DNA1N: Chain N (39 residues)",
+            "longRNAR1: Chain O (46 residues)",
+            "30SsubunitQ: Chain AB (71 residues)",
+            "P75581: Chain I (108 residues)",
+            "Q50304: Chain L (142 residues)",
+            "30SsubunitT: Chain AD (1544 residues)",
+            "Q50301: Chain G (219 residues)"
+        ]
+    },
+    {
+        "Category": "datasets",
+        "Itemized_List": [
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 6flq",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3j9w",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "CX-MS data, Linker name and number of cross-links: DSS, 379 cross-links",
+            "CX-MS data, Linker name and number of cross-links: DSSO, 104 cross-links",
+            "3DEM volume, EMDB ID: EMD-10680",
+            "3DEM volume, EMDB ID: Not listed",
+            "Experimental model, PDB ID: 6FLQ",
+            "Experimental model, PDB ID: 6C6U",
+            "Experimental model, PDB ID: 3J9W"
+        ]
+    },
+    {
+        "Category": "physics",
+        "Itemized_List": "Information about physical principles was not provided"
+    },
+    {
+        "Category": "software",
+        "Itemized_List": [
+            "IMP PMI module (version 2.12.0)",
+            "Integrative Modeling Platform (IMP) (version 2.12.0)",
+            "SWISS-MODEL (version 2019-11-21)",
+            "MODELLER (version 9.21)",
+            "SWISS-MODEL (version 2.0.0)",
+            "SWISS-MODEL (version 1.3.0)",
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "struc",
+        "Itemized_List": "87%"
+    },
+    {
+        "Category": "method",
+        "Itemized_List": "Replica exchange Monte Carlo "
+    },
+    {
+        "Category": "method_type",
+        "Itemized_List": "Sampling "
+    },
+    {
+        "Category": "method_details",
+        "Itemized_List": [
+            "Method details unspecified"
+        ]
+    },
+    {
+        "Category": "models",
+        "Itemized_List": "20131"
+    },
+    {
+        "Category": "sampling_validation",
+        "Itemized_List": [
+            "Information related to sampling validation has not been provided"
+        ]
+    },
+    {
+        "Category": "feature",
+        "Itemized_List": "None"
+    },
+    {
+        "Category": "cross_validation",
+        "Itemized_List": [
+            "Fit of model to information not used to compute it has not been determined"
+        ]
+    },
+    {
+        "Category": "model_precision",
+        "Itemized_List": "None&#8491"
+    },
+    {
+        "Category": "restraint_info",
+        "Itemized_List": [
+            [
+                "1 unique CrossLinkRestraint: DSS, 379 cross-links"
+            ],
+            [
+                "1 unique CrossLinkRestraint: DSSO, 104 cross-links"
+            ],
+            [
+                "1 unique EM3DRestraint: Gaussian mixture models, 700"
+            ]
+        ]
+    },
+    {
+        "Category": "Data_quality",
+        "Itemized_List": [
+            "Quality of input data has not be assessed"
+        ]
+    },
+    {
+        "Category": "resolution",
+        "Itemized_List": [
+            "Rigid bodies: 1 residue per bead.",
+            "Flexible regions: N/A"
+        ]
+    }
+]
