@@ -119,7 +119,7 @@ class GetInputInformation(object):
     def get_model_assem_dict(self) -> dict:
         """Map models to assemblies """
         model_id = map(int, [b._id for i in self.system.state_groups
-                       for j in i for a in j for b in a])
+                             for j in i for a in j for b in a])
         assembly_id = [int(asmb) for asmb in self.get_assembly_ID_of_models()]
         model_assembly = dict(zip(model_id, assembly_id))
         return model_assembly
@@ -128,7 +128,7 @@ class GetInputInformation(object):
         """Map models to representations
             useful especially for multi-state systems"""
         model_id = map(int, [b._id for i in self.system.state_groups
-                       for j in i for a in j for b in a])
+                             for j in i for a in j for b in a])
         rep_id = [int(repr) for repr in self.get_representation_ID_of_models()]
         model_rep = dict(zip(model_id, rep_id))
         return model_rep
@@ -225,7 +225,7 @@ class GetInputInformation(object):
                       [utility.format_tuple(el.asym_unit.seq_id_range),
                        utility.get_val_from_key(self.get_dataset_dict(),
                                                 el.starting_model.dataset._id)]
-                                                )
+                    )
                 elif el.rigid and not el.starting_model:
                     RB_nos.append(el.asym_unit.seq_id_range)
                     RB[el.asym_unit._id].append(
@@ -406,7 +406,10 @@ class GetInputInformation(object):
         for j, i in enumerate(r):
             restraints_comp['ID'].append(j+1)
             restraints_comp['Restraint type'].append(str(i.__class__.__name__))
-            restraints_comp['Dataset ID'].append(str(i.dataset._id))
+            try:
+                restraints_comp['Dataset ID'].append(str(i.dataset._id))
+            except AttributeError:
+                restraints_comp['Dataset ID'].append('None')
             # print (i.__class__.__name__,i,i.__class__,type(i))
             # print (isinstance(i,ihm.restraint.CrossLinkRestraint))
             if isinstance(i, ihm.restraint.CrossLinkRestraint):
@@ -490,7 +493,12 @@ class GetInputInformation(object):
                             int(x.asym_unit.seq_id_range[0])+1 for x in _ if not x.rigid])
                 rigid = sum([int(x.asym_unit.seq_id_range[1]) -
                              int(x.asym_unit.seq_id_range[0])+1 for x in _ if x.rigid])
-                percentage = str(round(rigid/(rigid+flex)*100))+'%'
+
+                print("rf", rigid, flex)
+                if rigid > 0 or flex > 0:
+                    percentage = str(round(rigid/(rigid+flex)*100))+'%'
+                else:
+                    percentage = '0%'
             else:
                 percentage = '100%'
         return percentage

@@ -299,5 +299,3 @@ class CxValidationPlots(cx.CxValidation):
         fig_id.legend.location = "top_center"
         fig_id.legend.orientation = "horizontal"
         return fig_id
-
-

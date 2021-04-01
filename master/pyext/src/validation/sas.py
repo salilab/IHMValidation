@@ -229,15 +229,18 @@ class SasValidation(GetInputInformation):
             rg_table['Rg'].append(
                 str(round(float(val['guinier_rg']), 2)) + ' nm')
             try:
-                rg_table['Rg error'].append(str(round(float(val['guinier_rg_error']), 2)) + ' nm')
+                rg_table['Rg error'].append(
+                    str(round(float(val['guinier_rg_error']), 2)) + ' nm')
             except (TypeError, KeyError, ValueError):
                 rg_table['Rg error'].append('N/A')
             try:
-                rg_table['MW'].append(str(round(float(val['guinier_i0_mw']), 2)) + ' nm')
+                rg_table['MW'].append(
+                    str(round(float(val['guinier_i0_mw']), 2)) + ' nm')
             except (TypeError, KeyError, ValueError):
                 rg_table['MW'].append('N/A')
             try:
-                rg_table['MW error'].append(str(round(float(val['guinier_i0_mw_error']), 2)) + ' nm')
+                rg_table['MW error'].append(
+                    str(round(float(val['guinier_i0_mw_error']), 2)) + ' nm')
             except (TypeError, KeyError, ValueError):
                 rg_table['MW error'].append('N/A')
             rg_table['SASDB ID'].append(key)
@@ -439,9 +442,9 @@ class SasValidation(GetInputInformation):
         for key, val in data_dic.items():
             try:
                 parameter_table['Estimated volume'].append(
-                        val['estimated_volume'])
+                    val['estimated_volume'])
                 parameter_table['Estimated volume method'].append(
-                        val['estimated_volume_method'])
+                    val['estimated_volume_method'])
             except (TypeError, KeyError, ValueError):
                 parameter_table['Estimated volume'].append('N/A')
                 parameter_table['Estimated volume method'].append('N/A')
@@ -598,7 +601,7 @@ class SasValidation(GetInputInformation):
                 pddf_info['Rg'].append('N/A')
             try:
                 pddf_info['Dmax error'].append(
-                        str(val['pddf_dmax_error'])+' nm')
+                    str(val['pddf_dmax_error'])+' nm')
             except (TypeError, KeyError, ValueError):
                 pddf_info['Dmax error'].append('N/A')
             try:

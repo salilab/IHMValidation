@@ -46,7 +46,8 @@ class WriteReport(object):
             utility.dict_to_JSlist_rows(RB, flex))
         Template_Dict['ID'] = self.Input.get_id()
         Template_Dict['ID_w'] = self.Input.get_id().split()
-        Template_Dict['ID_T'] = self.Input.get_id()[0:6]+'_'+self.Input.get_id()[6:]
+        Template_Dict['ID_T'] = self.Input.get_id()[0:6]+'_' + \
+            self.Input.get_id()[6:]
         Template_Dict['ID_R'] = (
             self.Input.get_id()[0:6]+'_'+self.Input.get_id()[6:]).split()
         Template_Dict['Molecule'] = self.Input.get_struc_title()
