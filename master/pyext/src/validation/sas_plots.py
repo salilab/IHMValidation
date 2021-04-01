@@ -8,20 +8,11 @@
 # ganesans@salilab.org
 ###################################
 import pandas as pd
-import glob
-import sys
 import os
-import math
-import numpy as np
-import pandas as pd
 from validation import sas, GetInputInformation
-from bokeh.io import output_file, show, curdoc, export_png, export_svgs
-from bokeh.models import Span, ColumnDataSource, LinearAxis, Legend
-from bokeh.palettes import GnBu3, RdBu, OrRd3, Blues, YlOrBr, Spectral6, Set1
-from bokeh.plotting import figure, output_file, save
-from bokeh.models.widgets import Tabs, Panel
-from bokeh.layouts import row, column
-import multiprocessing as mp
+from bokeh.io import output_file, export_svgs
+from bokeh.models import Span, ColumnDataSource
+from bokeh.plotting import figure, save
 
 
 class SasValidationPlots(sas.SasValidation):
@@ -115,7 +106,7 @@ class SasValidationPlots(sas.SasValidation):
 
     def plot_kratky(self, sasbdb: str, df: pd.DataFrame):
         '''
-        plot dimensionless kratky 
+        plot dimensionless kratky
         '''
         output_file(self.ID+sasbdb+"Kratky.html", mode="inline")
         source = ColumnDataSource(df)
@@ -123,9 +114,9 @@ class SasValidationPlots(sas.SasValidation):
                    title="Dimensionless Kratky plot ("+sasbdb+")")
         p.circle(x='Kx', y='Ky', source=source,
                  color='blue', fill_alpha=0.3, size=5)
-        #vline = Span(location=0.1732, dimension='height', line_color='red', line_width=3)
-        #hline = Span(location=0.1104, dimension='width', line_color='green', line_width=3)
-        #p.renderers.extend([vline, hline])
+        # vline = Span(location=0.1732, dimension='height', line_color='red', line_width=3)
+        # hline = Span(location=0.1104, dimension='width', line_color='green', line_width=3)
+        # p.renderers.extend([vline, hline])
         p.xaxis.major_label_text_font_size = "14pt"
         p.yaxis.major_label_text_font_size = "14pt"
         p.title.text_font_size = '12pt'
@@ -141,7 +132,7 @@ class SasValidationPlots(sas.SasValidation):
 
     def plot_porod_debye(self, sasbdb: str, df: pd.DataFrame):
         '''
-        porod debye plot for flexibility 
+        porod debye plot for flexibility
         '''
         output_file(self.ID+sasbdb+"porod.html", mode="inline")
         source = ColumnDataSource(df)
@@ -164,7 +155,7 @@ class SasValidationPlots(sas.SasValidation):
 
     def plot_pddf(self, sasbdb: str, df: pd.DataFrame):
         '''
-        p(r) plot, deprecated function 
+        p(r) plot, deprecated function
         '''
         output_file(self.ID+sasbdb+"pddf.html", mode="inline")
         source = ColumnDataSource(df)
@@ -189,7 +180,7 @@ class SasValidationPlots(sas.SasValidation):
 
     def plot_pddf_residuals(self, sasbdb: str, df: pd.DataFrame):
         '''
-        p(r) residuals 
+        p(r) residuals
         '''
         output_file(self.ID+sasbdb+"pddf_residuals.html", mode="inline")
         source = ColumnDataSource(df)
@@ -257,7 +248,7 @@ class SasValidationPlots(sas.SasValidation):
                  line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p.line(x='Q', y='logI', source=source2, color='red',
                line_width=3, legend_label=legend2)
-        #p.circle(x='Q',y='logIb',source=source, color='red',line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
+        # p.circle(x='Q',y='logIb',source=source, color='red',line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
         p.legend.orientation = "vertical"
         p.legend.location = "top_right"
         p.xaxis.major_label_text_font_size = "14pt"
@@ -345,7 +336,7 @@ class SasValidationPlots(sas.SasValidation):
                  line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p.line(x='Q', y='logIb', source=source, color='red',
                line_width=3, legend_label=legend2)
-        #p.circle(x='Q',y='logIb',source=source, color='red',line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
+        # p.circle(x='Q',y='logIb',source=source, color='red',line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
         p.legend.orientation = "vertical"
         p.legend.location = "top_right"
         p.xaxis.major_label_text_font_size = "14pt"
@@ -439,8 +430,8 @@ class SasValidationPlots(sas.SasValidation):
 
     def plot_fits(self):
         for sasbdb, df in self.fdf_dict.items():
-            for sasdb_m, df_m in val.items():
-                if df_m[1].empty == False:
-                    self.plot_fit(sasbdb, sasbdb_m, df_m[0], df_m[1])
-                    self.plot_fit_residuals(sasbdb, sasbdb_m, df_m[1])
-                    self.plot_fit_residuals_wt(sasbdb, sasbdb_m, df_m[1])
+            for sasdb_m, df_m in df.items():
+                if not df_m[1].empty:
+                    self.plot_fit(sasbdb, sasdb_m, df_m[0], df_m[1])
+                    self.plot_fit_residuals(sasbdb, sasdb_m, df_m[1])
+                    self.plot_fit_residuals_wt(sasbdb, sasdb_m, df_m[1])

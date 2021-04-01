@@ -7,20 +7,15 @@
 # ganesans - Salilab - UCSF
 # ganesans@salilab.org
 ###################################
-import glob
-import sys
 import os
-import re
-import ihm
-import ihm.reader
 import validation
 import bokeh
-from bokeh.io import output_file, show, curdoc, export_png, export_svgs
-from bokeh.models import ColumnDataSource, LinearAxis, Legend, LegendItem
-from bokeh.palettes import GnBu3, Blues, OrRd3, Spectral, Set1, RdYlBu, Paired, Viridis256, viridis
-from bokeh.plotting import figure, output_file, save
+from bokeh.io import output_file, curdoc, export_png, export_svgs
+from bokeh.models import ColumnDataSource, Legend, LegendItem
+from bokeh.palettes import viridis
+from bokeh.plotting import figure, save
 from bokeh.models.widgets import Tabs, Panel
-from bokeh.layouts import row, column, gridplot
+from bokeh.layouts import row
 from bokeh.core.validation import silence
 from bokeh.core.validation.warnings import MISSING_RENDERERS, EMPTY_LAYOUT
 silence(MISSING_RENDERERS, True)
@@ -208,7 +203,7 @@ class Plots(validation.GetInputInformation):
         if len(cx_fit.keys()) > 0:
             Scores = ['Model '+str(i) for i, j in cx_fit.items()]
             counts = [round(float(j), 2) for i, j in cx_fit.items()]
-            #legends=[str(i) for i in counts]
+            # legends=[str(i) for i in counts]
             legends = ['Model ' + str(i+1) + ': ' +
                        str(j)+'%' for i, j in enumerate(counts)]
             source = ColumnDataSource(data=dict(

@@ -129,6 +129,7 @@ class GetExcludedVolume(GetInputInformation):
     def run_exc_vol_parallel(self, model_dict: dict) -> dict:
         """ get exc vol info in parallel """
         # list_of_sphere_list=list(model_dict.values())
+        
         if len(list(model_dict.keys())) <= 25:
             pool = mp.Pool(processes=len(list(model_dict.keys())))
             complete_list = pool.map(
@@ -142,7 +143,6 @@ class GetExcludedVolume(GetInputInformation):
             excluded_volume = {'Models': ['All '+str(len(list(model_dict.keys())))],
                                'Excluded Volume Satisfaction': ['Can not be computed'],
                                'Number of violations': ['Can not be computed']}
-        print(excluded_volume)
         return excluded_volume
 
     def exv_readable_format(self, exv: dict) -> str:
