@@ -206,12 +206,12 @@ def get_software(data_dict: dict) -> list:
 
 def get_RB(data_list: list) -> list:
     data_num = len(data_list)
-    # datalist = ['%s: %s ' % (data_list[i][0], data_list[i][1],)
+    #datalist = ['%s: %s ' % (data_list[i][0], data_list[i][1],)
     #           for i in range(1, data_num)]
-    datalist = []
+    datalist=[]
     for i in range(1, data_num):
-        if len(data_list[i][1]) < 1:
-            data_list[i][1] = 'None'
+        if len(data_list[i][1])<1:
+            data_list[i][1]='None'
         datalist.append('%s: %s ' % (data_list[i][0], data_list[i][1]))
     return datalist
 
