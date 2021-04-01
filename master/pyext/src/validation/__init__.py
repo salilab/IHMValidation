@@ -494,7 +494,6 @@ class GetInputInformation(object):
                 rigid = sum([int(x.asym_unit.seq_id_range[1]) -
                              int(x.asym_unit.seq_id_range[0])+1 for x in _ if x.rigid])
 
-                print("rf", rigid, flex)
                 if rigid > 0 or flex > 0:
                     percentage = str(round(rigid/(rigid+flex)*100))+'%'
                 else:
