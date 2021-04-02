@@ -394,7 +394,7 @@ class SasValidation(GetInputInformation):
         quick min diff operation for calculating errors
         '''
         list_sub = [(i, abs(j-num)) for i, j in enumerate(listn)]
-        list_sort = sorted(list_sub, key=lambda x: operator.itemgetter(1))
+        list_sort = sorted(list_sub, key=operator.itemgetter(1))
         if list_sort[0][1] < 0.00001:
             return listn[list_sort[0][0]]
         else:

@@ -63,6 +63,7 @@ class Plots(validation.GetInputInformation):
             # if excluded vol data, plot that
             model = exv_data['Models']
             satisfaction = exv_data['Number of violations']
+
             try:
                 counts = [float(i) for i in satisfaction]
             except (ValueError):

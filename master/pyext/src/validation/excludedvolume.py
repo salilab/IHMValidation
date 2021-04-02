@@ -154,6 +154,7 @@ class GetExcludedVolume(GetInputInformation):
 
     def process_exv(self, filename: str)->dict:
         df=pd.read_csv(filename,names=['key','val'], header=None)
+        df['val']=df['val'].apply(lambda x:x.strip('][').split(','))
         return dict(zip(df.key,df.val))
 
     def exv_readable_format(self, exv: dict) -> str:
