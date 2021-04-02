@@ -10,7 +10,7 @@
 import pickle
 import os
 from subprocess import run
-from validation import get_input_information
+from validation import GetInputInformation
 import ihm
 import ihm.reader
 from decouple import AutoConfig
