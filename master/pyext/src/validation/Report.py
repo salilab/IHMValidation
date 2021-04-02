@@ -84,7 +84,8 @@ class WriteReport(object):
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
             if I_mp.check_for_molprobity():
                 filename = os.path.abspath(os.path.join(
-                    os.getcwd(), 'static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
+                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
+                print (filename)
                 if os.path.exists(filename):
                     d_mp = {}
                     print("Molprobity analysis file already exists...\n...assuming clashscores, \
@@ -92,15 +93,15 @@ class WriteReport(object):
                     with open(filename, 'rb') as fp:
                         d_mp['molprobity'] = pickle.load(fp)
                     f_rota = os.path.abspath(os.path.join(
-                        os.getcwd(), 'static/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
+                        os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
                     with open(f_rota, 'rb') as fp:
                         d_mp['rota'] = pickle.load(fp)
                     f_rama = os.path.abspath(os.path.join(
-                        os.getcwd(), 'static/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
+                        os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
                     with open(f_rama, 'rb') as fp:
                         d_mp['rama'] = pickle.load(fp)
                     f_clash = os.path.abspath(os.path.join(
-                        os.getcwd(), 'static/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
+                        os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
                     with open(f_clash, 'rb') as fp:
                         d_mp['clash'] = pickle.load(fp)
                 else:
