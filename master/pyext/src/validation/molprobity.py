@@ -10,19 +10,20 @@
 import pickle
 import os
 from subprocess import run
-from validation import GetInputInformation
+from validation import get_input_information
 import ihm
 import ihm.reader
-from decouple import config
+from decouple import AutoConfig
 import collections
 
 
-class GetMolprobityInformation(GetInputInformation):
+class get_molprobity_information(get_input_information):
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)
-        self.ID = str(GetInputInformation.get_id(self))
-        self.nos = GetInputInformation.get_number_of_models(self)
+        self.ID = str(get_input_information.get_id(self))
+        self.nos = get_input_information.get_number_of_models(self)
         self.resultpath = '../static/results/'
+        self.envpath = 'XXX'
 
     def check_for_molprobity(self, filetemp=None) -> bool:
         """ Check the biso and occupancy columns for mmcif files"""
@@ -40,75 +41,75 @@ class GetMolprobityInformation(GetInputInformation):
         if models[0]._atoms[0].biso is not None:
             print("File in the appropriate format for molprobity")
             return True
-            # uncomment the lines below to run MP analysis
-            # call([r"/home/ganesans/PDB-dev-test/MolProbity-master/build/bin/molprobity.molprobity",self.mmcif_file,"prefix="+out])
-            # print ("printing result", result_mp.stdout)
         else:
-            # print ("bisoval",models[0]._atoms[0].biso)
-            # print ("occ",models[0]._atoms[0].occupancy)
             print("File is not in the appropriate format for molprobity")
             return False
 
     def run_ramalyze(self, d: dict):
         """run ramalyze to get outliers """
         f_name = str(self.ID)+'_temp_rama.txt'
-        with open(f_name, 'w+') as outfile:
+        f_name_handle = open(f_name, 'w+')
+        config = AutoConfig(search_path=self.envpath)
+        with f_name_handle as outfile:
             run([config('Molprobity_ramalyze'), self.mmcif_file], stdout=outfile)
 
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
 
         d['rama'] = line
-        filename = open(os.path.join(
-            os.getcwd(), self.resultpath, self.ID+'_temp_rama.txt'))
+        filename = os.path.join(
+            os.getcwd(), self.resultpath, self.ID+'_temp_rama.txt')
         with open(filename, 'wb') as fp:
             pickle.dump(d['rama'], fp)
 
     def run_molprobity(self, d: dict):
         """run molprobity"""
         f_name = str(self.ID)+'_temp_mp.txt'
-        with open(f_name, 'w+') as outfile:
+        f_name_handle = open(f_name, 'w+')
+        config = AutoConfig(search_path=self.envpath)
+        with f_name_handle as outfile:
             run([config('Molprobity_molprobity'), self.mmcif_file], stdout=outfile)
 
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
 
         d['molprobity'] = line
-        filename = open(os.path.join(
-            os.getcwd(), self.resultpath, self.ID+'_temp_mp.txt'))
+        filename = os.path.join(
+            os.getcwd(), self.resultpath, self.ID+'_temp_mp.txt')
         with open(filename, 'wb') as fp:
             pickle.dump(d['molprobity'], fp)
 
     def run_clashscore(self, d: dict):
         """run clashscore to get information on steric clashes"""
         f_name = str(self.ID)+'_temp_clash.txt'
-        with open(f_name, 'w+') as outfile:
+        f_name_handle = open(f_name, 'w+')
+        config = AutoConfig(search_path=self.envpath)
+        with f_name_handle as outfile:
             run([config('Molprobity_clashscore'), self.mmcif_file], stdout=outfile)
 
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
 
         d['clash'] = line
-        filename = open(os.path.join(
-            os.getcwd(), self.resultpath, self.ID+'_temp_clash.txt'))
-        print(os.path.join(os.getcwd(), self.resultpath, self.ID+'_temp_clash.txt'))
-        # f2=open(os.path.abspath(self.resultpath,self.ID+'_temp_clash.txt'))
-        print(os.path.abspath(self.resultpath, self.ID+'_temp_clash.txt'))
+        filename = os.path.join(
+            os.getcwd(), self.resultpath, self.ID+'_temp_clash.txt')
         with open(filename, 'wb') as fp:
             pickle.dump(d['clash'], fp)
 
     def run_rotalyze(self, d: dict):
         """run rotalyZe to get rotameric outliers"""
         f_name = str(self.ID)+'_temp_rota.txt'
-        with open(f_name, 'w+') as outfile:
+        f_name_handle = open(f_name, 'w+')
+        config = AutoConfig(search_path=self.envpath)
+        with f_name_handle as outfile:
             run([config('Molprobity_rotalyze'), self.mmcif_file], stdout=outfile)
 
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
 
         d['rota'] = line
-        filename = open(os.path.join(
-            os.getcwd(), self.resultpath, self.ID+'_temp_rota.txt'))
+        filename = os.path.join(
+            os.getcwd(), self.resultpath, self.ID+'_temp_rota.txt')
         with open(filename, 'wb') as fp:
             pickle.dump(d['rota'], fp)
 
@@ -172,8 +173,8 @@ class GetMolprobityInformation(GetInputInformation):
         count.append(len(line)-self.nos)
 
         for ind in range(0, len(clashes.keys())):
-            output_line = [j for k, j in enumerate(
-                line) if k > int(count[ind]) and k < int(count[ind+1])]
+            output_line = [j for k, j in enumerate(line) if k > int(
+                count[ind]) and k < int(count[ind+1])]
             clashes[list(clashes.keys())[ind]].append(output_line)
         clashes_ordered = dict(sorted(clashes.items()))
         return clashes_ordered
@@ -318,44 +319,41 @@ class GetMolprobityInformation(GetInputInformation):
             dict1 = {'Bond type': [], 'Observed distance (&#8491)': [
             ], 'Ideal distance (&#8491)': [], 'Number of outliers': []}
             for i, j in enumerate(bonds):
-                if len(self.edittext(j).split()[0]) > 2:
-                    bondtype_dist[self.edittext(j).split()[4]] = float(
-                        self.edittext(j).split()[6])
-                    bondtype_diff[self.edittext(j).split()[4]] = float(
-                        self.edittext(j).split()[10])
-                    if self.edittext(j).split()[4] not in list(bondtype_ex.keys()):
-                        bondtype_ex[self.edittext(j).split()[4]] = []
+                if len(j.replace(',', '').replace(':', '').split()[0]) > 2:
+                    bondtype_dist[j.replace(',', '').replace(':', '').split()[4]] = float(
+                        j.replace(',', '').replace(':', '').split()[6])
+                    bondtype_diff[j.replace(',', '').replace(':', '').split()[4]] = float(
+                        j.replace(',', '').replace(':', '').split()[10])
+                    if j.replace(',', '').replace(':', '').split()[4] not in list(bondtype_ex.keys()):
+                        bondtype_ex[j.replace(',', '').replace(
+                            ':', '').split()[4]] = []
                     else:
-                        bondtype_ex[self.edittext(j).split()[4]].append(
-                            float(self.edittext(j).split()[6]))
+                        bondtype_ex[j.replace(',', '').replace(':', '').split()[4]].append(
+                            float(j.replace(',', '').replace(':', '').split()[6]))
                 else:
-                    bondtype_dist[self.edittext(j).split()[5]] = float(
-                        self.edittext(j).split()[7])
-                    bondtype_diff[self.edittext(j).split()[5]] = float(
-                        self.edittext(j).split()[11])
-                    if self.edittext(j).split()[5] not in list(bondtype_ex.keys()):
-                        bondtype_ex[self.edittext(j).split()[5]] = []
+                    bondtype_dist[j.replace(',', '').replace(':', '').split()[5]] = float(
+                        j.replace(',', '').replace(':', '').split()[7])
+                    bondtype_diff[j.replace(',', '').replace(':', '').split()[5]] = float(
+                        j.replace(',', '').replace(':', '').split()[11])
+                    if j.replace(',', '').replace(':', '').split()[5] not in list(bondtype_ex.keys()):
+                        bondtype_ex[j.replace(',', '').replace(
+                            ':', '').split()[5]] = []
                     else:
-                        bondtype_ex[self.edittext(j).split()[5]].append(
-                            float(self.edittext(j).split()[7]))
+                        bondtype_ex[j.replace(',', '').replace(':', '').split()[5]].append(
+                            float(j.replace(',', '').replace(':', '').split()[7]))
             for ind, val in bondtype_dist.items():
                 dict1['Bond type'].append(ind)
-                # (&#8491) is the code for angstrom
                 dict1['Observed distance (&#8491)'].append(val)
                 dict1['Ideal distance (&#8491)'].append(
                     round(val+bondtype_diff[ind], 2))
                 dict1['Number of outliers'].append(len(bondtype_ex[ind]))
             print(dict1['Bond type'], file=f_mp_D)
-            # (&#8491) is the code for angstrom
             print(dict1['Observed distance (&#8491)'], file=f_mp_D)
             print(dict1['Ideal distance (&#8491)'], file=f_mp_D)
             print(dict1['Number of outliers'], file=f_mp_D)
             return dict1
         else:
             return {}
-
-    def edittext(self, some_text: str) -> str:
-        return some_text.replace(',', '').replace(':', '')
 
     def molprobity_detailed_table_angles(self, angles: list) -> dict:
         """process molprobity angles information and format to table"""
@@ -369,35 +367,36 @@ class GetMolprobityInformation(GetInputInformation):
             ], 'Number of outliers': []}
 
             for i, j in enumerate(angles):
-                if len(self.edittext(j).split()[0]) > 2:
-                    angle_dist[self.edittext(j).split()[4]] = float(
-                        self.edittext(j).split()[6])
-                    angle_diff[self.edittext(j).split()[4]] = float(
-                        self.edittext(j).split()[10])
-                    if self.edittext(j).split()[4] not in list(angle_ex.keys()):
-                        angle_ex[self.edittext(j).split()[4]] = []
+                if len(j.replace(',', '').replace(':', '').split()[0]) > 2:
+                    angle_dist[j.replace(',', '').replace(':', '').split()[4]] = float(
+                        j.replace(',', '').replace(':', '').split()[6])
+                    angle_diff[j.replace(',', '').replace(':', '').split()[4]] = float(
+                        j.replace(',', '').replace(':', '').split()[10])
+                    if j.replace(',', '').replace(':', '').split()[4] not in list(angle_ex.keys()):
+                        angle_ex[j.replace(',', '').replace(
+                            ':', '').split()[4]] = []
                     else:
-                        angle_ex[self.edittext(j).split()[4]].append(
-                            float(self.edittext(j).split()[6]))
+                        angle_ex[j.replace(',', '').replace(':', '').split()[4]].append(
+                            float(j.replace(',', '').replace(':', '').split()[6]))
                 else:
-                    angle_dist[self.edittext(j).split()[5]] = float(
-                        self.edittext(j).split()[7])
-                    angle_diff[self.edittext(j).split()[5]] = float(
-                        self.edittext(j).split()[11])
-                    if self.edittext(j).split()[5] not in list(angle_ex.keys()):
-                        angle_ex[self.edittext(j).split()[5]] = []
+                    angle_dist[j.replace(',', '').replace(':', '').split()[5]] = float(
+                        j.replace(',', '').replace(':', '').split()[7])
+                    angle_diff[j.replace(',', '').replace(':', '').split()[5]] = float(
+                        j.replace(',', '').replace(':', '').split()[11])
+                    if j.replace(',', '').replace(':', '').split()[5] not in list(angle_ex.keys()):
+                        angle_ex[j.replace(',', '').replace(
+                            ':', '').split()[5]] = []
                     else:
-                        angle_ex[self.edittext(j).split()[5]].append(
-                            float(self.edittext(j).split()[7]))
+                        angle_ex[j.replace(',', '').replace(':', '').split()[5]].append(
+                            float(j.replace(',', '').replace(':', '').split()[7]))
 
             for ind, val in angle_dist.items():
                 dict1['Angle type'].append(ind)
-                # (&#176 is the code for degree
                 dict1['Observed angle (&#176)'].append(val)
                 dict1['Ideal angle (&#176)'].append(
                     round(val+angle_diff[ind], 2))
                 dict1['Number of outliers'].append(len(angle_ex[ind]))
-                # (&#176 is the code for degree
+
             print(dict1['Angle type'], file=f_mp_A)
             print(dict1['Observed angle (&#176)'], file=f_mp_A)
             print(dict1['Ideal angle (&#176)'], file=f_mp_A)
@@ -459,8 +458,6 @@ class GetMolprobityInformation(GetInputInformation):
     def get_data_for_quality_at_glance(self, line: list) -> (float, float, float):
         """format mean information of models for quality at glance plots, read from temp_mp file"""
         count = [i for i, j in enumerate(line) if 'Summary' in j]
-        # info = [(i, line[i+1], line[i+2], line[i+3])
-        #        for i, j in enumerate(line) if 'Summary' in j]
         for ind in range(count[0]+2, len(line)):
             subline = line[ind].strip().split('=')
             if 'Ramachandran outliers' in subline[0]:

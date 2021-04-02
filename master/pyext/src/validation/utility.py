@@ -270,6 +270,7 @@ def all_same(items: list):
 
 def exv_readable_format(exv: dict) -> list:
     fin_string = []
+    print (exv)
     for ind, el in enumerate(exv['Models']):
         fin_string.append('Model-'+str(el)+': '+'Number of violations-' +
                           str(exv['Number of violations'][ind]) + ' ')
