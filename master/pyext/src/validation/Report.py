@@ -142,7 +142,7 @@ class WriteReport(object):
             else:
                 if not I_mp.check_for_molprobity():
                     self.Input.rewrite_mmcif()
-                    I_mp = molprobity.get_molprobity_information('test.cif')
+                    I_mp = molprobity.GetMolprobityInformation('test.cif')
                     print("file rewritten")
                 if I_mp.check_for_molprobity():
                     print("Molprobity analysis is being calculated...")
