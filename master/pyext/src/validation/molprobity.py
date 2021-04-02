@@ -17,11 +17,11 @@ from decouple import AutoConfig
 import collections
 
 
-class get_molprobity_information(get_input_information):
+class GetMolprobityInformation(GetInputInformation):
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)
-        self.ID = str(get_input_information.get_id(self))
-        self.nos = get_input_information.get_number_of_models(self)
+        self.ID = str(GetInputInformation.get_id(self))
+        self.nos = GetInputInformation.get_number_of_models(self)
         self.resultpath = '../static/results/'
         self.envpath = 'XXX'
 
@@ -43,6 +43,7 @@ class get_molprobity_information(get_input_information):
             return True
         else:
             print("File is not in the appropriate format for molprobity")
+
             return False
 
     def run_ramalyze(self, d: dict):
