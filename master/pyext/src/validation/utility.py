@@ -135,10 +135,10 @@ def get_all_files(path_dir):
     return glob.glob(path_dir)
 
 
-def runInParallel(*fns, d):
+def runInParallel(*fns):
     proc = []
     for fn in fns:
-        p = Process(target=fn, args=d)
+        p = Process(target=fn)
         p.start()
         proc.append(p)
     for p in proc:

@@ -43,7 +43,6 @@ class GetMolprobityInformation(GetInputInformation):
             return True
         else:
             print("File is not in the appropriate format for molprobity")
-
             return False
 
     def run_ramalyze(self, d: dict):
