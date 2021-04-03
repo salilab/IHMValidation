@@ -389,13 +389,16 @@ class GetInputInformation(object):
 
     def dataset_id_type_dic(self) -> dict:
         """dataset id and data items"""
-        dataset_dic = defaultdict
+        dataset_dic = defaultdict()
         if len(self.system.orphan_datasets) > 0:
             for i in self.system.orphan_datasets:
                 if i.data_type == 'other':
                     dataset_dic[str(i._id)] = str(i.details)
                 else:
-                    dataset_dic[str(i._id)] = str(i.data_type)
+                    try:
+                        dataset_dic[str(i._id)] = str(i.data_type)
+                    except TypeError:
+                        dataset_dic[str(i._id)] = 'None'
         return dataset_dic
 
     def get_restraints(self) -> dict:
