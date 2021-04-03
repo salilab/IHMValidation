@@ -15,6 +15,7 @@ import ihm
 import ihm.reader
 from decouple import AutoConfig
 import collections
+import pandas as pd
 
 
 class GetMolprobityInformation(GetInputInformation):
@@ -249,10 +250,23 @@ class GetMolprobityInformation(GetInputInformation):
             dict1['Number of clashes'].append(len(_[0]))
 
         clash_total = (sum(dict1['Number of clashes']))
+        dict1=self.orderclashdict(dict1)
         print(dict1['Model ID'], file=f_clash)
         print(dict1['Clash score'], file=f_clash)
         print(dict1['Number of clashes'], file=f_clash)
         return dict1, clash_total
+
+    def orderclashdict(self,modeldict: dict)->dict:
+        """molprobity returns output in lexicographic order
+        this is to change it to number order
+         """
+        df=pd.DataFrame(modeldict)
+        df['ID']=df['Model ID'].apply(lambda x:int(x.split()[1]))
+        df=df.sort_values(by='ID')
+        df=df.drop(['ID'], axis=1)
+        df_dict=df.to_dict()
+        ordered_dict={key:list(val.values()) for key,val in df_dict.items()}
+        return ordered_dict
 
     def rota_summary_table(self, models: dict) -> dict:
         """ format rota data to print to file """
@@ -458,12 +472,20 @@ class GetMolprobityInformation(GetInputInformation):
     def get_data_for_quality_at_glance(self, line: list) -> (float, float, float):
         """format mean information of models for quality at glance plots, read from temp_mp file"""
         count = [i for i, j in enumerate(line) if 'Summary' in j]
-        for ind in range(count[0]+2, len(line)):
-            subline = line[ind].strip().split('=')
-            if 'Ramachandran outliers' in subline[0]:
-                rama = float(subline[1].replace(' ', '').replace('%', ''))
-            if 'Rotamer outliers' in subline[0]:
-                sidechain = float(subline[1].replace(' ', '').replace('%', ''))
-            if 'Clashscore' in subline[0]:
-                clashscore = float(subline[1].replace(' ', ''))
+        violated=[j for i, j in enumerate(line) if 'corrupted' in j]
+        # print (count)
+        # print (violated)
+        if count:
+            for ind in range(count[0]+2, len(line)):
+                subline = line[ind].strip().split('=')
+                if 'Ramachandran outliers' in subline[0]:
+                    rama = float(subline[1].replace(' ', '').replace('%', ''))
+                if 'Rotamer outliers' in subline[0]:
+                    sidechain = float(subline[1].replace(' ', '').replace('%', ''))
+                if 'Clashscore' in subline[0]:
+                    clashscore = float(subline[1].replace(' ', ''))
+        elif violated and not count:
+            clashscore=0.0
+            rama=0.0
+            sidechain=0.0
         return clashscore, rama, sidechain

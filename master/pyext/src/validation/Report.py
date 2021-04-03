@@ -82,10 +82,9 @@ class WriteReport(object):
             # global clashscore; global rama; global sidechain;
             exv_data = None
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
-            if I_mp.check_for_molprobity():
-                filename = os.path.abspath(os.path.join(
+            filename = os.path.abspath(os.path.join(
                     os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
-                print (filename)
+            if I_mp.check_for_molprobity() or os.path.exists(filename):
                 if os.path.exists(filename):
                     d_mp = {}
                     print("Molprobity analysis file already exists...\n...assuming clashscores, \
@@ -130,8 +129,10 @@ class WriteReport(object):
                     I_mp.rama_summary_table(I_mp.process_rama(d_mp['rama'])))
                 Template_Dict['ramalist'] = utility.dict_to_JSlist(
                     I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama'])))
+                # print (d_mp['clash'],d_mp['rama'])
                 clashscores, Template_Dict['tot'] = I_mp.clash_summary_table(
                     d_mp['clash'])
+                # print ("c",clashscores)
                 Template_Dict['clashscore_list'] = utility.dict_to_JSlist(
                     clashscores)
                 Template_Dict['clashlist'] = I_mp.clash_detailed_table(
