@@ -323,7 +323,11 @@ class GetInputInformation(object):
             for ensm in self.system.ensembles:
                 ensemble_comp['Ensemble number'].append(str(ensm._id))
                 ensemble_comp['Ensemble name'].append(str(ensm.name))
-                ensemble_comp['Model ID'].append(str(ensm.model_group._id))
+                try:
+                    ensemble_comp['Model ID'].append(str(ensm.model_group._id))
+                except AttributeError:
+                    ensemble_comp['Model ID'].append('Not listed')
+
                 ensemble_comp['Number of models'].append(str(ensm.num_models))
                 ensemble_comp['Clustering method'].append(
                     str(ensm.clustering_method))
