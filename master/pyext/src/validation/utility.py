@@ -181,8 +181,8 @@ def get_supp_file_pdf(mmcif_file: str) -> str:
 
 def get_subunits(sub_dict: dict) -> list:
     model_number = len(sub_dict['Model ID'])
-    sublist = ['%s: Chain %s (%d residues)' % (sub_dict['Subunit name'][i], sub_dict['Chain ID']
-                                               [i], sub_dict['Total residues'][i]) for i in range(model_number)]
+    sublist = ['%s: Chain %s (%s residues)' % (sub_dict['Subunit name'][i], sub_dict['Chain ID']
+                                               [i], str(sub_dict['Total residues'][i]) ) for i in range(model_number)]
     return list(set(sublist))
 
 
