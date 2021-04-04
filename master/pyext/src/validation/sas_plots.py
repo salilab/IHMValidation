@@ -53,8 +53,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, height=500, width=500, filename=self.filename +
                     '/'+self.ID+sasbdb+"intensities.svg")
         export_png(p, height=500, width=500, filename=self.filename +
-                    '/'+self.ID+sasbdb+"intensities.png")
-
+                   '/'+self.ID+sasbdb+"intensities.png")
 
     def plot_intensities_log(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -83,7 +82,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, height=500, width=500, filename=self.filename +
                     '/'+self.ID+sasbdb+"intensities_log.svg")
         export_png(p, height=500, width=500, filename=self.filename +
-                    '/'+self.ID+sasbdb+"intensities_log.png")
+                   '/'+self.ID+sasbdb+"intensities_log.png")
 
     def plot_kratky_dep(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -109,8 +108,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+sasbdb+"Kratky_dep.svg")
         export_png(p,  height=500, width=500, filename=self.filename+'/' +
-                    self.ID+sasbdb+"Kratky_dep.png")
-
+                   self.ID+sasbdb+"Kratky_dep.png")
 
     def plot_kratky(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -138,7 +136,7 @@ class SasValidationPlots(sas.SasValidation):
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"Kratky.svg")
         export_png(p,  height=500, width=500,
-                    filename=self.filename+'/'+self.ID+sasbdb+"Kratky.png")
+                   filename=self.filename+'/'+self.ID+sasbdb+"Kratky.png")
 
     def plot_porod_debye(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -162,7 +160,8 @@ class SasValidationPlots(sas.SasValidation):
         p.output_backend = "svg"
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"porod.html")
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"porod.svg")
-        export_png(p,  height=500, width=500, filename=self.filename+'/'+self.ID+sasbdb+"porod.png")
+        export_png(p,  height=500, width=500,
+                   filename=self.filename+'/'+self.ID+sasbdb+"porod.png")
 
     def plot_pddf(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -188,7 +187,8 @@ class SasValidationPlots(sas.SasValidation):
         p.output_backend = "svg"
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"pddf.html")
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"pddf.svg")
-        export_png(p,  height=500, width=500, filename=self.filename+'/'+self.ID+sasbdb+"pddf.png")
+        export_png(p,  height=500, width=500,
+                   filename=self.filename+'/'+self.ID+sasbdb+"pddf.png")
 
     def plot_pddf_residuals(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -217,7 +217,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+sasbdb+"pddf_residuals.svg")
         export_png(p,  height=500, width=500, filename=self.filename+'/' +
-                    self.ID+sasbdb+"pddf_residuals.png")
+                   self.ID+sasbdb+"pddf_residuals.png")
 
     def plot_pddf_residuals_wt(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -247,8 +247,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+sasbdb+"pddf_residuals_wt.svg")
         export_png(p, height=500, width=500, filename=self.filename+'/' +
-                    self.ID+sasbdb+"pddf_residuals_wt.png")
-
+                   self.ID+sasbdb+"pddf_residuals_wt.png")
 
     def plot_pddf_int(self, sasbdb: str, df_int: pd.DataFrame, df_pofr: pd.DataFrame):
         '''
@@ -282,7 +281,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+sasbdb+"pddf_int.svg")
         export_png(p,  height=500, width=500, filename=self.filename+'/' +
-                    self.ID+sasbdb+"pddf_int.png")
+                   self.ID+sasbdb+"pddf_int.png")
 
     def Guinier_plot_fit(self, sasbdb: str, df: pd.DataFrame, score: float):
         '''
@@ -312,7 +311,8 @@ class SasValidationPlots(sas.SasValidation):
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"guinier.html")
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"guinier.svg")
-        export_png(p, height=500, width=500, filename=self.filename+'/'+self.ID+sasbdb+"guinier.png")
+        export_png(p, height=500, width=500, filename=self.filename +
+                   '/'+self.ID+sasbdb+"guinier.png")
 
     def Guinier_plot_residuals(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -342,7 +342,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+sasbdb+"guinier_residuals.svg")
         export_png(p, height=500, width=500, filename=self.filename+'/' +
-                    self.ID+sasbdb+"guinier_residuals.png")
+                   self.ID+sasbdb+"guinier_residuals.png")
 
     def plot_fit(self, sasbdb: str, fit: int, score: float, df: pd.DataFrame):
         '''
@@ -375,7 +375,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+sasbdb+str(fit)+"fit1.svg")
         export_png(p,  height=500, width=500, filename=self.filename+'/' +
-                    self.ID+sasbdb+str(fit)+"fit1.png")
+                   self.ID+sasbdb+str(fit)+"fit1.png")
 
     def plot_fit_residuals(self, sasbdb: str, fit: int, df: pd.DataFrame):
         '''
@@ -405,7 +405,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+sasbdb+str(fit)+"residuals.svg")
         export_png(p, height=500, width=500, filename=self.filename+'/' +
-                    self.ID+sasbdb+str(fit)+"residuals.png")
+                   self.ID+sasbdb+str(fit)+"residuals.png")
 
     def plot_fit_residuals_wt(self, sasbdb: str, fit: int, df: pd.DataFrame):
         '''
@@ -435,7 +435,7 @@ class SasValidationPlots(sas.SasValidation):
         export_svgs(p, filename=self.filename+'/'+self.ID +
                     sasbdb+str(fit)+"residuals_wt.svg")
         export_png(p,  height=500, width=500, filename=self.filename+'/'+self.ID +
-                    sasbdb+str(fit)+"residuals_wt.png")
+                   sasbdb+str(fit)+"residuals_wt.png")
 
     def plot_multiple(self):
         for sasbdb, df in self.df_dict.items():

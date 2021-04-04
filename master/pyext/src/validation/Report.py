@@ -224,13 +224,13 @@ class WriteReport(object):
             try:
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many())
-            except (TypeError, KeyError, ValueError):
+            except (TypeError, KeyError, ValueError, IndexError):
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many_dep())
             try:
                 Template_Dict['parameters_mw'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_mw_many())
-            except (TypeError, KeyError, ValueError):
+            except (TypeError, KeyError, ValueError, IndexError):
                 Template_Dict['parameters_mw'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_mw_many_dep())
             Template_Dict['pddf_info'] = utility.dict_to_JSlist(

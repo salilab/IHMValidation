@@ -341,7 +341,7 @@ class GetInputInformation(object):
     def get_dataset_xl_info(self, id: int) -> str:
         """Get dataset XL info given dataset ID"""
         restraints = self.get_restraints()
-        print(restraints)
+        # print (restraints)
         return 'Linker name and number of cross-links: %s' % (restraints
                                                               ['Restraint info']
                                                               [restraints['Dataset ID']
@@ -451,7 +451,7 @@ class GetInputInformation(object):
                     ID = 'None'
                 # restraints_comp['Restraint info'].append(dic[ID])
                 if isinstance(i.distance, ihm.restraint.UpperBoundDistanceRestraint):
-                    #print (i.distance,i.distance.distance_lower_limit)
+                    # print (i.distance,i.distance.distance_lower_limit)
                     restraints_comp['Restraint info'].append(
                         ('Upper Bound Distance: '+str(i.distance.distance)))
                 elif isinstance(i.distance, ihm.restraint.LowerUpperBoundDistanceRestraint):

@@ -13,8 +13,8 @@ import pandas as pd
 import numpy as np
 import math
 import os
-import collections
 import csv
+
 
 class GetExcludedVolume(GetInputInformation):
     def __init__(self, mmcif_file):
@@ -22,7 +22,6 @@ class GetExcludedVolume(GetInputInformation):
         self.ID = str(GetInputInformation.get_id(self))
         self.nos = GetInputInformation.get_number_of_models(self)
         self.resultpath = '../static/results/'
-
 
     def get_all_spheres(self, filetemp=None):
         """get information on all spheres for each model"""
@@ -105,7 +104,7 @@ class GetExcludedVolume(GetInputInformation):
                 round(self.get_violation_percentage(df, self.get_violation_dict(df)), 2))
             excluded_volume['Number of violations'].append(
                 sum(list(self.get_violation_dict(df).values())))
-        #open(os.path.join(os.getcwd(), self.resultpath, self.ID+'exv.txt'), 'w+')
+        # open(os.path.join(os.getcwd(), self.resultpath, self.ID+'exv.txt'), 'w+')
         return excluded_volume
 
     def get_exc_vol_for_models_normalized(self, model_dict: dict) -> dict:
@@ -131,19 +130,19 @@ class GetExcludedVolume(GetInputInformation):
     def run_exc_vol_parallel(self, model_dict: dict) -> dict:
         """ get exc vol info in parallel """
         # list_of_sphere_list=list(model_dict.values())
-        filename=os.path.join(os.getcwd(),
-                              self.resultpath, self.ID+'exv.txt')
+        filename = os.path.join(os.getcwd(),
+                                self.resultpath, self.ID+'exv.txt')
         if os.path.exists(filename):
             return self.process_exv(filename)
 
-        if len(list(model_dict.keys())) <= 25: # this is an arbitrary cutoff
+        if len(list(model_dict.keys())) <= 25:  # this is an arbitrary cutoff
             pool = mp.Pool(processes=len(list(model_dict.keys())))
             complete_list = pool.map(
                 self.get_exc_vol_given_sphere_parallel, list(model_dict.values()))
             excluded_volume = {'Models': list(model_dict.keys()),
                                'Excluded Volume Satisfaction': [i[0] for i in complete_list],
                                'Number of violations': [i[1] for i in complete_list]}
-            write_file=csv.writer(open(filename, 'w+'))
+            write_file = csv.writer(open(filename, 'w+'))
             for key, val in excluded_volume.items():
                 write_file.writerow([key, val])
         else:
@@ -152,10 +151,10 @@ class GetExcludedVolume(GetInputInformation):
                                'Number of violations': ['Can not be computed']}
         return excluded_volume
 
-    def process_exv(self, filename: str)->dict:
-        df=pd.read_csv(filename,names=['key','val'], header=None)
-        df['val']=df['val'].apply(lambda x:x.strip('][').split(','))
-        return dict(zip(df.key,df.val))
+    def process_exv(self, filename: str) -> dict:
+        df = pd.read_csv(filename, names=['key', 'val'], header=None)
+        df['val'] = df['val'].apply(lambda x: x.strip('][').split(','))
+        return dict(zip(df.key, df.val))
 
     def exv_readable_format(self, exv: dict) -> str:
         fin_string = ''

@@ -472,9 +472,7 @@ class GetMolprobityInformation(GetInputInformation):
     def get_data_for_quality_at_glance(self, line: list) -> (float, float, float):
         """format mean information of models for quality at glance plots, read from temp_mp file"""
         count = [i for i, j in enumerate(line) if 'Summary' in j]
-        violated = [j for i, j in enumerate(line) if 'corrupted' in j]
         # print (count)
-        # print (violated)
         if count:
             for ind in range(count[0]+2, len(line)):
                 subline = line[ind].strip().split('=')
@@ -485,7 +483,7 @@ class GetMolprobityInformation(GetInputInformation):
                         ' ', '').replace('%', ''))
                 if 'Clashscore' in subline[0]:
                     clashscore = float(subline[1].replace(' ', ''))
-        elif violated and not count:
+        elif not count:
             clashscore = 0.0
             rama = 0.0
             sidechain = 0.0

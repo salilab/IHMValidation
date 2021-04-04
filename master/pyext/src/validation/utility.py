@@ -182,7 +182,7 @@ def get_supp_file_pdf(mmcif_file: str) -> str:
 def get_subunits(sub_dict: dict) -> list:
     model_number = len(sub_dict['Model ID'])
     sublist = ['%s: Chain %s (%s residues)' % (sub_dict['Subunit name'][i], sub_dict['Chain ID']
-                                               [i], str(sub_dict['Total residues'][i]) ) for i in range(model_number)]
+                                               [i], str(sub_dict['Total residues'][i])) for i in range(model_number)]
     return list(set(sublist))
 
 
@@ -270,7 +270,7 @@ def all_same(items: list):
 
 def exv_readable_format(exv: dict) -> list:
     fin_string = []
-    print (exv)
+    # print (exv)
     for ind, el in enumerate(exv['Models']):
         fin_string.append('Model-'+str(el)+': '+'Number of violations-' +
                           str(exv['Number of violations'][ind]) + ' ')
