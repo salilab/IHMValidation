@@ -163,14 +163,12 @@ class GetMolprobityInformation(GetInputInformation):
     def process_clash(self, line: list) -> dict:
         """ process clash files to extract relevant information """
         count = [i for i, j in enumerate(line) if 'Bad Clashes' in j]
-
         if self.nos > 1:
             vals = [j.split(' ')[5]
                     for i, j in enumerate(line) if 'Bad Clashes' in j]
-            clashes = {_[-1]: [] for _ in vals}
+            clashes = {'Model '+model.split('MODEL')[1]: [] for model in vals}
         else:
             clashes = {'Model 1': []}
-
         count.append(len(line)-self.nos)
 
         for ind in range(0, len(clashes.keys())):
@@ -241,13 +239,14 @@ class GetMolprobityInformation(GetInputInformation):
             clashscore_list = ['Model 1 ' + (line[len(line)-self.nos:])[0]]
         dict1 = {'Model ID': [], 'Clash score': [], 'Number of clashes': []}
 
-        for _ in clashscore_list:
+        for clashval in clashscore_list:
             dict1['Model ID'].append(
-                str(_.split(' ')[0].title()+' '+_.split(' ')[1]))
-            dict1['Clash score'].append(_.split(' ')[-1])
+                str(clashval.split(' ')[0].title()+' '+clashval.split(' ')[1]))
+            dict1['Clash score'].append(clashval.split(' ')[-1])
 
-        for _ in list(clashes.values()):
-            dict1['Number of clashes'].append(len(_[0]))
+        for clashnos in list(clashes.values()):
+            # print (clashes.values())
+            dict1['Number of clashes'].append(len(clashnos[0]))
 
         clash_total = (sum(dict1['Number of clashes']))
         dict1 = self.orderclashdict(dict1)

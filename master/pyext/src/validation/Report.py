@@ -129,7 +129,7 @@ class WriteReport(object):
                     I_mp.rama_summary_table(I_mp.process_rama(d_mp['rama'])))
                 Template_Dict['ramalist'] = utility.dict_to_JSlist(
                     I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama'])))
-                # print (d_mp['clash'],d_mp['rama'])
+                # print (d_mp['clash'])
                 clashscores, Template_Dict['tot'] = I_mp.clash_summary_table(
                     d_mp['clash'])
                 # print ("c",clashscores)
