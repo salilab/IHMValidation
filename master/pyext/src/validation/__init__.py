@@ -444,7 +444,10 @@ class GetInputInformation(object):
                     'Details: '+str(i.details))
             if isinstance(i, ihm.restraint.DerivedDistanceRestraint):
                 dic = self.dataset_id_type_dic()
-                ID = str(i.dataset._id)
+                try:
+                    ID = str(i.dataset._id)
+                except AttributeError:
+                    ID = 'None'
                 # restraints_comp['Restraint info'].append(dic[ID])
                 if 'UpperBound' in str(i.distance.__class__.__name__):
                     restraints_comp['Restraint info'].append(

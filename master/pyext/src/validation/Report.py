@@ -83,7 +83,7 @@ class WriteReport(object):
             exv_data = None
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
             filename = os.path.abspath(os.path.join(
-                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
+                os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
             if I_mp.check_for_molprobity() or os.path.exists(filename):
                 if os.path.exists(filename):
                     d_mp = {}
