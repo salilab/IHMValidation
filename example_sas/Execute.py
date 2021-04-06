@@ -17,6 +17,7 @@ import sys
 sys.path.insert(0, "../master/pyext/src/")
 from validation.Report import WriteReport
 from validation import utility
+from collections import defaultdict
 
 # from validation.WKhtmlToPdf import  wkhtmltopdf
 # import utility
@@ -196,12 +197,14 @@ if __name__ == "__main__":
     template_dict, clashscore, rama, sidechain, exv_data = report.run_model_quality(
         template_dict)
     template_dict, sas_data, sas_fit = report.run_sas_validation(template_dict)
-    cx_fit, template_dict = report.run_cx_validation(template_dict)
+    #cx_fit, template_dict = report.run_cx_validation(template_dict)
     report.run_quality_glance(
-        clashscore, rama, sidechain, exv_data, sas_data, sas_fit, cx_fit)
+        clashscore, rama, sidechain, exv_data, sas_data, sas_fit, cx_fit=defaultdict())
     report.run_sas_validation_plots(template_dict)
+
     write_pdf(args.f, template_dict, template_pdf,
               dirNames['pdf'], dirNames['pdf'])
+    
     template_dict = report.run_supplementary_table(template_dict,
                                                    location=args.ls,
                                                    physics=physics,
@@ -213,7 +216,8 @@ if __name__ == "__main__":
                                                    clustering=args.c,
                                                    resolution=args.res)
     write_supplementary_table(
-        args.f, template_dict, template_file_supp, dirNames['supp'], dirNames['supp'])
+       args.f, template_dict, template_file_supp, dirNames['supp'], dirNames['supp'])
     write_json(args.f, template_dict, dirNames['json'], dirNames['json'])
     write_html(args.f, template_dict, template_flask, dirNames['template'])
+
     utility.clean_all()
