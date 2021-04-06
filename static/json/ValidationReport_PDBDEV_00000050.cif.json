@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 30, 2021 --  11:57 PM"
+        "Itemized_List": "April 02, 2021 --  09:43 PM"
     },
     {
         "Category": "ensemble_info",
@@ -251,8 +251,8 @@
     {
         "Category": "Data",
         "Itemized_List": [
-            "CX-MS DATA",
-            "MASS SPECTROMETRY DATA"
+            "MASS SPECTROMETRY DATA",
+            "CX-MS DATA"
         ]
     },
     {
@@ -353,22 +353,6 @@
         ]
     },
     {
-        "Category": "cx",
-        "Itemized_List": [
-            "True"
-        ]
-    },
-    {
-        "Category": "Cx Fit Model #1",
-        "Itemized_List": 66.66666666666666
-    },
-    {
-        "Category": "validation_input",
-        "Itemized_List": [
-            "CX-MS Fit of medioid: model # 1, percentage satisfied 66.67%"
-        ]
-    },
-    {
         "Category": "clustering",
         "Itemized_List": "Distance threshold-based clustering used if ensembles are deposited"
     },
@@ -389,12 +373,12 @@
     {
         "Category": "Subunits",
         "Itemized_List": [
+            "AP2beta2: Chain F (591 residues)",
             "AP2sigma: Chain E (142 residues)",
-            "Nef: Chain A (242 residues)",
-            "AP2alpha2: Chain C (627 residues)",
             "CD4mut: Chain B (419 residues)",
+            "AP2alpha2: Chain C (627 residues)",
             "AP2mu2: Chain D (135 residues)",
-            "AP2beta2: Chain F (591 residues)"
+            "Nef: Chain A (242 residues)"
         ]
     },
     {
@@ -474,6 +458,12 @@
         "Category": "Data_quality",
         "Itemized_List": [
             "Quality of input data has not be assessed"
+        ]
+    },
+    {
+        "Category": "validation_input",
+        "Itemized_List": [
+            "Fit of model to information used to compute it has not been determined"
         ]
     },
     {

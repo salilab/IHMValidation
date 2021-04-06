@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 30, 2021 --  11:53 PM"
+        "Itemized_List": "April 02, 2021 --  09:40 PM"
     },
     {
         "Category": "ensemble_info",
@@ -662,8 +662,8 @@
     {
         "Category": "Data",
         "Itemized_List": [
-            "CX-MS DATA",
-            "3DEM VOLUME"
+            "3DEM VOLUME",
+            "CX-MS DATA"
         ]
     },
     {
@@ -896,22 +896,6 @@
         ]
     },
     {
-        "Category": "cx",
-        "Itemized_List": [
-            "True"
-        ]
-    },
-    {
-        "Category": "Cx Fit Model #1",
-        "Itemized_List": 89.56158663883089
-    },
-    {
-        "Category": "validation_input",
-        "Itemized_List": [
-            "CX-MS Fit of medioid: model # 1, percentage satisfied 89.56%"
-        ]
-    },
-    {
         "Category": "clustering",
         "Itemized_List": "Distance threshold-based clustering used if ensembles are deposited"
     },
@@ -932,37 +916,37 @@
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "P75560: Chain H (294 residues)",
-            "P46775: Chain K (205 residues)",
-            "30SsubunitP: Chain AA (83 residues)",
-            "P75591: Chain A (540 residues)",
-            "longRNAR1: Chain P (46 residues)",
-            "30SsubunitN: Chain Y (84 residues)",
-            "30SsubunitE: Chain S (92 residues)",
-            "30SsubunitM: Chain X (60 residues)",
-            "30SsubunitO: Chain Z (80 residues)",
-            "Q50295: Chain B (327 residues)",
-            "30SsubunitK: Chain V (135 residues)",
-            "P75090: Chain R (144 residues)",
-            "30SsubunitZ: Chain AF (77 residues)",
-            "P41205: Chain J (273 residues)",
-            "P78013: Chain D (1391 residues)",
-            "30SsubunitJ: Chain U (118 residues)",
             "Q50295: Chain C (327 residues)",
-            "30Ssubunitj: Chain AE (77 residues)",
-            "30SsubunitL: Chain W (119 residues)",
-            "P75049: Chain F (320 residues)",
-            "DNA1T: Chain Q (39 residues)",
-            "P75179: Chain M (132 residues)",
-            "30SsubunitF: Chain T (153 residues)",
-            "30SsubunitR: Chain AC (83 residues)",
-            "P75271: Chain E (1290 residues)",
-            "DNA1N: Chain N (39 residues)",
-            "longRNAR1: Chain O (46 residues)",
-            "30SsubunitQ: Chain AB (71 residues)",
+            "30SsubunitO: Chain Z (80 residues)",
+            "30SsubunitM: Chain X (60 residues)",
+            "longRNAR1: Chain P (46 residues)",
+            "30SsubunitE: Chain S (92 residues)",
+            "P78013: Chain D (1391 residues)",
             "P75581: Chain I (108 residues)",
-            "Q50304: Chain L (142 residues)",
+            "P41205: Chain J (273 residues)",
             "30SsubunitT: Chain AD (1544 residues)",
+            "P75591: Chain A (540 residues)",
+            "P75271: Chain E (1290 residues)",
+            "P75179: Chain M (132 residues)",
+            "30SsubunitK: Chain V (135 residues)",
+            "Q50304: Chain L (142 residues)",
+            "30SsubunitP: Chain AA (83 residues)",
+            "30Ssubunitj: Chain AE (77 residues)",
+            "P75560: Chain H (294 residues)",
+            "30SsubunitN: Chain Y (84 residues)",
+            "P75049: Chain F (320 residues)",
+            "30SsubunitZ: Chain AF (77 residues)",
+            "DNA1N: Chain N (39 residues)",
+            "30SsubunitR: Chain AC (83 residues)",
+            "P75090: Chain R (144 residues)",
+            "30SsubunitL: Chain W (119 residues)",
+            "Q50295: Chain B (327 residues)",
+            "longRNAR1: Chain O (46 residues)",
+            "30SsubunitF: Chain T (153 residues)",
+            "30SsubunitQ: Chain AB (71 residues)",
+            "30SsubunitJ: Chain U (118 residues)",
+            "P46775: Chain K (205 residues)",
+            "DNA1T: Chain Q (39 residues)",
             "Q50301: Chain G (219 residues)"
         ]
     },
@@ -1074,6 +1058,12 @@
         "Category": "Data_quality",
         "Itemized_List": [
             "Quality of input data has not be assessed"
+        ]
+    },
+    {
+        "Category": "validation_input",
+        "Itemized_List": [
+            "Fit of model to information used to compute it has not been determined"
         ]
     },
     {

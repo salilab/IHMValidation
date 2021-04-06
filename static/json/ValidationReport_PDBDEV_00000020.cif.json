@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 30, 2021 --  01:23 PM"
+        "Itemized_List": "April 02, 2021 --  07:19 PM"
     },
     {
         "Category": "ensemble_info",
@@ -353,8 +353,8 @@
     {
         "Category": "Data",
         "Itemized_List": [
-            "2DEM CLASS AVERAGE",
             "CX-MS DATA",
+            "2DEM CLASS AVERAGE",
             "SAS DATA"
         ]
     },
@@ -702,16 +702,16 @@
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "Dyn2: Chain A (92 residues)",
-            "Nup116: Chain I (1113 residues)",
-            "Nsp1: Chain H (823 residues)",
-            "Nup159: Chain F (1460 residues)",
-            "Nup159: Chain E (1460 residues)",
-            "Dyn2: Chain B (92 residues)",
-            "Nup116: Chain J (1113 residues)",
             "Nup82: Chain C (713 residues)",
+            "Nup116: Chain I (1113 residues)",
             "Nup82: Chain D (713 residues)",
-            "Nsp1: Chain G (823 residues)"
+            "Nsp1: Chain G (823 residues)",
+            "Nup116: Chain J (1113 residues)",
+            "Dyn2: Chain B (92 residues)",
+            "Nsp1: Chain H (823 residues)",
+            "Nup159: Chain E (1460 residues)",
+            "Dyn2: Chain A (92 residues)",
+            "Nup159: Chain F (1460 residues)"
         ]
     },
     {

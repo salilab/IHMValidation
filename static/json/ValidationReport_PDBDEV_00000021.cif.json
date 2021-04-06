@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "March 30, 2021 --  01:44 PM"
+        "Itemized_List": "April 03, 2021 --  01:28 PM"
     },
     {
         "Category": "ensemble_info",
@@ -368,19 +368,19 @@
                 "3677.0"
             ],
             [
-                "2",
-                "99.71",
-                "3514.0"
+                " 2",
+                " 99.71",
+                " 3514.0"
             ],
             [
-                "3",
-                "99.72",
-                "3754.0"
+                " 3",
+                " 99.72",
+                " 3754.0"
             ],
             [
-                "4",
-                "99.72",
-                "3684.0"
+                " 4",
+                " 99.72",
+                " 3684.0"
             ]
         ]
     },
@@ -388,40 +388,9 @@
         "Category": "assess_excluded_volume",
         "Itemized_List": [
             "Model-1: Number of violations-3677.0 ",
-            "Model-2: Number of violations-3514.0 ",
-            "Model-3: Number of violations-3754.0 ",
-            "Model-4: Number of violations-3684.0 "
-        ]
-    },
-    {
-        "Category": "cx",
-        "Itemized_List": [
-            "True"
-        ]
-    },
-    {
-        "Category": "Cx Fit Model #1",
-        "Itemized_List": 80.8695652173913
-    },
-    {
-        "Category": "Cx Fit Model #2",
-        "Itemized_List": 89.65517241379311
-    },
-    {
-        "Category": "Cx Fit Model #3",
-        "Itemized_List": 83.47826086956522
-    },
-    {
-        "Category": "Cx Fit Model #4",
-        "Itemized_List": 84.34782608695653
-    },
-    {
-        "Category": "validation_input",
-        "Itemized_List": [
-            "CX-MS Fit of medioid: model # 1, percentage satisfied 80.87%",
-            "CX-MS Fit of medioid: model # 2, percentage satisfied 89.66%",
-            "CX-MS Fit of medioid: model # 3, percentage satisfied 83.48%",
-            "CX-MS Fit of medioid: model # 4, percentage satisfied 84.35%"
+            "Model- 2: Number of violations- 3514.0 ",
+            "Model- 3: Number of violations- 3754.0 ",
+            "Model- 4: Number of violations- 3684.0 "
         ]
     },
     {
@@ -445,8 +414,8 @@
     {
         "Category": "Subunits",
         "Itemized_List": [
-            "alpha: Chain B (992 residues)",
-            "beta: Chain A (645 residues)"
+            "beta: Chain A (645 residues)",
+            "alpha: Chain B (992 residues)"
         ]
     },
     {
@@ -524,6 +493,12 @@
         "Category": "Data_quality",
         "Itemized_List": [
             "Quality of input data has not be assessed"
+        ]
+    },
+    {
+        "Category": "validation_input",
+        "Itemized_List": [
+            "Fit of model to information used to compute it has not been determined"
         ]
     },
     {

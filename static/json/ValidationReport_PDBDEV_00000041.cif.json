@@ -1,0 +1,636 @@
+[
+    {
+        "Category": "date",
+        "Itemized_List": "April 01, 2021 --  10:16 PM"
+    },
+    {
+        "Category": "ensemble_info",
+        "Itemized_List": [
+            [
+                "Ensemble number",
+                "Ensemble name",
+                "Model ID",
+                "Number of models",
+                "Clustering method",
+                "Clustering feature",
+                "Cluster precision"
+            ],
+            [
+                "1",
+                "Cluster 0",
+                "1",
+                "9669",
+                "Other",
+                "RMSD",
+                "38.0"
+            ]
+        ]
+    },
+    {
+        "Category": "sphere",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "num_ensembles",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "Rigid_Body",
+        "Itemized_List": 43
+    },
+    {
+        "Category": "Flexible_Unit",
+        "Itemized_List": 48
+    },
+    {
+        "Category": "RB_list",
+        "Itemized_List": [
+            [
+                "Chain ID",
+                "Rigid bodies",
+                "Non-rigid segments"
+            ],
+            [
+                "A",
+                "731-884:Comparative model/None, 924-956:Comparative model/None, 991-1137:Comparative model/None, 1157-1223:Comparative model/None, 1242-1333:Comparative model/None. ",
+                "1-730, 885-923, 957-990, 1138-1156, 1224-1241, 1334-1336. "
+            ],
+            [
+                "B",
+                "232-327:Comparative model/None, 350-371:Comparative model/None, 457-501:Comparative model/None, 529-556:Comparative model/None, 627-658:Comparative model/None, 686-786:Comparative model/None, 806-921:Comparative model/None, 945-957:Comparative model/None. ",
+                "1-231, 328-349, 372-456, 502-528, 557-626, 659-685, 787-805, 922-944, 958-971. "
+            ],
+            [
+                "C",
+                "411-805:Experimental model/2FJI. ",
+                "1-410. "
+            ],
+            [
+                "D",
+                "159-230:Comparative model/None, 326-361:Comparative model/None, 393-420:Comparative model/None, 549-570:Comparative model/None, 588-610:Comparative model/None, 631-648:Comparative model/None, 660-672:Comparative model/None, 690-698:Comparative model/None, 745-772:Comparative model/None, 825-972:Comparative model/None. ",
+                "1-158, 231-325, 362-392, 421-548, 571-587, 611-630, 649-659, 673-689, 699-744, 773-824, 973-1065. "
+            ],
+            [
+                "E",
+                "230-280:Comparative model/None, 319-399:Comparative model/None, 414-460:Comparative model/None, 568-624:Comparative model/None, 639-864:Comparative model/None. ",
+                "1-229, 281-318, 400-413, 461-567, 625-638, 865-871. "
+            ],
+            [
+                "F",
+                "474-525:Comparative model/None, 566-639:Comparative model/None, 663-685:Comparative model/None, 703-769:Comparative model/None. ",
+                "1-473, 526-565, 640-662, 686-702, 770-910. "
+            ],
+            [
+                "G",
+                "67-116:Experimental model/2B1E, 121-221:Experimental model/2B1E, 234-295:Experimental model/2B1E, 301-414:Experimental model/2B1E, 419-623:Experimental model/2B1E. ",
+                "1-66, 117-120, 222-233, 296-300, 415-418. "
+            ],
+            [
+                "H",
+                "344-451:Comparative model/None, 525-570:Experimental model/2D2S, 578-647:Experimental model/2D2S, 650-711:Experimental model/2D2S, 715-753:Experimental model/2D2S. ",
+                "1-343, 452-524, 571-577, 648-649, 712-714. "
+            ]
+        ]
+    },
+    {
+        "Category": "RB",
+        "Itemized_List": [
+            "A: 731-884:Comparative model/None, 924-956:Comparative model/None, 991-1137:Comparative model/None, 1157-1223:Comparative model/None, 1242-1333:Comparative model/None.  ",
+            "B: 232-327:Comparative model/None, 350-371:Comparative model/None, 457-501:Comparative model/None, 529-556:Comparative model/None, 627-658:Comparative model/None, 686-786:Comparative model/None, 806-921:Comparative model/None, 945-957:Comparative model/None.  ",
+            "C: 411-805:Experimental model/2FJI.  ",
+            "D: 159-230:Comparative model/None, 326-361:Comparative model/None, 393-420:Comparative model/None, 549-570:Comparative model/None, 588-610:Comparative model/None, 631-648:Comparative model/None, 660-672:Comparative model/None, 690-698:Comparative model/None, 745-772:Comparative model/None, 825-972:Comparative model/None.  ",
+            "E: 230-280:Comparative model/None, 319-399:Comparative model/None, 414-460:Comparative model/None, 568-624:Comparative model/None, 639-864:Comparative model/None.  ",
+            "F: 474-525:Comparative model/None, 566-639:Comparative model/None, 663-685:Comparative model/None, 703-769:Comparative model/None.  ",
+            "G: 67-116:Experimental model/2B1E, 121-221:Experimental model/2B1E, 234-295:Experimental model/2B1E, 301-414:Experimental model/2B1E, 419-623:Experimental model/2B1E.  ",
+            "H: 344-451:Comparative model/None, 525-570:Experimental model/2D2S, 578-647:Experimental model/2D2S, 650-711:Experimental model/2D2S, 715-753:Experimental model/2D2S.  "
+        ]
+    },
+    {
+        "Category": "flex",
+        "Itemized_List": [
+            "A: 1-730, 885-923, 957-990, 1138-1156, 1224-1241, 1334-1336.  ",
+            "B: 1-231, 328-349, 372-456, 502-528, 557-626, 659-685, 787-805, 922-944, 958-971.  ",
+            "C: 1-410.  ",
+            "D: 1-158, 231-325, 362-392, 421-548, 571-587, 611-630, 649-659, 673-689, 699-744, 773-824, 973-1065.  ",
+            "E: 1-229, 281-318, 400-413, 461-567, 625-638, 865-871.  ",
+            "F: 1-473, 526-565, 640-662, 686-702, 770-910.  ",
+            "G: 1-66, 117-120, 222-233, 296-300, 415-418.  ",
+            "H: 1-343, 452-524, 571-577, 648-649, 712-714.  "
+        ]
+    },
+    {
+        "Category": "ID",
+        "Itemized_List": "PDBDEV00000041"
+    },
+    {
+        "Category": "ID_w",
+        "Itemized_List": [
+            "PDBDEV00000041"
+        ]
+    },
+    {
+        "Category": "ID_T",
+        "Itemized_List": "PDBDEV_00000041"
+    },
+    {
+        "Category": "ID_R",
+        "Itemized_List": [
+            "PDBDEV_00000041"
+        ]
+    },
+    {
+        "Category": "Molecule",
+        "Itemized_List": "Integrative structure and function of the yeast exocyst complex"
+    },
+    {
+        "Category": "Title",
+        "Itemized_List": "Integrative structure and function of the yeast exocyst complex."
+    },
+    {
+        "Category": "Authors",
+        "Itemized_List": "Ganesan SJ; Feyder MJ; Chemmama IE; Fang F; Rout MP; Chait BT; Shi Y; Munson M; Sali A"
+    },
+    {
+        "Category": "Entry_list",
+        "Itemized_List": [
+            [
+                "Model ID",
+                "Subunit number",
+                "Subunit ID",
+                "Subunit name",
+                "Chain ID",
+                "Total residues"
+            ],
+            [
+                "1",
+                "1",
+                "1",
+                "Sec03",
+                "A",
+                "1336"
+            ],
+            [
+                "1",
+                "2",
+                "2",
+                "Sec05",
+                "B",
+                "971"
+            ],
+            [
+                "1",
+                "3",
+                "3",
+                "Sec06",
+                "C",
+                "805"
+            ],
+            [
+                "1",
+                "4",
+                "4",
+                "Sec08",
+                "D",
+                "1065"
+            ],
+            [
+                "1",
+                "5",
+                "5",
+                "Sec10",
+                "E",
+                "871"
+            ],
+            [
+                "1",
+                "6",
+                "6",
+                "Sec15",
+                "F",
+                "910"
+            ],
+            [
+                "1",
+                "7",
+                "7",
+                "Exo70",
+                "G",
+                "623"
+            ],
+            [
+                "1",
+                "8",
+                "8",
+                "Exo84",
+                "H",
+                "753"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_molecules",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "model_names",
+        "Itemized_List": [
+            "Cluster 0/None"
+        ]
+    },
+    {
+        "Category": "number_of_software",
+        "Itemized_List": 3
+    },
+    {
+        "Category": "soft_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Software name",
+                "Software version",
+                "Software classification",
+                "Software location"
+            ],
+            [
+                "1",
+                "IMP PMI module",
+                "2.13.0",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "2",
+                "Integrative Modeling Platform (IMP)",
+                "2.13.0",
+                "integrative model building",
+                "https://integrativemodeling.org"
+            ],
+            [
+                "3",
+                "MODELLER",
+                "SVN",
+                "comparative modeling",
+                "https://salilab.org/modeller/"
+            ]
+        ]
+    },
+    {
+        "Category": "number_of_datasets",
+        "Itemized_List": 21
+    },
+    {
+        "Category": "Data",
+        "Itemized_List": [
+            "CX-MS DATA",
+            "3DEM VOLUME"
+        ]
+    },
+    {
+        "Category": "Datasets_list",
+        "Itemized_List": [
+            [
+                "ID",
+                "Dataset type",
+                "Database name",
+                "Data access code"
+            ],
+            [
+                "1",
+                "Experimental model",
+                "PDB",
+                "2PFT"
+            ],
+            [
+                "2",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "3",
+                "Experimental model",
+                "PDB",
+                "2D2S"
+            ],
+            [
+                "4",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "5",
+                "Experimental model",
+                "PDB",
+                "2A2F"
+            ],
+            [
+                "6",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "7",
+                "Experimental model",
+                "PDB",
+                "2FJI"
+            ],
+            [
+                "8",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "9",
+                "Experimental model",
+                "PDB",
+                "3FHN"
+            ],
+            [
+                "10",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "11",
+                "Experimental model",
+                "PDB",
+                "5H11"
+            ],
+            [
+                "12",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "13",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "14",
+                "Experimental model",
+                "PDB",
+                "2B1E"
+            ],
+            [
+                "15",
+                "Experimental model",
+                "PDB",
+                "1ZC3"
+            ],
+            [
+                "16",
+                "Comparative model",
+                "Not listed",
+                "None"
+            ],
+            [
+                "17",
+                "Experimental model",
+                "PDB",
+                "2D2S"
+            ],
+            [
+                "18",
+                "CX-MS data",
+                "Not listed",
+                "None"
+            ],
+            [
+                "19",
+                "CX-MS data",
+                "Not listed",
+                "None"
+            ],
+            [
+                "20",
+                "3DEM volume",
+                "EMDB",
+                "EMD-21226"
+            ],
+            [
+                "21",
+                "3DEM volume",
+                "Not listed",
+                "None"
+            ]
+        ]
+    },
+    {
+        "Category": "Protocols_number",
+        "Itemized_List": 1
+    },
+    {
+        "Category": "Sampling_list",
+        "Itemized_List": [
+            [
+                "Step number",
+                "Protocol ID",
+                "Method name",
+                "Method type",
+                "Number of computed models",
+                "Multi state modeling",
+                "Multi scale modeling"
+            ],
+            [
+                "1",
+                "1",
+                "Replica exchange monte carlo",
+                "Sampling",
+                "200000",
+                "False",
+                "True"
+            ]
+        ]
+    },
+    {
+        "Category": "num_chains",
+        "Itemized_List": 8.0
+    },
+    {
+        "Category": "assess_atomic_segments",
+        "Itemized_List": "Not applicable"
+    },
+    {
+        "Category": "excluded_volume",
+        "Itemized_List": [
+            [
+                "Models",
+                "Excluded Volume Satisfaction",
+                "Number of violations"
+            ],
+            [
+                "1",
+                "99.84",
+                "9141.0"
+            ]
+        ]
+    },
+    {
+        "Category": "assess_excluded_volume",
+        "Itemized_List": [
+            "Model-1: Number of violations-9141.0 "
+        ]
+    },
+    {
+        "Category": "cx",
+        "Itemized_List": [
+            "True"
+        ]
+    },
+    {
+        "Category": "Cx Fit Model #1",
+        "Itemized_List": 60.36866359447005
+    },
+    {
+        "Category": "validation_input",
+        "Itemized_List": [
+            "CX-MS Fit of medioid: model # 1, percentage satisfied 60.37%"
+        ]
+    },
+    {
+        "Category": "clustering",
+        "Itemized_List": "Distance threshold-based clustering used if ensembles are deposited"
+    },
+    {
+        "Category": "location",
+        "Itemized_List": [
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "complex_name",
+        "Itemized_List": "integrative structure and function of the yeast exocyst complex"
+    },
+    {
+        "Category": "PDB_ID",
+        "Itemized_List": "PDBDEV00000041"
+    },
+    {
+        "Category": "Subunits",
+        "Itemized_List": [
+            "Sec05: Chain B (971 residues)",
+            "Exo70: Chain G (623 residues)",
+            "Exo84: Chain H (753 residues)",
+            "Sec08: Chain D (1065 residues)",
+            "Sec06: Chain C (805 residues)",
+            "Sec15: Chain F (910 residues)",
+            "Sec10: Chain E (871 residues)",
+            "Sec03: Chain A (1336 residues)"
+        ]
+    },
+    {
+        "Category": "datasets",
+        "Itemized_List": [
+            "Experimental model, PDB ID: 2PFT",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 2D2S",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 2A2F",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 2FJI",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 3FHN",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 5H11",
+            "Comparative model, template PDB ID: Not listed",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 2B1E",
+            "Experimental model, PDB ID: 1ZC3",
+            "Comparative model, template PDB ID: Not listed",
+            "Experimental model, PDB ID: 2D2S",
+            "CX-MS data, Linker name and number of cross-links: DSS, 256 cross-links",
+            "CX-MS data, Linker name and number of cross-links: EDC, 178 cross-links",
+            "3DEM volume, EMDB ID: EMD-21226",
+            "3DEM volume, EMDB ID: Not listed"
+        ]
+    },
+    {
+        "Category": "physics",
+        "Itemized_List": "Information about physical principles was not provided"
+    },
+    {
+        "Category": "software",
+        "Itemized_List": [
+            "IMP PMI module (version 2.13.0)",
+            "Integrative Modeling Platform (IMP) (version 2.13.0)",
+            "MODELLER (version SVN)",
+            "No location specified"
+        ]
+    },
+    {
+        "Category": "struc",
+        "Itemized_List": "45%"
+    },
+    {
+        "Category": "method",
+        "Itemized_List": "Replica exchange Monte Carlo "
+    },
+    {
+        "Category": "method_type",
+        "Itemized_List": "Sampling "
+    },
+    {
+        "Category": "method_details",
+        "Itemized_List": [
+            "Method details unspecified"
+        ]
+    },
+    {
+        "Category": "models",
+        "Itemized_List": "9669"
+    },
+    {
+        "Category": "sampling_validation",
+        "Itemized_List": [
+            "Information related to sampling validation has not been provided"
+        ]
+    },
+    {
+        "Category": "feature",
+        "Itemized_List": "RMSD"
+    },
+    {
+        "Category": "cross_validation",
+        "Itemized_List": [
+            "Fit of model to information not used to compute it has not been determined"
+        ]
+    },
+    {
+        "Category": "model_precision",
+        "Itemized_List": "38.0&#8491"
+    },
+    {
+        "Category": "restraint_info",
+        "Itemized_List": [
+            [
+                "1 unique CrossLinkRestraint: DSS, 256 cross-links"
+            ],
+            [
+                "1 unique CrossLinkRestraint: EDC, 178 cross-links"
+            ],
+            [
+                "1 unique EM3DRestraint: Gaussian mixture models, 200"
+            ]
+        ]
+    },
+    {
+        "Category": "Data_quality",
+        "Itemized_List": [
+            "Quality of input data has not be assessed"
+        ]
+    },
+    {
+        "Category": "resolution",
+        "Itemized_List": [
+            "Rigid bodies: 1 residue per bead.",
+            "Flexible regions: N/A"
+        ]
+    }
+]
