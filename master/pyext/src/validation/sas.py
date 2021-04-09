@@ -40,6 +40,15 @@ class SasValidation(GetInputInformation):
                 SAS_db_codes.append(self.dataset['Data access code'][indx])
         return SAS_db_codes
 
+    def get_SASBDB_code_clean(self) -> list:
+        '''
+        function to get all SASBDB codes used in the model,
+        returns a list of SASBDB codes
+        '''
+        SAS_db_codes = self.get_SASBDB_code()
+        cleaned_codes = [code for code in SAS_db_codes if code != 'None']
+        return cleaned_codes
+
     def clean_SASBDB_code(self) -> list:
         '''
         function to clean SASBDB list of codes

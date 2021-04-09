@@ -221,6 +221,7 @@ class WriteReport(object):
             I_sas = sas.SasValidation(self.mmcif_file)
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
             Template_Dict['sasdb_code'] = I_sas.get_SASBDB_code()
+            Template_Dict['sasdb_code_html'] = I_sas.get_SASBDB_code_clean()
             try:
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many())
