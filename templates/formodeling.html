@@ -248,16 +248,16 @@ body {
 
                     <script>
                             if ({{sas}}.length > 0) {
-                            var sasdb_code={{sasdb_code}}  
+                            var sasdb_code_html={{sasdb_code_html}}  
                             var sasdb_code_fits={{sasdb_code_fits}}   
-                            for (var i = 0; i < sasdb_code.length; i++) {
+                            for (var i = 0; i < sasdb_code_html.length; i++) {
                                 for (var j=0; j<sasdb_code_fits[i]; j++) {
                                 var k=j+1
-                            var ex3 ='<p align=justify align=center> <u> Model fit for '+ sasdb_code[i]+' (fit/model number '+String(k) +'):</u> The experimental scattering curve (in blue) can be compared with the theoretical curve calculated from a model (in red). </p>'; 
+                            var ex3 ='<p align=justify align=center> <u> Model fit for '+ sasdb_code_html[i]+' (fit/model number '+String(k) +'):</u> The experimental scattering curve (in blue) can be compared with the theoretical curve calculated from a model (in red). </p>'; 
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding style=height:60vh align=center>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+String(j)+'fit1.html frameborder=0 scrolling=yes aligh=center width=50% height=550vh  style=position:relative align=center onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+String(j)+'fit1.html frameborder=0 scrolling=yes aligh=center width=50% height=550vh  style=position:relative align=center onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
@@ -270,20 +270,20 @@ body {
 
                     <script>
                             if ({{sas}}.length > 0) {
-                            var sasdb_code={{sasdb_code}}  
+                            var sasdb_code_html={{sasdb_code_html}}  
                             var sasdb_code_fits={{sasdb_code_fits}}   
-                            for (var i = 0; i < sasdb_code.length; i++) {
+                            for (var i = 0; i < sasdb_code_html.length; i++) {
                                 for (var j=0; j<sasdb_code_fits[i]; j++) {
                                 var k=j+1
-                            var ex3 ='<p align=justify align=center> <u> Residuals and error weighted residuals for \u03C7\u00b2 goodness of fit analysis for '+ sasdb_code[i]+'</u>: Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis. </p>'; 
+                            var ex3 ='<p align=justify align=center> <u> Residuals and error weighted residuals for \u03C7\u00b2 goodness of fit analysis for '+ sasdb_code_html[i]+'</u>: Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis. </p>'; 
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+String(j)+'residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+String(j)+'residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code[i]+ String (j)+'residuals_wt.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+ String (j)+'residuals_wt.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
