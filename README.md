@@ -74,12 +74,19 @@ Create a local environment file and add the relevant variables.
 
 The variables to add to the .env file can be seen below (fill in the quotations with paths to the relevant values).
 
-    ATSAS=""
+    ATSAS="" 
     Molprobity_ramalyze=""
     Molprobity_molprobity=""
     Molprobity_clashscore=""
     Molprobity_rotalyze=""
     wkhtmltopdf=""
+
+Few pointers:
+1. ATSAS variable should contain the path to datcmp functionality, example : `ATSAS-3.0.3-1/bin/datcmp`
+
+2. Molprobity variables should point to respective functionalities, example : `build/bin/molprobity.ramalyze`
+
+3. wkhtmltopdf variable should point to the binary
 
 ## Common errors in the installation process
 
@@ -95,6 +102,11 @@ This error originates from converting htmls to svgs. Please install/update your 
 
 A solution to this error is using Autoconfig of decouple library to add the path to your .env file. See this [`stackoverflow post`](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths) for specific details.
 
+3. An error could arise from not being able to access the executable, even though the path is found. This error can occur with the ATSAS package and is displayed as: 
+
+- `PermissionError: [Errno 13] Permission denied: '/ATSAS-3.0.3-1'` 
+
+A solution to this is to open your .venv/bin/activate file and add in the above six variables at the top as 6 lines of code using the format `export KEY=VALUE`. See this [`stackoverflow post`](https://stackoverflow.com/questions/9554087/setting-an-environment-variable-in-virtualenv) for specific details.
 
 ## Information
 

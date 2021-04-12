@@ -1,0 +1,9 @@
+Hypothesis: all data sets are similar
+Alternative: at least one data set is different
+
+Pair-wise Correlation Map test with correction for Familywise Error Rate (Bonferroni)
+                                                         C       Pr(>C)   adj Pr(>C)
+     1 vs.    2                                 105.000000     0.000000     0.000000*
+
+       1*      fit1.csv
+       2       fit2.csv
