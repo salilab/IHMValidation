@@ -1,19 +1,6 @@
 
 data_PDBDEV_test
 _entry.id PDBDEV_test
-_struct.title 'Structure of the Nup84 sub-complex of the Nuclear Pore Complex'
-
-loop_
-_citation.id
-_citation.title
-1 "Structure of something cool"
-loop_
-_citation_author.citation_id
-_citation_author.name
-_citation_author.ordinal
-1 'AA B' 1
-1 'CC D' 2
-
 loop_
 _ihm_model_list.model_id
 _ihm_model_list.model_name

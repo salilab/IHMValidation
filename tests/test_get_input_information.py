@@ -1,16 +1,8 @@
 import os,sys
 import unittest  
-import ihm
-import ihm.reader
-import pandas as pd
-import glob
-import os
-import numpy as np
-import re
-from collections import defaultdict
 from io import StringIO, BytesIO
 sys.path.insert(0, "../master/pyext/src/")
-from validation import get_input_information,utility
+from validation import GetInputInformation,utility
 import warnings,tempfile
 
 def ignore_warnings(test_func):
@@ -24,13 +16,13 @@ class Testing(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(Testing, self).__init__(*args, **kwargs)
         self.mmcif_test_file='test.cif'
-        self.IO=get_input_information(self.mmcif_test_file)
+        self.IO=GetInputInformation(self.mmcif_test_file)
 
     def test_basic_info(self):
         self.assertEqual('PDBDEVtest',self.IO.get_id())
         self.assertEqual('PDBDEVtest',self.IO.get_id_from_entry())
-        self.assertEqual('Structure of something cool',self.IO.get_title())
-        self.assertEqual('AA B;CC D',self.IO.get_authors())
+        self.assertEqual('Title not listed/Citation not provided',self.IO.get_title())
+        self.assertEqual('Citation not present in file',self.IO.get_authors())
         self.assertEqual(['1'],self.IO.get_assembly_ID_of_models())
         self.assertEqual(['1'],self.IO.get_representation_ID_of_models())
 
@@ -48,7 +40,7 @@ _ihm_model_list.representation_id
 1 . 1 1 1
 2 . 2 1 2
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(['1','2'],temp.get_assembly_ID_of_models())
 
     def test_get_representation_ID(self):
@@ -66,7 +58,7 @@ _ihm_model_list.representation_id
 1 . 1A 1 AB
 2 . 2B 1 BC
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(['1A','2B'],temp.get_assembly_ID_of_models())
             self.assertEqual(['AB','BC'],temp.get_representation_ID_of_models())
 
@@ -85,7 +77,7 @@ _ihm_model_list.representation_id
 1 Ilikebanana 1A 1 AB
 2 Ialsolikeapple 2B 1 BC
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(['Ilikebanana','Ialsolikeapple'],temp.get_model_names())
 
     def test_get_model_assem_dict(self):
@@ -103,7 +95,7 @@ _ihm_model_list.representation_id
 1 Ilikebanana 1 1 AB
 2 Ialsolikeapple 1 1 BC
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual({1: 1, 2: 1},temp.get_model_assem_dict())
 
             with open(tmpfilepath, 'w') as tmpfile:
@@ -117,7 +109,7 @@ _ihm_model_list.representation_id
 1 Ilikebanana 1 1 AB
 2 Ialsolikeapple X 1 BC
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertRaises(ValueError,lambda:temp.get_model_assem_dict())
 
     def test_get_model_rep_dict(self):
@@ -135,7 +127,7 @@ _ihm_model_list.representation_id
 1 Ilikebanana 1 1 4
 2 Ialsolikeapple 1 1 5 
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual({1: 4, 2: 5},temp.get_model_rep_dict())
 
             with open(tmpfilepath, 'w') as tmpfile:
@@ -150,7 +142,7 @@ _ihm_model_list.representation_id
 2 Ialsolikeapple X 1 BC
 
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertRaises(ValueError,lambda:temp.get_model_rep_dict())
 
     def test_get_number_of_models(self):
@@ -168,7 +160,7 @@ _ihm_model_list.representation_id
 1 Ilikebanana 1 1 4
 2 Ialsolikeapple 1 1 5
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(2,temp.get_number_of_models())
 
 
@@ -187,7 +179,7 @@ _ihm_model_list.representation_id
 1 'Best scoring model' 1 1 1
 
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(1,temp.get_protocol_number())
 
     def test_get_sampling(self):
@@ -217,7 +209,7 @@ _ihm_modeling_protocol_details.num_models_end
                     'Method name': ['apple'], 'Method type': ['banana'], \
                     'Number of computed models': [22], 'Multi state modeling': ['False'], 
                     'Multi scale modeling': ['True']}
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(output,temp.get_sampling())
 
     def test_get_chains_entities_assemblies(self):
@@ -263,7 +255,7 @@ _entity.details
 
                     """)
             output=[('A', 'kiwi', 'kiwi', '1', 0), ('B', 'berry', 'berry', '2', 1)]
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual([2],temp.get_number_of_chains())
             self.assertEqual(1,temp.get_number_of_assemblies())
             self.assertEqual(2,temp.get_number_of_entities())
@@ -300,7 +292,7 @@ _ihm_model_representation_details.model_object_count
 
 
                     """)
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(({'A': [['1-6', 'None']]},{'A': []}, 1, 1),temp.get_RB_flex_dict())
             self.assertEqual('100%',temp.get_atomic_coverage())
 
@@ -328,7 +320,7 @@ https:chocolatemuffin.org
                     'Software version': ['developer'], \
                      'Software classification': ['docking'], \
                      'Software location': ['https:chocolatemuffin.org']}
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(output,temp.get_software_comp())
 
     def test_check_ensemble(self):
@@ -356,7 +348,7 @@ _ihm_ensemble_info.ensemble_file_id
                     'Model ID': ['1'], 'Number of models': ['1257'],\
                      'Clustering method': ['None'], 'Clustering feature': ['RMSD'],\
                     'Cluster precision': ['666.0']}
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(output,temp.get_ensembles())
 
     def test_check_restraints(self):
@@ -422,7 +414,7 @@ _ihm_sas_restraint.details
                     'Restraint info': ['Gaussian mixture models, 400', 'DSS, 1 cross-links', \
                     'Number of micrographs: None, Image resolution: 50.0', \
                     'Assembly name: None Fitting method: FoXS Multi-state: False']}
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(output,temp.get_restraints())
 
     def test_check_dataset(self):
@@ -494,7 +486,7 @@ _ihm_dataset_related_db_reference.details
             'Linker name and number of cross-links: DSS, 1 cross-links', \
             'EMDB ID: Not listed', 'EMDB ID: Not listed']}
 
-            temp=get_input_information(tmpfilepath)
+            temp=GetInputInformation(tmpfilepath)
             self.assertEqual(output,temp.get_dataset_details())
             self.assertEqual(False,temp.check_for_sas(temp.get_dataset_details()))
             self.assertEqual(True,(temp.check_for_cx(temp.get_dataset_details())))

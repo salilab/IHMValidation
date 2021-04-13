@@ -3,8 +3,8 @@ import unittest
 import pandas as pd
 from io import StringIO, BytesIO
 sys.path.insert(0, "../master/pyext/src/")
-from validation import get_input_information,utility
-from validation.excludedvolume import get_excluded_volume
+from validation import GetInputInformation,utility
+from validation.excludedvolume import GetExcludedVolume
 import warnings
 
 def ignore_warnings(test_func):
@@ -18,7 +18,7 @@ class Testing(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(Testing, self).__init__(*args, **kwargs)
         self.mmcif_test_file='test.cif'
-        self.IO=get_excluded_volume(self.mmcif_test_file)
+        self.IO=GetExcludedVolume(self.mmcif_test_file)
 
     def test_get_all_spheres(self):
         fh = StringIO("""
@@ -149,7 +149,7 @@ _ihm_sphere_obj_site.model_id
         add_chain={1:['A',1],2:['B',1]}
         add_chain_df = pd.DataFrame(data=add_chain,index=['Chain_ID','Model_ID'])
 
-        fin=pd.concat([check_xyz_df,add_chain_df])
+        fin=pd.concat([check_xyz_df,add_chain_df]).T
         xyz_complete_df=self.IO.get_xyzr_complete(model_ID=1,spheres=list_of_sphere_list[0])
         self.assertEqual(fin.values.tolist(),xyz_complete_df.values.tolist())
 
