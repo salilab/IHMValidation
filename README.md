@@ -98,9 +98,9 @@ This error originates from converting htmls to svgs. Please install/update your 
 
 To add pre-installed binaries (firefox and geckodriver), find the path of the binaries. Please try using conda first, add paths to binaries only if you are unable to use conda. You can do that in two steps:
 
-1.1. You can use the command `which firefox` or `which geckodriver` to get path to respective binaries. If you don't have the pre-installed binaries, install fireforx/geckodriver using brew and then locate binaries. You can also download geckodriver from the [`mozilla github page`](https://github.com/mozilla/geckodriver/releases). 
+- You can use the command `which firefox` or `which geckodriver` to get path to respective binaries. If you don't have the pre-installed binaries, install fireforx/geckodriver using brew and then locate binaries. You can also download geckodriver from the [`mozilla github page`](https://github.com/mozilla/geckodriver/releases). 
 
-1.2. You should then open the webdriver.py file in bokeh and add the path to appropriate functions. Open the webdriver.py file using the following path `.venv/lib/python3.8/site-packages/bokeh/io/webdriver.py`. Edit `create_firefox_webdriver` function by changing the variables for `firefox` to the binary path (delete which firefox) and change `geckodriver` to it's pre-installed binary path (delete which geckodriver). 
+- You should then open the webdriver.py file in bokeh and add the path to appropriate functions. Open the webdriver.py file using the following path `.venv/lib/python3.8/site-packages/bokeh/io/webdriver.py`. Edit `create_firefox_webdriver` function by changing the variables for `firefox` to the binary path (delete which firefox) and change `geckodriver` to it's pre-installed binary path (delete which geckodriver). 
 
 2. Another potential error could arise from having another env variable file or not having the file in the same directory. This error is displayed as:
 
