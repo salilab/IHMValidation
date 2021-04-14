@@ -1,11 +1,14 @@
-import os,sys
+import os
+import sys
 import unittest  
-from io import StringIO, BytesIO
-sys.path.insert(0, "../master/pyext/src/")
 from collections import defaultdict
-from validation import GetInputInformation,utility
+import warnings
+import tempfile
+
+path = os.path.abspath("master/pyext/src/")
+sys.path.insert(0, path)
+from validation import GetInputInformation, utility
 from validation.Report import WriteReport
-import warnings,tempfile
 
 def ignore_warnings(test_func):
 	def do_test(self, *args, **kwargs):

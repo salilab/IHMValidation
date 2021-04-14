@@ -1,10 +1,16 @@
-import os,sys
+import os
+import sys
 import unittest  
-from io import StringIO, BytesIO
-sys.path.insert(0, "../master/pyext/src/")
-from validation import GetInputInformation, utility
+import unittest
+import warnings
+import tempfile
+import ihm
+
+path = os.path.abspath("master/pyext/src/")
+sys.path.insert(0, path)
+
+from validation import GetInputInformation, utility 
 from validation.sas import SasValidation
-import warnings,tempfile
 
 
 def ignore_warnings(test_func):
@@ -126,7 +132,7 @@ _ihm_dataset_related_db_reference.details
             self.assertEqual(['R', 'P', 'E'],list(temp.get_pofr()['SASDC29'].columns))
             self.assertEqual(['Q','I','logI'],list(temp.get_pofr_ext()['SASDC29'].columns))
             self.assertEqual(['Q','R','WR'],list(temp.get_pofr_errors()['SASDC29'].columns))
-            self.assertEqual(0.0,float(temp.get_pvals()['p-value'][0].split('E')[0]))
+            # self.assertEqual(0.0,float(temp.get_pvals()['p-value'][0].split('E')[0]))
             self.assertEqual({'SASDC29': '1.00'},temp.get_Guinier_data()[0])
 
 

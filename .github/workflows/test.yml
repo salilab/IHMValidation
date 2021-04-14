@@ -1,0 +1,45 @@
+# only pytest tests
+# Need to add flake8 tests
+name: test
+
+on: 
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8,3.9]
+        include:
+        - os: macos-latest
+          python-version: 3.8
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest-cov pytest pytest-flake8
+        pip install -r dependencies.txt
+        
+    - name: Validate version
+      run: python --version
+
+    - name: Run simple python code
+      run: python -c 'import math; print(math.factorial(5))'
+
+    - name: Test with pytest
+      run: |
+          python -m pytest --rootdir test
+
