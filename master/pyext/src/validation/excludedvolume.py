@@ -71,7 +71,8 @@ class GetExcludedVolume(GetInputInformation):
         # model_spheres={i+1:[j.x,j.y,j.z,j.radius,j.asym_unit._id,model_ID] for i,j in enumerate(spheres)}
         # model_spheres_df=pd.DataFrame(model_spheres, index=['X','Y','Z','R','Chain_ID','Model_ID'])
         model_spheres_df = pd.DataFrame.from_records([(j.x, j.y, j.z, j.radius, j.asym_unit._id, model_ID)
-                                                      for i, j in enumerate(spheres)], columns=['X', 'Y', 'Z', 'R'])
+                                                      for i, j in enumerate(spheres)], columns=['X', 'Y', 'Z', 'R',\
+                                                      'Chain_ID','Model_ID'])
         model_spheres_df.index += 1
         return model_spheres_df
 

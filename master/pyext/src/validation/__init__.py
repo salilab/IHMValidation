@@ -58,13 +58,18 @@ class GetInputInformation(object):
     def get_title(self) -> str:
         """get title from citations """
         cit = self.system.citations
-        title = cit[0].title
+        try:
+            title = cit[0].title
+        except IndexError:
+            title ='Title not listed/Citation not provided'
         return title
 
     def get_authors(self) -> str:
         """get names of authors from citations """
         cit = self.system.citations
-        return '; '.join(cit[0].authors)
+        if cit:
+            return '; '.join(cit[0].authors)
+        return 'Citation not present in file'
 
     def get_struc_title(self) -> str:
         """get name of molecule"""
@@ -426,8 +431,7 @@ class GetInputInformation(object):
                 restraints_comp['Restraint info'].append(
                     str(i.fitting_method) + ', '+str(i.number_of_gaussians))
             if isinstance(i, ihm.restraint.EM2DRestraint):
-                restraints_comp['Restraint info'].append('Number \
-                                                          of micrographs: '
+                restraints_comp['Restraint info'].append('Number of micrographs: '
                                                          + str(i.number_raw_micrographs)
                                                          + ',' + ' Image resolution: '
                                                          + str(i.image_resolution))
