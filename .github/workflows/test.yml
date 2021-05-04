@@ -1,5 +1,4 @@
 # only pytest tests
-# Need to add flake8 tests
 name: test
 
 on: 
