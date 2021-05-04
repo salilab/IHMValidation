@@ -12,7 +12,7 @@ import os
 import validation
 from validation import excludedvolume, GetInputInformation
 from validation import molprobity
-from validation import get_plots, sas, sas_plots
+from validation import get_plots, sas
 from validation import cx
 from validation import utility
 import pickle

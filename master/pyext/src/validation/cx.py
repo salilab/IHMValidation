@@ -37,7 +37,7 @@ class CxValidation(GetInputInformation):
                     res2_entity = xl.residue2.entity._id
                     res1_seq = xl.residue1.seq_id
                     res2_seq = xl.residue2.seq_id
-                    res1_res2 = str(res1_seq)+'_'+str(res2_seq)
+                    res1_res2 = str(res1_seq) + '_' + str(res2_seq)
                     try:
                         chains_1 = self.get_asym_for_entity()[res1_entity]
                         chains_2 = self.get_asym_for_entity()[res2_entity]
@@ -45,18 +45,22 @@ class CxValidation(GetInputInformation):
                         for i, j in enumerate(combinations):
                             res1_asym = j[0]
                             res2_asym = j[1]
-                            res1_id = str(res1_asym)+'_'+str(res1_seq)
-                            res2_id = str(res2_asym)+'_'+str(res2_seq)
+                            res1_id = str(res1_asym) + '_' + str(res1_seq)
+                            res2_id = str(res2_asym) + '_' + str(res2_seq)
 
                             lst.append([linker_name, res1_res2,
-                                        res1_entity, res1_seq, res1_asym, res1_id,
-                                        res2_entity, res2_seq, res2_asym, res2_id])
+                                        res1_entity, res1_seq, res1_asym,
+                                        res1_id,
+                                        res2_entity, res2_seq, res2_asym,
+                                        res2_id])
                     except (TypeError, KeyError, ValueError):
                         pass
 
         xl_df = pd.DataFrame(lst, columns=['Linker_Name', 'XL_ID',
-                                           'Res1_Entity_ID', 'Res1_Seq_ID', 'Res1_Chain', 'Res1_ID',
-                                           'Res2_Entity_ID', 'Res2_Seq_ID', 'Res2_Chain', 'Res2_ID'])
+                                           'Res1_Entity_ID', 'Res1_Seq_ID',
+                                           'Res1_Chain', 'Res1_ID',
+                                           'Res2_Entity_ID', 'Res2_Seq_ID',
+                                           'Res2_Chain', 'Res2_ID'])
         return xl_df
 
     def get_unique_linkers(self):
@@ -83,8 +87,9 @@ class CxValidation(GetInputInformation):
         get list of all spheres for all models present in mmcif
         '''
         Model_object = [
-            b for i in self.system.state_groups for j in i for a in j for b in a]
-        model_dict = {i+1: j._spheres for i, j in enumerate(Model_object)}
+            b for i in self.system.state_groups
+            for j in i for a in j for b in a]
+        model_dict = {i + 1: j._spheres for i, j in enumerate(Model_object)}
         return model_dict
 
     def get_atom_model_dict(self):
@@ -92,20 +97,22 @@ class CxValidation(GetInputInformation):
         get list of all atoms for all models present in mmcif
         '''
         Model_object = [
-            b for i in self.system.state_groups for j in i for a in j for b in a]
-        model_dict = {i+1: j._atoms for i, j in enumerate(Model_object)}
+            b for i in self.system.state_groups
+            for j in i for a in j for b in a]
+        model_dict = {i + 1: j._atoms for i, j in enumerate(Model_object)}
         return model_dict
 
     def get_xyzrseq_spheres(self, spheres):
         '''
         get xyzr,number of residues and information on structured/unstructured
         '''
-        model_spheres = {i+1: [j.seq_id_range, j.asym_unit._id,
-                               j.x, j.y, j.z, j.radius] for i, j in enumerate(spheres)}
+        model_spheres = {i + 1: [j.seq_id_range, j.asym_unit._id,
+                                 j.x, j.y, j.z, j.radius]
+                         for i, j in enumerate(spheres)}
         model_spheres_df = pd.DataFrame(
             model_spheres, index=['Seq', 'Chain', 'X', 'Y', 'Z', 'R']).T
         model_spheres_df['Res'] = model_spheres_df['Seq'].apply(
-            lambda x: int(x[1])-int(x[0])+1)
+            lambda x: int(x[1]) - int(x[0]) + 1)
         model_spheres_df['Structured'] = model_spheres_df['Res'].apply(
             lambda x: 0 if x > 1 else 1)
         model_spheres_df_struc = model_spheres_df[model_spheres_df['Structured'] == 1]
@@ -120,13 +127,13 @@ class CxValidation(GetInputInformation):
         '''
         get xyz of CA atoms
         '''
-        model_atoms = {i+1: [j.seq_id, j.asym_unit._id, j.atom_id,
-                             j.x, j.y, j.z, ] for i, j in enumerate(atoms)}
+        model_atoms = {i + 1: [j.seq_id, j.asym_unit._id, j.atom_id,
+                               j.x, j.y, j.z, ] for i, j in enumerate(atoms)}
         model_atoms_df = pd.DataFrame(
             model_atoms, index=['Seq', 'Chain', 'Atom', 'X', 'Y', 'Z']).T
         model_atoms_df = model_atoms_df[model_atoms_df['Atom'] == 'CA']
         model_atoms_df['Res_ID'] = model_atoms_df['Chain'] + \
-            '_'+model_atoms_df['Seq'].astype(str)
+            '_' + model_atoms_df['Seq'].astype(str)
         return model_atoms_df
 
     def convert_df_unstruc(seld, df):
@@ -135,8 +142,8 @@ class CxValidation(GetInputInformation):
         '''
         lst = []
         for index, row in df.iterrows():
-            for j in range(row['Seq'][0], row['Seq'][1]+1):
-                Res_ID = row['Chain']+'_'+str(j)
+            for j in range(row['Seq'][0], row['Seq'][1] + 1):
+                Res_ID = row['Chain'] + '_' + str(j)
                 lst.append([j, row['Chain'], row['X'], row['Y'], row['Z'],
                             row['R'], row['Res'], row['Structured'], Res_ID])
         convert_df = pd.DataFrame(
@@ -200,9 +207,9 @@ class CxValidation(GetInputInformation):
         '''
         distance between 2 residues
         '''
-        df['dist'] = ((df['Res1_X']-df['Res2_X'])**2 +
-                      (df['Res1_Y']-df['Res2_Y'])**2 +
-                      (df['Res1_Z']-df['Res2_Z'])**2)**0.5
+        df['dist'] = ((df['Res1_X'] - df['Res2_X']) ** 2 +
+                      (df['Res1_Y'] - df['Res2_Y']) ** 2 +
+                      (df['Res1_Z'] - df['Res2_Z']) ** 2) ** 0.5
         return df
 
     def process_ambiguity(self, df):
@@ -277,6 +284,6 @@ class CxValidation(GetInputInformation):
     def get_violation_plot(self, model_df):
         cx_fit = dict()
         for model_id, df in model_df.items():
-            sat = (df[df['Satisfied'] == 1].shape[0]/df.shape[0])*100
-            cx_fit['Model #'+str(model_id)] = sat
+            sat = (df[df['Satisfied'] == 1].shape[0] / df.shape[0]) * 100
+            cx_fit['Model #' + str(model_id)] = sat
         return cx_fit

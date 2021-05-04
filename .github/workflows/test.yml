@@ -43,3 +43,9 @@ jobs:
       run: |
           python -m pytest --rootdir tests
 
+    - name: Test with flake8
+      run: |
+        pip install flake8
+        flake8 master/pyext/src/validation --ignore=E501,W504,W503,E226
+
+

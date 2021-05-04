@@ -37,9 +37,9 @@ class GetInputInformation(object):
 
     def get_id(self):
         """ get id from model name, eg: PDBDEV_00XX will be PDBDEV00XX"""
-        #if self.system.id == 'model':
+        # if self.system.id == 'model':
         #    id = self.get_id_from_entry()
-        #else:
+        # else:
         #    id = self.system.id.split('_')[0] + self.system.id.split('_')[1]
         return self.get_id_from_entry()
 
@@ -61,7 +61,7 @@ class GetInputInformation(object):
         try:
             title = cit[0].title
         except IndexError:
-            title ='Title not listed/Citation not provided'
+            title = 'Title not listed/Citation not provided'
         return title
 
     def get_authors(self) -> str:
