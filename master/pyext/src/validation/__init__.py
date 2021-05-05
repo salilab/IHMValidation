@@ -37,9 +37,9 @@ class GetInputInformation(object):
 
     def get_id(self):
         """ get id from model name, eg: PDBDEV_00XX will be PDBDEV00XX"""
-        # if self.system.id == 'model':
+        #if self.system.id == 'model':
         #    id = self.get_id_from_entry()
-        # else:
+        #else:
         #    id = self.system.id.split('_')[0] + self.system.id.split('_')[1]
         return self.get_id_from_entry()
 
@@ -61,7 +61,7 @@ class GetInputInformation(object):
         try:
             title = cit[0].title
         except IndexError:
-            title = 'Title not listed/Citation not provided'
+            title ='Title not listed/Citation not provided'
         return title
 
     def get_authors(self) -> str:
@@ -430,6 +430,12 @@ class GetInputInformation(object):
             if isinstance(i, ihm.restraint.EM3DRestraint):
                 restraints_comp['Restraint info'].append(
                     str(i.fitting_method) + ', '+str(i.number_of_gaussians))
+
+            if isinstance(i, ihm.restraint.PredictedContactRestraint):
+                restraints_comp['Restraint info'].append('Distance: '+str(i.distance.distance)
+                                                 +' between residues '+ str(i.resatom1.seq_id)
+                                                + ' and '+ str(i.resatom2.seq_id) )
+
             if isinstance(i, ihm.restraint.EM2DRestraint):
                 restraints_comp['Restraint info'].append('Number of micrographs: '
                                                          + str(i.number_raw_micrographs)
@@ -462,7 +468,7 @@ class GetInputInformation(object):
                          str(i.distance.distance_upper_limit)))
                 else:
                     restraints_comp['Restraint info'].append(
-                        ['restraint type ' + str(i.distance.__class__.__name__), dic[ID]])
+                        'restraint type ' + str(i.distance.__class__.__name__)+ str(dic[ID]))
                 '''
                 if 'UpperBound' in str(i.distance.__class__.__name__):
                     print (i.distance,i.distance.distance_lower_limit)
@@ -575,9 +581,14 @@ class GetInputInformation(object):
                 atom_site[i] = '_atom_site.B_iso_or_equiv'
             elif ('_atom_site.occupancy' not in list(atom_site.values())) and len(list(atom_site.values())) > 0:
                 atom_site[i] = '_atom_site.occupancy'
+
+            elif ('_atom_site.label_seq_id' not in list(atom_site.values())) and len(list(atom_site.values())) > 0:
+                atom_site[i] = '_atom_site.label_seq_id'
+   
         total_list = list(atom_site.values())
         index_biso = total_list.index('_atom_site.B_iso_or_equiv')
-        index_occu = total_list.index('_atom_site.occupancy')
+        index_occu = total_list.index('_atom_site.occupancy') 
+        index_label_seq = total_list.index('_atom_site.label_seq_id') 
         for i, j in enumerate(all_lines):
             if len(j) > 0 and ('ATOM' in j[0] or 'HETATM' in j[0]) and (i > list(atom_site.keys())[-1]):
                 if len(j) <= index_occu:
@@ -588,6 +599,10 @@ class GetInputInformation(object):
                     j.extend(['1'])
                 elif j[index_biso] == '.':
                     j[index_biso] = '0.00'
+                if len(j) <= index_label_seq:
+                    j.extend(['1'])
+                elif j[index_label_seq] == '.':
+                    j[index_label_seq] = str(i)
                 atoms[i] = j
             elif len(j) > 0 and (i > list(atom_site.keys())[-1]):
                 if len(after_atom) == 0:

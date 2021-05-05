@@ -246,7 +246,6 @@ def get_restraints_info(restraints: dict) -> list:
             new_restraints['Restraint type']))
         dataset = [(new_restraints['Restraint info'][i], new_restraints['Restraint type'][i])
                    for i in range(restraints_num)]
-
     for i, j in Counter(dataset).items():
         datalist.append(['%s unique %s: %s' % (j, i[1], i[0])])
     return datalist
