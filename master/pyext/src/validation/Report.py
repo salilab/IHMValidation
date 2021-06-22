@@ -12,7 +12,7 @@ import os
 import validation
 from validation import excludedvolume, GetInputInformation
 from validation import molprobity
-from validation import get_plots, sas
+from validation import get_plots, sas, sas_plots
 from validation import cx
 from validation import utility
 import pickle
@@ -84,37 +84,50 @@ class WriteReport(object):
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
             filename = os.path.abspath(os.path.join(
                 os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
-            if I_mp.check_for_molprobity() or os.path.exists(filename):
-                if os.path.exists(filename):
-                    d_mp = {}
-                    print("Molprobity analysis file already exists...\n...assuming clashscores, \
+            global clashscore
+            global rama
+            global sidechain
+
+            if os.path.exists(filename):
+                d_mp = {}
+                print("Molprobity analysis file already exists...\n...assuming clashscores, \
                         Ramachandran and rotamer outliers have already been calculated")
-                    with open(filename, 'rb') as fp:
-                        d_mp['molprobity'] = pickle.load(fp)
-                    f_rota = os.path.abspath(os.path.join(
-                        os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
-                    with open(f_rota, 'rb') as fp:
-                        d_mp['rota'] = pickle.load(fp)
-                    f_rama = os.path.abspath(os.path.join(
-                        os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
-                    with open(f_rama, 'rb') as fp:
-                        d_mp['rama'] = pickle.load(fp)
-                    f_clash = os.path.abspath(os.path.join(
-                        os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
-                    with open(f_clash, 'rb') as fp:
-                        d_mp['clash'] = pickle.load(fp)
-                else:
-                    print("Molprobity analysis is being calculated...")
+                with open(filename, 'rb') as fp:
+                    d_mp['molprobity'] = pickle.load(fp)
+                f_rota = os.path.abspath(os.path.join(
+                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
+                with open(f_rota, 'rb') as fp:
+                    d_mp['rota'] = pickle.load(fp)
+                f_rama = os.path.abspath(os.path.join(
+                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
+                with open(f_rama, 'rb') as fp:
+                    d_mp['rama'] = pickle.load(fp)
+                f_clash = os.path.abspath(os.path.join(
+                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
+                with open(f_clash, 'rb') as fp:
+                    d_mp['clash'] = pickle.load(fp)
+
+            else:
+                self.Input.rewrite_mmcif()
+                I_mp = molprobity.GetMolprobityInformation('test.cif')
+                print("file rewritten")
+                print("Molprobity analysis is being calculated...")
+                try:
                     manager = Manager()
                     d_mp = manager.dict()
                     utility.runInParallel(I_mp.run_clashscore(d_mp), I_mp.run_ramalyze(
                         d_mp), I_mp.run_rotalyze(d_mp), I_mp.run_molprobity(d_mp))
+
+                except (TypeError, KeyError, ValueError):
+                    print("Molprobity cannot be calculated...")
+                    clashscore = None
+                    rama = None
+                    sidechain = None
+
+            if d_mp:
                 a, b = I_mp.process_molprobity(d_mp['molprobity'])
                 Template_Dict['bond'] = len(a)
                 Template_Dict['angle'] = len(b)
-                global clashscore
-                global rama
-                global sidechain
                 clashscore, rama, sidechain = I_mp.get_data_for_quality_at_glance(
                     d_mp['molprobity'])
                 Template_Dict['molp_b'] = utility.dict_to_JSlist(
@@ -141,51 +154,6 @@ class WriteReport(object):
                     clashscore) + ', Ramachandran outliers: ' + str(rama) + '% '+',\
                      Sidechain outliers: '+str(sidechain)+'%'
                 Template_Dict['assess_excluded_volume'] = ['Not applicable']
-            else:
-                if not I_mp.check_for_molprobity():
-                    self.Input.rewrite_mmcif()
-                    I_mp = molprobity.GetMolprobityInformation('test.cif')
-                    print("file rewritten")
-                if I_mp.check_for_molprobity():
-                    print("Molprobity analysis is being calculated...")
-                    manager = Manager()
-                    d_mp = manager.dict()
-                    try:
-                        utility.runInParallel(I_mp.run_clashscore(d_mp), I_mp.run_ramalyze(
-                            d_mp), I_mp.run_rotalyze(d_mp), I_mp.run_molprobity(d_mp))
-                        a, b = I_mp.process_molprobity(d_mp['molprobity'])
-                        Template_Dict['bond'] = len(a)
-                        Template_Dict['angle'] = len(b)
-                        clashscore, rama, sidechain = I_mp.get_data_for_quality_at_glance(
-                            d_mp['molprobity'])
-                        Template_Dict['molp_b'] = utility.dict_to_JSlist(
-                            I_mp.molprobity_detailed_table_bonds(a))
-                        Template_Dict['molp_a'] = utility.dict_to_JSlist(
-                            I_mp.molprobity_detailed_table_angles(b))
-                        Template_Dict['rotascore'] = utility.dict_to_JSlist(
-                            I_mp.rota_summary_table(I_mp.process_rota(d_mp['rota'])))
-                        Template_Dict['rotalist'] = utility.dict_to_JSlist(
-                            I_mp.rota_detailed_table(I_mp.process_rota(d_mp['rota'])))
-                        Template_Dict['ramascore'] = utility.dict_to_JSlist(
-                            I_mp.rama_summary_table(I_mp.process_rama(d_mp['rama'])))
-                        Template_Dict['ramalist'] = utility.dict_to_JSlist(
-                            I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama'])))
-                        clashscores, Template_Dict['tot'] = I_mp.clash_summary_table(
-                            d_mp['clash'])
-                        Template_Dict['clashscore_list'] = utility.dict_to_JSlist(
-                            clashscores)
-                        Template_Dict['clashlist'] = I_mp.clash_detailed_table(
-                            d_mp['clash'])
-                        Template_Dict['assess_atomic_segments'] = 'Clashscore: ' + str(
-                            clashscore) + ', Ramachandran outliers: ' + str(rama) + '% '+', \
-                            Sidechain outliers: '+str(sidechain)+'%'
-                        Template_Dict['assess_excluded_volume'] = [
-                            'Not applicable']
-                    except (TypeError, KeyError, ValueError):
-                        print("Molprobity cannot be calculated...")
-                        clashscore = None
-                        rama = None
-                        sidechain = None
         else:
             Template_Dict['assess_atomic_segments'] = 'Not applicable'
             file = os.getcwd()+'Output/results/' + \
@@ -222,6 +190,9 @@ class WriteReport(object):
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
             Template_Dict['sasdb_code'] = I_sas.get_SASBDB_code()
             Template_Dict['sasdb_code_html'] = I_sas.get_SASBDB_code_clean()
+            Template_Dict['sasdb_sascif'] = I_sas.check_sascif_file()
+
+            print(Template_Dict['sasdb_sascif'])
             try:
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many())
