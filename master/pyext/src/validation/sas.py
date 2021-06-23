@@ -77,6 +77,20 @@ class SasValidation(GetInputInformation):
                     f.write(formatted_data)
         return data_dic
 
+    def check_sascif_file(self) -> list:
+        '''
+        check if SASCIF file exists
+        '''
+        output = []
+        for code in self.get_SASBDB_code():
+            if 'None' not in str(code):
+                url_f = self.saslink+code+'.sascif'
+                response = requests.get(url_f)
+                if response.status_code == 200:
+                    output.append('True')
+
+        return output
+
     def get_sascif_file(self):
         '''
         get data from SASCIF files
@@ -328,7 +342,7 @@ class SasValidation(GetInputInformation):
                     fit_2.to_csv('fit2.csv', header=False, index=False)
                     f1 = open('pval.txt', 'w+')
                     with f1 as outfile:
-                        run([config("ATSAS"), 'fit1.csv',
+                        run([config('ATSAS'), 'fit1.csv',
                              'fit2.csv'], stdout=outfile)
                     f2 = open('pval.txt', 'r')
                     all_lines = [j.strip().split()

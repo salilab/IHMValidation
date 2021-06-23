@@ -28,35 +28,33 @@ class GetExcludedVolume(GetInputInformation):
         if filetemp is None:
             Model_object = [
                 b for i in self.system.state_groups for j in i for a in j for b in a]
-            model_dict = {i + 1: j._spheres for i,
-                          j in enumerate(Model_object)}
+            model_dict = {i+1: j._spheres for i, j in enumerate(Model_object)}
         else:
             system, = ihm.reader.read(filetemp,
                                       model_class=ihm.model.Model)
             Model_object = [
                 b for i in system.state_groups for j in i for a in j for b in a]
-            model_dict = {i + 1: j._spheres for i,
-                          j in enumerate(Model_object)}
+            model_dict = {i+1: j._spheres for i, j in enumerate(Model_object)}
             # print (model_dict)
         return model_dict
 
     def get_nCr(self, n, r):
         """get all combinations"""
         f = math.factorial
-        return (f(n) / (f(r) * f(n - r)))
+        return (f(n)/(f(r)*f(n-r)))
 
     def get_violation_percentage(self, models_spheres_df: pd.DataFrame, viols: dict) -> float:
         """get information on all spheres for each model"""
         number_of_violations = sum(list(viols.values()))
         number_of_combinations = self.get_nCr(models_spheres_df.shape[1], 2)
-        return (1 - number_of_violations / number_of_combinations) * 100
+        return (1-number_of_violations/number_of_combinations)*100
 
     def get_violation_normalized(self, models_spheres_df: pd.DataFrame, viols: dict) -> float:
         """ """
         number_of_violations = sum(list(viols.values()))
-        normalization_constant = models_spheres_df.shape[1] * math.log(
+        normalization_constant = models_spheres_df.shape[1]*math.log(
             models_spheres_df.shape[1], 10)
-        return (1 - number_of_violations / normalization_constant) * 100
+        return (1-number_of_violations/normalization_constant)*100
 
     def get_xyzr(self, spheres: pd.DataFrame) -> pd.DataFrame:
         """ get X,Y, Z coords from sphere objects"""
@@ -134,7 +132,7 @@ class GetExcludedVolume(GetInputInformation):
         """ get exc vol info in parallel """
         # list_of_sphere_list=list(model_dict.values())
         filename = os.path.join(os.getcwd(),
-                                self.resultpath, self.ID + 'exv.txt')
+                                self.resultpath, self.ID+'exv.txt')
         if os.path.exists(filename):
             return self.process_exv(filename)
 
@@ -149,9 +147,9 @@ class GetExcludedVolume(GetInputInformation):
             for key, val in excluded_volume.items():
                 write_file.writerow([key, val])
         else:
-            excluded_volume = {'Models': ['All ' + str(len(list(model_dict.keys())))],
-                               'Excluded Volume Satisfaction': ['Can not be computed'],
-                               'Number of violations': ['Can not be computed']}
+            excluded_volume = {'Models': ['All '+str(len(list(model_dict.keys())))],
+                               'Excluded Volume Satisfaction': ['0.0'],
+                               'Number of violations': ['0.0']}
         return excluded_volume
 
     def process_exv(self, filename: str) -> dict:
@@ -162,7 +160,7 @@ class GetExcludedVolume(GetInputInformation):
     def exv_readable_format(self, exv: dict) -> str:
         fin_string = ''
         for i in exv['Models']:
-            fin_string + 'Model-' + \
-                str(i) + ': ' + 'Number of violations-' + \
+            fin_string+'Model-' + \
+                str(i)+': '+'Number of violations-' + \
                 str(exv['Number of violations'])
         return fin_string

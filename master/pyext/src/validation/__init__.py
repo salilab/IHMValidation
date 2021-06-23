@@ -49,7 +49,7 @@ class GetInputInformation(object):
         sf = open(self.mmcif_file, 'r')
         for ind, ln in enumerate(sf.readlines()):
             line = ln.strip().split(' ')
-            if '_entry' in line[0]:
+            if '_entry.id' in line[0]:
                 entry_init = line[-1]
                 entry = entry_init.split('_')[0] + \
                     entry_init.split('_')[1]
@@ -617,11 +617,18 @@ class GetInputInformation(object):
         if os.path.isfile('test.cif'):
             os.remove('test.cif')
         file_re = open('test.cif', 'w')
+        forbidden = ['°', 'µ', 'Å', '"']
         for i, j in enumerate(before_atom_site[:-1]):
-            file_re.write(' '.join(j)+'\n')
+            temp = ' '.join(j)
+            for elem in forbidden:
+                temp = temp.replace(elem, ' ')
+            file_re.write(temp+'\n')
         for i, j in atom_site.items():
             file_re.write(''.join(j)+'\n')
         for i, j in atoms.items():
             file_re.write(' '.join(j)+'\n')
         for i, j in enumerate(after_atom):
-            file_re.write(' '.join(j)+'\n')
+            temp = ' '.join(j)
+            for elem in forbidden:
+                temp = temp.replace(elem, ' ')
+            file_re.write(temp+'\n')

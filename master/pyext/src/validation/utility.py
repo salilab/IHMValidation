@@ -56,7 +56,7 @@ def format_RB_text(tex: list) -> str:
             else:
                 val.append(str(subel)+':')
 
-    if val == '':
+    if len(val) == 0 or len(tex) == 0 or val == '':
         val = ['-']
     return ''.join(val)
 
@@ -73,7 +73,7 @@ def format_flex_text(tex: list) -> str:
             else:
                 val.append(str(subel)+', ')
 
-    if val == '':
+    if len(val) == 0 or len(tex) == 0 or val == '':
         val = ['-']
 
     return ''.join(val)

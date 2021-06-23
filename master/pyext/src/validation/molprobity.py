@@ -24,7 +24,6 @@ class GetMolprobityInformation(GetInputInformation):
         self.ID = str(GetInputInformation.get_id(self))
         self.nos = GetInputInformation.get_number_of_models(self)
         self.resultpath = '../static/results/'
-        self.envpath = 'XXX'
 
     def check_for_molprobity(self, filetemp=None) -> bool:
         """ Check the biso and occupancy columns for mmcif files"""

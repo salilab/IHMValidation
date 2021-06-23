@@ -45,6 +45,7 @@ class WriteReport(object):
         Template_Dict['flex'] = utility.get_flex(
             utility.dict_to_JSlist_rows(RB, flex))
         Template_Dict['ID'] = self.Input.get_id()
+        print(Template_Dict['ID'])
         Template_Dict['ID_w'] = self.Input.get_id().split()
         Template_Dict['ID_T'] = self.Input.get_id()[0:6]+'_' + \
             self.Input.get_id()[6:]
@@ -171,7 +172,6 @@ class WriteReport(object):
                 I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file)
                 model_dict = I_ev.get_all_spheres()
                 exv_data = I_ev.run_exc_vol_parallel(model_dict)
-
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
             Template_Dict['assess_excluded_volume'] = utility.exv_readable_format(
                 exv_data)
