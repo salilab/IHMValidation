@@ -37,6 +37,7 @@ def dict_to_JSlist(d: dict) -> list:
         for ind in range(len(target[0])):
             sublist = []
             for el in target:
+                el = ['_' if str(i) == '?' else str(i) for i in el]
                 sublist.append(str(el[ind]))
             output_list.append(sublist)
     return output_list
@@ -269,7 +270,7 @@ def all_same(items: list):
 
 def exv_readable_format(exv: dict) -> list:
     fin_string = []
-    # print (exv)
+    print(exv)
     for ind, el in enumerate(exv['Models']):
         fin_string.append('Model-'+str(el)+': '+'Number of violations-' +
                           str(exv['Number of violations'][ind]) + ' ')

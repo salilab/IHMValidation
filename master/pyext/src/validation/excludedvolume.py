@@ -135,7 +135,6 @@ class GetExcludedVolume(GetInputInformation):
                                 self.resultpath, self.ID+'exv.txt')
         if os.path.exists(filename):
             return self.process_exv(filename)
-
         if len(list(model_dict.keys())) <= 25:  # this is an arbitrary cutoff
             pool = mp.Pool(processes=len(list(model_dict.keys())))
             complete_list = pool.map(

@@ -45,7 +45,6 @@ class WriteReport(object):
         Template_Dict['flex'] = utility.get_flex(
             utility.dict_to_JSlist_rows(RB, flex))
         Template_Dict['ID'] = self.Input.get_id()
-        print(Template_Dict['ID'])
         Template_Dict['ID_w'] = self.Input.get_id().split()
         Template_Dict['ID_T'] = self.Input.get_id()[0:6]+'_' + \
             self.Input.get_id()[6:]
@@ -111,7 +110,7 @@ class WriteReport(object):
             else:
                 self.Input.rewrite_mmcif()
                 I_mp = molprobity.GetMolprobityInformation('test.cif')
-                print("file rewritten")
+                print("File rewritten...")
                 print("Molprobity analysis is being calculated...")
                 try:
                     manager = Manager()
@@ -172,6 +171,7 @@ class WriteReport(object):
                 I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file)
                 model_dict = I_ev.get_all_spheres()
                 exv_data = I_ev.run_exc_vol_parallel(model_dict)
+                print(exv_data)
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
             Template_Dict['assess_excluded_volume'] = utility.exv_readable_format(
                 exv_data)
@@ -192,7 +192,6 @@ class WriteReport(object):
             Template_Dict['sasdb_code_html'] = I_sas.get_SASBDB_code_clean()
             Template_Dict['sasdb_sascif'] = I_sas.check_sascif_file()
 
-            print(Template_Dict['sasdb_sascif'])
             try:
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many())
@@ -225,6 +224,7 @@ class WriteReport(object):
         else:
             sas_data = {}
             sas_fit = {}
+            Template_Dict['sasdb_sascif'] = []
         return Template_Dict, sas_data, sas_fit
 
     def run_sas_validation_plots(self, Template_Dict: dict):

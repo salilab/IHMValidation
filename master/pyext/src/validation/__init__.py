@@ -46,7 +46,7 @@ class GetInputInformation(object):
     def get_id_from_entry(self) -> str:
         """ get id name from entry for cif files
             deprecated """
-        sf = open(self.mmcif_file, 'r')
+        sf = open(self.mmcif_file, 'r', encoding='latin1')
         for ind, ln in enumerate(sf.readlines()):
             line = ln.strip().split(' ')
             if '_entry.id' in line[0]:
@@ -562,7 +562,7 @@ class GetInputInformation(object):
         """function to help re-write mmcif file for molprobity
         this function reads the atom_site dictionary terms and returns a list"""
         if filetemp is None:
-            file = open(self.mmcif_file, 'r')
+            file = open(self.mmcif_file, 'r', encoding='latin1')
         else:
             file = filetemp
             filetemp.seek(0)
