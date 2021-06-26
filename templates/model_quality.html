@@ -134,7 +134,7 @@
                             <div class="dropdown-menu">
 
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length > 0) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
                                 document.write(ex);}
 
@@ -166,7 +166,7 @@
                             </a>
                             <div class="dropdown-menu">
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length > 0) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
                                 document.write(ex);}
                             else {
@@ -222,74 +222,67 @@
                             <script>
                             if ({{sphere}}< 1) {
                                 var intro = "<h5 class= ex2 align= center><u><a name='geometry'>Standard geometry</a></u></h5>";
-                                intro += "<i> There are " + {{bond}} + " bond outliers in this entry. </i>";
                                 document.write(intro);
                                 var space = '<p class="ex2"> </p>';
                                 document.write(space);
-                                if ({{molp_b}}.length > 0) {
+                                if ({{molp_b}}.length > 1) {
+                                    var intro = "<i> There are " + {{bond}} + " bond outliers in this entry. </i>";
+                                    document.write(intro);
+                                    document.write(space);
                                     Write_Table(list_to_write = {{molp_b}})
-
                                     document.write(space);
                                 }
-                                var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry.  </i>";
-                                document.write(intro2);
-                                document.write(space);
-                                if ({{molp_a}}.length > 0) {
+                                if ({{molp_a}}.length > 1) {
+                                    var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry.  </i>";
+                                    document.write(intro2);
+                                    document.write(space);
                                     Write_Table(list_to_write = {{molp_a}})
                                     document.write(space);
                                 }
 
-                                var docx = "<h5 class= ex2 align= center><u><a name='contacts'>Too-close contacts</a></u></h5>";
-                                docx += "<p align='justify'><i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i></p>";
-                                document.write(docx);
-                                document.write(space);
-                                if ({{clashscore_list}}.length > 0) {
+                                if ({{clashscore_list}}.length > 1) {
+                                    var docx = "<h5 class= ex2 align= center><u><a name='contacts'>Too-close contacts</a></u></h5>";
+                                        docx += "<p align='justify'><i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i></p>";
+                                    document.write(docx);
+                                    document.write(space);
                                     Write_Table(list_to_write = {{clashscore_list}})
                                     document.write(space);
                                 }
 
 
-                                var text1 = "<i> All " + {{tot}} + " close contacts within the same asymmetric unit are listed below, sorted by their clash magnitude.</i>";
-                                document.write(text1);
-                                document.write(space);
-                                if ({{clashlist}}.length > 0) {
-                                    Write_Table(list_to_write = {{clashlist}})
-                                    document.write(space);
-                                }
-
-                                var text2 = "<h5 class=ex2 align= center><u><a name='torsion1'>Torsion angles: Protein backbone</a></u></h5>";
+                                if ({{ramascore}}.length > 1) {
+                                    var text2 = "<h5 class=ex2 align= center><u><a name='torsion1'>Torsion angles: Protein backbone</a></u></h5>";
                                 text2 += "<p align='justify'><i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed. </i></p>"
-                                document.write(text2);
-                                document.write(space);
-                                if ({{ramascore}}.length > 0) {
+                                    document.write(text2);
+                                    document.write(space);
                                     Write_Table(list_to_write = {{ramascore}})
                                     document.write(space);
                                 }
 
 
-                                var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
-                                document.write(text4);
-                                document.write(space);
-                                if ({{ramalist}}.length > 0) {
+                                if ({{ramalist}}.length > 1) {
+                                    var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
+                                    document.write(text4);
+                                    document.write(space);
                                     Write_Table(list_to_write = {{ramalist}})
                                     document.write(space);
                                 }
 
 
-                                var text3 = "<h5 class=ex2 align=center><u><a name='torsion2'>Torsion angles: Protein sidechains</a></u></h5>";
-                                text3 += "<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
-                                document.write(text3);
-                                document.write(space);
-                                if ({{rotascore}}.length > 0) {
+                                if ({{rotascore}}.length > 1) {
+                                    var text3 = "<h5 class=ex2 align=center><u><a name='torsion2'>Torsion angles: Protein sidechains</a></u></h5>";
+                                    text3 += "<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
+                                    document.write(text3);
+                                    document.write(space);
                                     Write_Table(list_to_write = {{rotascore}})
                                     document.write(space);
                                 }
 
 
-                                var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
-                                document.write(text4);
-                                document.write(space);
-                                if ({{rotalist}}.length > 0) {
+                                if ({{rotalist}}.length > 1 ) {
+                                    var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
+                                    document.write(text4);
+                                    document.write(space);
                                     Write_Table(list_to_write = {{rotalist}})
                                     document.write(space);
                                 }

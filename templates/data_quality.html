@@ -134,8 +134,10 @@
                             <div class="dropdown-menu">
 
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length > 0) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
+                                document.write(ex);} else if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length < 1) {
+                                var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
                                 document.write(ex);}
 
                             else {
@@ -166,7 +168,7 @@
                             </a>
                             <div class="dropdown-menu">
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ({{Data}}.includes('SAS DATA') >= 1  ) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
                                 document.write(ex);}
                             else {
@@ -209,19 +211,27 @@
                         <div class="col-lg-12">
                             <h4 class="ex2" align="center"><u><a name='first'>Data quality</a></u></h4>
                             <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0 ) {
 				    var ex = "<h5 class= ex2 align= center><u><a name=firstI>SAS:Scattering profile</a></u> </h5>";
                                 document.write(ex)
                                 var sasdb_code_html={{sasdb_code_html}}     
                                 var ex2 = '<p align=justify> SAS data used in this integrative model was obtained from '+String(sasdb_code_html.length) +' deposited SASBDB entry (entries).</p>';
                                 document.write(ex2);
                              
+                             } else if ({{sas}}.length > 0 && {{sasdb_sascif}}.length <1) {
+
+                                var ex = "<h5 class= ex2 align= center><u><a name=firstI>SAS:Scattering profile</a></u> </h5>";
+                                document.write(ex)
+                                var ex2 = '<p align=justify> SAS data used in this integrative model could not be validated as the sascif file is currently unavailable. </p>';
+                                document.write(ex2);
+
                              }
+
                             </script>
                         </div>
                     </div>
                     <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                             var sasdb_code_html={{sasdb_code_html}}     
                             for (var i = 0; i < sasdb_code_html.length; i++) {
                             var ex3 ='<p align=justify> <u> Scattering profile for <a href=https://www.sasbdb.org/data/' + sasdb_code_html[i] + '/> '+ sasdb_code_html[i]+'</a>:</u> data from solutions of biological macromolecules are presented as both log I(q) vs q and log I(q) vs log (q) based on <a href=https://salilab.org/pdf/Trewhella_ActaCrystD_2017.pdf>SAS validation task force (SASvtf) recommendations.</a> I(q) is the intensity (in arbitrary units) and q is the modulus of the scattering vector. </p>'; 
@@ -250,7 +260,7 @@
                     <div class="col-lg-12">
                         <div class="card-header" style="background-color: #FFF;">
                             <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
 				    var ex1 = "<h5 class= ex2 align= center> <u><a name=firstE>Key experimental estimates</a></u></h5>";
                                 ex1 +='<p style=margin-bottom:0.5cm;> </p>';
 
@@ -276,7 +286,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
 
 				    var ex2 = "<h5 class= ex2 align= center><u><a name=firstF> Flexibility analysis</a> </u></h5>";
                                 document.write(ex2)
@@ -286,7 +296,7 @@
                     </div>
 
                     <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                             var sasdb_code_html={{sasdb_code_html}}     
                             for (var i = 0; i < sasdb_code_html.length; i++) {
                             var ex3 ='<p align=justify> <u> Flexibility analysis for '+ sasdb_code_html[i]+'</u>: In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domains, whereas, fully unfolded domains are devoid of any discernable plateau. For details, refer to Figure 5 in <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer, 2011</a>. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domains and a hyperbolic shape is observed for fully unfolded domains. </p>'; 
@@ -315,7 +325,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
 				    var ex2 = "<h5 align= center><u><a name=firstP>Pair-distance distribution analysis</a></u></h5>";
                                 document.write(ex2)
                                 var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
@@ -330,7 +340,7 @@
                         </div>
                     </div>
                     <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                             var sasdb_code_html={{sasdb_code_html}}     
                             for (var i = 0; i < sasdb_code_html.length; i++) {
                             var ex3 ='<p align=justify> <u> P(r) for '+ sasdb_code_html[i]+':</u> The value of P(r) should be zero beyond r=Dmax. </p>'; 
@@ -353,7 +363,7 @@
                     <p style="margin-bottom:3cm;"> </p>
 
                     <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                             var sasdb_code_html={{sasdb_code_html}}     
                             for (var i = 0; i < sasdb_code_html.length; i++) {
                             var ex3 ='<p align=justify> <u> Residuals and error weighted residuals for P(r) analysis for  '+ sasdb_code_html[i]+'</u>: Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis.</p>'; 
@@ -385,7 +395,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
 				    var ex2 = "<h5 class= ex2 align= center><u><a name=firstG> Guinier analysis </a></u></h5>";
                                 document.write(ex2)
                                 var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
@@ -400,7 +410,7 @@
                     </div>
 
                     <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                             var sasdb_code_html={{sasdb_code_html}}     
                             for (var i = 0; i < sasdb_code_html.length; i++) {
                             var ex3 ='<p align=justify> <u> Guinier analysis for '+ sasdb_code_html[i]+': </u> the linearity of the Guinier plot is a sensitive indicator of the quality of the experimental SAS data; a linear Guinier plot is a necessary but not sufficient demonstration that a solution contains monodisperse particles of the samesize. Deviations from linearity usually point to strong interference effects, polydispersity of the samples or improper background subtraction. Residual value plot and coefficient of determination (R<sup>2</sup>) are measures to assess linear fit to the data. A perfect fit has an R<sup>2</sup> value of 1. Residual values should be equally and randomly spaced around the horizontal axis. </p>'; 

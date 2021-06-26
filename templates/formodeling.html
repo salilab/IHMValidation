@@ -141,7 +141,7 @@ body {
                             <div class="dropdown-menu">
 
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length > 0) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
                                 document.write(ex);}
 
@@ -172,7 +172,7 @@ body {
                             </a>
                             <div class="dropdown-menu">
                             <script>
-                                if ({{Data}}.includes('SAS DATA') >= 1) {
+                                if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length > 0) {
                                 var ex='<a class=dropdown-item dropdown-toggle type=button href=formodeling.html#first>SAS</a>'
                                 document.write(ex);}
                             else {
@@ -216,6 +216,10 @@ body {
                             if ({{sas}}.length > 0) {
                                 var ex = "<h5 class= ex2 align= center><u> Fit of model(s) to SAS data</u></h5>";
                                 document.write(ex)
+                            } 
+                            if ({{sasdb_sascif}}.length < 1) {
+                             var ex2 = '<p align=justify> SAS data used in this integrative model could not be validated as the sascif file is currently unavailable. </p>';
+                                document.write(ex2);
                             }
                             </script>
                         </div>
@@ -229,7 +233,7 @@ body {
                     <div class="row">
                         <div class="col-lg-12">
                             <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                                 if ({{number_of_fits}} > 0) {
                                     var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u></h5>";
                                     ex2 += "<p class =ex2><i>Model and fits displayed below were obtained from SASBDB. \u03C7\u00b2 values are a measure of fit of the model to data. A perfect fit has a \u03C7\u00b2 value of zero.</i>";
@@ -247,7 +251,7 @@ body {
                     </div>
 
                     <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                             var sasdb_code_html={{sasdb_code_html}}  
                             var sasdb_code_fits={{sasdb_code_fits}}   
                             for (var i = 0; i < sasdb_code_html.length; i++) {
@@ -269,7 +273,7 @@ body {
                     <p style="margin-bottom:3cm;"> </p>
 
                     <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                             var sasdb_code_html={{sasdb_code_html}}  
                             var sasdb_code_fits={{sasdb_code_fits}}   
                             for (var i = 0; i < sasdb_code_html.length; i++) {
@@ -297,7 +301,7 @@ body {
                     <div class="row">
                         <div class="col-lg-12">
                             <script>
-                            if ({{sas}}.length > 0) {
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                                 if ({{number_of_fits}} > 0) {
                                     var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u></h5>";
                                     ex2 += "<p class =ex2><i>ATSAS datcmp was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis. </i>";
