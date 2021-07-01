@@ -10,3 +10,4 @@ requests==2.24.0
 scikit-learn==0.23.2
 selenium==3.141.0
 python-decouple
+wheel==0.36.2
