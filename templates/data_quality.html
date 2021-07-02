@@ -11,8 +11,8 @@
     <!-- add bootstrap css file -->
             {% raw %}
 
-     <link rel="stylesheet" href="../css/bootstrap.min.css">
-     <link rel="stylesheet" href="../css/main.css">
+     <link rel="stylesheet" href="../../css/bootstrap.min.css">
+     <link rel="stylesheet" href="../../css/main.css">
             {% endraw %}
 
     <style>
@@ -73,7 +73,7 @@
                 <div class="row">
                     <div class=" col-sm-9" style="margin-left: 0px;">
                         <a href="https://pdb-dev.wwpdb.org/">
-                            <img src="../../static/webimages/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 10px; margin-bottom: 10px" />
+                            <img src="../../../static/webimages/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 10px; margin-bottom: 10px" />
                             <p>
                                 <h1 style="margin-left: 0px; color: #003366;">PDB-Dev</h1>
                                 <h5 class="float-left" style="color: #003366;">Prototype Archiving System for Integrative Structures</h5>
@@ -238,11 +238,11 @@
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'intensities.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../../static/'+{{ID_R}} +'/images/' + {{ID_w}} + sasdb_code_html[i]+'intensities.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'intensities_log.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'intensities_log.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
@@ -303,11 +303,11 @@
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'porod.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'porod.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'Kratky.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'Kratky.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
@@ -346,11 +346,11 @@
                             var ex3 ='<p align=justify> <u> P(r) for '+ sasdb_code_html[i]+':</u> The value of P(r) should be zero beyond r=Dmax. </p>'; 
                             document.write(ex3)
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding  style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf_int.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf_int.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
 
                             var ex6 ='</div></div> </div>';
@@ -370,11 +370,11 @@
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf_residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf_residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf_residuals_wt.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'pddf_residuals_wt.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
@@ -417,11 +417,11 @@
                             document.write(ex3)
 
                             var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                            ex4 +='<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'guinier.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
+                            ex4 +='<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'guinier.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
                             document.write(ex4)
 
                             var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                            ex5 += '<iframe src=../../static/images/' + {{ID_w}} + sasdb_code_html[i]+'guinier_residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
+                            ex5 += '<iframe src=../../../static/'+{{ID_R}}+'/images/' + {{ID_w}} + sasdb_code_html[i]+'guinier_residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>';
                             document.write(ex5)
                             var ex6 ='</div></div> </div>';
                             ex6 +='<p style=margin-bottom:3cm;> </p>';
@@ -442,7 +442,7 @@
                     <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
                         <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
                             <a href="http://www.wwpdb.org/" target="_blank">
-                                <img src="../../static/webimages/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px" /></a>
+                                <img src="../../../static/webimages/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px" /></a>
                         </div>
                         <div class="col-sm-6">
                             <div class="float-right text-right">
@@ -456,13 +456,13 @@
     </footer>
     <!-- add Javasscript file from js file -->
             {% raw %}
-        <script type="text/javascript" src="../js/jquery.min.js"></script>
-        <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="../js/main.js"></script>
-        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="../js/popper1.12.9.min.js"></script>
-        <script type="text/javascript" src="../js/bootstrap4.1.3.min.js"></script>
-        <script type="text/javascript" src="../js/bootstrap3-typeahead.min.js"></script>
+        <script type="text/javascript" src="../../js/jquery.min.js"></script>
+        <script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../../js/main.js"></script>
+        <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="../../js/popper1.12.9.min.js"></script>
+        <script type="text/javascript" src="../../js/bootstrap4.1.3.min.js"></script>
+        <script type="text/javascript" src="../../js/bootstrap3-typeahead.min.js"></script>
 
         {% endraw %}
 
