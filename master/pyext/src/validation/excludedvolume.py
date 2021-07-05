@@ -19,8 +19,8 @@ import csv
 class GetExcludedVolume(GetInputInformation):
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)
-        self.ID = str(GetInputInformation.get_id(self))
-        self.nos = GetInputInformation.get_number_of_models(self)
+        self.ID = str(self.get_id())
+        self.nos = self.get_number_of_models()
         self.resultpath = '../static/results/'
 
     def get_all_spheres(self, filetemp=None):
