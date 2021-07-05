@@ -26,15 +26,15 @@ class GetExcludedVolume(GetInputInformation):
     def get_all_spheres(self, filetemp=None):
         """get information on all spheres for each model"""
         if filetemp is None:
-            Model_object = [
+            model_object = [
                 b for i in self.system.state_groups for j in i for a in j for b in a]
-            model_dict = {i+1: j._spheres for i, j in enumerate(Model_object)}
+            model_dict = {i+1: j._spheres for i, j in enumerate(model_object)}
         else:
             system, = ihm.reader.read(filetemp,
                                       model_class=ihm.model.Model)
-            Model_object = [
+            model_object = [
                 b for i in system.state_groups for j in i for a in j for b in a]
-            model_dict = {i+1: j._spheres for i, j in enumerate(Model_object)}
+            model_dict = {i+1: j._spheres for i, j in enumerate(model_object)}
             # print (model_dict)
         return model_dict
 
@@ -45,7 +45,7 @@ class GetExcludedVolume(GetInputInformation):
 
     def get_violation_percentage(self, models_spheres_df: pd.DataFrame, viols: dict) -> float:
         """get information on all spheres for each model"""
-        number_of_violations = sum(list(viols.values()))
+        number_of_violations = sum(viols.values())
         number_of_combinations = self.get_nCr(models_spheres_df.shape[1], 2)
         return (1-number_of_violations/number_of_combinations)*100
 
@@ -79,7 +79,7 @@ class GetExcludedVolume(GetInputInformation):
     def get_violation_dict(self, model_spheres_df: pd.DataFrame) -> dict:
         """ get violation from model_sphere df"""
         viols = {}
-        for indx, col in model_spheres_df.iteritems():
+        for indx, col in model_spheres_df.items():
             if indx < model_spheres_df.shape[1]:
                 sphere_R = model_spheres_df.iloc[-1, indx:]
                 remaining = model_spheres_df.iloc[:-1, indx:]
@@ -104,7 +104,7 @@ class GetExcludedVolume(GetInputInformation):
             excluded_volume['Excluded Volume Satisfaction'].append(
                 round(self.get_violation_percentage(df, self.get_violation_dict(df)), 2))
             excluded_volume['Number of violations'].append(
-                sum(list(self.get_violation_dict(df).values())))
+                sum(self.get_violation_dict(df).values()))
         # open(os.path.join(os.getcwd(), self.resultpath, self.ID+'exv.txt'), 'w+')
         return excluded_volume
 
@@ -125,7 +125,7 @@ class GetExcludedVolume(GetInputInformation):
         violation_dict = self.get_violation_dict(df)
         satisfaction = round(
             self.get_violation_percentage(df, violation_dict), 2)
-        violations = sum(list(violation_dict.values()))
+        violations = sum(violation_dict.values())
         return (satisfaction, violations)
 
     def run_exc_vol_parallel(self, model_dict: dict) -> dict:
@@ -135,8 +135,8 @@ class GetExcludedVolume(GetInputInformation):
                                 self.resultpath, self.ID+'exv.txt')
         if os.path.exists(filename):
             return self.process_exv(filename)
-        if len(list(model_dict.keys())) <= 25:  # this is an arbitrary cutoff
-            pool = mp.Pool(processes=len(list(model_dict.keys())))
+        if len(model_dict.keys()) <= 25:  # this is an arbitrary cutoff
+            pool = mp.Pool(processes=len(model_dict.keys()))
             complete_list = pool.map(
                 self.get_exc_vol_given_sphere_parallel, list(model_dict.values()))
             excluded_volume = {'Models': list(model_dict.keys()),
@@ -146,7 +146,7 @@ class GetExcludedVolume(GetInputInformation):
             for key, val in excluded_volume.items():
                 write_file.writerow([key, val])
         else:
-            excluded_volume = {'Models': ['All '+str(len(list(model_dict.keys())))],
+            excluded_volume = {'Models': ['All '+str(len(model_dict.keys()))],
                                'Excluded Volume Satisfaction': ['0.0'],
                                'Number of violations': ['0.0']}
         return excluded_volume
