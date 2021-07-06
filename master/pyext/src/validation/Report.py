@@ -72,6 +72,26 @@ class WriteReport(object):
         )['Chain ID']))/int(len(list(Counter(self.Input.get_composition()['Model ID']).keys())))
         return Template_Dict
 
+    def check_mmcif(self, Template_Dict: dict):
+        '''
+        test function to check rewrite_mmcif function without any hassle.
+        not useful for processing, useful only for testing.
+        '''
+        if self.Input.check_sphere() < 1:
+            self.Input.rewrite_mmcif()
+            # I_mp = molprobity.GetMolprobityInformation('test.cif')
+            print("File rewritten...")
+            print("Molprobity analysis is being calculated...")
+
+    def check_disclaimer_warning(self, exv_data: dict, Template_Dict: dict) -> bool:
+        Template_Dict['disclaimer'] = False
+        if exv_data:
+            satisfaction = set(exv_data['Excluded Volume Satisfaction'])
+            violation = set(exv_data['Number of violations'])
+            if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
+                Template_Dict['disclaimer'] = True
+        return Template_Dict
+
     def run_model_quality(self, Template_Dict: dict) -> (dict, dict, dict, dict, dict):
         '''
         get excluded volume for multiscale models
@@ -171,13 +191,20 @@ class WriteReport(object):
                 I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file)
                 model_dict = I_ev.get_all_spheres()
                 exv_data = I_ev.run_exc_vol_parallel(model_dict)
-                print(exv_data)
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
             Template_Dict['assess_excluded_volume'] = utility.exv_readable_format(
                 exv_data)
             clashscore = None
             rama = None
             sidechain = None
+
+        Template_Dict['disclaimer'] = 0
+        if exv_data:
+            satisfaction = set(exv_data['Excluded Volume Satisfaction'])
+            violation = set(exv_data['Number of violations'])
+            if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
+                Template_Dict['disclaimer'] = 1
+
         return Template_Dict, clashscore, rama, sidechain, exv_data
 
     def run_sas_validation(self, Template_Dict: dict) -> (dict, dict, dict):
@@ -227,7 +254,7 @@ class WriteReport(object):
             Template_Dict['sasdb_sascif'] = []
         return Template_Dict, sas_data, sas_fit
 
-    def run_sas_validation_plots(self, Template_Dict: dict):
+    def run_sas_validation_plots(self, Template_Dict: dict, imageDirName: str):
         '''
         get sas validation information from SASCIF or JSON files
         '''
@@ -236,7 +263,7 @@ class WriteReport(object):
             I_sas = sas.SasValidation(self.mmcif_file)
             try:
                 I_sas_plt = validation.sas_plots.SasValidationPlots(
-                    self.mmcif_file)
+                    self.mmcif_file, imageDirName)
                 I_sas.modify_intensity()
                 I_sas.get_pofr_errors()
                 I_sas_plt.plot_multiple()
@@ -278,11 +305,11 @@ class WriteReport(object):
     def run_quality_glance(self, clashscore: dict, rama: dict,
                            sidechain: dict, exv_data: dict,
                            sas_data: dict, sas_fit: dict,
-                           cx_fit: dict):
+                           cx_fit: dict, imageDirName: str):
         '''
         get quality at glance image; will be updated as validation report is updated
         '''
-        I_plt = get_plots.Plots(self.mmcif_file)
+        I_plt = get_plots.Plots(self.mmcif_file, imageDirName)
         I_plt.plot_quality_at_glance(
             clashscore, rama, sidechain, exv_data, sas_data, sas_fit, cx_fit)
 
