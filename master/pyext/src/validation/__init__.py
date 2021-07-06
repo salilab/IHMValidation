@@ -610,25 +610,62 @@ class GetInputInformation(object):
                     after_atom = all_lines[i:]
         return before_atom_site, atom_site, atoms, after_atom
 
+    def delete_extra_loops(self, some_text=list()) -> list:
+        """function to help re-write mmcif file for molprobity
+        this cleans up extra loops in the cif file"""
+        new_text = []
+        line = 0
+        total_lines = len(some_text)
+        while line < total_lines:
+            if some_text[line] and 'loop_' in some_text[line][0] and '_' not in some_text[line+1][0]:
+                skip = line+2
+                line = min(total_lines-1, skip)
+            new_text.append(some_text[line])
+            line += 1
+        return new_text
+
+    def remove_flr(self, some_text=list()) -> list:
+        """function to help re-write mmcif file for molprobity
+        this deletes all flr related text/key-value pairs"""
+        new_text = []
+        line = 0
+        total_lines = len(some_text)
+        while line < total_lines:
+            if some_text[line] and '_flr' in some_text[line][0]:
+                while '#' not in some_text[line][0]:
+                    line += 1
+            new_text.append(some_text[line])
+            line += 1
+        return new_text
+
+    def get_model_id_column(self, atom_site: dict()) -> int:
+        for colnum, val in enumerate(atom_site.values()):
+            if '_atom_site.ihm_model_id' in val:
+                return colnum
+        return None
+
     def rewrite_mmcif(self):
         """ This function writes a temporary mmcif file that can be parsed by molprobity
         after checking occupancy and b-iso parameters """
         before_atom_site, atom_site, atoms, after_atom = self.mmcif_get_lists()
+        before_atom_site = self.delete_extra_loops(
+            self.remove_flr(before_atom_site))
+        after_atom = self.delete_extra_loops(self.remove_flr(after_atom))
+        model_col = self.get_model_id_column(atom_site)
+
         if os.path.isfile('test.cif'):
             os.remove('test.cif')
         file_re = open('test.cif', 'w')
-        forbidden = ['°', 'µ', 'Å', '"']
         for i, j in enumerate(before_atom_site[:-1]):
             temp = ' '.join(j)
-            for elem in forbidden:
-                temp = temp.replace(elem, ' ')
+            temp = temp.encode('ascii', errors='replace').decode()
             file_re.write(temp+'\n')
         for i, j in atom_site.items():
             file_re.write(''.join(j)+'\n')
         for i, j in atoms.items():
-            file_re.write(' '.join(j)+'\n')
+            if int(j[model_col]) < 21:  # adding model num limit for molprobity analysis
+                file_re.write(' '.join(j)+'\n')
         for i, j in enumerate(after_atom):
             temp = ' '.join(j)
-            for elem in forbidden:
-                temp = temp.replace(elem, ' ')
+            temp = temp.encode('ascii', errors='replace').decode()
             file_re.write(temp+'\n')

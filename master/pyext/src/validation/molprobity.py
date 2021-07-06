@@ -21,8 +21,8 @@ import pandas as pd
 class GetMolprobityInformation(GetInputInformation):
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)
-        self.ID = str(GetInputInformation.get_id(self))
-        self.nos = GetInputInformation.get_number_of_models(self)
+        self.ID = str(self.get_id())
+        self.nos = min(20, self.get_number_of_models())
         self.resultpath = '../static/results/'
 
     def check_for_molprobity(self, filetemp=None) -> bool:
