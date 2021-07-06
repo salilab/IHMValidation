@@ -209,6 +209,7 @@
                             <h4 align="center"><u>Model quality</u></h4>
                             <script>
                             var sphere = {{sphere}}
+                            var disclaimer= {{disclaimer}}
                             if (sphere > 0) {
                                 var ex = "<h5 class= ex2 align= left>Excluded volume satisfaction</h5>";
                                 ex += "<i> Excluded volume satisfaction for the models in the entry are listed below. </i>";
@@ -218,6 +219,15 @@
                                 Write_Table(list_to_write = {{excluded_volume}})
                                 document.write(space);
                             }
+                                if (disclaimer > 0) {
+                                var space = '<p class="ex2"> </p>';
+                                document.write(space);
+                                var ex2 = "<i> NOTE: Based on existing standards, there are no model quality assessments for this entry.</i>";
+                                document.write(ex2);
+                                var space = '<p class="ex2"> </p>';
+                                document.write(space); }
+
+                            
                             </script>
                             <script>
                             if ({{sphere}}< 1) {
