@@ -1,3 +1,0 @@
-Models,"[1, 2]"
-Excluded Volume Satisfaction,"[100.0, 100.0]"
-Number of violations,"[611820.0, 156.0]"
