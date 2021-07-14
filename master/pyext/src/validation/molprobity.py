@@ -23,7 +23,7 @@ class GetMolprobityInformation(GetInputInformation):
         super().__init__(mmcif_file)
         self.ID = str(self.get_id())
         self.nos = min(20, self.get_number_of_models())
-        self.resultpath = '../static/results/'
+        self.resultpath = '../Validation/results/'
 
     def check_for_molprobity(self, filetemp=None) -> bool:
         """ Check the biso and occupancy columns for mmcif files"""
@@ -458,8 +458,9 @@ class GetMolprobityInformation(GetInputInformation):
                     dict1['Residue type'].append(
                         line.strip().split()[-1].split(':')[0])
                     if len(line.strip().split()[0]) > 2:
-                        dict1['Chain and res ID'].append(
-                            line.strip().split()[0])
+                        temp = line.strip().split()[0]
+                        val = temp[0]+':'+temp[1:]
+                        dict1['Chain and res ID'].append(val)
                     else:
                         dict1['Chain and res ID'].append(
                             ':'.join(line.strip().split()[:2]))
