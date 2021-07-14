@@ -23,11 +23,12 @@ silence(EMPTY_LAYOUT, True)
 
 
 class Plots(validation.GetInputInformation):
-    def __init__(self, mmcif):
+    def __init__(self, mmcif, imageDirName):
         super().__init__(mmcif)
         self.ID = str(validation.GetInputInformation.get_id(self))
         self.dirname = os.path.dirname(os.path.abspath(__file__))
-        self.filename = os.path.join('../static/images//')
+        self.imageDirName = imageDirName
+        self.filename = os.path.join(self.imageDirName)
 
     def plot_quality_at_glance(self, clashscore: list, rama: list, sidechain: list,
                                exv_data: dict, sas_data: dict, sas_fit: dict, cx_fit: dict) -> bokeh.plotting.figure:

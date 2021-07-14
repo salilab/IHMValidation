@@ -1,7 +1,7 @@
 [
     {
         "Category": "date",
-        "Itemized_List": "July 14, 2021 --  02:57 PM"
+        "Itemized_List": "July 14, 2021 --  03:44 PM"
     },
     {
         "Category": "ensemble_info",
@@ -517,6 +517,12 @@
                 "N/A"
             ],
             [
+                "SASDBV9",
+                "12.6 kDa",
+                "12.2 kDa",
+                "N/A"
+            ],
+            [
                 "SASDBZ9",
                 "49.4 kDa",
                 "48.3 kDa",
@@ -532,12 +538,6 @@
                 "SASDBX9",
                 "12.5 kDa",
                 "14.7 kDa",
-                "N/A"
-            ],
-            [
-                "SASDBV9",
-                "12.6 kDa",
-                "12.2 kDa",
                 "N/A"
             ]
         ]
@@ -700,21 +700,21 @@
         "Category": "Data_quality",
         "Itemized_List": [
             "SASDBY9: Rg from Gunier is 2.976nm and Rg from p(r) is 2.95nm",
+            "SASDBV9: Rg from Gunier is 1.824nm and Rg from p(r) is 1.77nm",
             "SASDBZ9: Rg from Gunier is 4.629nm and Rg from p(r) is 4.34nm",
             "SASDBW9: Rg from Gunier is 2.787nm and Rg from p(r) is 2.71nm",
-            "SASDBX9: Rg from Gunier is 2.636nm and Rg from p(r) is 2.78nm",
-            "SASDBV9: Rg from Gunier is 1.824nm and Rg from p(r) is 1.77nm"
+            "SASDBX9: Rg from Gunier is 2.636nm and Rg from p(r) is 2.78nm"
         ]
     },
     {
         "Category": "validation_input",
         "Itemized_List": [
             "SASDBY9: Fit 1 with &#x3A7;&#xb2; value 2.02",
+            "SASDBV9: Fit 1 with &#x3A7;&#xb2; value 1.28",
+            "SASDBV9: Fit 2 with &#x3A7;&#xb2; value 1.1",
             "SASDBZ9: Fit 1 with &#x3A7;&#xb2; value 1.94",
             "SASDBW9: Fit 1 with &#x3A7;&#xb2; value 1.97",
-            "SASDBX9: Fit 1 with &#x3A7;&#xb2; value 2.86",
-            "SASDBV9: Fit 1 with &#x3A7;&#xb2; value 1.28",
-            "SASDBV9: Fit 2 with &#x3A7;&#xb2; value 1.1"
+            "SASDBX9: Fit 1 with &#x3A7;&#xb2; value 2.86"
         ]
     },
     {

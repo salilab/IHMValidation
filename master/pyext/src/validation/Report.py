@@ -103,7 +103,7 @@ class WriteReport(object):
             exv_data = None
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
             filename = os.path.abspath(os.path.join(
-                os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
+                os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
             global clashscore
             global rama
             global sidechain
@@ -176,15 +176,15 @@ class WriteReport(object):
                 Template_Dict['assess_excluded_volume'] = ['Not applicable']
         else:
             Template_Dict['assess_atomic_segments'] = 'Not applicable'
-            file = os.getcwd()+'Output/results/' + \
-                str(Template_Dict['ID'])+'exv.txt'
+            file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..',
+                                                'Validation', 'results', str(Template_Dict['ID'])+'exv.txt'))
             if os.path.exists(file):
                 print("Excluded volume file already exists...")
                 with open(file, 'r+') as inf:
-                    line = [ln.replace('[', '').replace(']', '').replace(
-                        ',', '').split() for ln in inf.readlines()]
+                    line = [ln.strip().replace('[', '').replace(']', '').replace('"', '').
+                            replace(' ', '').split(',')[1:] for ln in inf.readlines()]
                 exv_data = {
-                    'Models': line[0], 'Excluded Volume Satisfaction (%)':
+                    'Models': line[0], 'Excluded Volume Satisfaction':
                     line[1], 'Number of violations': line[2]}
             else:
                 print("Excluded volume is being calculated...")

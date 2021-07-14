@@ -16,7 +16,7 @@ from bokeh.plotting import figure, save
 
 
 class SasValidationPlots(sas.SasValidation):
-    def __init__(self, mmcif_file):
+    def __init__(self, mmcif_file, imageDirName):
         super().__init__(mmcif_file)
         self.ID = str(GetInputInformation.get_id(self))
         self.df_dict = sas.SasValidation.modify_intensity(self)
@@ -25,7 +25,8 @@ class SasValidationPlots(sas.SasValidation):
         self.pdf_ext_dict = sas.SasValidation.get_pofr_ext(self)
         self.pdf_dict_err = sas.SasValidation.get_pofr_errors(self)
         self.score, self.gdf = sas.SasValidation.get_Guinier_data(self)
-        self.filename = os.path.join('../static/images//')
+        self.imageDirName = imageDirName
+        self.filename = os.path.join(self.imageDirName)
 
     def plot_intensities(self, sasbdb: str, df: pd.DataFrame):
         '''

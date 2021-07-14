@@ -21,7 +21,7 @@ class GetExcludedVolume(GetInputInformation):
         super().__init__(mmcif_file)
         self.ID = str(self.get_id())
         self.nos = self.get_number_of_models()
-        self.resultpath = '../static/results/'
+        self.resultpath = '../Validation/results/'
 
     def get_all_spheres(self, filetemp=None):
         """get information on all spheres for each model"""
@@ -131,8 +131,8 @@ class GetExcludedVolume(GetInputInformation):
     def run_exc_vol_parallel(self, model_dict: dict) -> dict:
         """ get exc vol info in parallel """
         # list_of_sphere_list=list(model_dict.values())
-        filename = os.path.join(os.getcwd(),
-                                self.resultpath, self.ID+'exv.txt')
+        filename = os.path.abspath(os.path.join(os.getcwd(),
+                                                self.resultpath, self.ID+'exv.txt'))
         if os.path.exists(filename):
             return self.process_exv(filename)
         if len(model_dict.keys()) <= 25:  # this is an arbitrary cutoff
