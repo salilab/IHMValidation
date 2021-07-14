@@ -1,11 +1,14 @@
-import os,sys
+import os
+import sys
 import unittest  
-from io import StringIO, BytesIO
-sys.path.insert(0, "../master/pyext/src/")
 from collections import defaultdict
-from validation import get_input_information,utility
+import warnings
+import tempfile
+
+path = os.path.abspath("master/pyext/src/")
+sys.path.insert(0, path)
+from validation import GetInputInformation, utility
 from validation.Report import WriteReport
-import warnings,tempfile
 
 def ignore_warnings(test_func):
 	def do_test(self, *args, **kwargs):
@@ -97,7 +100,7 @@ _ihm_model_list.representation_id
 			self.assertEqual(['PDBDEV_test'],d['ID_R'])
 			self.assertEqual('Structure irrelevant',d['Molecule'])
 			self.assertEqual('Structure of something cool',d['Title'])
-			self.assertEqual('AA B;CC D',d['Authors'])
+			self.assertEqual('AA B; CC D',d['Authors'])
 			self.assertEqual(2,d['number_of_molecules'])
 			self.assertEqual(0,d['number_of_software'])
 			self.assertEqual(['Ilikebanana', 'Ialsolikeapple'],d['model_names'])
