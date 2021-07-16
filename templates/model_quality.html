@@ -212,12 +212,12 @@
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <div class="card-header" style="background-color: #FFF;">
-                                                        <h4 align="center"><u>Model quality</u></h4>
+                                                        <h4 align="center"><u>Model quality</u><a class='help' href='../../../help.html'>?</a></h4>
                                                         <script>
                                                             var sphere = {{sphere}}
                                                             var disclaimer= {{disclaimer}}
                                                             if (sphere > 0) {
-                                                                var ex = "<h5 class= ex2 align= left>Excluded volume satisfaction</h5>";
+                                                                var ex = "<h5 class= ex2 align= left>Excluded volume satisfaction<a class='help' href='../../../help.html'>?</a></h5>";
                                                                 ex += "<i> Excluded volume satisfaction for the models in the entry are listed below. </i>";
                                                                 document.write(ex);
                                                                 var space = '<p class="ex2"> </p>';
@@ -237,7 +237,7 @@
                                                             </script>
                                                             <script>
                                                                 if ({{sphere}}< 1) {
-                                                                    var intro = "<h5 class= ex2 align= center><u><a name='geometry'>Standard geometry</a></u></h5>";
+                                                                    var intro = "<h5 class= ex2 align= center><u><a name='geometry'>Standard geometry</a></u><a class='help' href='../../../help.html'>?</a></h5>";
                                                                     document.write(intro);
                                                                     var space = '<p class="ex2"> </p>';
                                                                     document.write(space);
@@ -257,7 +257,7 @@
                                                                     }
 
                                                                     if ({{clashscore_list}}.length > 1) {
-                                                                        var docx = "<h5 class= ex2 align= center><u><a name='contacts'>Too-close contacts</a></u></h5>";
+                                                                        var docx = "<h5 class= ex2 align= center><u><a name='contacts'>Too-close contacts</a></u><a class='help' href='../../../help.html'>?</a></h5>";
                                                                         docx += "<p align='justify'><i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i></p>";
                                                                         document.write(docx);
                                                                         document.write(space);
@@ -267,7 +267,7 @@
 
 
                                                                     if ({{ramascore}}.length > 1) {
-                                                                        var text2 = "<h5 class=ex2 align= center><u><a name='torsion'>Torsion angles: Protein backbone</a></u></h5>";
+                                                                        var text2 = "<h5 class=ex2 align= center><u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help' href='../../../help.html'>?</a></h5>";
                                                                         text2 += "<p align='justify'><i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed. </i></p>"
                                                                         document.write(text2);
                                                                         document.write(space);
@@ -286,7 +286,7 @@
 
 
                                                                     if ({{rotascore}}.length > 1) {
-                                                                        var text3 = "<h5 class=ex2 align=center><u><a name='outliers'>Ramachandran outliers: Protein sidechains</a></u></h5>";
+                                                                        var text3 = "<h5 class=ex2 align=center><u><a name='outliers'>Ramachandran outliers: Protein sidechains</a></u><a class='help' href='../../../help.html'>?</a></h5>";
                                                                         text3 += "<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
                                                                         document.write(text3);
                                                                         document.write(space);
