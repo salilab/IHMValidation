@@ -70,6 +70,8 @@ class WriteReport(object):
             self.Input.get_sampling())
         Template_Dict['num_chains'] = int(len(self.Input.get_composition(
         )['Chain ID']))/int(len(list(Counter(self.Input.get_composition()['Model ID']).keys())))
+        Template_Dict['ChainL'] = self.Input.get_composition()['Chain ID']
+
         return Template_Dict
 
     def check_mmcif(self, Template_Dict: dict):
@@ -115,15 +117,15 @@ class WriteReport(object):
                 with open(filename, 'rb') as fp:
                     d_mp['molprobity'] = pickle.load(fp)
                 f_rota = os.path.abspath(os.path.join(
-                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
+                    os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
                 with open(f_rota, 'rb') as fp:
                     d_mp['rota'] = pickle.load(fp)
                 f_rama = os.path.abspath(os.path.join(
-                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
+                    os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
                 with open(f_rama, 'rb') as fp:
                     d_mp['rama'] = pickle.load(fp)
                 f_clash = os.path.abspath(os.path.join(
-                    os.getcwd(), '../static/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
+                    os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
                 with open(f_clash, 'rb') as fp:
                     d_mp['clash'] = pickle.load(fp)
 
@@ -157,11 +159,11 @@ class WriteReport(object):
                 Template_Dict['rotascore'] = utility.dict_to_JSlist(
                     I_mp.rota_summary_table(I_mp.process_rota(d_mp['rota'])))
                 Template_Dict['rotalist'] = utility.dict_to_JSlist(
-                    I_mp.rota_detailed_table(I_mp.process_rota(d_mp['rota'])))
+                    I_mp.rota_detailed_table(I_mp.process_rota(d_mp['rota']), Template_Dict['ChainL']))
                 Template_Dict['ramascore'] = utility.dict_to_JSlist(
                     I_mp.rama_summary_table(I_mp.process_rama(d_mp['rama'])))
                 Template_Dict['ramalist'] = utility.dict_to_JSlist(
-                    I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama'])))
+                    I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama']), Template_Dict['ChainL']))
                 # print (d_mp['clash'])
                 clashscores, Template_Dict['tot'] = I_mp.clash_summary_table(
                     d_mp['clash'])
