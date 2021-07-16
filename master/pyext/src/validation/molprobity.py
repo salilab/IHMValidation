@@ -246,7 +246,6 @@ class GetMolprobityInformation(GetInputInformation):
         for clashnos in list(clashes.values()):
             # print (clashes.values())
             dict1['Number of clashes'].append(len(clashnos[0]))
-
         clash_total = (sum(dict1['Number of clashes']))
         dict1 = self.orderclashdict(dict1)
         print(dict1['Model ID'], file=f_clash)
@@ -296,23 +295,33 @@ class GetMolprobityInformation(GetInputInformation):
         print(dict1['Outliers'], file=f_rota)
         return dict1
 
-    def rama_detailed_table(self, models: dict) -> dict:
+    def rama_detailed_table(self, models: dict, chains: list) -> dict:
         """ format rama information to print to file"""
         dict1 = {'Model ID': [], 'Chain and res ID': [], 'Residue type': []}
         f_rama_D = open(os.path.join(
             os.getcwd(), self.resultpath, self.ID+'_rama_detail.txt'), 'w+')
         for ind, el in models.items():
             for line in el:
+                # print (line)
                 if line.strip().split()[-2] == 'or':
                     subline = ':'.join(line.strip().split()[-3:])
                 else:
                     subline = line.strip().split()[-1]
                 if subline.split(':')[4] == 'OUTLIER':
                     dict1['Model ID'].append(ind)
+                    # print ("h",line.strip().split())
                     dict1['Residue type'].append(subline.split(':')[0])
                     if len(line.strip().split()[0]) > 2:
-                        dict1['Chain and res ID'].append(
-                            line.strip().split()[0])
+                        temp = line.strip().split()[0]
+                        if temp[:1] in chains:
+                            val = temp[:1]+':'+temp[1:]
+                            dict1['Chain and res ID'].append(val)
+                        elif temp[:2] in chains:
+                            val = temp[:2]+':'+temp[2:]
+                            dict1['Chain and res ID'].append(val)
+                        elif temp[:3] in chains:
+                            val = temp[:3]+':'+temp[3:]
+                            dict1['Chain and res ID'].append(val)
                     else:
                         dict1['Chain and res ID'].append(
                             ':'.join(line.strip().split()[:2]))
@@ -354,12 +363,13 @@ class GetMolprobityInformation(GetInputInformation):
                     else:
                         bondtype_ex[j.replace(',', '').replace(':', '').split()[5]].append(
                             float(j.replace(',', '').replace(':', '').split()[7]))
+
             for ind, val in bondtype_dist.items():
                 dict1['Bond type'].append(ind)
                 dict1['Observed distance (&#8491)'].append(val)
                 dict1['Ideal distance (&#8491)'].append(
                     round(val+bondtype_diff[ind], 2))
-                dict1['Number of outliers'].append(len(bondtype_ex[ind]))
+                dict1['Number of outliers'].append(len(bondtype_ex[ind])+1)
             print(dict1['Bond type'], file=f_mp_D)
             print(dict1['Observed distance (&#8491)'], file=f_mp_D)
             print(dict1['Ideal distance (&#8491)'], file=f_mp_D)
@@ -408,7 +418,7 @@ class GetMolprobityInformation(GetInputInformation):
                 dict1['Observed angle (&#176)'].append(val)
                 dict1['Ideal angle (&#176)'].append(
                     round(val+angle_diff[ind], 2))
-                dict1['Number of outliers'].append(len(angle_ex[ind]))
+                dict1['Number of outliers'].append(len(angle_ex[ind])+1)
 
             print(dict1['Angle type'], file=f_mp_A)
             print(dict1['Observed angle (&#176)'], file=f_mp_A)
@@ -446,7 +456,7 @@ class GetMolprobityInformation(GetInputInformation):
         print(dict1['Clash overlap (&#8491)'], file=f_clash_D)
         return dict1
 
-    def rota_detailed_table(self, models: dict) -> dict:
+    def rota_detailed_table(self, models: dict, chains: list) -> dict:
         """process molprobity rotamers information and format to table"""
         f_rota_D = open(os.path.join(os.getcwd(), self.resultpath,
                                      self.ID+'_rota_detailed.txt'), 'w+')
@@ -459,8 +469,15 @@ class GetMolprobityInformation(GetInputInformation):
                         line.strip().split()[-1].split(':')[0])
                     if len(line.strip().split()[0]) > 2:
                         temp = line.strip().split()[0]
-                        val = temp[0]+':'+temp[1:]
-                        dict1['Chain and res ID'].append(val)
+                        if temp[:1] in chains:
+                            val = temp[:1]+':'+temp[1:]
+                            dict1['Chain and res ID'].append(val)
+                        elif temp[:2] in chains:
+                            val = temp[:2]+':'+temp[2:]
+                            dict1['Chain and res ID'].append(val)
+                        elif temp[:3] in chains:
+                            val = temp[:3]+':'+temp[3:]
+                            dict1['Chain and res ID'].append(val)
                     else:
                         dict1['Chain and res ID'].append(
                             ':'.join(line.strip().split()[:2]))
