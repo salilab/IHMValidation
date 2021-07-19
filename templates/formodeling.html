@@ -217,7 +217,7 @@
                             <div class="card-header" style="background-color: #FFF; height=18rem">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <h4 class="ex2" align="center"> <u><a name='first'>Fit of model to data used for modeling</a></u><a class='help' href='../../../help.html'>?</a></h4>
+                                        <h4 class="ex2" align="center"> <u><a name='first'>Fit of model to data used for modeling</a></u><a class='help' href='../../../help.html#fittodata'>?</a></h4>
                                         <script>
                                             if ({{sas}}.length > 0) {
                                                 var ex = "<h5 class= ex2 align= center><u> Fit of model(s) to SAS data</u></h5>";
@@ -241,13 +241,13 @@
                                     <script>
                                         if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                                             if ({{number_of_fits}} > 0) {
-                                                var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u><a class='help' href='../../../help.html'>?</a></h5>";
+                                                var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u><a class='help' href='../../../help.html#goodness'>?</a></h5>";
                                                 ex2 += "<p class =ex2><i>Model and fits displayed below were obtained from SASBDB. \u03C7\u00b2 values are a measure of fit of the model to data. A perfect fit has a \u03C7\u00b2 value of zero.</i>";
                                                 document.write(ex2)
                                                 var input_list = {{chi_table}};
                                                 Write_Table(list_to_write = input_list)
                                             } else {
-                                                var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u><a class='help' href='../../../help.html'>?</a></h5>";
+                                                var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u><a class='help' href='../../../help.html#goodness'>?</a></h5>";
                                                 ex2 += "<i>Model(s) and/or fit for this entry has not been deposited.  </i>";
                                                 document.write(ex2);
                                             }
@@ -309,13 +309,13 @@
                                     <script>
                                         if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                                             if ({{number_of_fits}} > 0) {
-                                                var ex2 = "<h5 class= ex2 align= center><u><a name='second'>Cormap p-value analysis of fits </a></u><a class='help' href='../../../help.html'>?</a></h5>";
+                                                var ex2 = "<h5 class= ex2 align= center><u><a name='second'>Cormap p-value analysis of fits </a></u><a class='help' href='../../../help.html#cormap'>?</a></h5>";
                                                 ex2 += "<p class =ex2><i>ATSAS datcmp was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis. </i>";
                                                 document.write(ex2)
                                                 var input_list = {{p_val}};
                                                 Write_Table(list_to_write = input_list)
                                             } else {
-                                                var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u><a class='help' href='../../../help.html'>?</a></h5>";
+                                                var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u><a class='help' href='../../../help.html#cormap'>?</a></h5>";
                                                 ex2 += "<i>Model(s) and/or fit for this entry has not been deposited.  </i>";
                                                 document.write(ex2);
                                             }
