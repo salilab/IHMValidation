@@ -156,6 +156,8 @@ class Plots(validation.GetInputInformation):
             pd.legend.orientation = "horizontal"
             pd.legend.location = 'bottom_center'
             pd.legend.label_text_font_size = "8px"
+            pd.xaxis.axis_label_text_font_style = 'italic'
+            pd.yaxis.axis_label_text_font_style = 'italic'
             second = Panel(child=row(pd), title='Data quality: SAS')
             tabsI.append(second)
             pd.output_backend = "svg"
@@ -171,7 +173,7 @@ class Plots(validation.GetInputInformation):
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
         if len(sas_fit.keys()) > 0:
-            Scores = ['\u03C7\u00b2 value fit ' +
+            Scores = ['\uab53 \u00b2 value fit ' +
                       str(int(m+1)) + ' ('+i+')' for i, j in sas_fit.items() for m, n in enumerate(j)]
             counts = [float(n) for i, j in sas_fit.items()
                       for m, n in enumerate(j)]
@@ -179,7 +181,7 @@ class Plots(validation.GetInputInformation):
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
             pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=300,
-                        plot_width=800, title="Fit to SAS input: \u03C7\u00b2 Fit")
+                        plot_width=800, title="Fit to SAS input: \uab53 \u00b2 Fit")
             rf = pf.hbar(y='Scores', right='counts', color='color',
                          source=source, alpha=0.8, line_color='black')
             pf.ygrid.grid_line_color = None
@@ -239,9 +241,9 @@ class Plots(validation.GetInputInformation):
             tabsI.append(third)
 
         # remaining panels are empty for now, will be updated
-        fourth = Panel(
-            child=row(p1), title='Fit to data not used for modeling')
-        tabsI.append(fourth)
+        # fourth = Panel(
+        #   child=row(p1), title='Fit to data not used for modeling')
+        # tabsI.append(fourth)
         fifth = Panel(child=row(p1), title='Uncertainty in models')
         tabsI.append(fifth)
         tabs = Tabs(tabs=tabsI)

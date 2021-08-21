@@ -49,6 +49,9 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
+
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"intensities.html")
         p.output_backend = "svg"
         export_svgs(p, height=500, width=500, filename=self.filename +
@@ -77,6 +80,9 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
+
         save(p, filename=self.filename+'/' +
              self.ID+sasbdb+"intensities_log.html")
         p.output_backend = "svg"
@@ -104,6 +110,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'q\u00B2 I(q)'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"Kratky_dep.html")
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/' +
@@ -133,6 +141,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'q\u00B2 Rg\u00B2 I(q)/I(0)'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"Kratky.html")
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"Kratky.svg")
@@ -158,6 +168,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'q\u2074 I(q)'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         p.output_backend = "svg"
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"porod.html")
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"porod.svg")
@@ -183,9 +195,11 @@ class SasValidationPlots(sas.SasValidation):
         p.title.vertical_align = 'top'
         p.xaxis.axis_label = "r [nm]"
         p.xaxis.axis_label_text_font_size = '14pt'
-        p.yaxis.axis_label = 'P(r)'
+        p.yaxis.axis_label = 'p(r)'
         p.yaxis.axis_label_text_font_size = '14pt'
         p.output_backend = "svg"
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"pddf.html")
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"pddf.svg")
         export_png(p,  height=500, width=500,
@@ -198,7 +212,7 @@ class SasValidationPlots(sas.SasValidation):
         output_file(self.ID+sasbdb+"pddf_residuals.html", mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500,
-                   title="Residuals for P(r) fit ("+sasbdb+")")
+                   title="Residuals for p(r) fit ("+sasbdb+")")
         p.circle(x='Q', y='R', source=source,
                  color='blue', fill_alpha=0.3, size=5)
         hline = Span(location=0, dimension='width',
@@ -213,6 +227,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"pddf_residuals.html")
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/' +
@@ -227,7 +243,7 @@ class SasValidationPlots(sas.SasValidation):
         output_file(self.ID+sasbdb+"pddf_residuals_wt.html", mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500,
-                   title="Error weighted residuals for P(r) fit ("+sasbdb+")")
+                   title="Error weighted residuals for p(r) fit ("+sasbdb+")")
         p.circle(x='Q', y='WR', source=source,
                  color='blue', fill_alpha=0.3, size=5)
         hline = Span(location=0, dimension='width',
@@ -242,6 +258,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'R/\u03C3'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/' +
              self.ID+sasbdb+"pddf_residuals_wt.html")
         p.output_backend = "svg"
@@ -258,7 +276,7 @@ class SasValidationPlots(sas.SasValidation):
         source1 = ColumnDataSource(df_int)
         source2 = ColumnDataSource(df_pofr)
         p = figure(plot_height=500, plot_width=500,
-                   title="P(r) extrapolated fit for "+sasbdb)
+                   title="p(r) extrapolated fit for "+sasbdb)
         legend1 = 'Experimental data'
         legend2 = "Linear fit"
         p.circle(x='Q', y='logI', source=source1, color='blue',
@@ -277,6 +295,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"pddf_int.html")
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/' +
@@ -309,6 +329,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"guinier.html")
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/'+self.ID+sasbdb+"guinier.svg")
@@ -337,6 +359,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/' +
              self.ID+sasbdb+"guinier_residuals.html")
         p.output_backend = "svg"
@@ -371,6 +395,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'Log I(q)'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
         p.output_backend = "svg"
         export_svgs(p, filename=self.filename+'/' +
@@ -400,6 +426,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'R'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID +
              sasbdb+str(fit)+"residuals.html")
         p.output_backend = "svg"
@@ -430,6 +458,8 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label = 'R/\u03C3'
         p.yaxis.axis_label_text_font_size = '14pt'
+        p.xaxis.axis_label_text_font_style = 'italic'
+        p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID +
              sasbdb+str(fit)+"residuals_wt.html")
         p.output_backend = "svg"

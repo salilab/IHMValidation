@@ -132,6 +132,18 @@ def get_copy(name):
     return copy
 
 
+def get_unique_datasets(name: dict) -> list:
+    all_data = set(name['Dataset type'])
+    sub_data = {'Integrative model', 'Other', 'Comparative model',
+                'Experimental model', 'De Novo model', 'SAS data'}
+    fin_data = list(all_data.difference(sub_data))
+    output = list()
+    for i in fin_data:
+        min_list = [j for j in i.split() if j not in ['data']]
+        output.append(' '.join(min_list))
+    return output
+
+
 def get_all_files(path_dir):
     return glob.glob(path_dir)
 
