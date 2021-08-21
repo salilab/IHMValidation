@@ -138,200 +138,154 @@
 
                                 <script>
                                     if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length > 0) {
-                                        var ex='<a class=dropdown-item dropdown-toggle  href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item2 href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item2 href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item2 href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstP>P(r) analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
+                                        var ex='<a class=dropdown-item dropdown-toggle  href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item2 href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item2 href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item2 href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstP>p(r) analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
                                         document.write(ex);} else if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length < 1) {
                                             var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
                                             document.write(ex);}
 
-                                            else {
-
-                                                var ex='<a class=dropdown-item href=data_quality.html#first>Data</a>'
-                                                document.write(ex);
-                                            }
-                                        </script>
-                                    </div>
-                                </li>                       
-
-                                <li class="nav-item mr-4 dropdown">
-                                    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <script>
-                                            if ({{sphere}}>0){
-                                                var ex='<a class=dropdown-item href=model_quality.html#ex>Excluded volume</a>';
+                                            for (var i=0; i<{{Unique_dataset}}.length; i++){
+                                                var ex='<a class=dropdown-item href=data_quality.html#last>'+{{Unique_dataset}}[i]+'</a>'
                                                 document.write(ex);}
-                                                if ({{sphere}}<1){
-                                                    var ex='<a class=dropdown-item href=model_quality.html#geometry>Standard geometry</a> <a class=dropdown-item href=model_quality.html#contacts>Close contacts</a> <a class=dropdown-item href=model_quality.html#torsion>Torsion angles</a> <a class=dropdown-item href=model_quality.html#outliers>Ramachandran outliers</a>';
+                                            </script>
+                                        </div>
+                                    </li>                       
+
+                                    <li class="nav-item mr-4 dropdown">
+                                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <script>
+                                                if ({{sphere}}>0){
+                                                    var ex='<a class=dropdown-item href=model_quality.html#ex>Excluded volume</a>';
                                                     document.write(ex);}
-                                                </script>
-                                            </div>
-                                        </li>
+                                                    if ({{sphere}}<1){
+                                                        var ex='<a class=dropdown-item href=model_quality.html#geometry>Standard geometry</a> <a class=dropdown-item href=model_quality.html#contacts>Close contacts</a> <a class=dropdown-item href=model_quality.html#torsion>Torsion angles</a> <a class=dropdown-item href=model_quality.html#outliers>Ramachandran outliers</a>';
+                                                        document.write(ex);}
+                                                    </script>
+                                                </div>
+                                            </li>
 
-                                        <li class="nav-item mr-4 dropdown">
-                                            <a class="btn btn-primary dropdown-toggle"  data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
-                                            </a>
-                                            <div class="dropdown-menu">
-                                                <script>
-                                                    if ({{Data}}.includes('SAS DATA') >= 1 && {{sasdb_sascif}}.length > 0  ) {
-                                                        var ex1='<a class=dropdown-item dropdown-toggle href=formodeling.html>SAS</a>'
-                                                        ex1+='<ul class=dropdown-submenu><li><a class=dropdown-item2 href=formodeling.html#first>Goodness of fit</a></li><li><a  class=dropdown-item2 href=formodeling.html#second>Cormap analysis </a></li></ul>';
-                                                        document.write(ex1);} 
-                                                        else if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length < 1) {
-                                                            var ex2='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
-                                                            document.write(ex2);}
-                                                            else {
-                                                                var ex3='<a class=dropdown-item href=data_quality.html#first>Data</a>'
-                                                                document.write(ex3);}
-                                                            </script>                          
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </nav>
-                                        <!-- scripts -->
-                                        <script>
-                                            function Write_Table(list_to_write) {
-                                                var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
-                                                for (var i = 0; i < list_to_write[0].length; i++) {
-                                                    mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
-                                                }
-                                                mytable += "</tr></thead><tr>";
+                                            <li class="nav-item mr-4 dropdown">
+                                                <a class="btn btn-primary dropdown-toggle"  data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <script>
+                                                        if ({{Data}}.includes('SAS DATA') >= 1 && {{sasdb_sascif}}.length > 0  ) {
+                                                            var ex1='<a class=dropdown-item dropdown-toggle href=formodeling.html>SAS</a>'
+                                                            ex1+='<ul class=dropdown-submenu><li><a class=dropdown-item2 href=formodeling.html#first>Goodness of fit</a></li><li><a  class=dropdown-item2 href=formodeling.html#second>Cormap analysis </a></li></ul>';
+                                                            document.write(ex1);} 
+                                                            else if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length < 1) {
+                                                                var ex2='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
+                                                                document.write(ex2);}
 
-                                                for (var j = 1; j < list_to_write.length; j++) {
-                                                    for (var i = 0; i < list_to_write[j].length; i++) {
-                                                        mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
+                                                                for (var i=0; i<{{Unique_dataset}}.length; i++){
+                                                                    var ex='<a class=dropdown-item href=formodeling.html#last>'+{{Unique_dataset}}[i]+'</a>'
+                                                                    document.write(ex);}
+
+                                                                </script>                          
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </nav>
+                                            <!-- scripts -->
+                                            <script>
+                                                function Write_Table(list_to_write) {
+                                                    var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
+                                                    for (var i = 0; i < list_to_write[0].length; i++) {
+                                                        mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
                                                     }
-                                                    mytable += "</tr><tr>";
+                                                    mytable += "</tr></thead><tr>";
 
+                                                    for (var j = 1; j < list_to_write.length; j++) {
+                                                        for (var i = 0; i < list_to_write[j].length; i++) {
+                                                            mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
+                                                        }
+                                                        mytable += "</tr><tr>";
+
+                                                    }
+                                                    mytable += "</tr></table></div>";
+                                                    document.write(mytable);
                                                 }
-                                                mytable += "</tr></table></div>";
-                                                document.write(mytable);
-                                            }
-                                        </script>
-                                        <div class="card-body border-success" style="border-color: solid black;">
-                                            <!-- start overall card body for front page -->
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="card-header" style="background-color: #FFF;">
-                                                        <script>
-                                                            var n = {{num_ensembles}};
-                                                            var section = '<h4 align="center"><u><a name="ensemble">Ensemble information</a></u><a class="help" href="../../../validation_help.html#ensemble">?</a></h4>';
-                                                            if (n < 2) {
-                                                                section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensemble.</i></p>';
-                                                                document.write(section);
-                                                            } else {
-                                                                section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensembles.</i></p>';
-                                                                document.write(section);
-                                                            }
-                                                            if (n > 0) {
-                                                                var input_list = None;
-                                                                Write_Table(list_to_write = input_list)
-                                                            }
-                                                            var div1 = '</div></div></div></div>';
-                                                            document.write(div1);
-
-                                                            var div2 = '<div class="card-body border-success" style="border-color: solid black;"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFF;">'
-                                                            document.write(div2);
-                                                            var write1 = '';
-                                                            write1 += '<h4 class="ex2" align="center"><u><a name=summary>Summary</a></u><a class="help" href="../../../validation_help.html#summary">?</a></h4>';
-
-
-                                                            write1 += '<p align="justify"><i>This entry consists of ' + {{number_of_molecules}} + ' unique models, with ' + String({{num_chains}}) + ' subunits in each model. A total of ' + {{number_of_datasets}} + ' datasets or restraints was used to build this entry. Each model is represented by ' + String({{Rigid_Body}}) + ' rigid bodies and ' + String({{Flexible_Unit}}) + ' flexible or non-rigid units. </i> </p>';
-                                                            document.write(write1);
-                                                        </script>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-body border-success" style="border-color: solid black;">
-                                            <!-- start overall card body for front page -->
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="card-header" style="background-color: #FFF;">
-                                                        <h4 class="ex2" align="center"><u><a name='entry'>Entry composition</a></u><a class='help' href="../../../validation_help.html#entry">?</a> </h4>
-                                                        <script>
-                                                            function write_intro_1(input_variable) {
-                                                                if (input_variable < 2) {
-                                                                    var docx = "<i>There is " + input_variable + " unique type of model in this entry. </i>";
-                                                                    document.write(docx);
-                                                                } else {
-                                                                    var docx = "<i>There are " + input_variable + " unique types of models in this entry.</i> ";
-                                                                    document.write(docx);
-                                                                }
-                                                            }
-
-                                                            function write_model_name(input_variable) {
-                                                                if (input_variable.length < 2) {
-                                                                    var docx = " <i>This model is titled " + input_variable[0] + " respectively. </i>"
-                                                                    document.write(docx);
-                                                                } else {
-                                                                    var docx = "<i>These models are titled " + input_variable.join(', ') + " respectively.</i> "
-                                                                    document.write(docx);
-                                                                }
-                                                            }
-
-                                                            function write_intro_2(input_variable) {
-                                                                if (input_variable.length < 2) {
-                                                                    var docx = "<i>Model has " + input_variable.join() + " chains respectively.</i> "
-                                                                    document.write(docx);
-                                                                } else {
-                                                                    var docx = "<i>Models have " + input_variable.join() + " chains respectively.</i> "
-                                                                    document.write(docx);
-                                                                }
-                                                            }
-                                                            write_intro_1(input_variable = {{number_of_molecules}})
-                                                            write_model_name(input_variable = {{model_names}})
-                                                        </script>
-                                                        <script>
-                                                            var input_list = {{Entry_list}};
-
-                                                            Write_Table(list_to_write = input_list)
-                                                        </script>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- start overall card body for front page -->
-                                        <div class="card-body border-success" style="border-color: solid black;">
-                                            <!-- start overall card body for front page -->
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="card-header" style="background-color: #FFF;">
-                                                        <h4 class="ex2" align="center"><u><a name='data'>Datasets used for modeling </a></u> <a class='help' href="../../../validation_help.html#datasets">?</a></h4>
-                                                        <script>
-                                                            function write_dataset(input_variable) {
-                                                                if (input_variable < 2) {
-                                                                    var docx = "<i>There is " + input_variable + " unique dataset used to build the models in this entry. </i>";
-                                                                    document.write(docx);
-                                                                } else {
-                                                                    var docx = "<i>There are " + input_variable + " unique datasets used to build the models in this entry.</i> ";
-                                                                    document.write(docx);
-                                                                }
-                                                            }
-                                                            write_dataset(input_variable = {{number_of_datasets}})
-                                                        </script>
-                                                        <p class="ex2"> </p>
-                                                        <script>
-                                                            var input_list_2 = {{Datasets_list}};
-
-                                                            Write_Table(list_to_write = input_list_2)
-                                                        </script>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- start overall card body for front page -->
+                                            </script>
                                             <div class="card-body border-success" style="border-color: solid black;">
                                                 <!-- start overall card body for front page -->
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="card-header" style="background-color: #FFF;">
-                                                            <h4 class="ex2" align="center"><u><a name="representation">Representation </a></u><a class='help' href="../../../validation_help.html#representation">?</a> </h4>
-                                                            <p class="ex2" align="justify"><i>This entry has only one representation and includes {{Rigid_Body}} rigid bodies and {{Flexible_Unit}} flexible units.</i></p>
-                                                            <p class="ex2"> </p>
                                                             <script>
-                                                                var input_list_3 = {{RB_list}};
+                                                                var n = {{num_ensembles}};
+                                                                var section = '<h4 align="center"><u><a name="ensemble">Ensemble information</a></u><a class="help" href="../../../validation_help.html#ensemble">?</a></h4>';
+                                                                if (n < 2) {
+                                                                    section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensemble.</i></p>';
+                                                                    document.write(section);
+                                                                } else {
+                                                                    section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensembles.</i></p>';
+                                                                    document.write(section);
+                                                                }
+                                                                if (n > 0) {
+                                                                    var input_list = None;
+                                                                    Write_Table(list_to_write = input_list)
+                                                                }
+                                                                var div1 = '</div></div></div></div>';
+                                                                document.write(div1);
 
-                                                                Write_Table(list_to_write = input_list_3)
+                                                                var div2 = '<div class="card-body border-success" style="border-color: solid black;"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFF;">'
+                                                                document.write(div2);
+                                                                var write1 = '';
+                                                                write1 += '<h4 class="ex2" align="center"><u><a name=summary>Summary</a></u><a class="help" href="../../../validation_help.html#summary">?</a></h4>';
+
+
+                                                                write1 += '<p align="justify"><i>This entry consists of ' + {{number_of_molecules}} + ' unique models, with ' + String({{num_chains}}) + ' subunits in each model. A total of ' + {{number_of_datasets}} + ' datasets or restraints was used to build this entry. Each model is represented by ' + String({{Rigid_Body}}) + ' rigid bodies and ' + String({{Flexible_Unit}}) + ' flexible or non-rigid units. </i> </p>';
+                                                                document.write(write1);
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body border-success" style="border-color: solid black;">
+                                                <!-- start overall card body for front page -->
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="card-header" style="background-color: #FFF;">
+                                                            <h4 class="ex2" align="center"><u><a name='entry'>Entry composition</a></u><a class='help' href="../../../validation_help.html#entry">?</a> </h4>
+                                                            <script>
+                                                                function write_intro_1(input_variable) {
+                                                                    if (input_variable < 2) {
+                                                                        var docx = "<i>There is " + input_variable + " unique type of model in this entry. </i>";
+                                                                        document.write(docx);
+                                                                    } else {
+                                                                        var docx = "<i>There are " + input_variable + " unique types of models in this entry.</i> ";
+                                                                        document.write(docx);
+                                                                    }
+                                                                }
+
+                                                                function write_model_name(input_variable) {
+                                                                    if (input_variable.length < 2) {
+                                                                        var docx = " <i>This model is titled " + input_variable[0] + " respectively. </i>"
+                                                                        document.write(docx);
+                                                                    } else {
+                                                                        var docx = "<i>These models are titled " + input_variable.join(', ') + " respectively.</i> "
+                                                                        document.write(docx);
+                                                                    }
+                                                                }
+
+                                                                function write_intro_2(input_variable) {
+                                                                    if (input_variable.length < 2) {
+                                                                        var docx = "<i>Model has " + input_variable.join() + " chains respectively.</i> "
+                                                                        document.write(docx);
+                                                                    } else {
+                                                                        var docx = "<i>Models have " + input_variable.join() + " chains respectively.</i> "
+                                                                        document.write(docx);
+                                                                    }
+                                                                }
+                                                                write_intro_1(input_variable = {{number_of_molecules}})
+                                                                write_model_name(input_variable = {{model_names}})
+                                                            </script>
+                                                            <script>
+                                                                var input_list = {{Entry_list}};
+
+                                                                Write_Table(list_to_write = input_list)
                                                             </script>
                                                         </div>
                                                     </div>
@@ -343,83 +297,130 @@
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="card-header" style="background-color: #FFF;">
-                                                        </script>
-                                                        <h4 class="ex2" align="center">
-                                                            <u><a name="methods">Methodology and software</a></u><a class='help' href="../../../validation_help.html#software">?</a></h2>
+                                                            <h4 class="ex2" align="center"><u><a name='data'>Datasets used for modeling </a></u> <a class='help' href="../../../validation_help.html#datasets">?</a></h4>
                                                             <script>
-                                                                var n = {{Protocols_number}}
-                                                                if (n < 2) {
-                                                                    var write_prot = "<i>This entry is a result of " + {{Protocols_number}} + " distinct protocol.</i>";
-                                                                    document.write(write_prot);
-                                                                } else {
-                                                                    var write_prot = "<i>This entry is a result of " + {{Protocols_number}} + " distinct protocols.</i>";
-                                                                    document.write(write_prot);
-                                                                </script>
+                                                                function write_dataset(input_variable) {
+                                                                    if (input_variable < 2) {
+                                                                        var docx = "<i>There is " + input_variable + " unique dataset used to build the models in this entry. </i>";
+                                                                        document.write(docx);
+                                                                    } else {
+                                                                        var docx = "<i>There are " + input_variable + " unique datasets used to build the models in this entry.</i> ";
+                                                                        document.write(docx);
+                                                                    }
+                                                                }
+                                                                write_dataset(input_variable = {{number_of_datasets}})
+                                                            </script>
+                                                            <p class="ex2"> </p>
+                                                            <script>
+                                                                var input_list_2 = {{Datasets_list}};
+
+                                                                Write_Table(list_to_write = input_list_2)
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- start overall card body for front page -->
+                                                <div class="card-body border-success" style="border-color: solid black;">
+                                                    <!-- start overall card body for front page -->
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="card-header" style="background-color: #FFF;">
+                                                                <h4 class="ex2" align="center"><u><a name="representation">Representation </a></u><a class='help' href="../../../validation_help.html#representation">?</a> </h4>
+                                                                <p class="ex2" align="justify"><i>This entry has only one representation and includes {{Rigid_Body}} rigid bodies and {{Flexible_Unit}} flexible units.</i></p>
                                                                 <p class="ex2"> </p>
                                                                 <script>
-                                                                    var input_list_3 = {{Sampling_list}};
+                                                                    var input_list_3 = {{RB_list}};
 
                                                                     Write_Table(list_to_write = input_list_3)
                                                                 </script>
-                                                                <script>
-                                                                    function write_software(software_list) {
-                                                                        if (software_list < 1) {
-                                                                            var docx = "<i>Software packages used for modeling were either not reported or not used.</i> ";
-                                                                            document.write(docx);
-                                                                        } else if (software_list < 2) {
-                                                                            var docx = "<i>There is " + software_list + " software package reported in this entry.</i> ";
-                                                                            document.write(docx);
-                                                                        } else {
-                                                                            var docx = "<i>There are " + software_list + " software packages reported in this entry. </i>";
-                                                                            document.write(docx);
-                                                                        }
-                                                                    }
-                                                                    write_software(software_list = {{number_of_software}})
-                                                                </script>
-                                                                <p class="ex2"> </p>
-                                                                <script>
-                                                                    var input_list = {{soft_list}};
-
-                                                                    Write_Table(list_to_write = input_list)
-                                                                </script>
-                                                                <p class="ex2"> </p>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- start overall card body for front page -->
-                                            <!-- start overall card body for front page -->
-                                            <!-- start overall card body for front page -->
-                                            <!-- start footer -->
-                                            <footer class="page-footer">
-                                                <div class="container-fluid">
-                                                    <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
-                                                        <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
-                                                            <a href="http://www.wwpdb.org/" target="_blank">
-                                                                <img src="../../../images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px" ></a>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <div class="float-right text-right">
-                                                                    <p style="margin-bottom: 0px; margin-right: 0px;color: #000">Supported by<br />National Science Foundation</p>
+                                                <!-- start overall card body for front page -->
+                                                <div class="card-body border-success" style="border-color: solid black;">
+                                                    <!-- start overall card body for front page -->
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="card-header" style="background-color: #FFF;">
+                                                            </script>
+                                                            <h4 class="ex2" align="center">
+                                                                <u><a name="methods">Methodology and software</a></u><a class='help' href="../../../validation_help.html#software">?</a></h2>
+                                                                <script>
+                                                                    var n = {{Protocols_number}}
+                                                                    if (n < 2) {
+                                                                        var write_prot = "<i>This entry is a result of " + {{Protocols_number}} + " distinct protocol.</i>";
+                                                                        document.write(write_prot);
+                                                                    } else {
+                                                                        var write_prot = "<i>This entry is a result of " + {{Protocols_number}} + " distinct protocols.</i>";
+                                                                        document.write(write_prot);
+                                                                    </script>
+                                                                    <p class="ex2"> </p>
+                                                                    <script>
+                                                                        var input_list_3 = {{Sampling_list}};
+
+                                                                        Write_Table(list_to_write = input_list_3)
+                                                                    </script>
+                                                                    <script>
+                                                                        function write_software(software_list) {
+                                                                            if (software_list < 1) {
+                                                                                var docx = "<i>Software packages used for modeling were either not reported or not used.</i> ";
+                                                                                document.write(docx);
+                                                                            } else if (software_list < 2) {
+                                                                                var docx = "<i>There is " + software_list + " software package reported in this entry.</i> ";
+                                                                                document.write(docx);
+                                                                            } else {
+                                                                                var docx = "<i>There are " + software_list + " software packages reported in this entry. </i>";
+                                                                                document.write(docx);
+                                                                            }
+                                                                        }
+                                                                        write_software(software_list = {{number_of_software}})
+                                                                    </script>
+                                                                    <p class="ex2"> </p>
+                                                                    <script>
+                                                                        var input_list = {{soft_list}};
+
+                                                                        Write_Table(list_to_write = input_list)
+                                                                    </script>
+                                                                    <p class="ex2"> </p>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row" style="color:#FFF; background-color: #669966; padding-top: 3px; padding-bottom: 8px;"></div>
                                                     </div>
-                                                </footer>
-                                                <!-- add Javasscript file from js file -->
-                                                {% raw %}
+                                                </div>
+                                                <!-- start overall card body for front page -->
+                                                <!-- start overall card body for front page -->
+                                                <!-- start overall card body for front page -->
+                                                <!-- start footer -->
+                                                <footer class="page-footer">
+                                                    <div class="container-fluid">
+                                                        <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
+                                                            <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
+                                                                <a href="http://www.wwpdb.org/" target="_blank">
+                                                                    <img src="../../../images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
 
-                                                <script type="text/javascript" src="../../../js/jquery.min.js"></script>
-                                                <script type="text/javascript" src="../../../js/bootstrap.min.js"></script>
-                                                <script type="text/javascript" src="../../../js/main.js"></script>
-                                                <script type="text/javascript" src="../../../js/jquery-3.3.1.min.js"></script>
-                                                <script type="text/javascript" src="../../../js/popper1.12.9.min.js"></script>
-                                                <script type="text/javascript" src="../../../js/bootstrap4.1.3.min.js"></script>
-                                                <script type="text/javascript" src="../../../js/bootstrap3-typeahead.min.js"></script>
-                                                {% endraw %}
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <div class="float-right text-right">
+                                                                        <p style="margin-bottom: 0px; margin-right: 0px;color: #000">Supported by<br />National Science Foundation</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row" style="color:#FFF; background-color: #669966; padding-top: 3px; padding-bottom: 8px;"></div>
+                                                        </div>
+                                                    </footer>
+                                                    <!-- add Javasscript file from js file -->
+                                                    {% raw %}
 
-                                            </body>
+                                                    <script type="text/javascript" src="../../../js/jquery.min.js"></script>
+                                                    <script type="text/javascript" src="../../../js/bootstrap.min.js"></script>
+                                                    <script type="text/javascript" src="../../../js/main.js"></script>
+                                                    <script type="text/javascript" src="../../../js/jquery-3.3.1.min.js"></script>
+                                                    <script type="text/javascript" src="../../../js/popper1.12.9.min.js"></script>
+                                                    <script type="text/javascript" src="../../../js/bootstrap4.1.3.min.js"></script>
+                                                    <script type="text/javascript" src="../../../js/bootstrap3-typeahead.min.js"></script>
+                                                    {% endraw %}
 
-                                            </html>
+                                                </body>
+
+                                                </html>
