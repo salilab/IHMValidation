@@ -28,11 +28,71 @@ html,h1,h2,h3,h4,h5,h6,a{
 .btn, .btn-primary {
 	margin-bottom: 10px !important;
 	background-color: #003366 !important;
-	font-color:white !important;
+	font-color:white !important; 
 	font-size:16px !important;
 	text-align:center !important;
 	border:0px solid #003366 !important;
 
+}
+
+.help {
+    color:#fff;
+    background-color:#228B22;
+    width:18px;
+    height:18px;
+    display:inline-block;
+    border-radius:100%;
+    font-size:16px;
+    text-align:center;
+    text-decoration:Help;
+    -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+}
+    .help:hover {
+        background-color: #eee;
+        transition: all ease-in-out 0.2s;
+        cursor: pointer;
+        border: 1px solid #888;
+        background-color: #ddd;
+        color:#fff;
+        background-color:#228B22;
+        width:22px;
+        height:22px;
+        display:inline-block;
+        border-radius:100%;
+        font-size:18px;
+        font-weight: 450;
+        text-align:center;
+        text-decoration:Help;
+        -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+        -moz-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+        box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+
+        }
+
+
+#toc_container {
+    background: #f9f9f9 none repeat scroll 0 0;
+    border: 5px solid #aaa;
+    display: table;
+    font-size: 100%;
+    margin-bottom: 1em;
+    padding: 20px;
+    width: auto;
+}
+
+.toc_title {
+    font-weight: 1000;
+    text-align: center;
+    color: #003366 !important;
+    font-family: "Arial";
+    margin-bottom: 1em;
+
+}
+
+#toc_container li, #toc_container ul, #toc_container ul li{
+    list-style: outside none none !important;
 }
 
 
