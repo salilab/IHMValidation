@@ -27,8 +27,12 @@ class GetInputInformation(object):
         self.datasets = {}
         self.entities = {}
         self.model = ihm.model.Model
-        with open(self.mmcif_file, encoding='latin1') as fh:
-            self.system, = ihm.reader.read(fh, model_class=self.model)
+        try:
+            with open(self.mmcif_file, encoding='utf8') as fh:
+                self.system, = ihm.reader.read(fh, model_class=self.model)
+        except UnicodeDecodeError:
+            with open(self.mmcif_file, encoding='ascii', errors='ignore') as fh:
+                self.system, = ihm.reader.read(fh, model_class=self.model)
 
     def get_databases(self):
         """ get all datasets from the mmcif file"""

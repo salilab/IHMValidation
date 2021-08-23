@@ -112,7 +112,7 @@ class Plots(validation.GetInputInformation):
         source = ColumnDataSource(
             data=dict(Scores=Scores, counts=counts, legends=legends))
         p1 = figure(y_range=Scores, x_range=(0, 1),
-                    plot_height=300, plot_width=700,title='Under Development')
+                    plot_height=300, plot_width=700, title='Under Development')
         p.ygrid.grid_line_color = p1.ygrid.grid_line_color = None
         p.xaxis.axis_label_text_font_size = p1.xaxis.axis_label_text_font_size = "14pt"
         p.yaxis.axis_label_text_font_size = p1.yaxis.axis_label_text_font_size = "14pt"
