@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="../../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../css/main.css">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     {% endraw %}
 
     <style>
@@ -112,79 +117,96 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav navbar-nav mr-auto">
                         <li class="nav-item mr-4 dropdown">
-                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="main.html"><span class="overview">Overview</span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="main.html#qual">Overall quality</a>
-                            </div>
+                            <a class="btn btn-primary " href="../../../about.html"><span class="overview">About <br> Validation</span></a>
                         </li>
+
+
                         <li class="nav-item mr-4 dropdown">
-                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="model_composition.html"><span class="overview">Model details</span>
+                            <a class="btn btn-primary dropdown-toggle"  data-toggle="dropdown" href="main.html"><span class="overview">Validation<br>Overview</span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="model_composition.html#ensemble">Ensemble information</a>
-                                <a class="dropdown-item" href="model_composition.html#summary">Summary</a>
-                                <a class="dropdown-item" href="model_composition.html#entry">Entry composition</a>
-                                <a class="dropdown-item" href="model_composition.html#data">Datasets used</a>
-                                <a class="dropdown-item" href="model_composition.html#representation">Representation</a>
-                                <a class="dropdown-item" href="model_composition.html#methods">Methods and software</a>
+                                <a class="dropdown-item colorclass" href="main.html#qual">Overall quality</a>
                             </div>
                         </li>
 
                         <li class="nav-item mr-4 dropdown">
-                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="data_quality.html"><span class="overview">Data quality</span>
+                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="model_composition.html"><span class="overview">Model <br> Details</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item colorclass" href="model_composition.html#ensemble">Ensemble information</a>
+                                <a class="dropdown-item colorclass" href="model_composition.html#summary">Summary</a>
+                                <a class="dropdown-item colorclass" href="model_composition.html#entry">Entry composition</a>
+                                <a class="dropdown-item colorclass" href="model_composition.html#data">Datasets used</a>
+                                <a class="dropdown-item colorclass" href="model_composition.html#representation">Representation</a>
+                                <a class="dropdown-item colorclass" href="model_composition.html#methods">Methods and software</a>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-4 dropdown">
+                            <a class="btn btn-primary dropdown-toggle"  data-toggle="dropdown" href="data_quality.html"><span class="overview">Data <br>Quality</span>
                             </a>
                             <div class="dropdown-menu">
 
                                 <script>
                                     if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length > 0) {
-                                        var ex='<a class=dropdown-item dropdown-toggle  href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item2 href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item2 href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item2 href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstP>p(r) analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
+                                        var ex='<a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#first>SAS</a><ul class=dropdown-submenu><li><a class=dropdown-item2 href=data_quality.html#firstI>Scattering profiles</a></li><li><a class=dropdown-item2 href=data_quality.html#firstE>Experimental estimates</a></li><li><a class=dropdown-item2 href=data_quality.html#firstF>Flexibility analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstP>p(r) analysis </a></li><li><a class=dropdown-item2 href=data_quality.html#firstG>Guinier analysis </a></li></ul>'
                                         document.write(ex);} else if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length < 1) {
-                                            var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
+                                            var ex='<a class="dropdown-item colorclass" dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
                                             document.write(ex);}
 
                                             for (var i=0; i<{{Unique_dataset}}.length; i++){
-                                                var ex='<a class=dropdown-item href=data_quality.html#last>'+{{Unique_dataset}}[i]+'</a>'
+                                                var ex='<a class=dropdown-item-text dropdown-toggle type=button >'+{{Unique_dataset}}[i]+'</a>'
                                                 document.write(ex);}
                                             </script>
                                         </div>
                                     </li>                       
 
                                     <li class="nav-item mr-4 dropdown">
-                                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model quality</span>
+                                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="model_quality.html"><span class="overview">Model <br> Quality</span>
                                         </a>
                                         <div class="dropdown-menu">
                                             <script>
                                                 if ({{sphere}}>0){
-                                                    var ex='<a class=dropdown-item href=model_quality.html#ex>Excluded volume</a>';
+                                                    var ex='<a class="dropdown-item colorclass" href=model_quality.html#ex>Excluded volume</a>';
                                                     document.write(ex);}
                                                     if ({{sphere}}<1){
-                                                        var ex='<a class=dropdown-item href=model_quality.html#geometry>Standard geometry</a> <a class=dropdown-item href=model_quality.html#contacts>Close contacts</a> <a class=dropdown-item href=model_quality.html#torsion>Torsion angles</a> <a class=dropdown-item href=model_quality.html#outliers>Ramachandran outliers</a>';
+                                                        var ex='<a class="dropdown-item colorclass" href=model_quality.html#geometry>Standard geometry</a> <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a> <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles</a> <a class="dropdown-item colorclass" href=model_quality.html#outliers>Ramachandran outliers</a>';
                                                         document.write(ex);}
                                                     </script>
                                                 </div>
                                             </li>
-
                                             <li class="nav-item mr-4 dropdown">
-                                                <a class="btn btn-primary dropdown-toggle"  data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to data used</span>
+                                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to Data <br> Used for Modeling</span>
                                                 </a>
                                                 <div class="dropdown-menu">
                                                     <script>
                                                         if ({{Data}}.includes('SAS DATA') >= 1 && {{sasdb_sascif}}.length > 0  ) {
-                                                            var ex1='<a class=dropdown-item dropdown-toggle href=formodeling.html>SAS</a>'
-                                                            ex1+='<ul class=dropdown-submenu><li><a class=dropdown-item2 href=formodeling.html#first>Goodness of fit</a></li><li><a  class=dropdown-item2 href=formodeling.html#second>Cormap analysis </a></li></ul>';
-                                                            document.write(ex1);} 
+                                                            var ex='<a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html>SAS</a>'
+                                                            ex+='<ul class=dropdown-submenu><li><a class=dropdown-item2 href=formodeling.html#first>Goodness of fit</a></li><li><a  class=dropdown-item2 href=formodeling.html#second>Cormap analysis </a></li></ul>';
+                                                            document.write(ex);} 
                                                             else if ({{Data}}.includes('SAS DATA') >= 1  && {{sasdb_sascif}}.length < 1) {
-                                                                var ex2='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
-                                                                document.write(ex2);}
+                                                                var ex='<a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>'
+                                                                document.write(ex);}
 
                                                                 for (var i=0; i<{{Unique_dataset}}.length; i++){
-                                                                    var ex='<a class=dropdown-item href=formodeling.html#last>'+{{Unique_dataset}}[i]+'</a>'
+                                                                    var ex='<a class=dropdown-item-text dropdown-toggle type=button>'+{{Unique_dataset}}[i]+'</a>'
                                                                     document.write(ex);}
-
                                                                 </script>                          
                                                             </div>
                                                         </li>
+                                                        <li class="nav-item mr-4 dropdown">
+                                                            <a class="btn btn-success dropdown-toggle button4" value="Disabled" disabled background-color: #555555 ><span >Fit to Data <br>Used for Validation</span>
+                                                            </a>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item-text" dropdown-toggle type=button >Data</a>
+                                                            </div>
+                                                        </li>
+
+
+                                                        <li class="nav-item mr-4 dropdown">
+                                                            <a class="btn btn-primary " href="../../../validation_help.html"><span class="overview">Validation <br> Help</span></a>
+                                                        </li>
+
+
                                                     </ul>
                                                 </div>
                                             </nav>
@@ -215,7 +237,7 @@
                                                         <div class="card-header" style="background-color: #FFF;">
                                                             <script>
                                                                 var n = {{num_ensembles}};
-                                                                var section = '<h4 align="center"><u><a name="ensemble">Ensemble information</a></u><a class="help" href="../../../validation_help.html#ensemble">?</a></h4>';
+                                                                var section = "<h4 align='center'><u><a name='ensemble'>Ensemble information</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#ensemble'>?</a></h4>";
                                                                 if (n < 2) {
                                                                     section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensemble.</i></p>';
                                                                     document.write(section);
