@@ -13,7 +13,16 @@ body{
 	overflow: auto;
 }
 
+h5 {
+	font-size: 1.25rem;
+}
 
+html,h1,h2,h3,h4,h5,h6,a{
+	font-family: "Arial";
+	margin-bottom: .5rem;
+	font-weight: 500;
+	line-height: 1.2;
+}
 
 .navbar {
 	margin-bottom: 10px !important;
@@ -45,11 +54,7 @@ body{
 
 .button4 {
   background-color: white ;
-  color:gray !important;
-}
-
-.colorclass {
-  color:white !important;
+  color:red !important;
 }
 
 .help {
@@ -117,10 +122,19 @@ body{
 button:focus{outline:none !important;}
 
 
+.navbar-nav > li > a {
+	font-color: white !important;
+
+}
+
+.nav.navbar-nav li a {
+	color: white !important;
+
+}
 
 .overview {
 	background-color: #003366 !important;
-	color: white !important;
+	font-color: white !important;
 
 }
 a.btn.btn-primary.dropdown-toggle.overview {
@@ -131,26 +145,22 @@ a.btn.btn-primary.dropdown-toggle.overview {
 
 a.btn.btn-primary.dropdown-toggle.overview {
 	background-color: #003366 !important;
-	color: white !important;
+	color: gray !important;
 
 }
 li.nav-item.mr-4.dropdown{
 	background-color: #003366 !important;
-	color: white !important;
+	color: gray !important;
 
 }
 
 .dropdown-menu .dropdown-item .dropdown-item3 {
 	background-color: #003366 !important;
-	color: white !important;
+	font-color: white !important;
 }
 .navbar-dark .navbar-nav .nav-item .dropdown-menu{
 	background-color: #003366 !important;
 
-}
-
-.dropdown-menu {
-    width: 200px !important;
 }
 
 .navbar-dark .navbar-nav .nav-item .dropdown-menu .dropdown-item:hover {
@@ -206,17 +216,17 @@ li.nav-item.mr-4.dropdown{
 	}
 
 	.dropdown-menu {
-		color: white !important;
+		color: #FFFFFF !important;
 
 	}
 
 	.dropdown-item2 {
-		color: white !important;
+		color: #FFFFFF !important;
 		text-align:right !important;
 	}    
 
 	.dropdown-item .dropdown-toggle .dropdown-item3{
-		color: white !important;
+		color: #FFFFFF !important;
 
 	}
 
