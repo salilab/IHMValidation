@@ -367,16 +367,17 @@ _software.description
 _software.version
 _software.type
 _software.location
-1 'chocolate muffin' 'docking'
+1 'haddock' 'docking'
 'docking random things' developer program
 https:chocolatemuffin.org
 
                     """)
-            output = {'ID': ['1'], 'Software name': ['chocolate muffin'],
-                      'Software version': ['developer'],
-                      'Software classification': ['docking'],
-                      'Software location': ['https:chocolatemuffin.org']}
+            output = {'ID': ['1'], 
+                    'Software name': ['<a href="https://pubmed.ncbi.nlm.nih.gov/12580598/">haddock</a>'], 
+                    'Software version': ['developer'], 'Software classification': ['docking'], 
+                    'Software location': ['<a href="https:chocolatemuffin.org">https:chocolatemuffin.org</a>']}
             temp = GetInputInformation(tmpfilepath)
+            print (temp.get_software_comp())
             self.assertEqual(output, temp.get_software_comp())
 
     def test_check_ensemble(self):
