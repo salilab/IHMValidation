@@ -141,8 +141,16 @@
                             </div>
                         </li>
                         <li class="nav-item mr-4 dropdown">
-                            <a class="btn btn-primary dropdown-toggle"  data-toggle="dropdown" href="data_quality.html"><span class="overview">Data <br>Quality</span>
-                            </a>
+
+                            <script type="text/javascript">
+                                if ({{Data}}.includes('SAS DATA') >= 1 || {{Unique_dataset}}.length >0) {
+                                    var ex='<a class="btn btn-primary dropdown-toggle"  data-toggle="dropdown" href="data_quality.html"><span class="overview">Data <br>Quality</span></a>'
+                                    document.write(ex);}
+                                    else{
+                                        var ex='<a class="btn btn-success dropdown-toggle button4" value="Disabled" disabled background-color: #555555 ><span >Data <br>Quality</span></a>'
+                                        document.write(ex);}
+                                    </script>
+
                             <div class="dropdown-menu">
 
                                 <script>
@@ -174,8 +182,14 @@
                                                 </div>
                                             </li>
                                             <li class="nav-item mr-4 dropdown">
-                                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to Data <br> Used for Modeling</span>
-                                                </a>
+                                                        <script type="text/javascript">
+                                                            if ({{Data}}.includes('SAS DATA') >= 1 || {{Unique_dataset}}.length >0) {
+                                                                var ex='<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="formodeling.html"><span class="overview">Fit to Data <br> Used for Modeling</span></a>'
+                                                                document.write(ex);}
+                                                                else{
+                                                                    var ex='<a class="btn btn-success dropdown-toggle button4" value="Disabled" disabled background-color: #555555 ><span >Fit to Data <br>Used for Modeling</span></a>'
+                                                                    document.write(ex);}
+                                                                </script>
                                                 <div class="dropdown-menu">
                                                     <script>
                                                         if ({{Data}}.includes('SAS DATA') >= 1 && {{sasdb_sascif}}.length > 0  ) {

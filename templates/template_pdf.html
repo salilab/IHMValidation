@@ -61,231 +61,278 @@
 
 
               hr {
-                 width: 100%;
-                 height: 2px;
-                 margin-left: 10px;
-                 margin-right: 10px;
-                 background-color:#666;
-                 border: 0 none;
-                 margin-top: 10px;
-                 margin-bottom:10px;
-             }
+               width: 100%;
+               height: 2px;
+               margin-left: 10px;
+               margin-right: 10px;
+               background-color:#666;
+               border: 0 none;
+               margin-top: 10px;
+               margin-bottom:10px;
+           }
 
 
-         </style>
-         <script type="text/javascript" src="../../../js/jquery.min.js"></script>
-         <script type="text/javascript" src="../../../js/bootstrap.min.js"></script>
-         <script type="text/javascript" src='../../../js/main.js'></script>
-     </head>
+       </style>
+       <script type="text/javascript" src="../../../js/jquery.min.js"></script>
+       <script type="text/javascript" src="../../../js/bootstrap.min.js"></script>
+       <script type="text/javascript" src='../../../js/main.js'></script>
+   </head>
 
-     <body>
+   <body>
 
-        <script>
-            function Write_Table(list_to_write) {
-                var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
-                for (var i = 0; i < list_to_write[0].length; i++) {
-                    mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
-                }
-                mytable += "</tr></thead><tr>";
-
-                for (var j = 1; j < list_to_write.length; j++) {
-                    for (var i = 0; i < list_to_write[j].length; i++) {
-                        mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
-                    }
-                    mytable += "</tr><tr>";
-
-                }
-                mytable += "</tr></table></div>";
-                document.write(mytable);
+    <script>
+        function Write_Table(list_to_write) {
+            var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
+            for (var i = 0; i < list_to_write[0].length; i++) {
+                mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
             }
+            mytable += "</tr></thead><tr>";
+
+            for (var j = 1; j < list_to_write.length; j++) {
+                for (var i = 0; i < list_to_write[j].length; i++) {
+                    mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
+                }
+                mytable += "</tr><tr>";
+
+            }
+            mytable += "</tr></table></div>";
+            document.write(mytable);
+        }
+    </script>
+
+
+    <div class="card-body border-success" style="border-color: solid black" align='center' ;>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4; height: 17rem;">
+                    <h1 align="center">Integrative Structure Validation Report</h1>
+                    <h2 align="center">{{date}}</h2>
+                    <p><b> The following software was used in the production of this report:</b></p>
+
+                    <ul style="list-style-type:none;">
+                        <script>
+                            var s = 0
+                            if (s < 1) {
+                                var docx = "<li><em><a href='http://molprobity.biochem.duke.edu/'>Molprobity</a> Version 4.4</em></li>";
+                                document.write(docx);
+                            }
+                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0){
+
+                                var docx = "<li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a>  Version 3.0.3</em></li>";
+                                document.write(docx);
+
+                            }
+                        </script>
+                        <li><em><a href='https://github.com/salilab/IHMValidation'>Integrative Modeling Validation</a>  Version 1.0</em></li>
+                        <li><em><a href='https://integrativemodeling.org/'>Integrative Modeling Platform</a> Version 2.15.0</em></li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="ex1">
+    <div class="card-body border-success" style="border-color: solid black;">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-8 col-md-2">
+                <div class="card-header" style="background-color: #E4E4E4;">
+                    <div class="bs-example" class="text-center">
+                        <table class="table table-bordered" style="border-color:#003366; height: 16rem;">
+                            <thead>
+                                <tr>
+                                    <th align="center" class="text-center">PDB ID</th>
+                                    <th align="center" class="text-center">{{ID_T}}</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td class="align-middle" class="text-center">Structure Name</td>
+                                <td class="align-middle" class="text-center">{{Molecule}} </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle" class="text-center">Publication Title</td>
+                                <td class="align-middle" class="text-center">{{Title}}</td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle" class="text-center">Authors</td>
+                                <td class="align-middle" class="text-center">{{Authors}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- end card-header -->
+            </div>
+            <!--end column-->
+        </div>
+        <!--end row-->
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #FFFFFF ;">
+                    <h3 align="center"><a name='qual'>Overall quality</a></h3>
+                    <p align="justify"> <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development.</em> </p>
+
+                    <div class="box text-center container-fluid no-padding" align='center'>
+                        <script>
+                            var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_MQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:300px;width:100%;border:none;overflow:hidden;></iframe>'
+                            document.write(section);
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
+            var sec='<div class="card-body"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFFFFF ;"><div class="box text-center container-fluid no-padding" align="center">'
+            document.write(sec);
+            var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_DQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:300px;width:100%;border:none;overflow:hidden;></iframe>'
+            document.write(section);}
+            var sec2='</div></div></div></div></div>'
+            document.write(sec2);
         </script>
 
-
-        <div class="card-body border-success" style="border-color: solid black" align='center' ;>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card-header" style="background-color: #E4E4E4; height: 17rem;">
-                        <h1 align="center">Integrative Structure Validation Report</h1>
-                        <h2 align="center">{{date}}</h2>
-                        <p><b> The following software was used in the production of this report:</b></p>
-
-                        <ul style="list-style-type:none;">
-                            <script>
-                                var s = 0
-                                if (s < 1) {
-                                    var docx = "<li><em><a href='http://molprobity.biochem.duke.edu/'>Molprobity</a> Version 4.4</em></li>";
-                                    document.write(docx);
-                                }
-                                if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0){
-
-                                    var docx = "<li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a>  Version 3.0.3</em></li>";
-                                    document.write(docx);
-
-                                }
-                            </script>
-                            <li><em><a href='https://github.com/salilab/IHMValidation'>Integrative Modeling Validation</a>  Version 1.0</em></li>
-                            <li><em><a href='https://integrativemodeling.org/'>Integrative Modeling Platform</a> Version 2.15.0</em></li>
-
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr class="ex1">
-        <div class="card-body border-success" style="border-color: solid black;">
-            <!-- start overall card body for front page -->
-            <div class="row">
-                <div class="col-lg-8 col-md-2">
-                    <div class="card-header" style="background-color: #E4E4E4;">
-                        <div class="bs-example" class="text-center">
-                            <table class="table table-bordered" style="border-color:#003366; height: 16rem;">
-                                <thead>
-                                    <tr>
-                                        <th align="center" class="text-center">PDB ID</th>
-                                        <th align="center" class="text-center">{{ID_T}}</th>
-                                    </tr>
-                                </thead>
-                                <tr>
-                                    <td class="align-middle" class="text-center">Structure Name</td>
-                                    <td class="align-middle" class="text-center">{{Molecule}} </td>
-                                </tr>
-                                <tr>
-                                    <td class="align-middle" class="text-center">Publication Title</td>
-                                    <td class="align-middle" class="text-center">{{Title}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="align-middle" class="text-center">Authors</td>
-                                    <td class="align-middle" class="text-center">{{Authors}}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- end card-header -->
-                </div>
-                <!--end column-->
-            </div>
-            <!--end row-->
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card-header" style="background-color: #FFFFFF ;">
-                        <h3 align="center"><a name='qual'>Overall quality</a></h3>
-                        <p align="justify"> <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development.</em> </p>
-
-                        <div class="box text-center container-fluid no-padding" align='center'>
-                            <script>
-                                var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_MQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:300px;width:100%;border:none;overflow:hidden;></iframe>'
-                                document.write(section);
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <script>
-            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
+            if ({{number_of_fits}}  > 0 && {{sasdb_sascif}}.length > 0) {
                 var sec='<div class="card-body"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFFFFF ;"><div class="box text-center container-fluid no-padding" align="center">'
                 document.write(sec);
-                var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_DQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:300px;width:100%;border:none;overflow:hidden;></iframe>'
+
+                var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_FQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:300px;width:100%;border:none;overflow:hidden;></iframe>'
                 document.write(section);}
+
                 var sec2='</div></div></div></div></div>'
                 document.write(sec2);
+
             </script>
 
-            <script>
-                if ({{number_of_fits}}  > 0 && {{sasdb_sascif}}.length > 0) {
-                    var sec='<div class="card-body"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFFFFF ;"><div class="box text-center container-fluid no-padding" align="center">'
-                    document.write(sec);
-
-                    var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_FQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:300px;width:100%;border:none;overflow:hidden;></iframe>'
-                    document.write(section);}
-
-                    var sec2='</div></div></div></div></div>'
-                    document.write(sec2);
-
-                </script>
-
-                <div class="card-body border-success" style="border-color: solid black;">
-                    <!-- start overall card body for front page -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card-header" style="background-color: #FFF;">
-                                <script>
-                                    var n = {{num_ensembles}};
-                                    var section = '<h4 align="center"><u><a name="ensemble">Ensemble information</a></u></h4>';
-                                    if (n < 2) {
-                                        section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensemble.</i></p>';
-                                        document.write(section);
+            <div class="card-body border-success" style="border-color: solid black;">
+                <!-- start overall card body for front page -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-header" style="background-color: #FFF;">
+                            <script>
+                                var n = {{num_ensembles}};
+                                var section = '<h4 align="center"><u><a name="ensemble">Ensemble information</a></u></h4>';
+                                if (n < 2) {
+                                    section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensemble.</i></p>';
+                                    document.write(section);
+                                } else {
+                                    section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensembles.</i></p>';
+                                    document.write(section);
+                                }
+                                var div1 = '</div></div></div></div>';
+                                document.write(div1);
+                                var div2 = '<div class="card-body border-success" style="border-color: solid black;"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFF;">'
+                                document.write(div2);
+                                var write1 = '';
+                                write1 += '<h4 class="ex2" align="center"><u><a name=summary>Summary</a></u></h4>';
+                                write1 += '<p align="justify"><i>This entry consists of ' + {{number_of_molecules}} + ' unique models, with ' + String({{num_chains}}) + ' subunits in each model. A total of ' + {{number_of_datasets}} + ' datasets or restraints was used to build this entry. Each model is represented by ' + String({{Rigid_Body}}) + ' rigid bodies and ' + String({{Flexible_Unit}}) + ' flexible or non-rigid units. </i> </p>';
+                                document.write(write1);
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body border-success" style="border-color: solid black;">
+                <!-- start overall card body for front page -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-header" style="background-color: #FFF;">
+                            <h4 class="ex2" align="center"><u><a name='entry'>Entry composition</a></u> </h4>
+                            <script>
+                                function write_intro_1(input_variable) {
+                                    if (input_variable < 2) {
+                                        var docx = "<i>There is " + input_variable + " unique type of model in this entry. </i>";
+                                        document.write(docx);
                                     } else {
-                                        section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensembles.</i></p>';
-                                        document.write(section);
+                                        var docx = "<i>There are " + input_variable + " unique types of models in this entry.</i> ";
+                                        document.write(docx);
                                     }
-                                    var div1 = '</div></div></div></div>';
-                                    document.write(div1);
-                                    var div2 = '<div class="card-body border-success" style="border-color: solid black;"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFF;">'
-                                    document.write(div2);
-                                    var write1 = '';
-                                    write1 += '<h4 class="ex2" align="center"><u><a name=summary>Summary</a></u></h4>';
-                                    write1 += '<p align="justify"><i>This entry consists of ' + {{number_of_molecules}} + ' unique models, with ' + String({{num_chains}}) + ' subunits in each model. A total of ' + {{number_of_datasets}} + ' datasets or restraints was used to build this entry. Each model is represented by ' + String({{Rigid_Body}}) + ' rigid bodies and ' + String({{Flexible_Unit}}) + ' flexible or non-rigid units. </i> </p>';
-                                    document.write(write1);
-                                </script>
-                            </div>
+                                }
+
+                                function write_model_name(input_variable) {
+                                    if (input_variable.length < 2) {
+                                        var docx = " <i>This model is titled " + input_variable[0] + " respectively. </i>"
+                                        document.write(docx);
+                                    } else {
+                                        var docx = "<i>These models are titled " + input_variable.join(', ') + " respectively.</i> "
+                                        document.write(docx);
+                                    }
+                                }
+
+                                function write_intro_2(input_variable) {
+                                    if (input_variable.length < 2) {
+                                        var docx = "<i>Model has " + input_variable.join() + " chains respectively.</i> "
+                                        document.write(docx);
+                                    } else {
+                                        var docx = "<i>Models have " + input_variable.join() + " chains respectively.</i> "
+                                        document.write(docx);
+                                    }
+                                }
+                                write_intro_1(input_variable = {{number_of_molecules}})
+                                write_model_name(input_variable = {{model_names}})
+                            </script>
+                            <script>
+                                var input_list = {{Entry_list}};
+
+                                Write_Table(list_to_write = input_list)
+                            </script>
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- start overall card body for front page -->
+
+            <div class="card-body border-success" style="border-color: solid black;">
+                <!-- start overall card body for front page -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-header" style="background-color: #FFF;">
+                            <h4 class="ex2" align="center"><u><a name='data'>Datasets used for modeling </a></u></h4>
+                            <script>
+                                function write_dataset(input_variable) {
+                                    if (input_variable < 2) {
+                                        var docx = "<i>There is " + input_variable + " unique dataset used to build the models in this entry. </i>";
+                                        document.write(docx);
+                                    } else {
+                                        var docx = "<i>There are " + input_variable + " unique datasets used to build the models in this entry.</i> ";
+                                        document.write(docx);
+                                    }
+                                }
+                                write_dataset(input_variable = {{number_of_datasets}})
+                            </script>
+                            <p class="ex2"> </p>
+                            <script>
+                                var input_list_2 = {{Datasets_list}};
+
+                                Write_Table(list_to_write = input_list_2)
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- start overall card body for front page -->
                 <div class="card-body border-success" style="border-color: solid black;">
                     <!-- start overall card body for front page -->
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card-header" style="background-color: #FFF;">
-                                <h4 class="ex2" align="center"><u><a name='entry'>Entry composition</a></u> </h4>
+                                <h4 class="ex2" align="center"><u><a name="representation">Representation </a></u></h4>
+                                <p class="ex2" align="justify"><i>This entry has only one representation and includes {{Rigid_Body}} rigid bodies and {{Flexible_Unit}} flexible units.</i></p>
+                                <p class="ex2"> </p>
                                 <script>
-                                    function write_intro_1(input_variable) {
-                                        if (input_variable < 2) {
-                                            var docx = "<i>There is " + input_variable + " unique type of model in this entry. </i>";
-                                            document.write(docx);
-                                        } else {
-                                            var docx = "<i>There are " + input_variable + " unique types of models in this entry.</i> ";
-                                            document.write(docx);
-                                        }
-                                    }
+                                    var input_list_3 = {{RB_list}};
 
-                                    function write_model_name(input_variable) {
-                                        if (input_variable.length < 2) {
-                                            var docx = " <i>This model is titled " + input_variable[0] + " respectively. </i>"
-                                            document.write(docx);
-                                        } else {
-                                            var docx = "<i>These models are titled " + input_variable.join(', ') + " respectively.</i> "
-                                            document.write(docx);
-                                        }
-                                    }
-
-                                    function write_intro_2(input_variable) {
-                                        if (input_variable.length < 2) {
-                                            var docx = "<i>Model has " + input_variable.join() + " chains respectively.</i> "
-                                            document.write(docx);
-                                        } else {
-                                            var docx = "<i>Models have " + input_variable.join() + " chains respectively.</i> "
-                                            document.write(docx);
-                                        }
-                                    }
-                                    write_intro_1(input_variable = {{number_of_molecules}})
-                                    write_model_name(input_variable = {{model_names}})
-                                </script>
-                                <script>
-                                    var input_list = {{Entry_list}};
-
-                                    Write_Table(list_to_write = input_list)
+                                    Write_Table(list_to_write = input_list_3)
                                 </script>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- start overall card body for front page -->
-                <!-- start overall card body for front page -->
+
                 <!-- start overall card body for front page -->
                 <div class="card-body border-success" style="border-color: solid black;">
                     <!-- start overall card body for front page -->
@@ -310,6 +357,29 @@
 
                                         Write_Table(list_to_write = input_list_3)
                                     </script>
+                                    <script>
+                                        function write_software(software_list) {
+                                            if (software_list < 1) {
+                                                var docx = "<i>Software packages used for modeling were either not reported or not used.</i> ";
+                                                document.write(docx);
+                                            } else if (software_list < 2) {
+                                                var docx = "<i>There is " + software_list + " software package reported in this entry.</i> ";
+                                                document.write(docx);
+                                            } else {
+                                                var docx = "<i>There are " + software_list + " software packages reported in this entry. </i>";
+                                                document.write(docx);
+                                            }
+                                        }
+                                        write_software(software_list = {{number_of_software}})
+                                    </script>
+                                    <p class="ex2"> </p>
+                                    <script>
+                                        var input_list = {{soft_list}};
+
+                                        Write_Table(list_to_write = input_list)
+                                    </script>
+                                    <p class="ex2"> </p>
+
                                 </div>
                             </div>
                         </div>
@@ -609,16 +679,16 @@
                                                         document.write(ex)
                                                     }
                                                     if ({{sasdb_sascif}}.length < 1) {
-                                                     var ex2 = '<p align=justify> SAS data used in this integrative model could not be validated as the sascif file is currently unavailable. </p>';
-                                                     document.write(ex2);
-                                                 }
-                                             </script>
-                                         </div>
-                                     </div>
-                                 </div>
-                             </div>
-                             <!-- start overall card body for front page -->
-                             <div class="card-body border-success" style="border-color: solid black;">
+                                                       var ex2 = '<p align=justify> SAS data used in this integrative model could not be validated as the sascif file is currently unavailable. </p>';
+                                                       document.write(ex2);
+                                                   }
+                                               </script>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                               <!-- start overall card body for front page -->
+                               <div class="card-body border-success" style="border-color: solid black;">
                                 <!-- start overall card body for front page -->
                                 <div class="card-header" style="background-color: #FFF; height=18rem">
                                     <div class="row">
