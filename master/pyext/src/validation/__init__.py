@@ -296,11 +296,16 @@ class GetInputInformation(object):
         software_comp = {'ID': [], 'Software name': [], 'Software version': [
         ], 'Software classification': [], 'Software location': []}
         lists = self.system.software
+        self.read_all_references()
         if len(lists) > 0:
             for software in lists:
                 software_comp['ID'].append(software._id)
-                software_comp['Software name'].append(software.name)
-                software_comp['Software location'].append(software.location)
+                ref_name = software.name.lower()
+                ref_tot = '<a href="' + \
+                    self.ref_link[ref_name]+'">'+software.name+"</a>"
+                ref_loc = '<a href="'+software.location+'">'+software.location+"</a>"
+                software_comp['Software name'].append(ref_tot)
+                software_comp['Software location'].append(ref_loc)
                 if str(software.version) == ihm.unknown:
                     vers = 'None'
                 else:
@@ -312,6 +317,17 @@ class GetInputInformation(object):
         else:
             final_software_composition = {}
         return final_software_composition
+
+    def read_all_references(self):
+        reference_filename = os.path.join(
+            os.getcwd(), '../templates/', 'references.csv')
+        self.ref_link = dict()
+        self.ref_cit = dict()
+        with open(reference_filename, 'r+') as inf:
+            allref = [_.strip().split('|') for _ in inf.readlines()]
+        for line in allref:
+            self.ref_link[line[0].lower().rstrip()] = line[1].rstrip().lstrip()
+            self.ref_cit[line[0].lower()] = line[2]
 
     def check_ensembles(self) -> int:
         """check if ensembles exist"""

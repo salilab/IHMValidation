@@ -60,10 +60,15 @@ class WriteReport(object):
         Template_Dict['number_of_software'] = self.Input.get_software_length()
         Template_Dict['soft_list'] = utility.dict_to_JSlist(
             self.Input.get_software_comp())
+
+        Template_Dict['references'] = list(self.Input.ref_cit.values())
+        Template_Dict['references'].sort()
         Template_Dict['number_of_datasets'] = self.Input.get_dataset_length()
         Template_Dict['Data'] = [i.upper() for i in list(set(self.Input.get_dataset_comp(
         )['Dataset type']).difference({'Experimental model', 'Comparative model'}))]
         Template_Dict['Datasets_list'] = utility.dict_to_JSlist(
+            self.Input.get_dataset_comp())
+        Template_Dict['Unique_dataset'] = utility.get_unique_datasets(
             self.Input.get_dataset_comp())
         Template_Dict['Protocols_number'] = self.Input.get_protocol_number()
         Template_Dict['Sampling_list'] = utility.dict_to_JSlist(
