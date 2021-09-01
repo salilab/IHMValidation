@@ -190,9 +190,9 @@
             var sec='<div class="card-body"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFFFFF ;"><div class="box text-center container-fluid no-padding" align="center">'
             document.write(sec);
             var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_DQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:300px;width:100%;border:none;overflow:hidden;></iframe>'
-            document.write(section);}
+            document.write(section);
             var sec2='</div></div></div></div></div>'
-            document.write(sec2);
+            document.write(sec2);}
         </script>
 
         <script>
@@ -463,14 +463,14 @@
                                             document.write(ex17)
                                             var ex18 ='<p style=margin-bottom:0.5cm;> </p>';
 
-                                            ex18 += "<p class=ex2 align='justify'><u> p(r) analysis:</u> p(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. p(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the p(r) function. Agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where p(r) is decaying to zero is called Dmax and represents the maximum size of the particle.</p>";
+                                            ex18 += "<p class=ex2 align='justify'><u> P(r) analysis:</u> P(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. P(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the P(r) function. Agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where P(r) is decaying to zero is called D<sub>max</sub> and represents the maximum size of the particle.</p>";
                                             ex18 +='<p style=margin-bottom:0.5cm;> </p>';
                                             document.write(ex18);
                                             var input_list = {{pddf_info}};
                                             Write_Table(list_to_write = input_list)
 
                                             for (var i = 0; i < sasdb_code_html.length; i++) {
-                                                var ex19 ='<p align=justify> <u> P(r) for '+ sasdb_code_html[i]+':</u> The value of p(r) should be zero beyond r=Dmax. </p>'; 
+                                                var ex19 ='<p align=justify> <u> P(r) for '+ sasdb_code_html[i]+':</u> The value of P(r) should be zero beyond r=D<sub>max</sub>. </p>'; 
                                                 document.write(ex19)
                                                 var ex20 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding  align=center style=height:60vh>';
                                                 ex20 +='<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+'pddf.svg  frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>'
@@ -480,7 +480,7 @@
                                                 ex21 += '<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+'pddf_int.svg frameborder=0 scrolling=yes width=70% height=500vh  style=position:relative onload=resizeIframe(this)></iframe>';
                                                 document.write(ex21)
 
-                                                var ex21a ='<p align=justify> <u> Residuals and error weighted residuals for p(r) analysis for  '+ sasdb_code_html[i]+'</u>: Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis.</p>'; 
+                                                var ex21a ='<p align=justify> <u> Residuals and error weighted residuals for P(r) analysis for  '+ sasdb_code_html[i]+'</u>: Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis.</p>'; 
                                                 document.write(ex21a)
 
                                                 var ex21b ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding align=center style=height:60vh>';
@@ -500,7 +500,7 @@
                                             var ex23 = "<h5 class= ex2 align= center><u><a name=firstG> Guinier analysis </a></u></h5>";
                                             document.write(ex23)
                                             var ex24 ='<p style=margin-bottom:0.5cm;> </p>';
-                                            ex24 += "<p class=ex2 align='justify'><u> Guinier analysis:</u> agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Molecular weight estimates can also be compared to Porod and sample molecular weights for consistency.</p>";
+                                            ex24 += "<p class=ex2 align='justify'><u> Guinier analysis:</u> agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Molecular weight estimates can also be compared to Porod and sample molecular weights for consistency.</p>";
                                             ex24 +='<p style=margin-bottom:0.5cm;> </p>';
                                             document.write(ex24);
                                             var input_list = {{rg_table}};

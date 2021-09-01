@@ -375,7 +375,7 @@
                                                                                     document.write(ex2)
                                                                                     var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
 
-                                                                                    ex3 += "<p class=ex2 align='justify'><u> p(r) analysis:</u> p(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. p(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the p(r) function. Agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where p(r) is decaying to zero is called Dmax and represents the maximum size of the particle.</p>";
+                                                                                    ex3 += "<p class=ex2 align='justify'><u> P(r) analysis:</u> P(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. P(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the P(r) function. Agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where P(r) is decaying to zero is called D<sub>max</sub> and represents the maximum size of the particle.</p>";
                                                                                     ex3 +='<p style=margin-bottom:0.5cm;> </p>';
                                                                                     document.write(ex3);
                                                                                     var input_list = {{pddf_info}};
@@ -388,7 +388,7 @@
                                                                         if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                                                                             var sasdb_code_html={{sasdb_code_html}}     
                                                                             for (var i = 0; i < sasdb_code_html.length; i++) {
-                                                                                var ex3 ='<p align=justify> <u> p(r) for '+ sasdb_code_html[i]+':</u> The value of p(r) should be zero beyond r=Dmax. </p>'; 
+                                                                                var ex3 ='<p align=justify> <u> P(r) for '+ sasdb_code_html[i]+':</u> The value of P(r) should be zero beyond r=D<sub>max</sub>. </p>'; 
                                                                                 document.write(ex3)
                                                                                 var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding  style=height:60vh>';
                                                                                 ex4 +='<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+'pddf.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative onload=resizeIframe(this)></iframe>'
@@ -411,7 +411,7 @@
                                                                         if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
                                                                             var sasdb_code_html={{sasdb_code_html}}     
                                                                             for (var i = 0; i < sasdb_code_html.length; i++) {
-                                                                                var ex3 ='<p align=justify> <u> Residuals and error weighted residuals for p(r) analysis for  '+ sasdb_code_html[i]+'</u>: Residual value plot is a measure to assess fit to the data. sResidual values should be equally and randomly spaced around the horizontal axis.</p>'; 
+                                                                                var ex3 ='<p align=justify> <u> Residuals and error weighted residuals for P(r) analysis for  '+ sasdb_code_html[i]+'</u>: Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis.</p>'; 
                                                                                 document.write(ex3)
 
                                                                                 var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
@@ -444,7 +444,7 @@
                                                                                     var ex2 = "<h5 class= ex2 align= center><u><a name=firstG> Guinier analysis </a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#guinier'>?</a></h5>";
                                                                                     document.write(ex2)
                                                                                     var ex3 ='<p style=margin-bottom:0.5cm;> </p>';
-                                                                                    ex3 += "<p class=ex2 align='justify'><u> Guinier analysis:</u> agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Molecular weight estimates can also be compared to Porod and sample molecular weights for consistency.</p>";
+                                                                                    ex3 += "<p class=ex2 align='justify'><u> Guinier analysis:</u> agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Molecular weight estimates can also be compared to Porod and sample molecular weights for consistency.</p>";
                                                                                     ex3 +='<p style=margin-bottom:0.5cm;> </p>';
                                                                                     document.write(ex3);
                                                                                     var input_list = {{rg_table}};
