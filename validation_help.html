@@ -96,12 +96,8 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
-                
-
 
             </nav>
-            
-
 
             <div class="card-body border-success" style="border-color: solid black;">
                 <!-- start overall card body for front page -->
@@ -110,269 +106,355 @@
                         <div id="toc_container">
                             <p class="toc_title"><h5  style="color: #003366;"> Contents</h5></p>
                             <ul >
-                              <li><a href="#overview" style="color: #003366;">1. Overview</a>
-                                  <ul>
-                                    <li><a href="#overview" style="color: #003366;">1.1 Overall Quality Assessment</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#ensemble" style="color: #003366;">2. Model Details</a>
-                              <ul>
-                                <li><a href="#ensemble" style="color: #003366;">2.1 Ensemble Information</a></li>
-                                <li><a href="#summary" style="color: #003366;">2.2 Summary </a></li>
-                                <li><a href="#entry" style="color: #003366;">2.3 Entry Composition</a></li>
-                                <li><a href="#datasets" style="color: #003366;">2.4 Datasets Used</a></li>
-                                <li><a href="#representation" style="color: #003366;">2.5 Representation</a></li>
-                                <li><a href="#software" style="color: #003366;">2.6 Methods and Software</a></li>
-                            </ul>
+                                <li><a href="#understanding" style="color: #003366;">1. Understanding the PDB-Dev Validation Report</a>
 
+                                  <li><a href="#overview" style="color: #003366;">2. Overview</a>
+                                      <ul>
+                                        <li><a href="#overview" style="color: #003366;">2.1 Overall Quality Assessment</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#ensemble" style="color: #003366;">3. Model Details</a>
+                                  <ul>
+                                    <li><a href="#ensemble" style="color: #003366;">3.1 Ensemble Information</a></li>
+                                    <li><a href="#summary" style="color: #003366;">3.2 Summary </a></li>
+                                    <li><a href="#entry" style="color: #003366;">3.3 Entry Composition</a></li>
+                                    <li><a href="#datasets" style="color: #003366;">3.4 Datasets Used</a></li>
+                                    <li><a href="#representation" style="color: #003366;">3.5 Representation</a></li>
+                                    <li><a href="#software" style="color: #003366;">3.6 Methods and Software</a></li>
+                                </ul>
+
+                            </li>
+                            <li><a href="#dataquality" style="color: #003366;">4. Data Quality Assessment</a>
+                              <ul>
+                                <li><a href="#scattering" style="color: #003366;">4.1 SAS: Scattering Profiles</a></li>
+                                <li><a href="#expt" style="color: #003366;">4.2 SAS: Experimental Estimates </a></li>
+                                <li><a href="#flexibility" style="color: #003366;">4.3 SAS: Flexibility Analysis</a></li>
+                                <li><a href="#pofr" style="color: #003366;">4.4 SAS: P(r) Analysis</a></li>
+                                <li><a href="#guinier" style="color: #003366;">4.5 SAS: Guinier Analysis</a></li>
+                            </ul>
                         </li>
-                        <li><a href="#dataquality" style="color: #003366;">3. Data Quality Assessment</a>
+
+                        <li><a href="#modelquality" style="color: #003366;">5. Model Quality Assessment</a>
                           <ul>
-                            <li><a href="#scattering" style="color: #003366;">3.1 SAS: Scattering Profiles</a></li>
-                            <li><a href="#expt" style="color: #003366;">3.2 SAS: Experimental Estimates </a></li>
-                            <li><a href="#flexibility" style="color: #003366;">3.3 SAS: Flexibility Analysis</a></li>
-                            <li><a href="#pofr" style="color: #003366;">3.4 SAS: P(r) Analysis</a></li>
-                            <li><a href="#guinier" style="color: #003366;">3.5 SAS: Guinier Analysis</a></li>
+                            <li><a href="#exv" style="color: #003366;">5.1a Excluded Volume Analysis</a></li>
+                            <li><a href="#molprobity" style="color: #003366;">5.1b Molprobity Analysis </a></li>
                         </ul>
                     </li>
 
-                    <li><a href="#modelquality" style="color: #003366;">4. Model Quality Assessment</a>
+                    <li><a href="#fittodata" style="color: #003366;">6. Fit to Data Used for Modeling Assessment</a>
                       <ul>
-                        <li><a href="#exv" style="color: #003366;">4.1a Excluded Volume Analysis</a></li>
-                        <li><a href="#molprobity" style="color: #003366;">4.1b Molprobity Analysis </a></li>
+                        <li><a href="#goodness" style="color: #003366;">6.1 SAS:  &#x3A7;&#178; Goodness of Fit Assessment </a></li>
+                        <li><a href="#cormap" style="color: #003366;">6.2: SAS: Cormap Analysis </a></li>
                     </ul>
                 </li>
 
-                <li><a href="#fittodata" style="color: #003366;">5. Fit to Data Used for Modeling Assessment</a>
-                  <ul>
-                    <li><a href="#goodness" style="color: #003366;">5.1 SAS:  &#x3A7;&#178; Goodness of Fit Assessment </a></li>
-                    <li><a href="#cormap" style="color: #003366;">5.2: SAS: Cormap Analysis </a></li>
-                </ul>
-            </li>
+                <li><a href="#references1" style="color: #003366;">7. References for the Validation Report </a>
+                    <li><a href="#references2" style="color: #003366;">8. References for Modeling Software </a>
 
-        </ul>
+
+                    </ul>
+                </div>
+
+                <!-- end card header -->
+            </div>
+        </div>
+        <!--end row-->
+    </div>
+    <!-- end card bods-->
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+                    <p class=ex2 align='center' ><b><u> <a name='understanding'>1. Understanding the PDB-Dev Validation Report</a></u> </b></p>
+
+                    <p class=ex2 align='justify' ><a name='understanding'></a> This validation report was created based on the guidelines and recommendations from IHM TaskForce <a href='https://pubmed.ncbi.nlm.nih.gov/31780431/'>(Berman et al. 2019)</a>. The first version of the PDB-Dev validation report consists of four categories as follows: </p>
+                    <ol type="A">
+                        <li><p lass=ex2 ><b>Model composition :</b> This section outlines model details and includes information on ensembles deposited, chains and residues of domains, model representation, software, protocol, and methods used. All deposited structures have this section.</p> </li>
+
+                        <li><p lass=ex2 ><b>Data quality assessment :</b> Data quality assessments are only available for SAS datasets. This section was developed in collaboration with the SASBDB community. For details on the metrics, guidelines, and recommendations used, refer the 2017 community article <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'>(Trewhella et al. 2017)</a>. All datasets used to build the model are listed, however, validation criteria for other datasets are currently under development.</p> </li>
+
+                        <li><p class=ex2 ><b>Model quality assessment :</b>Model quality for models at atomic resolution is assessed using Molprobity <a href='https://pubmed.ncbi.nlm.nih.gov/29067766/'> (Williams et al. 2018)</a>, consistent with <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'> PDB </a>. Model quality for coarse-grained or multi-resolution structures are assessed by computing excluded volume satisfaction based on reported distances and sizes of beads in the structures.</p></li>
+
+                        <li><p lass=ex2 ><b>Fit to data used to build the model  :</b>Fit to data used to build the model is only available for SAS datasets. This section was developed in collaboration with the SASBDB <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4383894/'> (Valentini et al. 2015) </a>. For details on the metrics, guidelines, and recommendations used, refer the 2017 community article <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'> (Trewhella et al. 2017)</a>. All datasets used to build the model are listed, however, validation criteria for other datasets are currently under development.</p></li>
+
+                    </ol>
+                    <p style=margin-bottom:0.5cm;> </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- end card header -->
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+
+                    <p class=ex2 align='center' ><b><u> <a name='overview'>2. Overview</a></u> </b></p>
+                    <p class=ex2 align='justify' ><a name='overview'><i>2.1 Overall Quality Assesment :</i></a> This is a set of plots that represent a snapshot view of the validation results. Refer each section to understand the contents of these plots. </p>
+                    <p style=margin-bottom:0.5cm;> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+
+                    <p class=ex2 align='center' ><b><u> <a name='ensemble'>3. Model Details </a></u> </b></p>
+                    <p class=ex2 align='justify' ><a name='ensemble'><i>3.1 Ensemble Information :</i></a> Number of ensembles deposited, where each ensemble consists of two or more structures. </p>
+                    <p class=ex2 align='justify' ><a name='summary'> <i>3.2 Summary :</i></a> Summary of the structure, including number of models deposited, datasets used to build the models and information on model representation. </p>
+                    <p class=ex2 align='justify' ><a name='entry'><i>3.3 Entry Composition :</i></a> Number of chains present in the integrative structure. </p>
+                    <p class=ex2 align='justify' ><a name='datasets'><i>3.4 Datasets Used :</i></a> Number and type of datasets used to build the model. </p>
+                    <p class=ex2 align='justify' ><a name='representation'><i>3.5 Representation :</i></a> Number and details on rigid and non-rigid elements of the structure. </p>
+                    <p class=ex2 align='justify' ><a name='software'><i>3.6 Methods and Software :</i></a> Methods, protocols, and softwares used to build the integrative structure. </p>
+                    <p style=margin-bottom:0.5cm;> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+                    <p class=ex2 align='center' ><b><u> <a name='dataquality'>4. Data Quality </a></u> </b></p>
+                    <p class=ex2 align='justify' ><a name='scattering'><i>4.1 SAS: Scattering Profiles :</i></a> Data from solutions of biological macromolecules are presented as both log I(q) vs q and log I(q) vs log (q) based on  SAS validation task force (SASvtf) recommendations  <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5586245/'>(Trewhella et al. 2017)</a>. I(q) is the intensity (in arbitrary units) and q is the modulus of the scattering vector. </p>
+
+                    <p class=ex2 align='justify' ><a name='expt'> <i>4.2 SAS: Experimental Estimates :</i></a> Molecular weight (MW) and volume data are displayed. True MW can be compared to Porod estimate from scattering profiles, estimated volume can be compared to Porod volume obtained from scattering profiles. </p>
+                    <p class=ex2 align='justify' ><a name='flexibility'><i>4.3 SAS: Flexibility Analysis :</i></a>  Flexibility of chains are assessed by inferring Porod-Debye and Kratky plots. In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domains, whereas fully unfolded domains are devoid of any discernible plateau. For details, refer to Figure 5 in Rambo and Tainer, 2011 <a href='https://pubmed.ncbi.nlm.nih.gov/21509745/'> (Rambo and Tainer 2011)</a>. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domains and a hyperbolic shape is observed for fully unfolded domains.</p>
+
+                    <p class=ex2 align='justify' ><a name='pofr'><i>4.4 SAS: P(r) Analysis :</i></a> P(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. P(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the P(r) function. Agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (Mw). The point where P(r) is decaying to zero is called D<sub>max</sub> and represents the maximum size of the particle. The value of P(r) should be zero beyond r=D<sub>max</sub>.</p>
+
+                    <p class=ex2 align='justify' ><a name='guinier'><i>4.5 SAS: Guinier Analysis :</i></a> Agreement between the P(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. The linearity of the Guinier plot is a sensitive indicator of the quality of the experimental SAS data; a linear Guinier plot is a necessary but not sufficient demonstration that a solution contains monodisperse particles of the same size. Deviations from linearity usually point to strong interference effects, polydispersity of the samples or improper background subtraction. Residual value plot and coefficient of determination (R<sup>2</sup>) are measures to assess linear fit to the data. A perfect fit has an R<sup>2</sup> value of 1. Residual values should be equally and randomly spaced around the horizontal axis.</p>
+                    <p style=margin-bottom:0.5cm;> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+
+                    <p class=ex2 align='center' ><b><u> <a name='modelquality'>5. Model Quality Assessment </a></u> </b></p>
+                    <p class=ex2 align='justify' ><a name='exv'><i>5.1a Excluded Volume Analysis :</i></a> Excluded volume violation is defined as percentage of overlaps between coarse-grained beads in a structure. This percentage is obtained by dividing the number of overlaps/violations by the total number of pair distances in a structure. An overlap or violation between two beads occurs if the distance between the two beads is less than the sum of their radii.  </p>
+                    <p class=ex2 align='justify' ><a name='molprobity'> <i>5.1b Molprobity Analysis :</i></a> Molprobity analysis for atomic structures reported is consistent with PDB standards for X-ray structures. Please refer to the <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'> PDB user guide </a> for details. </p>
+                    <p style=margin-bottom:0.5cm;> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+
+                    <p class=ex2 align='center' ><b><u> <a name='fittodata'>6. Fit to Data Used for Modeling Assessment </a></u> </b></p>
+
+                    <p>Recommendations from <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5586245/'> SAS validation task force (SASvtf) for model fit assessment</a> includes: </p>
+
+                    <figure class="quote">
+                        <blockquote>
+                            <ol>
+                                <li><p class=ex2> All software, including version numbers, used for modelling; three-dimensional shape, bead or atomistic modelling. </p></li>
+
+                                <li><p class=ex2>All modelling assumptions clearly stated, including adjustable parameter values. In the case of imposed symmetry, especially in the case of shape models, comparison with results obtained in the absence of symmetry restraints.</p></li>
+
+                                <li><p class=ex2> For atomistic modelling, a description of how the starting models were obtained (e.g. crystal or NMR structure of a domain, homology model etc.), connectivity or distance restraints used and flexible regions specified and the basis for their selection.</p></li>
+
+                                <li><p class=ex2> Any additional experimental or bioinformatics-based evidence supporting modelling assumptions and therefore enabling modelling restraints or independent model validation.</p></li>
+
+
+                                <li><p class=ex2> For three-dimensional models, values for adjustable parameters, constant adjustments to intensity, χ² and associated p-values and a clear representation of the model fit to the experimental I(q) versus q including a residual plot that clearly identifies systematic deviations.</p></li>
+
+                                <li><p class=ex2> Analysis of the ambiguity and precision of models, e.g. based on cluster analysis of results from multiple independent optimizations of the model against the SAS profile or profiles, with examples of any distinct clusters in addition to any final averaged model.</p></li>
+
+
+                            </ol>  
+                        </blockquote>
+                    </figure>
+
+
+                    <p class=ex2 align='justify' ><a name='goodness'><i>6.1 SAS:  &#x3A7;&#178; Goodness of Fit Assessment :</i></a> Model and fits displayed below were obtained from SASBDB. χ² values are a measure of fit of the model to data. A perfect fit has a χ² value of zero. </p>
+                    <p class=ex2 align='justify' ><a name='cormap'> <i>6.2 SAS: Cormap Analysis :</i></a> ATSAS datcmp <a href='https://pubmed.ncbi.nlm.nih.gov/33833657/'> (Manalastas-Cantos et al. 2021)</a> was used for hypothesis testing. All data sets are similar (i.e. the fit and the data collected) is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis. </p>
+                    <p style=margin-bottom:0.5cm;> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+
+                    <p class=ex2 align='center' ><b><u> <a name='references1'>7. References for Validation Report</a></u> </b></p>
+                    <figure class="quote">
+                        <blockquote>
+                            <ol>
+                                <li><p class=ex2> Berman, Helen M., Paul D. Adams, Alexandre A. Bonvin, Stephen K. Burley, Bridget Carragher, Wah Chiu, Frank DiMaio, et al. 2019. “Federating Structural Models and Data: Outcomes from A Workshop on Archiving Integrative Structures.” Structure  27 (12): 1745–59. </p></li>
+
+                                <li><p class=ex2> Manalastas-Cantos, Karen, Petr V. Konarev, Nelly R. Hajizadeh, Alexey G. Kikhney, Maxim V. Petoukhov, Dmitry S. Molodenskiy, Alejandro Panjkovich, et al. 2021. “ATSAS 3.0: Expanded Functionality and New Tools for Small-Angle Scattering Data Analysis.” Journal of Applied Crystallography 54 (Pt 1): 343–55. </p></li>
+
+                                <li><p class=ex2> Rambo, Robert P., and John A. Tainer. 2011. “Characterizing Flexible and Intrinsically Unstructured Biological Macromolecules by SAS Using the Porod-Debye Law.” Biopolymers 95 (8): 559–71.</p></li>
+
+                                <li><p class=ex2> Trewhella, Jill, Anthony P. Duff, Dominique Durand, Frank Gabel, J. Mitchell Guss, Wayne A. Hendrickson, Greg L. Hura, et al. 2017. “2017 Publication Guidelines for Structural Modelling of Small-Angle Scattering Data from Biomolecules in Solution: An Update.” Acta Crystallographica. Section D, Structural Biology 73 (Pt 9): 710–28</p></li>
+
+                                <li><p class=ex2> Valentini, Erica, Alexey G. Kikhney, Gianpietro Previtali, Cy M. Jeffries, and Dmitri I. Svergun. 2015. “SASBDB, a Repository for Biological Small-Angle Scattering Data.” Nucleic Acids Research 43 (Database issue): D357–63. </p></li>
+
+                                <li><p class=ex2> Williams, Christopher J., Jeffrey J. Headd, Nigel W. Moriarty, Michael G. Prisant, Lizbeth L. Videau, Lindsay N. Deis, Vishal Verma, et al. 2018. “MolProbity: More and Better Reference Data for Improved All-Atom Structure Validation.” Protein Science: A Publication of the Protein Society 27 (1): 293–315. </p></li>
+
+                            </ol>  
+                        </blockquote>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header" style="background-color: #E4E4E4;">
+
+                    <p class=ex2 align='center' ><b><u> <a name='references2'>8. References for Modeling Software</a></u> </b></p>
+
+                    <figure class="quote">
+                        <blockquote>
+                            <ol>
+                                <li><p class=ex2> Ahmed, Aqeel, Friedrich Rippmann, Gerhard Barnickel, and Holger Gohlke. 2011. “A Normal Mode-Based Geometric Simulation Approach for Exploring Biologically Relevant Conformational Transitions in Proteins.” Journal of Chemical Information and Modeling 51 (7): 1604–22.</p></li>
+
+                                <li><p class=ex2> Berjanskii, Mark, Yongjie Liang, Jianjun Zhou, Peter Tang, Paul Stothard, You Zhou, Joseph Cruz, et al. 2010. “PROSESS: A Protein Structure Evaluation Suite and Server.” Nucleic Acids Research 38 (Web Server issue): W633–40.</p></li>
+                                <li><p class=ex2>Brannetti, B., A. Zanzoni, L. Montecchi-Palazzi, G. Cesareni, and M. Helmer-Citterich. 2001. “iSPOT: A Web Tool for the Analysis and Recognition of Protein Domain Specificity.” Comparative and Functional Genomics 2 (5): 314–18.</p></li>
+                                <li><p class=ex2>Brunger, Axel T. 2007. “Version 1.2 of the Crystallography and NMR System.” Nature Protocols 2 (11): 2728–33.</p></li>
+                                <li><p class=ex2>Bryson, Kevin, Liam J. McGuffin, Russell L. Marsden, Jonathan J. Ward, Jaspreet S. Sodhi, and David T. Jones. 2005. “Protein Structure Prediction Servers at University College London.” Nucleic Acids Research 33 (Web Server issue): W36–38.</p></li>
+                                <li><p class=ex2>Buchan, Daniel W. A., and David T. Jones. 2019. “The PSIPRED Protein Analysis Workbench: 20 Years on.” Nucleic Acids Research 47 (W1): W402–7.</p></li>
+                                <li><p class=ex2>Chaudhury, Sidhartha, Sergey Lyskov, and Jeffrey J. Gray. 2010. “PyRosetta: A Script-Based Interface for Implementing Molecular Modeling Algorithms Using Rosetta.” Bioinformatics  26 (5): 689–91.</p></li>
+
+                                <li><p class=ex2>Cherry, J. Michael, Eurie L. Hong, Craig Amundsen, Rama Balakrishnan, Gail Binkley, Esther T. Chan, Karen R. Christie, et al. 2012. “Saccharomyces Genome Database: The Genomics Resource of Budding Yeast.” Nucleic Acids Research 40 (Database issue): D700–705.</p></li>
+                                <li><p class=ex2>Dimura, Mykola, Thomas-Otavio Peulen, Hugo Sanabria, Dmitro Rodnin, Katherina Hemmen, Christian A. Hanke, Claus A. M. Seidel, and Holger Gohlke. 2020. “Automated and Optimally FRET-Assisted Structural Modeling.” Nature Communications 11 (1): 5394.</p></li>
+                                <li><p class=ex2>Ding, Feng, Douglas Tsao, Huifen Nie, and Nikolay V. Dokholyan. 2008. “Ab Initio Folding of Proteins with All-Atom Discrete Molecular Dynamics.” Structure  16 (7): 1010–18.</p></li>
+                                <li><p class=ex2>Dominguez, C., R. Boelens, and A. M. Bonvin. 2003. “HADDOCK: A Protein-Protein Docking Approach Based on Biochemical or Biophysical Information.” Journal of the American Chemical Society 125 (7): 1731–37.</p></li>
+
+                                <li><p class=ex2>Finn, Robert D., Jody Clements, and Sean R. Eddy. 2011. “HMMER Web Server: Interactive Sequence Similarity Searching.” Nucleic Acids Research 39 (Web Server issue): W29–37.</p></li>
+                                <li><p class=ex2>Gautier, Romain, Dominique Douguet, Bruno Antonny, and Guillaume Drin. 2008. “HELIQUEST: A Web Server to Screen Sequences with Specific Alpha-Helical Properties.” Bioinformatics  24 (18): 2101–2.</p></li>
+                                <li><p class=ex2>Hummer, Gerhard, and Jürgen Köfinger. 2015. “Bayesian Ensemble Refinement by Replica Simulations and Reweighting.” The Journal of Chemical Physics 143 (24): 243150.</p></li>
+                                <li><p class=ex2>Jones, David T., and Domenico Cozzetto. 2015. “DISOPRED3: Precise Disordered Region Predictions with Annotated Protein-Binding Activity.” Bioinformatics  31 (6): 857–63.</p></li>
+                                <li><p class=ex2>Källberg, Morten, Gohar Margaryan, Sheng Wang, Jianzhu Ma, and Jinbo Xu. 2014. “RaptorX Server: A Resource for Template-Based Protein Structure Modeling.” Methods in Molecular Biology  1137: 17–27.</p></li>
+
+                                <li><p class=ex2>Kelley, Lawrence A., Stefans Mezulis, Christopher M. Yates, Mark N. Wass, and Michael J. E. Sternberg. 2015. “The Phyre2 Web Portal for Protein Modeling, Prediction and Analysis.” Nature Protocols 10 (6): 845–58.</p></li>
+                                <li><p class=ex2>Kim, David E., Dylan Chivian, and David Baker. 2004. “Protein Structure Prediction and Analysis Using the Robetta Server.” Nucleic Acids Research 32 (Web Server issue): W526–31.</p></li>
+                                <li><p class=ex2>Li, Yunqi, and Yang Zhang. 2009. “REMO: A New Protocol to Refine Full Atomic Protein Models from C-Alpha Traces by Optimizing Hydrogen-Bonding Networks.” Proteins 76 (3): 665–76.</p></li>
+                                <li><p class=ex2>Ludtke, S. J. 2016. “Single-Particle Refinement and Variability Analysis in EMAN2.1.” Methods in Enzymology 579 (July): 159–89.</p></li>
+
+
+                                <li><p class=ex2>Lupas, A., M. Van Dyke, and J. Stock. 1991. “Predicting Coiled Coils from Protein Sequences.” Science 252 (5009): 1162–64.</p></li>
+                                <li><p class=ex2>Manalastas-Cantos, Karen, Petr V. Konarev, Nelly R. Hajizadeh, Alexey G. Kikhney, Maxim V. Petoukhov, Dmitry S. Molodenskiy, Alejandro Panjkovich, et al. 2021. “ATSAS 3.0: Expanded Functionality and New Tools for Small-Angle Scattering Data Analysis.” Journal of Applied Crystallography 54 (Pt 1): 343–55.</p></li>
+                                <li><p class=ex2>Matthew Allen Bullock, Joshua, Jannik Schwab, Konstantinos Thalassinos, and Maya Topf. 2016. “The Importance of Non-Accessible Crosslinks and Solvent Accessible Surface Distance in Modeling Proteins with Restraints From Crosslinking Mass Spectrometry.” Molecular & Cellular Proteomics: MCP 15 (7): 2491–2500.</p></li>
+                                <li><p class=ex2>Ovchinnikov, Sergey, Hetunandan Kamisetty, and David Baker. 2014. “Robust and Accurate Prediction of Residue-Residue Interactions across Protein Interfaces Using Evolutionary Information.” eLife 3 (May): e02030.</p></li>
+                                <li><p class=ex2>Pettersen, Eric F., Thomas D. Goddard, Conrad C. Huang, Gregory S. Couch, Daniel M. Greenblatt, Elaine C. Meng, and Thomas E. Ferrin. 2004. “UCSF Chimera--a Visualization System for Exploratory Research and Analysis.” Journal of Computational Chemistry 25 (13): 1605–12.</p></li>
+
+
+                                <li><p class=ex2>Pires, Douglas E. V., David B. Ascher, and Tom L. Blundell. 2014. “mCSM: Predicting the Effects of Mutations in Proteins Using Graph-Based Signatures.” Bioinformatics  30 (3): 335–42.</p></li>
+                                <li><p class=ex2>Pronk, Sander, Szilárd Páll, Roland Schulz, Per Larsson, Pär Bjelkmar, Rossen Apostolov, Michael R. Shirts, et al. 2013. “GROMACS 4.5: A High-Throughput and Highly Parallel Open Source Molecular Simulation Toolkit.” Bioinformatics  29 (7): 845–54.</p></li>
+                                <li><p class=ex2>Rohl, Carol A., Charlie E. M. Strauss, Kira M. S. Misura, and David Baker. 2004. “Protein Structure Prediction Using Rosetta.” Methods in Enzymology 383: 66–93.</p></li>
+                                <li><p class=ex2>Russel, Daniel, Keren Lasker, Ben Webb, Javier Velázquez-Muriel, Elina Tjioe, Dina Schneidman-Duhovny, Bret Peterson, and Andrej Sali. 2012. “Putting the Pieces Together: Integrative Modeling Platform Software for Structure Determination of Macromolecular Assemblies.” PLoS Biology 10 (1): e1001244.</p></li>
+                                <li><p class=ex2>Scheres, Sjors H. W. 2012. “RELION: Implementation of a Bayesian Approach to Cryo-EM Structure Determination.” Journal of Structural Biology 180 (3): 519–30.</p></li>
+
+
+                                <li><p class=ex2>Schneider, Michael, and Oliver Brock. 2014. “Combining Physicochemical and Evolutionary Information for Protein Contact Prediction.” PloS One 9 (10): e108438.</p></li>
+                                <li><p class=ex2>Schneidman, D., M. Hammel, J. Tainer, and A. Sali. 2016. “FoXS, FoXSDock, and MultiFoXS: Single-State and Multi-State Structural Modeling of Proteins and Their Complexes Based on SAXS Profiles.” Nucleic Acids Research 44 (W1): W424–29.</p></li>
+                                <li><p class=ex2>Serra, F., D. Bau, M. Goodstadt, D. Castillo, G. J. Filion, and M. A. Marti-Renom. 2017. “Automatic Analysis and 3D-Modelling of Hi-C Data Using TADbit Reveals Structural Features of the Fly Chromatin Colors.” PLoS Computational Biology 13 (7): e1005665.</p></li>
+                                <li><p class=ex2>Shen, Yang, Oliver Lange, Frank Delaglio, Paolo Rossi, James M. Aramini, Gaohua Liu, Alexander Eletsky, et al. 2008. “Consistent Blind Protein Structure Generation from NMR Chemical Shift Data.” Proceedings of the National Academy of Sciences of the United States of America 105 (12): 4685–90.</p></li>
+                                <li><p class=ex2>Söding, Johannes, Andreas Biegert, and Andrei N. Lupas. 2005. “The HHpred Interactive Server for Protein Homology Detection and Structure Prediction.” Nucleic Acids Research 33 (Web Server issue): W244–48.</p></li>
+                                <li><p class=ex2>Steinegger, Martin, Markus Meier, Milot Mirdita, Harald Vöhringer, Stephan J. Haunsberger, and Johannes Söding. 2019. “HH-suite3 for Fast Remote Homology Detection and Deep Protein Annotation.” BMC Bioinformatics 20 (1): 473.</p></li>
+                                <li><p class=ex2>Trigg, Jason, Karl Gutwin, Amy E. Keating, and Bonnie Berger. 2011. “Multicoil2: Predicting Coiled Coils and Their Oligomerization States from Sequence in the Twilight Zone.” PloS One 6 (8): e23519.</p></li>
+                                <li><p class=ex2>Trnka, Michael J., Peter R. Baker, Philip J. J. Robinson, A. L. Burlingame, and Robert J. Chalkley. 2014. “Matching Cross-Linked Peptide Spectra: Only as Good as the Worse Identification.” Molecular & Cellular Proteomics: MCP 13 (2): 420–34.</p></li>
+
+
+                                <li><p class=ex2>Tubiana, Thibault, Jean-Charles Carvaillo, Yves Boulard, and Stéphane Bressanelli. 2018. “TTClust: A Versatile Molecular Simulation Trajectory Clustering Program with Graphical Summaries.” Journal of Chemical Information and Modeling 58 (11): 2178–82.</p></li>
+                                <li><p class=ex2>Vries, Sjoerd J. de, and Alexandre M. J. J. Bonvin. 2011. “CPORT: A Consensus Interface Predictor and Its Performance in Prediction-Driven Docking with HADDOCK.” PloS One 6 (3): e17695.</p></li>
+                                <li><p class=ex2>Wang, Yan, Jian Wang, Ruiming Li, Qiang Shi, Zhidong Xue, and Yang Zhang. 2017. “ThreaDomEx: A Unified Platform for Predicting Continuous and Discontinuous Protein Domains by Multiple-Threading and Segment Assembly.” Nucleic Acids Research 45 (W1): W400–407.</p></li>
+                                <li><p class=ex2>Waterhouse, Andrew, Martino Bertoni, Stefan Bienert, Gabriel Studer, Gerardo Tauriello, Rafal Gumienny, Florian T. Heer, et al. 2018. “SWISS-MODEL: Homology Modelling of Protein Structures and Complexes.” Nucleic Acids Research 46 (W1): W296–303.</p></li>
+                                <li><p class=ex2>Webb, B., and A. Sali. 2014. “Comparative Protein Structure Modeling Using Modeller.” In Current Protocols in Bioinformatics. John Wiley and Sons.</p></li>
+                                <li><p class=ex2>Weinkam, Patrick, Jaume Pons, and Andrej Sali. 2012. “Structure-Based Model of Allostery Predicts Coupling between Distant Sites.” Proceedings of the National Academy of Sciences of the United States of America 109 (13): 4875–80.</p></li>
+                                <li><p class=ex2>Williams, Christopher J., Jeffrey J. Headd, Nigel W. Moriarty, Michael G. Prisant, Lizbeth L. Videau, Lindsay N. Deis, Vishal Verma, et al. 2018. “MolProbity: More and Better Reference Data for Improved All-Atom Structure Validation.” Protein Science: A Publication of the Protein Society 27 (1): 293–315.</p></li>
+                                <li><p class=ex2>Wriggers, Willy. 2012. “Conventions and Workflows for Using Situs.” Acta Crystallographica. Section D, Biological Crystallography 68 (Pt 4): 344–51.</p></li>
+
+
+                                <li><p class=ex2>Yang, Jianyi, Ivan Anishchenko, Hahnbeom Park, Zhenling Peng, Sergey Ovchinnikov, and David Baker. 2020. “Improved Protein Structure Prediction Using Predicted Interresidue Orientations.” Proceedings of the National Academy of Sciences of the United States of America 117 (3): 1496–1503.</p></li>
+                                <li><p class=ex2>Yang, Jianyi, Renxiang Yan, Ambrish Roy, Dong Xu, Jonathan Poisson, and Yang Zhang. 2015. “The I-TASSER Suite: Protein Structure and Function Prediction.” Nature Methods 12 (1): 7–8.</p></li>
+                                <li><p class=ex2>Yu, Jinchao, Geraldine Picord, Pierre Tuffery, and Raphael Guerois. 2015. “HHalign-Kbest: Exploring Sub-Optimal Alignments for Remote Homology Comparative Modeling.” Bioinformatics  31 (23): 3850–52.</p></li>
+                                <li><p class=ex2>Zundert, G. C. P. van, and A. M. J. J. Bonvin. 2015. “DisVis: Quantifying and Visualizing Accessible Interaction Space of Distance-Restrained Biomolecular Complexes.” Bioinformatics  31 (19): 3222–24./p></li>
+                                <li><p class=ex2>Zundert, Gydo C. P. van, Adrien S. J. Melquiond, and Alexandre M. J. J. Bonvin. 2015. “Integrative Modeling of Biomolecular Complexes: HADDOCKing with Cryo-Electron Microscopy Data.” Structure  23 (5): 949–60.</p></li>
+
+
+
+                            </ol>  
+                        </blockquote>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- start card body2 -->
+    <div class="card-body">
+        <!-- start overall card body for front page -->
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- end card-header -->
+                <div class="mt-2" />
+            </div>
+            <p align="justify"><em>Integrative Modeling Validation Package : Version 1.0</em></p>
+        </div>
+        <!-- end column -->
+    </div>
+    <!--end row-->
 </div>
+<!--end card body-->
+<!-- start footer -->
+<footer class="page-footer">
+    <div class="container-fluid">
+        <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
+            <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
+                <a href="http://www.wwpdb.org/" target="_blank">
+                    <img src="images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
+                </div>
+                <div class="col-sm-6">
+                    <div class="float-right text-right">
+                        <p style="margin-bottom: 0px; margin-right: 0px;color: #000">Supported by<br />National Science Foundation</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="color:#FFF; background-color: #669966; padding-top: 3px; padding-bottom: 8px;">
+            </div>
+        </div>
+    </footer>
+    <!-- add Javasscript file from js file -->
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/popper1.12.9.min.js"></script>
+    <script type="text/javascript" src=".js/bootstrap4.1.3.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap3-typeahead.min.js"></script>
+
+
 </div>
-<!--end row-->
-</div>
-<!-- end card bods-->
-<div class="card-body">
-    <!-- start overall card body for front page -->
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card-header" style="background-color: #E4E4E4;">
-                <p class=ex2 align='center' ><b><u> <a name='overview'>PDB-Dev Validation Report</a></u> </b></p>
+</body>
 
-                <p class=ex2 align='justify' ><a name='overview'></a> This validation report was created based on the guidelines and recommendations from IHM TaskForce. For details on the guidelines, please refer to the <a href='https://pubmed.ncbi.nlm.nih.gov/31780431/'>following article</a>. The first version of the PDB-Dev validation report consists of four categories as follows: </p>
-                <ol type="A">
-                    <li><p lass=ex2 ><b>Model composition :</b> This section outlines model details and includes information on ensembles deposited, chains and residues of domains, model representation, software, protocol, and methods used.</li>
-
-                        <li><p lass=ex2 ><b>Data quality assessment :</b> Data quality assessments are only available for SAS datasets. This section was developed in collaboration with the SASBDB community. For details on the metrics, guidelines, and recommendations used, refer the <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'> 2017 community article</a>.</li>
-
-                            <li><p class=ex2 ><b>Model quality assessment :</b>Model quality for models at atomic resolution is assessed using molprobity, consistent with PDB. Model quality for coarse-grained or multi-resolution structures are assessed by computing excluded volume satisfaction based on reported distances and sizes of beads in the structures.</li>
-
-                                <li><p lass=ex2 ><b>Fit to data used to build the model  :</b>Fit to data used to build the model is only available for SAS datasets. This section was developed in collaboration with the SASBDB community. For details on the metrics, guidelines, and recommendations used, refer the<a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'>  2017 community article </a>.</li>
-
-                                </ol>
-                                <p style=margin-bottom:0.5cm;> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <!-- start overall card body for front page -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card-header" style="background-color: #E4E4E4;">
-
-                                <p class=ex2 align='center' ><b><u> <a name='overview'>1. Overview</a></u> </b></p>
-                                <p class=ex2 align='justify' ><a name='overview'><i>1.1 Overall Quality Assesment :</i></a> This is a set of plots that represent a snapshot view of the validation results. Refer each section to understand the contents of these plots. </p>
-                                <p style=margin-bottom:0.5cm;> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <!-- start overall card body for front page -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card-header" style="background-color: #E4E4E4;">
-
-                                <p class=ex2 align='center' ><b><u> <a name='ensemble'>2. Model Details </a></u> </b></p>
-                                <p class=ex2 align='justify' ><a name='ensemble'><i>2.1 Ensemble Information :</i></a> Number of ensembles deposited, where each ensemble consists of two or more structures. </p>
-                                <p class=ex2 align='justify' ><a name='summary'> <i>2.2 Summary :</i></a> Summary of the structure, including number of models deposited, datasets used to build the models and information on model representation. </p>
-                                <p class=ex2 align='justify' ><a name='entry'><i>2.3 Entry Composition :</i></a> Number of chains present in the integrative structure. </p>
-                                <p class=ex2 align='justify' ><a name='datasets'><i>2.4 Datasets Used :</i></a> Number and type of datasets used to build the model. </p>
-                                <p class=ex2 align='justify' ><a name='representation'><i>2.5 Representation :</i></a> Number and details on rigid and non-rigid elements of the structure. </p>
-                                <p class=ex2 align='justify' ><a name='software'><i>2.6 Methods and Software :</i></a> Methods, protocols, and softwares used to build the integrative structure. </p>
-                                <p style=margin-bottom:0.5cm;> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <!-- start overall card body for front page -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card-header" style="background-color: #E4E4E4;">
-                                <p class=ex2 align='center' ><b><u> <a name='dataquality'>3. Data Quality </a></u> </b></p>
-                                <p class=ex2 align='justify' ><a name='scattering'><i>3.1 SAS: Scattering Profiles :</i></a> Data from solutions of biological macromolecules are presented as both log I(q) vs q and log I(q) vs log (q) based on <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5586245/'> SAS validation task force (SASvtf) recommendations </a>. I(q) is the intensity (in arbitrary units) and q is the modulus of the scattering vector. </p>
-
-                                <p>Recommendations from <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5586245/'> SAS validation task force (SASvtf) for data presentation, analysis, and validation</a> includes </p>
-
-                                <figure class="quote">
-                                    <blockquote>
-                                        <ol>
-                                            <li><p class=ex2> Difference scattering profiles [(particle + solvent) − (solvent scattering)] corresponding to the particle form factor deposited in a publicly available archive or made available as supplementary material and presented as a plot of log I(q) versus q or log I(q) versus log q along with a Guinier plot with the following. </p></li>
-                                            <ol type='A'>
-                                            <li><p class=ex2 >Intensities on an absolute scale in units of cm <sup>−1</sup> with propagated standard errors (σ). Note: for Guinier plots [ln I(q) versus q <sup>2</sup>] a first-order approximation to the error in ln I(q) is σI(q)/I(q).</p></li>
-
-                                            <li><p class=ex2 >For multiple curves on the same plot, data can be offset for clarity with the offsets given in the figure caption.</p></li>
-                                            <li><p class=ex2 >For SANS contrast-variation experiments, data from all contrast points.</p></li>
-                                            <li><p class=ex2 >Guinier R <sub>g</sub> and I(0) values with errors, a quality-of-fit parameter (such as a coefficient of correlation R <sup>2</sup>) with the q or qR<sub>g</sub> range specified and linear fits displayed with q <sub>min</sub> < q ≃ π/d <sub>max</sub>. Any data from the measurement range that was truncated should be displayed and identified by the use of a symbols that distinguish them from data points included in the linear fit.</p></li>
-                                            </ol>
-                                            <li><p class=ex2>P(r) versus r with associated R <sub>g</sub> and I(0) (with errors) and d <sub>max</sub> values is essential for SAXS data and is advised for SANS data [especially at solvent match points for complexes of components with distinct scattering densities where interpretation of P(r) will be the most intuitive as the scattering object has an approximately uniform scattering density]</p></li>
-
-                                            <li><p class=ex2> M or V estimates, preferably from multiple methods; for example, methods based on I(0) in addition to V <sub>P</sub> or V <sub>c</sub>. For I(0)-based methods, values and uncertainties in the calculated or experimentally determined concentration and parameters used.</p></li>
-
-                                            <li><p class=ex2> Where applied, the magnitude of corrections for solvent subtraction applied to the data as a potential warning that something is not correct if unduly large (say 1% percent of the solvent scattering level)</p></li>
-
-                                            <li><p class=ex2> Where relevant, the method of data desmearing to correct for beam geometry and/or polychromaticity and the original smeared data be made available.</p></li>
-
-                                            <li><p class=ex2> For a concentration series, note if no change in R g or I(0)/C is observed with increasing concentration [C in (w/v)] and for best practice report M estimates at each concentrations or provide a plot of I(0)/C versus C</p></li>
-
-                                            <li><p class=ex2> A dimensionless Kratky plot as a check on the degree of folding and/or flexibility in the scattering particle. Kratky and/or Porod–Debye plots might alternatively be used to assess potential flexibility.</p></li>
-
-                                            <li><p class=ex2> For SEC–SAS data a plot of I(0) and R g as a function of measurement time or measurement frame, and correlated UV traces if used for estimating C, including the leading and trailing edge of elution peaks. An I(0)/A 280 or I(0)/C plot as a function of time is also useful. For more complex cases, deconvolution of multiple species in the SEC profile may be needed, for example using the HPLC–SAXS module of US-SUMO (http://www.somo.uthscsa.edu/).</p></li>
-
-                                            <li><p class=ex2> Description of the data processing used to obtain the final data set for analysis and modelling [including data reduction to I(q) versus q, solvent subtraction, merging of multiple data sets, extrapolation to infinite dilution etc.]. For merged or extrapolated data sets, the original measurements should be available along with the precise protocol used for processing.</p></li>
-
-                                            <li><p class=ex2> For contrast-variation experiments the nature and number of contrast points with a plot of normalized ± [I(0)/C]1/2 versus solvent scattering density identifying the total particle solvent match point along with transmissions at each contrast with controls for pure 1H2O and 2H2O for calibration.</p></li>
-
-                                            <li><p class=ex2> For contrast-variation experiments on assemblies of components with different mean scattering densities, the M or V estimates from I(0) for each contrast point, Stuhrmann plots and derived R g values for individual components and whole particle at infinite contrast and extracted component scattering functions (including cross-term) are all desirable. Software used for data processing and analysis [e.g. R g, V P and P(r)] including version numbers.  </p></li>
-
-
-                                        </ol>  
-                                      </blockquote>
-                                    </figure>
-
-
-                                    <p class=ex2 align='justify' ><a name='expt'> <i>3.2 SAS: Experimental Estimates :</i></a> Molecular weight (Mw) and volume data are displayed. True Mw can be compared to Porod estimate from scattering profiles, estimated volume can be compared to Porod volume obtained from scattering profiles. </p>
-                                    <p class=ex2 align='justify' ><a name='flexibility'><i>3.3 SAS: Flexibility Analysis :</i></a>  Flexibility of chains are assessed by inferring Porod-Debye and Kratky plots. In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domains, whereas fully unfolded domains are devoid of any discernible plateau. For details, refer to Figure 5 in Rambo and Tainer, 2011. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domains and a hyperbolic shape is observed for fully unfolded domains.</p>
-                                    <p class=ex2 align='justify' ><a name='pofr'><i>3.4 SAS: P(r) Analysis :</i></a> P(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. p(r) is the Fourier transform of I(s) (and vice versa). Rg can be estimated from integrating the p(r) function. Agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile. Rg is a measure for the overall size of a macromolecule; e.g. a protein with a smaller Rg is more compact than a protein with a larger Rg, provided both have the same molecular weight (MW). The point where p(r) is decaying to zero is called Dmax and represents the maximum size of the particle. The value of P(r) should be zero beyond r=Dmax. </p>
-                                    <p class=ex2 align='justify' ><a name='guinier'><i>3.5 SAS: Guinier Analysis :</i></a> Agreement between the p(r) and Guinier-determined Rg (table below) is a good measure of the self-consistency of the SAS profile.  The linearity of the Guinier plot is a sensitive indicator of the quality of the experimental SAS data; a linear Guinier plot is a necessary but not sufficient demonstration that a solution contains monodisperse particles of the same size. Deviations from linearity usually point to strong interference effects, polydispersity of the samples or improper background subtraction. Residual value plot and coefficient of determination (R2) are measures to assess linear fit to the data. A perfect fit has an R2 value of 1. Residual values should be equally and randomly spaced around the horizontal axis.</p>
-                                    <p style=margin-bottom:0.5cm;> </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="card-body">
-                        <!-- start overall card body for front page -->
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card-header" style="background-color: #E4E4E4;">
-
-                                    <p class=ex2 align='center' ><b><u> <a name='modelquality'>4. Model Quality Assessment </a></u> </b></p>
-                                    <p class=ex2 align='justify' ><a name='exv'><i>4.1a Excluded Volume Analysis :</i></a> Excluded volume violation is defined as percentage of overlaps between coarse-grained beads in a structure. This percentage is obtained by dividing the number of overlaps/violations by the total number of pair distances in a structure. An overlap or violation between two beads occurs if the distance between the two beads is less than the sum of their radii.  </p>
-                                    <p class=ex2 align='justify' ><a name='molprobity'> <i>4.1b Molprobity Analysis :</i></a> Molprobity analysis for atomic structures reported is consistent with PDB standards for X-ray structures. Please refer to the <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'> PDB user guide </a> for details. </p>
-                                    <p style=margin-bottom:0.5cm;> </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <!-- start overall card body for front page -->
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card-header" style="background-color: #E4E4E4;">
-
-                                    <p class=ex2 align='center' ><b><u> <a name='fittodata'>5. Fit to Data Used for Modeling Assessment </a></u> </b></p>
-
-                                <p>Recommendations from <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5586245/'> SAS validation task force (SASvtf) for model fit assessment</a> includes: </p>
-
-                                <figure class="quote">
-                                    <blockquote>
-                                        <ol>
-                                            <li><p class=ex2> All software, including version numbers, used for modelling; three-dimensional shape, bead or atomistic modelling. </p></li>
-
-                                            <li><p class=ex2>All modelling assumptions clearly stated, including adjustable parameter values. In the case of imposed symmetry, especially in the case of shape models, comparison with results obtained in the absence of symmetry restraints.</p></li>
-
-                                            <li><p class=ex2> For atomistic modelling, a description of how the starting models were obtained (e.g. crystal or NMR structure of a domain, homology model etc.), connectivity or distance restraints used and flexible regions specified and the basis for their selection.</p></li>
-
-                                            <li><p class=ex2> Any additional experimental or bioinformatics-based evidence supporting modelling assumptions and therefore enabling modelling restraints or independent model validation.</p></li>
-
-
-                                            <li><p class=ex2> For three-dimensional models, values for adjustable parameters, constant adjustments to intensity, χ2 and associated P-values and a clear representation of the model fit to the experimental I(q) versus q including a residual plot that clearly identifies systematic deviations.</p></li>
-
-                                            <li><p class=ex2> Analysis of the ambiguity and precision of models, e.g. based on cluster analysis of results from multiple independent optimizations of the model against the SAS profile or profiles, with examples of any distinct clusters in addition to any final averaged model.</p></li>
-
-
-                                        </ol>  
-                                      </blockquote>
-                                    </figure>
-
-
-                                    <p class=ex2 align='justify' ><a name='goodness'><i>5.1 SAS:  &#x3A7;&#178; Goodness of Fit Assessment :</i></a> Model and fits displayed below were obtained from SASBDB. χ² values are a measure of fit of the model to data. A perfect fit has a χ² value of zero. </p>
-                                    <p class=ex2 align='justify' ><a name='cormap'> <i>5.2 SAS: Cormap Analysis :</i></a> ATSAS datcmp was used for hypothesis testing. All data sets are similar (i.e. the fit and the data collected) is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis. </p>
-                                    <p style=margin-bottom:0.5cm;> </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- start card body2 -->
-                    <div class="card-body">
-                        <!-- start overall card body for front page -->
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <!-- end card-header -->
-                                <div class="mt-2" />
-                            </div>
-                            <p align="justify"><em>Integrative Modeling Validation Package : Version 1.0</em></p>
-                        </div>
-                        <!-- end column -->
-                    </div>
-                    <!--end row-->
-                </div>
-                <!--end card body-->
-                <!-- start footer -->
-                <footer class="page-footer">
-                    <div class="container-fluid">
-                        <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
-                            <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
-                                <a href="http://www.wwpdb.org/" target="_blank">
-                                    <img src="images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="float-right text-right">
-                                        <p style="margin-bottom: 0px; margin-right: 0px;color: #000">Supported by<br />National Science Foundation</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" style="color:#FFF; background-color: #669966; padding-top: 3px; padding-bottom: 8px;">
-                            </div>
-                        </div>
-                    </footer>
-                    <!-- add Javasscript file from js file -->
-
-                    <script type="text/javascript" src="js/jquery.min.js"></script>
-                    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-                    <script type="text/javascript" src="js/main.js"></script>
-                    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-                    <script type="text/javascript" src="js/popper1.12.9.min.js"></script>
-                    <script type="text/javascript" src=".js/bootstrap4.1.3.min.js"></script>
-                    <script type="text/javascript" src="js/bootstrap3-typeahead.min.js"></script>
-
-
-                </div>
-            </body>
-
-            </html>
+</html>
 
