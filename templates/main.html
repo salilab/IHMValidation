@@ -280,16 +280,64 @@
                                                                 <!-- start overall card body for front page -->
                                                                 <div class="row">
                                                                     <div class="col-lg-12">
-                                                                        <div class="card-header" style="background-color: #FFFFFF; border-color:#003366; height: 30rem;">
+                                                                        <div class="card-header" style="background-color: #FFFFFF; border-color:#003366; height: 35rem;">
                                                                             <h3 align="center"><a name='qual'>Overall quality</a><a class='help' title='help' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="../../../validation_help.html#overview">?</a></h3>
                                                                             <p align="justify"> <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development.</em> </p>
+                                                                            <div class="container">
+                                                                            <ul class="nav nav-tabs">
+                                                                                <li class="active"><a class="nav-link active " data-toggle="tab" href="#home">Model Quality</a></li>
+                                                                                <script type="text/javascript">
+                                                                                    if ({{Data}}.includes('SAS DATA') >= 1) {
+                                                                                    var ex='<li><a class="nav-link " data-toggle="tab" href="#menu1">Data Quality</a></li>'
+                                                                                    document.write(ex);}
+                                                                                    else{
+                                                                                    var ex='<li><a class="nav-link disabled " data-toggle="tab" href="#menu1">Data Quality</a></li>'
+                                                                                    document.write(ex);
+                                                                                    }
+                                                                                </script>
+                                                                                <li>
+
+                                                                                <script type="text/javascript">
+                                                                                    if ({{Data}}.includes('SAS DATA') >= 1) {
+                                                                                    var ex='<a class="nav-link " data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a></li>'
+                                                                                    document.write(ex);}
+                                                                                    else{
+                                                                                    var ex='<a class="nav-link disabled" data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a></li>'
+                                                                                    document.write(ex);
+                                                                                    }
+                                                                                </script>
+                                                                                <li><a class="nav-link disabled " data-toggle="tab" href="#menu3" class="tab-display">Fit to Data Used for Validation</a></li>
+                                                                            </ul>
+                                                                            <div class="tab-content">
+                                                                            <div id="home" class="tab-pane active">
                                                                             <div class="box text-center container-fluid no-padding" align='center'>
-
-
                                                                                 <script>
-                                                                                    var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance.html frameborder=0 scrolling=yes width=70% height=400vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
+                                                                                    var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_MQ.html frameborder=0 scrolling=yes width=70% height=400vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
                                                                                     document.write(section);
                                                                                 </script>
+                                                                            </div>
+                                                                            </div>
+                                                                            <div id="menu1" class="tab-pane fade">
+                                                                            <div class="box text-center container-fluid no-padding" align='center'>
+                                                                                <script>
+                                                                                    var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_DQ.html frameborder=0 scrolling=yes width=70% height=400vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
+                                                                                    document.write(section);
+                                                                                </script>
+                                                                            </div>
+                                                                            </div>
+                                                                            <div id="menu2" class="tab-pane fade">
+                                                                            <div class="box text-center container-fluid no-padding" align='center'>
+                                                                                <script>
+                                                                                    var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_FQ.html frameborder=0 scrolling=yes width=70% height=400vh align=center text-align: center style=position:relative onload=resizeIframe(this)></iframe>'
+                                                                                    document.write(section);
+                                                                                </script>
+                                                                            </div>
+                                                                            </div>
+                                                                            <div id="menu3" class="tab-pane fade">
+                                                                            <h3></h3>
+                                                                            <p></p>
+                                                                            </div>
+                                                                            </div>
                                                                             </div>
                                                                         </div>
                                                                         <!-- end card-header -->

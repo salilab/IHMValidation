@@ -35,8 +35,6 @@ class Plots(validation.GetInputInformation):
 
         # create tabs list to add all the panel figures (model quality, data quality.. etc)
         output_file(self.ID+"quality_at_glance.html", mode="inline")
-        tabsI = []
-
         # MODEL QUALITY
         # check for molprobity or excluded volume data
         if clashscore or rama or sidechain:
@@ -84,7 +82,7 @@ class Plots(validation.GetInputInformation):
                 lower = min(counts)-20
 
             p = figure(y_range=Scores, x_range=(lower, upper), plot_height=300,
-                       plot_width=800, title='Model quality: Excluded Volume Analysis')
+                       plot_width=800, title='Model Quality: Excluded Volume Analysis')
             r = p.hbar(y='Scores', right='counts', color='color',
                        source=source, alpha=0.8, line_color='black')
             p.xaxis.axis_label = 'Number of violations'
@@ -122,18 +120,17 @@ class Plots(validation.GetInputInformation):
         p.title.vertical_align = 'top'
         # make panel figures
         # first panel is model quality
-        first = Panel(child=row(p), title='Model quality')
-        tabsI.append(first)
         export_svgs(p, filename=self.filename+'/' +
                     self.ID+"quality_at_glance_MQ.svg")
         export_png(p, filename=self.filename+'/' +
                    self.ID+"quality_at_glance_MQ.png")
+        save(p, filename=self.filename+'/'+self.ID+"quality_at_glance_MQ.html")
 
         # DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
         if len(sas_data.keys()) > 0:
-            Rgl = {0: 'p(r)', 1: 'Guinier'}
+            Rgl = {0: 'P(r)', 1: 'Guinier'}
             Scores = [Rgl[m] + ' ('+i+')' for i, j in sas_data.items()
                       for m, n in enumerate(j)]
             counts = [float(n)for i, j in sas_data.items()
@@ -142,7 +139,7 @@ class Plots(validation.GetInputInformation):
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
             pd = figure(y_range=Scores, x_range=(0, max(
-                counts)+1), plot_height=300, plot_width=800, title="Data Quality: Rg Analysis",)
+                counts)+1), plot_height=300, plot_width=800, title="Data Quality for SAS: Rg Analysis",)
             rd = pd.hbar(y='Scores', right='counts', color='color',
                          source=source, alpha=0.8, line_color='black')
             pd.ygrid.grid_line_color = None
@@ -158,16 +155,13 @@ class Plots(validation.GetInputInformation):
             pd.legend.label_text_font_size = "8px"
             pd.xaxis.axis_label_text_font_style = 'italic'
             pd.yaxis.axis_label_text_font_style = 'italic'
-            second = Panel(child=row(pd), title='Data quality: SAS')
-            tabsI.append(second)
             pd.output_backend = "svg"
             export_svgs(pd, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_DQ.svg")
             export_png(pd, filename=self.filename+'/' +
                        self.ID+"quality_at_glance_DQ.png")
-        else:
-            second = Panel(child=row(p1), title='Data quality')
-            tabsI.append(second)
+            save(pd, filename=self.filename+'/' +
+                 self.ID+"quality_at_glance_DQ.html")
 
         # FIT TO DATA QUALITY
         # check for sas data, if exists, plot
@@ -181,7 +175,7 @@ class Plots(validation.GetInputInformation):
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
             pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=300,
-                        plot_width=800, title="Fit to SAS input: \uab53 \u00b2 Fit")
+                        plot_width=800, title="Fit to SAS Data: \uab53 \u00b2 Fit")
             rf = pf.hbar(y='Scores', right='counts', color='color',
                          source=source, alpha=0.8, line_color='black')
             pf.ygrid.grid_line_color = None
@@ -195,13 +189,15 @@ class Plots(validation.GetInputInformation):
             pf.legend.orientation = "horizontal"
             pf.legend.location = 'bottom_center'
             pf.legend.label_text_font_size = "8px"
-            third = Panel(child=row(pf), title='Fit to data: SAS')
-            tabsI.append(third)
+            # third = Panel(child=row(pf), title='Fit to Data: SAS')
+            # tabsI.append(third)
             pf.output_backend = "svg"
             export_svgs(pf, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_FQ.svg")
             export_png(pf, filename=self.filename+'/' +
                        self.ID+"quality_at_glance_FQ.png")
+            save(pf, filename=self.filename+'/' +
+                 self.ID+"quality_at_glance_FQ.html")
 
         # check for XL_MS data, if exists, plot
         if len(cx_fit.keys()) > 0:
@@ -213,7 +209,7 @@ class Plots(validation.GetInputInformation):
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
             pf1 = figure(y_range=Scores, x_range=(0, max(counts)+1),
-                         plot_height=300, plot_width=800, title="Fit to XL-MS input")
+                         plot_height=300, plot_width=800, title="Fit to XL-MS Input")
             rf1 = pf1.hbar(y='Scores', right='counts', color='color',
                            source=source, alpha=0.8, line_color='black')
             pf1.ygrid.grid_line_color = None
@@ -227,25 +223,13 @@ class Plots(validation.GetInputInformation):
             pf1.legend.orientation = "horizontal"
             pf1.legend.label_text_font_size = "8px"
             pf1.legend.location = 'bottom_center'
-            third1 = Panel(child=row(pf1), title='Fit to data: XL-MS')
-            tabsI.append(third1)
+            # third1 = Panel(child=row(pf1), title='Fit to Data: XL-MS')
+            # tabsI.append(third1)
             pf1.output_backend = "svg"
             export_svgs(pf1, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_FQ1.svg")
             export_png(pf1, filename=self.filename+'/' +
                        self.ID+"quality_at_glance_FQ1.png")
-
-        # check for XL_MS or SAS data, if exists, plot third panel as FIT TO INPUT
-        if (len(cx_fit.keys()) < 1) or (len(sas_fit.keys()) < 1):
-            third = Panel(child=row(p1), title='Fit to input data')
-            tabsI.append(third)
-
-        # remaining panels are empty for now, will be updated
-        # fourth = Panel(
-        #   child=row(p1), title='Fit to data not used for modeling')
-        # tabsI.append(fourth)
-        fifth = Panel(child=row(p1), title='Uncertainty in models')
-        tabsI.append(fifth)
-        tabs = Tabs(tabs=tabsI)
-        curdoc().add_root(tabs)
-        save(tabs, filename=self.filename+'/'+self.ID+"quality_at_glance.html")
+            save(pf1, filename=self.filename+'/' +
+                 self.ID+"quality_at_glance_FQ1.html")
+            # This is a new line that ends the file.
