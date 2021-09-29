@@ -73,7 +73,7 @@ _ihm_sphere_obj_site.model_id
             self.assertEqual('PDBDEVtest', self.IO.get_id())
             self.assertEqual('PDBDEVtest', self.IO.get_id_from_entry())
             self.assertEqual(
-                'Title not listed/Citation not provided', self.IO.get_title())
+                'Title not available/Citation not provided', self.IO.get_title())
             self.assertEqual('Citation not present in file',
                              self.IO.get_authors())
             self.assertEqual(['1'], self.IO.get_assembly_ID_of_models())
@@ -377,7 +377,7 @@ https:chocolatemuffin.org
                     'Software version': ['developer'], 'Software classification': ['docking'], 
                     'Software location': ['<a href="https:chocolatemuffin.org">https:chocolatemuffin.org</a>']}
             temp = GetInputInformation(tmpfilepath)
-            print (temp.get_software_comp())
+            # print (temp.get_software_comp())
             self.assertEqual(output, temp.get_software_comp())
 
     def test_check_ensemble(self):
@@ -539,9 +539,9 @@ _ihm_dataset_related_db_reference.details
                       'Dataset type': ['Experimental model', 'Comparative model',
                                        'CX-MS data', 'EM raw micrographs', '2DEM class average'],
                       'Database name': ['PDB', '', '', '', ''],
-                      'Details': ['PDB ID: 3JRO', 'template PDB ID: Not listed',
+                      'Details': ['PDB ID: 3JRO', 'template PDB ID: Not available',
                                   'Linker name and number of cross-links: DSS, 1 cross-links',
-                                  'EMDB ID: Not listed', 'EMDB ID: Not listed']}
+                                  'EMDB ID: Not available', 'EMDB ID: Not available']}
 
             temp = GetInputInformation(tmpfilepath)
             self.assertEqual(output, temp.get_dataset_details())

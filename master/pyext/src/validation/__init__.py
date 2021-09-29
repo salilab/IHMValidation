@@ -320,7 +320,7 @@ class GetInputInformation(object):
 
     def read_all_references(self):
         reference_filename = os.path.join(
-            os.getcwd(), '../templates/', 'references.csv')
+            os.getcwd(), 'templates/', 'references.csv')
         self.ref_link = dict()
         self.ref_cit = dict()
         with open(reference_filename, 'r+') as inf:
