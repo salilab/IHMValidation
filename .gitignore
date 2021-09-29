@@ -7,19 +7,6 @@
 *.o
 *.obj
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
 # Compiled Static libraries
 *.lai
 *.la
@@ -30,3 +17,14 @@
 *.exe
 *.out
 *.app
+
+*.pyc
+*~
+*.bak
+*.old
+*.ipynb
+.DS_Store
+tests/__pycache__*
+master/pyext/src/validation/__pycache__*
+SASDC29*
+
