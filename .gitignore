@@ -27,4 +27,5 @@
 tests/__pycache__*
 master/pyext/src/validation/__pycache__*
 SASDC29*
+templates_for_flasks/
 
