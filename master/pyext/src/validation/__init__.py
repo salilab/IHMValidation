@@ -65,7 +65,7 @@ class GetInputInformation(object):
         try:
             title = cit[0].title
         except IndexError:
-            title = 'Title not listed/Citation not provided'
+            title = 'Title not available/Citation not provided'
         return title
 
     def get_authors(self) -> str:
@@ -152,7 +152,7 @@ class GetInputInformation(object):
         if asym.seq_id_range[0] is not None:
             residues = asym.seq_id_range[1]-asym.seq_id_range[0]+1
         elif asym.seq_id_range[0] is None:
-            residues = 'None listed'
+            residues = 'None available'
         return residues
 
     def get_composition(self) -> dict:
@@ -320,7 +320,7 @@ class GetInputInformation(object):
 
     def read_all_references(self):
         reference_filename = os.path.join(
-            os.getcwd(), 'templates/', 'references.csv')
+            os.getcwd(), '../templates/', 'references.csv')
         self.ref_link = dict()
         self.ref_cit = dict()
         with open(reference_filename, 'r+') as inf:
@@ -349,7 +349,7 @@ class GetInputInformation(object):
                 try:
                     ensemble_comp['Model ID'].append(str(ensm.model_group._id))
                 except AttributeError:
-                    ensemble_comp['Model ID'].append('Not listed')
+                    ensemble_comp['Model ID'].append('Not available')
 
                 ensemble_comp['Number of models'].append(str(ensm.num_models))
                 ensemble_comp['Clustering method'].append(
@@ -400,7 +400,7 @@ class GetInputInformation(object):
                 try:
                     loc = _.location.db_name
                 except AttributeError:
-                    loc = str('Not listed')
+                    loc = str('Not available')
                 try:
                     acc = _.location.access_code
                 except AttributeError:
@@ -512,7 +512,7 @@ class GetInputInformation(object):
                 try:
                     acc = i.location.access_code
                 except AttributeError:
-                    acc = str('Not listed')
+                    acc = str('Not available')
                 dataset_comp['ID'].append(i._id)
                 if i.data_type == 'unspecified' and i.details is not None:
                     dataset_comp['Dataset type'].append(i.details)
