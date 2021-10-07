@@ -57,6 +57,7 @@ class GetMolprobityInformation(GetInputInformation):
             line = [_.strip() for _ in inf.readlines()]
 
         d['rama'] = line
+        print(d['rama'])
         filename = os.path.join(
             os.getcwd(), self.resultpath, self.ID+'_temp_rama.txt')
         with open(filename, 'wb') as fp:
@@ -297,7 +298,8 @@ class GetMolprobityInformation(GetInputInformation):
 
     def rama_detailed_table(self, models: dict, chains: list) -> dict:
         """ format rama information to print to file"""
-        dict1 = {'Model ID': [], 'Chain and res ID': [], 'Residue type': []}
+        dict1 = {'Model ID': [], 'Chain': [],
+                 'Residue ID': [], 'Residue type': []}
         f_rama_D = open(os.path.join(
             os.getcwd(), self.resultpath, self.ID+'_rama_detail.txt'), 'w+')
         for ind, el in models.items():
@@ -314,19 +316,29 @@ class GetMolprobityInformation(GetInputInformation):
                     if len(line.strip().split()[0]) > 2:
                         temp = line.strip().split()[0]
                         if temp[:1] in chains:
-                            val = temp[:1]+':'+temp[1:]
-                            dict1['Chain and res ID'].append(val)
+                            val1 = temp[:1]
+                            val2 = temp[1:]
+                            dict1['Chain'].append(val1)
+                            dict1['Residue ID'].append(val2)
                         elif temp[:2] in chains:
-                            val = temp[:2]+':'+temp[2:]
-                            dict1['Chain and res ID'].append(val)
+                            val1 = temp[:2]
+                            val2 = temp[2:]
+                            dict1['Chain'].append(val1)
+                            dict1['Residue ID'].append(val2)
                         elif temp[:3] in chains:
-                            val = temp[:3]+':'+temp[3:]
-                            dict1['Chain and res ID'].append(val)
+                            val1 = temp[:3]
+                            val2 = temp[3:]
+                            dict1['Chain'].append(val1)
+                            dict1['Residue ID'].append(val2)
                     else:
-                        dict1['Chain and res ID'].append(
-                            ':'.join(line.strip().split()[:2]))
+                        val1 = line.strip().split()[0]
+                        val2 = line.strip().split()[1]
+                        dict1['Chain'].append(val1)
+                        dict1['Residue ID'].append(val2)
+
         print(dict1['Model ID'], file=f_rama_D)
-        print(dict1['Chain and res ID'], file=f_rama_D)
+        print(dict1['Chain'], file=f_rama_D)
+        print(dict1['Residue ID'], file=f_rama_D)
         print(dict1['Residue type'], file=f_rama_D)
         return dict1
 
@@ -460,7 +472,8 @@ class GetMolprobityInformation(GetInputInformation):
         """process molprobity rotamers information and format to table"""
         f_rota_D = open(os.path.join(os.getcwd(), self.resultpath,
                                      self.ID+'_rota_detailed.txt'), 'w+')
-        dict1 = {'Model ID': [], 'Chain and res ID': [], 'Residue type': []}
+        dict1 = {'Model ID': [], 'Chain': [],
+                 'Residue ID': [], 'Residue type': []}
         for ind, el in models.items():
             for line in el:
                 if line.strip().split()[-1].split(':')[-2] == 'OUTLIER':
@@ -470,19 +483,32 @@ class GetMolprobityInformation(GetInputInformation):
                     if len(line.strip().split()[0]) > 2:
                         temp = line.strip().split()[0]
                         if temp[:1] in chains:
-                            val = temp[:1]+':'+temp[1:]
-                            dict1['Chain and res ID'].append(val)
+                            val1 = temp[:1]
+                            val2 = temp[1:]
+                            dict1['Chain'].append(val1)
+                            dict1['Residue ID'].append(val2)
+
                         elif temp[:2] in chains:
-                            val = temp[:2]+':'+temp[2:]
-                            dict1['Chain and res ID'].append(val)
+                            val1 = temp[:2]
+                            val2 = temp[2:]
+                            dict1['Chain'].append(val1)
+                            dict1['Residue ID'].append(val2)
+
                         elif temp[:3] in chains:
-                            val = temp[:3]+':'+temp[3:]
-                            dict1['Chain and res ID'].append(val)
+                            val1 = temp[:3]
+                            val2 = temp[3:]
+                            dict1['Chain'].append(val1)
+                            dict1['Residue ID'].append(val2)
+
                     else:
-                        dict1['Chain and res ID'].append(
-                            ':'.join(line.strip().split()[:2]))
+                        val1 = line.strip().split()[0]
+                        val2 = line.strip().split()[1]
+                        dict1['Chain'].append(val1)
+                        dict1['Residue ID'].append(val2)
+
         print(dict1['Model ID'], file=f_rota_D)
-        print(dict1['Chain and res ID'], file=f_rota_D)
+        print(dict1['Chain'], file=f_rota_D)
+        print(dict1['Residue ID'], file=f_rota_D)
         print(dict1['Residue type'], file=f_rota_D)
         return dict1
 

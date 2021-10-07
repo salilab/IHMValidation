@@ -121,14 +121,17 @@ class WriteReport(object):
                         Ramachandran and rotamer outliers have already been calculated")
                 with open(filename, 'rb') as fp:
                     d_mp['molprobity'] = pickle.load(fp)
+
                 f_rota = os.path.abspath(os.path.join(
                     os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
                 with open(f_rota, 'rb') as fp:
                     d_mp['rota'] = pickle.load(fp)
+
                 f_rama = os.path.abspath(os.path.join(
                     os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
                 with open(f_rama, 'rb') as fp:
                     d_mp['rama'] = pickle.load(fp)
+
                 f_clash = os.path.abspath(os.path.join(
                     os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
                 with open(f_clash, 'rb') as fp:
@@ -175,8 +178,8 @@ class WriteReport(object):
                 # print ("c",clashscores)
                 Template_Dict['clashscore_list'] = utility.dict_to_JSlist(
                     clashscores)
-                Template_Dict['clashlist'] = I_mp.clash_detailed_table(
-                    d_mp['clash'])
+                Template_Dict['clashlist'] = utility.dict_to_JSlist(I_mp.clash_detailed_table(
+                    d_mp['clash']))
                 Template_Dict['assess_atomic_segments'] = 'Clashscore: ' + str(
                     clashscore) + ', Ramachandran outliers: ' + str(rama) + '% '+',\
                      Sidechain outliers: '+str(sidechain)+'%'
@@ -351,7 +354,7 @@ class WriteReport(object):
         )) if self.Input.get_dataset_details() is not None else 'Not provided or used'
         Template_Dict['physics'] = physics
         Template_Dict['software'] = utility.get_software(
-            self.Input.get_software_comp()) + location
+            self.Input.get_software_comp())
         Template_Dict['struc'] = self.Input.get_atomic_coverage()
         Template_Dict['method'] = utility.get_method_name(
             self.Input.get_sampling())
