@@ -174,7 +174,7 @@
                                                                 var ex='<a class="dropdown-item colorclass" href=model_quality.html#ex>Excluded volume</a>';
                                                                 document.write(ex);}
                                                                 if ({{sphere}}<1){
-                                                                    var ex='<a class="dropdown-item colorclass" href=model_quality.html#geometry>Standard geometry</a> <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a> <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles</a> <a class="dropdown-item colorclass" href=model_quality.html#outliers>Ramachandran outliers</a>';
+                                                                    var ex='<a class="dropdown-item colorclass" href=model_quality.html#geometry>Standard geometry</a> <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a> <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles: protein backbone </a> <a class="dropdown-item colorclass" href=model_quality.html#outliers>Torsion angles: protein sidechain </a>';
                                                                     document.write(ex);}
                                                                 </script>
                                                             </div>
@@ -306,6 +306,14 @@
                                                                         }
 
 
+                                                                        if ({{clashlist}}.length > 1) {
+                                                                            var docx = "<p align='justify'><i> The table below contains the detailed list of all clashes based on a MolProbity analysis. Bad clashes are >= 0.4 Angstrom. </i></p>";
+                                                                            document.write(docx);
+                                                                            document.write(space);
+                                                                            Write_Table(list_to_write = {{clashlist}})
+                                                                            document.write(space);
+                                                                        }
+
                                                                         if ({{ramascore}}.length > 1) {
                                                                             var text2 = "<h5 class=ex2 align= center><u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
                                                                             text2 += "<p align='justify'><i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed. </i></p>"
@@ -326,8 +334,8 @@
 
 
                                                                         if ({{rotascore}}.length > 1) {
-                                                                            var text3 = "<h5 class=ex2 align=center><u><a name='outliers'>Ramachandran outliers: Protein sidechains</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
-                                                                            text3 += "<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
+                                                                            var text3 = "<h5 class=ex2 align=center><u><a name='outliers'>Torsion angles : Protein sidechains</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
+                                                                            text3 += "<i> In the following table, sidechain rotameric outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
                                                                             document.write(text3);
                                                                             document.write(space);
                                                                             Write_Table(list_to_write = {{rotascore}})
