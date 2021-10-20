@@ -4,6 +4,9 @@
 # ganesans - Salilab - UCSF
 # ganesans@salilab.org
 ###################################
+from collections import defaultdict
+from validation import utility
+from validation.Report import WriteReport
 import os
 import datetime
 import decouple
@@ -15,9 +18,6 @@ import jinja2
 import pytz
 import sys
 sys.path.insert(0, "../master/pyext/src/")
-from validation.Report import WriteReport
-from validation import utility
-from collections import defaultdict
 
 # from validation.WKhtmlToPdf import  wkhtmltopdf
 # import utility
@@ -36,7 +36,7 @@ parser.add_argument(
 parser.add_argument(
     '-ld', type=list, default=['No location specified'], help="add location of your analysis files")
 parser.add_argument(
-    '-m', type=list, default=['Method details unspecified'], help="add information on your method")
+    '-m', type=list, default=['Method details not available'], help="add information on your method")
 parser.add_argument('-models', type=str, default='1',
                     help="number of models in an ensemble, if you have multiple ensembles, add comma-separated string")
 parser.add_argument('-c', type=str, default='Distance threshold-based clustering used if ensembles are deposited',
@@ -72,7 +72,7 @@ options = {
     'enable-javascript': None,
     'javascript-delay': '50000',
     'header-left': '[page] of [topage]',
-    'footer-center': 'Full RCSB IM Structure Validation Report',
+    'footer-center': 'IM Structure Validation Report',
     'footer-line': '',
     'header-line': '',
     'footer-spacing': '5',
@@ -89,7 +89,7 @@ options_supp = {
     'enable-javascript': None,
     'javascript-delay': '500',
     'header-left': '[page] of [topage]',
-    'footer-center': 'RCSB IM Methods Table',
+    'footer-center': 'IM Summary Table',
     'footer-line': '',
     'header-line': '',
     'footer-spacing': '5',
@@ -106,15 +106,16 @@ template_flask = ["main.html",
 d = datetime.datetime.now()
 t = pytz.timezone("America/Los_Angeles")
 d1 = t.localize(d)
-timestamp = d1.strftime("%B %d, %Y --  %I:%M %p")
-dir_root_name=args.f.split('.')[0]
+timestamp = d1.strftime("%B %d, %Y - %I:%M %p")
+dir_root_name = args.f.split('.')[0]
 dirNames = {
-    'root':'../Validation/'+dir_root_name,
+    'root': '../Validation/'+dir_root_name,
     'images': '../Validation/'+dir_root_name+'/images',
     'pdf': '../Validation/'+dir_root_name+'/pdf',
     'json': '../Validation/'+dir_root_name+'/json',
-            'supp': '../Validation/'+dir_root_name+'/supplementary',
-            'template': '../Validation/'+dir_root_name+'/htmls'
+    'supp': '../Validation/'+dir_root_name+'/supplementary',
+    'template': '../Validation/'+dir_root_name+'/htmls',
+    'csv': '../Validation/'+dir_root_name+'/csv'
 }
 
 templateLoader = jinja2.FileSystemLoader(searchpath="../templates/")
@@ -196,15 +197,14 @@ if __name__ == "__main__":
     report = WriteReport(args.f)
     template_dict = report.run_entry_composition(Template_Dict)
 
-    template_dict, clashscore, rama, sidechain, exv_data = report.run_model_quality(
-        template_dict)
-
+    template_dict, molprobity_dict, exv_data = report.run_model_quality(
+        template_dict, csvDirName=dirNames['csv'], htmlDirName=dirNames['template'])
     template_dict, sas_data, sas_fit = report.run_sas_validation(template_dict)
-
     # cx_fit, template_dict = report.run_cx_validation(template_dict)
     report.run_quality_glance(
-        clashscore, rama, sidechain, exv_data, sas_data, sas_fit, cx_fit=defaultdict(),imageDirName=dirNames['images'])
-    report.run_sas_validation_plots(template_dict,imageDirName=dirNames['images'])
+        molprobity_dict, exv_data, sas_data, sas_fit, cx_fit=defaultdict(), imageDirName=dirNames['images'])
+    report.run_sas_validation_plots(
+        template_dict, imageDirName=dirNames['images'])
     template_dict = report.run_supplementary_table(template_dict,
                                                    location=args.ls,
                                                    physics=physics,
@@ -216,9 +216,10 @@ if __name__ == "__main__":
                                                    clustering=args.c,
                                                    resolution=args.res)
     write_supplementary_table(
-       args.f, template_dict, template_file_supp, dirNames['supp'], dirNames['supp'])
+        args.f, template_dict, template_file_supp, dirNames['supp'], dirNames['supp'])
     write_json(args.f, template_dict, dirNames['json'], dirNames['json'])
     write_html(args.f, template_dict, template_flask, dirNames['template'])
     write_pdf(args.f, template_dict, template_pdf,
-             dirNames['pdf'], dirNames['pdf'])
+              dirNames['pdf'], dirNames['pdf'])
+
     utility.clean_all()
