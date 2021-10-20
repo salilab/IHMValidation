@@ -5,11 +5,9 @@ body{
 	padding: 0;
 	margin: 0;
 	background-color: #669966;
-	height: 100vh;
 	overflow: auto;
 }
 .container {
-	height: 100vh;
 	overflow: auto;
 }
 
@@ -56,6 +54,12 @@ a.btn.button4:hover {
 .colorclass {
   color:white !important;
 }
+
+.dropdown-menu{
+    white-space: normal;
+    width: 200px !important;
+}
+
 
 .help {
 	color:#fff;
@@ -180,9 +184,6 @@ li.nav-item.mr-4.dropdown{
 
 }
 
-.dropdown-menu {
-    width: 200px !important;
-}
 
 .navbar-dark .navbar-nav .nav-item .dropdown-menu .dropdown-item:hover {
 	background-color: grey !important;
