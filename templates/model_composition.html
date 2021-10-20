@@ -175,7 +175,7 @@
                                                                 var ex='<a class="dropdown-item colorclass" href=model_quality.html#ex>Excluded volume</a>';
                                                                 document.write(ex);}
                                                                 if ({{sphere}}<1){
-                                                                    var ex='<a class="dropdown-item colorclass" href=model_quality.html#geometry>Standard geometry</a> <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a> <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles: protein backbone</a> <a class="dropdown-item colorclass" href=model_quality.html#outliers>Torsion angles: protein sidechain</a>';
+                                                                    var ex='<a class="dropdown-item colorclass" href=model_quality.html#geometry1>Standard geometry:<br>bond outliers</a> <a class="dropdown-item colorclass" href=model_quality.html#geometry2>Standard geometry:<br> angle outliers</a> <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a> <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles: protein <br>backbone </a> <a class="dropdown-item colorclass" href=model_quality.html#outliers>Torsion angles: protein <br>sidechain </a>';
                                                                     document.write(ex);}
                                                                 </script>
                                                             </div>
@@ -231,7 +231,7 @@
                                                 function Write_Table(list_to_write) {
                                                     var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
                                                     for (var i = 0; i < list_to_write[0].length; i++) {
-                                                        mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
+                                                        mytable += "<th align='center' class='text-center' style='vertical-align:middle'>" + list_to_write[0][i] + "</th>";
                                                     }
                                                     mytable += "</tr></thead><tr>";
 

@@ -174,7 +174,7 @@
                                                                 var ex='<a class="dropdown-item colorclass" href=model_quality.html#ex>Excluded volume</a>';
                                                                 document.write(ex);}
                                                                 if ({{sphere}}<1){
-                                                                    var ex='<a class="dropdown-item colorclass" href=model_quality.html#geometry>Standard geometry</a> <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a> <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles: protein backbone </a> <a class="dropdown-item colorclass" href=model_quality.html#outliers>Torsion angles: protein sidechain </a>';
+                                                                    var ex='<a class="dropdown-item colorclass" href=model_quality.html#geometry1>Standard geometry:<br>bond outliers</a> <a class="dropdown-item colorclass" href=model_quality.html#geometry2>Standard geometry:<br> angle outliers</a> <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a> <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles: protein <br>backbone </a> <a class="dropdown-item colorclass" href=model_quality.html#outliers>Torsion angles: protein <br>sidechain </a>';
                                                                     document.write(ex);}
                                                                 </script>
                                                             </div>
@@ -231,7 +231,7 @@
                                                 function Write_Table(list_to_write) {
                                                     var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
                                                     for (var i = 0; i < list_to_write[0].length; i++) {
-                                                        mytable += "<th align='center' class='text-center'>" + list_to_write[0][i] + "</th>";
+                                                        mytable += "<th align='center' class='text-center' style='vertical-align:middle'>" + list_to_write[0][i] + "</th>";
                                                     }
                                                     mytable += "</tr></thead><tr>";
 
@@ -277,22 +277,39 @@
                                                                 </script>
                                                                 <script>
                                                                     if ({{sphere}}< 1) {
-                                                                        var intro = "<h5 class= ex2 align= center><u><a name='geometry'>Standard geometry</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
+                                                                        var intro = "<h5 class= ex2 align= center><u><a name='geometry1'>Standard geometry: bond outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
                                                                         document.write(intro);
                                                                         var space = '<p class="ex2"> </p>';
                                                                         document.write(space);
                                                                         if ({{molp_b}}.length > 1) {
-                                                                            var intro = "<i> There are " + {{bond}} + " bond outliers in this entry. </i>";
+                                                                            var intro = "<i> There are " + {{bond}} + " bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=../csv/bond_outliers.csv> here. </a> </i>";
                                                                             document.write(intro);
                                                                             document.write(space);
                                                                             Write_Table(list_to_write = {{molp_b}})
                                                                             document.write(space);
                                                                         }
+
+                                                                        else {
+                                                                            var intro = "<i> Bond length outliers can not be evaluated for this model</i>";
+                                                                            document.write(intro);
+                                                                            document.write(space);
+                                                                        }
+
+                                                                        var intro = "<h5 class= ex2 align= center><u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
+                                                                        document.write(intro);
+                                                                        var space = '<p class="ex2"> </p>';
+                                                                        document.write(space);
+
                                                                         if ({{molp_a}}.length > 1) {
-                                                                            var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry.  </i>";
+                                                                            var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv> here. </a> </i>";
                                                                             document.write(intro2);
                                                                             document.write(space);
                                                                             Write_Table(list_to_write = {{molp_a}})
+                                                                            document.write(space);
+                                                                        }
+                                                                        else {
+                                                                            var intro2 = "<i> Bond angle outliers do not exist or can not be evaluated for this model </i>";
+                                                                            document.write(intro2);
                                                                             document.write(space);
                                                                         }
 
