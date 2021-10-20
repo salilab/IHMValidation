@@ -342,8 +342,8 @@ class SasValidation(GetInputInformation):
                     fit_2.to_csv('fit2.csv', header=False, index=False)
                     f1 = open('pval.txt', 'w+')
                     with f1 as outfile:
-                        run([config('ATSAS'), 'fit1.csv',
-                             'fit2.csv'], stdout=outfile)
+                        run([config('ATSAS1'), 'fit1.csv',
+                             'fit2.csv'], stdout=outfile, shell=False)
                     f2 = open('pval.txt', 'r')
                     all_lines = [j.strip().split()
                                  for i, j in enumerate(f2.readlines())]

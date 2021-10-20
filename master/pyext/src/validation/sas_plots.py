@@ -195,7 +195,7 @@ class SasValidationPlots(sas.SasValidation):
         p.title.vertical_align = 'top'
         p.xaxis.axis_label = "r [nm]"
         p.xaxis.axis_label_text_font_size = '14pt'
-        p.yaxis.axis_label = 'p(r)'
+        p.yaxis.axis_label = 'P(r)'
         p.yaxis.axis_label_text_font_size = '14pt'
         p.output_backend = "svg"
         p.xaxis.axis_label_text_font_style = 'italic'
@@ -212,7 +212,7 @@ class SasValidationPlots(sas.SasValidation):
         output_file(self.ID+sasbdb+"pddf_residuals.html", mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500,
-                   title="Residuals for p(r) fit ("+sasbdb+")")
+                   title="Residuals for P(r) fit ("+sasbdb+")")
         p.circle(x='Q', y='R', source=source,
                  color='blue', fill_alpha=0.3, size=5)
         hline = Span(location=0, dimension='width',
@@ -243,7 +243,7 @@ class SasValidationPlots(sas.SasValidation):
         output_file(self.ID+sasbdb+"pddf_residuals_wt.html", mode="inline")
         source = ColumnDataSource(df)
         p = figure(plot_height=500, plot_width=500,
-                   title="Error weighted residuals for p(r) fit ("+sasbdb+")")
+                   title="Error weighted residuals for P(r) fit ("+sasbdb+")")
         p.circle(x='Q', y='WR', source=source,
                  color='blue', fill_alpha=0.3, size=5)
         hline = Span(location=0, dimension='width',
@@ -276,7 +276,7 @@ class SasValidationPlots(sas.SasValidation):
         source1 = ColumnDataSource(df_int)
         source2 = ColumnDataSource(df_pofr)
         p = figure(plot_height=500, plot_width=500,
-                   title="p(r) extrapolated fit for "+sasbdb)
+                   title="P(r) extrapolated fit for "+sasbdb)
         legend1 = 'Experimental data'
         legend2 = "Linear fit"
         p.circle(x='Q', y='logI', source=source1, color='blue',

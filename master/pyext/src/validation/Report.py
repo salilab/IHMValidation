@@ -48,6 +48,8 @@ class WriteReport(object):
         Template_Dict['ID_w'] = self.Input.get_id().split()
         Template_Dict['ID_T'] = self.Input.get_id()[0:6]+'_' + \
             self.Input.get_id()[6:]
+        Template_Dict['ID_MP'] = [str(self.Input.get_id()[0:6]+'_' +
+                                      self.Input.get_id()[6:])]
         Template_Dict['ID_R'] = (
             self.Input.get_id()[0:6]+'_'+self.Input.get_id()[6:]).split()
         Template_Dict['Molecule'] = self.Input.get_struc_title()
@@ -60,7 +62,6 @@ class WriteReport(object):
         Template_Dict['number_of_software'] = self.Input.get_software_length()
         Template_Dict['soft_list'] = utility.dict_to_JSlist(
             self.Input.get_software_comp())
-
         Template_Dict['references'] = list(self.Input.ref_cit.values())
         Template_Dict['references'].sort()
         Template_Dict['number_of_datasets'] = self.Input.get_dataset_length()
@@ -76,6 +77,7 @@ class WriteReport(object):
         Template_Dict['num_chains'] = int(len(self.Input.get_composition(
         )['Chain ID']))/int(len(list(Counter(self.Input.get_composition()['Model ID']).keys())))
         Template_Dict['ChainL'] = self.Input.get_composition()['Chain ID']
+        Template_Dict['number_of_fits'] = 0
 
         return Template_Dict
 
@@ -99,7 +101,7 @@ class WriteReport(object):
                 Template_Dict['disclaimer'] = True
         return Template_Dict
 
-    def run_model_quality(self, Template_Dict: dict) -> (dict, dict, dict, dict, dict):
+    def run_model_quality(self, Template_Dict: dict, csvDirName: str, htmlDirName: str) -> (dict, dict, dict, dict, dict):
         '''
         get excluded volume for multiscale models
         get molprobity info for atomic models
@@ -111,10 +113,6 @@ class WriteReport(object):
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
             filename = os.path.abspath(os.path.join(
                 os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
-            global clashscore
-            global rama
-            global sidechain
-
             if os.path.exists(filename):
                 d_mp = {}
                 print("Molprobity analysis file already exists...\n...assuming clashscores, \
@@ -150,20 +148,53 @@ class WriteReport(object):
 
                 except (TypeError, KeyError, ValueError):
                     print("Molprobity cannot be calculated...")
-                    clashscore = None
-                    rama = None
-                    sidechain = None
 
             if d_mp:
-                a, b = I_mp.process_molprobity(d_mp['molprobity'])
-                Template_Dict['bond'] = len(a)
-                Template_Dict['angle'] = len(b)
-                clashscore, rama, sidechain = I_mp.get_data_for_quality_at_glance(
+                bond_nos, angle_nos = I_mp.process_molprobity(
                     d_mp['molprobity'])
+
+                if bond_nos:
+                    Template_Dict['molp_b_csv'] = utility.dict_to_JSlist(
+                        I_mp.process_bonds_list(d_mp['molprobity'], Template_Dict['ChainL']))
+
+                if angle_nos:
+                    angledict = I_mp.process_angles_list(
+                        d_mp['molprobity'], Template_Dict['ChainL'])
+                    Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
+                        I_mp.add_angles_outliers(angle_nos, angledict, Template_Dict['ChainL']))
+                else:
+                    Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
+                        I_mp.process_angles_list(d_mp['molprobity'], Template_Dict['ChainL']))
+
+                try:
+                    Template_Dict['angle'] = len(Template_Dict['molp_a_csv'])-1
+                except KeyError:
+                    Template_Dict['angle'] = 0
+                    Template_Dict['molp_a_csv'] = [[]]
+
+                try:
+                    Template_Dict['bond'] = len(Template_Dict['molp_b_csv'])-1
+                except KeyError:
+                    Template_Dict['bond'] = 0
+                    Template_Dict['molp_b_csv'] = [[]]
+
                 Template_Dict['molp_b'] = utility.dict_to_JSlist(
-                    I_mp.molprobity_detailed_table_bonds(a))
+                    I_mp.bond_summary_table(Template_Dict['molp_b_csv']))
                 Template_Dict['molp_a'] = utility.dict_to_JSlist(
-                    I_mp.molprobity_detailed_table_angles(b))
+                    I_mp.angle_summary_table(Template_Dict['molp_a_csv']))
+
+                I_mp.write_table_csv(
+                    Template_Dict['molp_a_csv'], csvDirName, table_filename='angle_outliers.csv')
+                I_mp.write_table_csv(
+                    Template_Dict['molp_b_csv'], csvDirName, table_filename='bond_outliers.csv')
+
+                I_mp.write_table_html(
+                    Template_Dict['molp_a_csv'], htmlDirName, table_filename='angle_outliers.html')
+                I_mp.write_table_html(
+                    Template_Dict['molp_b_csv'], htmlDirName, table_filename='bond_outliers.html')
+
+                # print (Template_Dict['bond'],sum(I_mp.bond_summary_table(Template_Dict['molp_b_csv'])['Number of outliers']))
+                # print (Template_Dict['angle'],sum(I_mp.angle_summary_table(Template_Dict['molp_a_csv'])['Number of outliers']))
                 Template_Dict['rotascore'] = utility.dict_to_JSlist(
                     I_mp.rota_summary_table(I_mp.process_rota(d_mp['rota'])))
                 Template_Dict['rotalist'] = utility.dict_to_JSlist(
@@ -172,18 +203,20 @@ class WriteReport(object):
                     I_mp.rama_summary_table(I_mp.process_rama(d_mp['rama'])))
                 Template_Dict['ramalist'] = utility.dict_to_JSlist(
                     I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama']), Template_Dict['ChainL']))
-                # print (d_mp['clash'])
                 clashscores, Template_Dict['tot'] = I_mp.clash_summary_table(
                     d_mp['clash'])
-                # print ("c",clashscores)
                 Template_Dict['clashscore_list'] = utility.dict_to_JSlist(
                     clashscores)
                 Template_Dict['clashlist'] = utility.dict_to_JSlist(I_mp.clash_detailed_table(
                     d_mp['clash']))
-                Template_Dict['assess_atomic_segments'] = 'Clashscore: ' + str(
-                    clashscore) + ', Ramachandran outliers: ' + str(rama) + '% '+',\
-                     Sidechain outliers: '+str(sidechain)+'%'
+
                 Template_Dict['assess_excluded_volume'] = ['Not applicable']
+                molprobity_dict = I_mp.get_data_for_quality_at_glance(Template_Dict['clashscore_list'],
+                                                                      Template_Dict['rotascore'], Template_Dict['ramascore'])
+                Template_Dict['assess_atomic_segments'] = utility.mp_readable_format(
+                    molprobity_dict)
+                Template_Dict['NumModels'] = len(molprobity_dict['Names'])
+
         else:
             Template_Dict['assess_atomic_segments'] = 'Not applicable'
             file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..',
@@ -196,17 +229,19 @@ class WriteReport(object):
                 exv_data = {
                     'Models': line[0], 'Excluded Volume Satisfaction':
                     line[1], 'Number of violations': line[2]}
+                Template_Dict['NumModels'] = len(exv_data)
+
             else:
                 print("Excluded volume is being calculated...")
                 I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file)
                 model_dict = I_ev.get_all_spheres()
                 exv_data = I_ev.run_exc_vol_parallel(model_dict)
+                Template_Dict['NumModels'] = len(exv_data)
+
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
             Template_Dict['assess_excluded_volume'] = utility.exv_readable_format(
                 exv_data)
-            clashscore = None
-            rama = None
-            sidechain = None
+            molprobity_dict = None
 
         Template_Dict['disclaimer'] = 0
         if exv_data:
@@ -214,8 +249,7 @@ class WriteReport(object):
             violation = set(exv_data['Number of violations'])
             if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
                 Template_Dict['disclaimer'] = 1
-
-        return Template_Dict, clashscore, rama, sidechain, exv_data
+        return Template_Dict, molprobity_dict, exv_data
 
     def run_sas_validation(self, Template_Dict: dict) -> (dict, dict, dict):
         '''
@@ -312,8 +346,7 @@ class WriteReport(object):
             cx_plt.make_gridplot_struc()
             cx_plt.plot_distributions()
 
-    def run_quality_glance(self, clashscore: dict, rama: dict,
-                           sidechain: dict, exv_data: dict,
+    def run_quality_glance(self, molprobity_dict: dict, exv_data: dict,
                            sas_data: dict, sas_fit: dict,
                            cx_fit: dict, imageDirName: str):
         '''
@@ -321,7 +354,7 @@ class WriteReport(object):
         '''
         I_plt = get_plots.Plots(self.mmcif_file, imageDirName)
         I_plt.plot_quality_at_glance(
-            clashscore, rama, sidechain, exv_data, sas_data, sas_fit, cx_fit)
+            molprobity_dict, exv_data, sas_data, sas_fit, cx_fit)
 
     def run_supplementary_table(self,
                                 Template_Dict,

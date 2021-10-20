@@ -307,7 +307,9 @@ class GetInputInformation(object):
                 software_comp['Software name'].append(ref_tot)
                 software_comp['Software location'].append(ref_loc)
                 if str(software.version) == ihm.unknown:
-                    vers = 'None'
+                    vers = 'Not available'
+                elif str(software.version) == '?':
+                    vers = 'Not available'
                 else:
                     vers = str(software.version)
                 software_comp['Software version'].append(vers)

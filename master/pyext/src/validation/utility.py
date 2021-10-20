@@ -284,8 +284,18 @@ def exv_readable_format(exv: dict) -> list:
     fin_string = []
     print(exv)
     for ind, el in enumerate(exv['Models']):
-        fin_string.append('Model-'+str(el)+': '+'Number of violations-' +
+        fin_string.append('Model-'+str(el)+': '+'Number of violations = ' +
                           str(exv['Number of violations'][ind]) + ' ')
+    return fin_string
+
+
+def mp_readable_format(mp: dict) -> list:
+    fin_string = []
+    for ind, el in enumerate(mp['Models']):
+        fin_string.append('Model-'+str(el)+': '+'Clashscore = ' +
+                          str(mp['Clashscore'][ind]) + ', ' + 'Number of Ramachandran outliers = ' +
+                          str(mp['Ramachandran outliers'][ind]) + ', '+'Number of sidechain outliers = ' +
+                          str(mp['Sidechain outliers'][ind]))
     return fin_string
 
 
