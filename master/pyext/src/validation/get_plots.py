@@ -11,7 +11,6 @@ import os
 import validation
 import bokeh
 import numpy as np
-import matplotlib
 from bokeh.io import output_file, curdoc, export_png, export_svgs, show
 from bokeh.models import ColumnDataSource, Legend, LegendItem, FactorRange
 from bokeh.palettes import viridis, Reds256, linear_palette
