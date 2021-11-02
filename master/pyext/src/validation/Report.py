@@ -29,10 +29,18 @@ class WriteReport(object):
         '''
         get entry composition, relies on IHM library
         '''
+        # check for ensembles
         if self.Input.get_ensembles():
             ensemble_info = utility.dict_to_JSlist(self.Input.get_ensembles())
         else:
             ensemble_info = None
+        # from here on, we just fill the template dict with terms
+        # we draw these terms from mmcif using python-ihm library
+        # the terms are typically drawn out as dictionaries and then
+        # converted to list of lists. These list of lists get fed into javascript
+        # to print out tables. Why Sai?--because JS is annoying and it is just easier
+        # to construct tables with lists than any other data struc
+        # utility module has functions to check outputs from python-ihm library and convert to JS friendly format
         Template_Dict['ensemble_info'] = ensemble_info
         Template_Dict['sphere'] = self.Input.check_sphere()
         Template_Dict['num_ensembles'] = self.Input.check_ensembles()
@@ -78,10 +86,9 @@ class WriteReport(object):
         )['Chain ID']))/int(len(list(Counter(self.Input.get_composition()['Model ID']).keys())))
         Template_Dict['ChainL'] = self.Input.get_composition()['Chain ID']
         Template_Dict['number_of_fits'] = 0
-
         return Template_Dict
 
-    def check_mmcif(self, Template_Dict: dict):
+    def check_mmcif(self, Template_Dict: dict) -> None:
         '''
         test function to check rewrite_mmcif function without any hassle.
         not useful for processing, useful only for testing.
@@ -92,9 +99,15 @@ class WriteReport(object):
             print("File rewritten...")
             print("Molprobity analysis is being calculated...")
 
-    def check_disclaimer_warning(self, exv_data: dict, Template_Dict: dict) -> bool:
+    def check_disclaimer_warning(self, exv_data: dict, Template_Dict: dict) -> dict:
+        '''
+        set a disclaimer if model quality can not be determined
+        this func is not used anymore, needs to be deleted
+        '''
+        # we set the disclaimer as false
         Template_Dict['disclaimer'] = False
         if exv_data:
+            # check for exc vol exceptions
             satisfaction = set(exv_data['Excluded Volume Satisfaction'])
             violation = set(exv_data['Number of violations'])
             if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
@@ -108,11 +121,13 @@ class WriteReport(object):
         exception: models with DNA--we need a way to assess models with DNA
         '''
         if self.Input.check_sphere() < 1:
+            # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
             # global clashscore; global rama; global sidechain;
             exv_data = None
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file)
             filename = os.path.abspath(os.path.join(
                 os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_mp.txt'))
+            # check if molprobity for this entry has already been detetmined
             if os.path.exists(filename):
                 d_mp = {}
                 print("Molprobity analysis file already exists...\n...assuming clashscores, \
@@ -136,6 +151,8 @@ class WriteReport(object):
                     d_mp['clash'] = pickle.load(fp)
 
             else:
+                # if molprobity for these entries have not yet been determined, go ahead and set them up to run
+                # we rewrite all files into a format that is suitable for molprobity
                 self.Input.rewrite_mmcif()
                 I_mp = molprobity.GetMolprobityInformation('test.cif')
                 print("File rewritten...")
@@ -146,17 +163,25 @@ class WriteReport(object):
                     utility.runInParallel(I_mp.run_clashscore(d_mp), I_mp.run_ramalyze(
                         d_mp), I_mp.run_rotalyze(d_mp), I_mp.run_molprobity(d_mp))
 
+                # if by any chance the rewrite doens't help, and we are unable to run molprobity,
+                # step out and print an error
                 except (TypeError, KeyError, ValueError):
                     print("Molprobity cannot be calculated...")
 
+            # at this stage, we should have all our dictionary terms
             if d_mp:
+                # get total number of bond and angle outliers (this is an approx number)
                 bond_nos, angle_nos = I_mp.process_molprobity(
                     d_mp['molprobity'])
 
+                # if we do have bond outliers, print all the ones, we will write this into a csv file
                 if bond_nos:
                     Template_Dict['molp_b_csv'] = utility.dict_to_JSlist(
                         I_mp.process_bonds_list(d_mp['molprobity'], Template_Dict['ChainL']))
 
+                # if we have angle outliers, print all the ones
+                # angle outliers are a little tricky as molprobity outputs angle outliers multiple times
+                # in different parts of the file
                 if angle_nos:
                     angledict = I_mp.process_angles_list(
                         d_mp['molprobity'], Template_Dict['ChainL'])
@@ -166,35 +191,37 @@ class WriteReport(object):
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
                         I_mp.process_angles_list(d_mp['molprobity'], Template_Dict['ChainL']))
 
+                # we compute total number of bond and angle outliers
                 try:
                     Template_Dict['angle'] = len(Template_Dict['molp_a_csv'])-1
                 except KeyError:
                     Template_Dict['angle'] = 0
                     Template_Dict['molp_a_csv'] = [[]]
-
                 try:
                     Template_Dict['bond'] = len(Template_Dict['molp_b_csv'])-1
                 except KeyError:
                     Template_Dict['bond'] = 0
                     Template_Dict['molp_b_csv'] = [[]]
 
+                # we write summary tables for bonds and angles to be printed to HTML and PDF reports
                 Template_Dict['molp_b'] = utility.dict_to_JSlist(
                     I_mp.bond_summary_table(Template_Dict['molp_b_csv']))
                 Template_Dict['molp_a'] = utility.dict_to_JSlist(
                     I_mp.angle_summary_table(Template_Dict['molp_a_csv']))
 
+                # we write all the tables to csv and html files
                 I_mp.write_table_csv(
                     Template_Dict['molp_a_csv'], csvDirName, table_filename='angle_outliers.csv')
                 I_mp.write_table_csv(
                     Template_Dict['molp_b_csv'], csvDirName, table_filename='bond_outliers.csv')
-
                 I_mp.write_table_html(
                     Template_Dict['molp_a_csv'], htmlDirName, table_filename='angle_outliers.html')
                 I_mp.write_table_html(
                     Template_Dict['molp_b_csv'], htmlDirName, table_filename='bond_outliers.html')
-
                 # print (Template_Dict['bond'],sum(I_mp.bond_summary_table(Template_Dict['molp_b_csv'])['Number of outliers']))
                 # print (Template_Dict['angle'],sum(I_mp.angle_summary_table(Template_Dict['molp_a_csv'])['Number of outliers']))
+
+                # after anle and bond outliers, we move onto processing rotamers, ramachandran outliers, and clashlists
                 Template_Dict['rotascore'] = utility.dict_to_JSlist(
                     I_mp.rota_summary_table(I_mp.process_rota(d_mp['rota'])))
                 Template_Dict['rotalist'] = utility.dict_to_JSlist(
@@ -209,7 +236,6 @@ class WriteReport(object):
                     clashscores)
                 Template_Dict['clashlist'] = utility.dict_to_JSlist(I_mp.clash_detailed_table(
                     d_mp['clash']))
-
                 Template_Dict['assess_excluded_volume'] = ['Not applicable']
                 molprobity_dict = I_mp.get_data_for_quality_at_glance(Template_Dict['clashscore_list'],
                                                                       Template_Dict['rotascore'], Template_Dict['ramascore'])
@@ -218,7 +244,10 @@ class WriteReport(object):
                 Template_Dict['NumModels'] = len(molprobity_dict['Names'])
 
         else:
+            # if there are spheres, wed have coarse grained beadas, so we go ahead and calculate excluded volume
+            # set the appropriate flag for assessing atomic segments
             Template_Dict['assess_atomic_segments'] = 'Not applicable'
+            # check if exv has already been evaluated
             file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..',
                                                 'Validation', 'results', str(Template_Dict['ID'])+'exv.txt'))
             if os.path.exists(file):
@@ -231,6 +260,7 @@ class WriteReport(object):
                     line[1], 'Number of violations': line[2]}
                 Template_Dict['NumModels'] = len(exv_data)
 
+            # if not, let's calculate it
             else:
                 print("Excluded volume is being calculated...")
                 I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file)
@@ -238,11 +268,13 @@ class WriteReport(object):
                 exv_data = I_ev.run_exc_vol_parallel(model_dict)
                 Template_Dict['NumModels'] = len(exv_data)
 
+            # let's update template dict with appropriate terms
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
             Template_Dict['assess_excluded_volume'] = utility.exv_readable_format(
                 exv_data)
             molprobity_dict = None
 
+        # we now set the disclaimer tag to see if there are issues while calculating exc vol
         Template_Dict['disclaimer'] = 0
         if exv_data:
             satisfaction = set(exv_data['Excluded Volume Satisfaction'])
@@ -255,6 +287,7 @@ class WriteReport(object):
         '''
         get sas validation information from SASCIF or JSON files
         '''
+        # we start by checking if sas dataset was used to build model
         if self.Input.check_for_sas(self.Input.get_dataset_comp()):
             Template_Dict['sas'] = ["True"]
             I_sas = sas.SasValidation(self.mmcif_file)
@@ -262,7 +295,8 @@ class WriteReport(object):
             Template_Dict['sasdb_code'] = I_sas.get_SASBDB_code()
             Template_Dict['sasdb_code_html'] = I_sas.get_SASBDB_code_clean()
             Template_Dict['sasdb_sascif'] = I_sas.check_sascif_file()
-
+            # here, we try get volume and molwt parameters from sascif
+            # if sascif doesn't exist, we get it from JSON files
             try:
                 Template_Dict['parameters_volume'] = utility.dict_to_JSlist(
                     I_sas.get_parameters_vol_many())
@@ -287,12 +321,15 @@ class WriteReport(object):
                 I_sas.get_rg_for_plot())
             Template_Dict['validation_input'] = utility.get_rg_data_fits(
                 I_sas.get_fits_for_plot())
+            # we check if model fits have been deposited
             if len(Template_Dict['validation_input']) < 1:
                 Template_Dict['validation_input'] = [
                     'Fit of model to data has not been deposited']
             sas_data = I_sas.get_rg_for_plot()
             sas_fit = I_sas.get_fits_for_plot()
+        # if there are no sas datasets used to build the model, we set appropriate keys
         else:
+
             sas_data = {}
             sas_fit = {}
             Template_Dict['sasdb_sascif'] = []
@@ -302,9 +339,11 @@ class WriteReport(object):
         '''
         get sas validation information from SASCIF or JSON files
         '''
+        # again, we start by checking for sas datasets
         if self.Input.check_for_sas(self.Input.get_dataset_comp()):
             Template_Dict['sas'] = ["True"]
             I_sas = sas.SasValidation(self.mmcif_file)
+            # create all relevant plots
             try:
                 I_sas_plt = validation.sas_plots.SasValidationPlots(
                     self.mmcif_file, imageDirName)
@@ -315,16 +354,25 @@ class WriteReport(object):
                 I_sas_plt.plot_Guinier()
                 if Template_Dict['number_of_fits'] > 0:
                     I_sas_plt.plot_fits()
+            # exception occurs if sascif not present
             except (TypeError, KeyError, ValueError):
                 pass
 
     def run_cx_validation(self, Template_Dict: dict) -> (dict, dict):
+        '''
+        get cx validation information from mmcif files
+        NOTE: this function is incomplete
+        it currently evaluates satisfaction from mmcif files
+        and not the enetire ensemble
+        '''
+        # if cx-ms dataset was used to build the model, then evaluate satisfaction
         if self.Input.check_for_cx(self.Input.get_dataset_comp()):
             Template_Dict['cx'] = ["True"]
             I_cx = cx.CxValidation(self.mmcif_file)
             # xl_df = I_cx.get_xl_data()
             model_df = I_cx.get_df_for_models()
             cx_fit = I_cx.get_violation_plot(model_df)
+            # eva
             for key, value in cx_fit.items():
                 Template_Dict['Cx Fit '+str(key)] = value
             try:
@@ -333,12 +381,18 @@ class WriteReport(object):
             except (TypeError, KeyError, ValueError):
                 Template_Dict['validation_input'] = utility.get_cx_data_fits(
                     cx_fit)
+        # else return an empty dict
         else:
             cx_fit = dict()
 
         return cx_fit, Template_Dict
 
-    def run_cx_validation_plots(self, Template_Dict: dict):
+    def run_cx_validation_plots(self, Template_Dict: dict) -> None:
+        '''
+        create validation plots for cx datasets
+        NOTE: this function is incomplete, the plots are also ugly
+        and need to be refined
+        '''
         if self.Input.check_for_cx(self.Input.get_dataset_comp()):
             Template_Dict['cx'] = ["True"]
             cx_plt = validation.cx_plots.CxValidationPlots(self.mmcif_file)
@@ -370,6 +424,8 @@ class WriteReport(object):
         '''
         get supplementary table, will be updated as validation report is updated
         '''
+        # this again uses python-ihm to fill in template dict
+        # the output from ihm is modified to fit appropriate formats
         if (self.Input.get_ensembles() is not None) and (utility.all_same(self.Input.get_ensembles()['Clustering method'])):
             Template_Dict['clustering'] = self.Input.get_ensembles()[
                 'Clustering method'][0]

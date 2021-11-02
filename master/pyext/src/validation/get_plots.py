@@ -42,6 +42,7 @@ class Plots(validation.GetInputInformation):
         # check for molprobity or excluded volume data
         if molprobity_data:
             # if molprobity data, plot that
+            # every model has clashscore, rama outliers, and rota outliers
             Models = molprobity_data['Names']
             Scores = ['Clashscore', 'Ramachandran outliers',
                       'Sidechain outliers']
@@ -49,11 +50,13 @@ class Plots(validation.GetInputInformation):
                     'Clashscore': molprobity_data['Clashscore'],
                     'Ramachandran outliers': molprobity_data['Ramachandran outliers'],
                     'Sidechain outliers': molprobity_data['Sidechain outliers']}
-
             y = [(model, score) for model in Models for score in Scores]
             counts = sum(zip(data['Clashscore'], data['Ramachandran outliers'],
-                         data['Sidechain outliers']), ())  # like an hstack
+                         data['Sidechain outliers']), ())
             source = ColumnDataSource(data=dict(y=y, counts=counts))
+
+            # if there are more than 7 models, we will increase the size of the plots
+            # this is important, else the plots look ugly
 
             if len(molprobity_data['Names']) > 7:
                 p = figure(y_range=FactorRange(*y), plot_height=1200,
@@ -62,9 +65,10 @@ class Plots(validation.GetInputInformation):
 
                 p = figure(y_range=FactorRange(*y), plot_height=450,
                            plot_width=800, title="Model Quality: Molprobity Analysis")
-
+            # create plot
             p.hbar(y='y', right='counts', width=0.9, source=source, line_color="white",
                    fill_color=factor_cmap('y', palette=viridis(len(Scores)), factors=Scores, start=1, end=2))
+            # set labels and fonts
             p.xaxis.major_label_text_font_size = "12pt"
             p.yaxis.major_label_text_font_size = "12pt"
             p.xaxis.axis_label = 'Outliers'
@@ -74,10 +78,11 @@ class Plots(validation.GetInputInformation):
             p.title.vertical_align = 'top'
             p.title.align = "center"
 
+        # if there isn't molprobity data, we plot exc vol data
         elif exv_data:
             model = exv_data['Models']
             satisfaction = exv_data['Number of violations']
-
+            # make sure data is plot-able
             try:
                 counts = [float(i) for i in satisfaction]
             except (ValueError):
@@ -86,6 +91,8 @@ class Plots(validation.GetInputInformation):
             Scores = ['Model ' + str(i+1) for i, j in enumerate(model)]
             legends = ['Model ' + str(i+1) + ': ' + str(int(j)) +
                        '('+str(violations[i])+' %)' for i, j in enumerate(counts)]
+
+            # set the size of the axis
             n = 3 if len(model) < 3 else len(model)
             source = ColumnDataSource(
                 data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(n)))
@@ -97,7 +104,7 @@ class Plots(validation.GetInputInformation):
                 lower = min(counts)-20
             if upper == lower:
                 upper = lower+20
-
+            # build plots
             p = figure(y_range=Scores, x_range=(lower, upper), plot_height=450,
                        plot_width=800, title='Model Quality: Excluded Volume Analysis')
             r = p.hbar(y='Scores', right='counts', color='color', height=0.5,
@@ -112,6 +119,9 @@ class Plots(validation.GetInputInformation):
             p.title.vertical_align = 'top'
             p.title.align = "center"
 
+        # if neither exc vol nor molp data exists, we create a blank plot
+        # pdb-dev visuals keep changing, so this plot might or might not make sense
+        # we are keeping it, just in case the visuals change again
         else:
             Scores = ['']
             counts = ['']
@@ -120,7 +130,6 @@ class Plots(validation.GetInputInformation):
                 data=dict(Scores=Scores, counts=counts, legends=legends))
             p = figure(y_range=Scores, x_range=(0, 1),
                        plot_height=300, plot_width=800)
-        # if neither: ie. atomic but unable to calculate molprobity, return empty plot
         Scores = ['']
         counts = ['']
         legends = ['']
@@ -142,7 +151,6 @@ class Plots(validation.GetInputInformation):
         export_png(p, filename=self.filename+'/' +
                    self.ID+"quality_at_glance_MQ.png")
         save(p, filename=self.filename+'/'+self.ID+"quality_at_glance_MQ.html")
-
         # DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
@@ -182,7 +190,6 @@ class Plots(validation.GetInputInformation):
                        self.ID+"quality_at_glance_DQ.png")
             save(pd, filename=self.filename+'/' +
                  self.ID+"quality_at_glance_DQ.html")
-
         # FIT TO DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
@@ -203,32 +210,27 @@ class Plots(validation.GetInputInformation):
             pf.xaxis.axis_label = 'Fit value'
             pf.xaxis.major_label_text_font_size = "12pt"
             pf.yaxis.major_label_text_font_size = "12pt"
-
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rf], index=i) for i in range(len(legends))], location="center",
                             orientation='vertical', label_text_font_size="12px")
             pf.add_layout(legend, 'right')
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
-
             pf.output_backend = "svg"
             pf.legend.label_text_font_size = "12px"
             pf.xaxis.axis_label_text_font_style = 'italic'
             pf.yaxis.axis_label_text_font_style = 'italic'
             pf.xaxis.axis_label_text_font_size = "14pt"
             pf.yaxis.major_label_text_font_size = "14pt"
-
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
-
             export_svgs(pf, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_FQ.svg")
             export_png(pf, filename=self.filename+'/' +
                        self.ID+"quality_at_glance_FQ.png")
             save(pf, filename=self.filename+'/' +
                  self.ID+"quality_at_glance_FQ.html")
-
         # check for XL_MS data, if exists, plot
         if len(cx_fit.keys()) > 0:
             Scores = ['Model '+str(i) for i, j in cx_fit.items()]
