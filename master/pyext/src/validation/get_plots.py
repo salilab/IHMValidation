@@ -37,6 +37,7 @@ class Plots(validation.GetInputInformation):
 
         # create tabs list to add all the panel figures (model quality, data quality.. etc)
         output_file(self.ID+"quality_at_glance.html", mode="inline")
+
         # MODEL QUALITY
         # check for molprobity or excluded volume data
         if molprobity_data:
@@ -66,6 +67,8 @@ class Plots(validation.GetInputInformation):
                    fill_color=factor_cmap('y', palette=viridis(len(Scores)), factors=Scores, start=1, end=2))
             p.xaxis.major_label_text_font_size = "12pt"
             p.yaxis.major_label_text_font_size = "12pt"
+            p.xaxis.axis_label = 'Outliers'
+            p.xaxis.axis_label_text_font_style = 'italic'
             p.left[0].group_text_font_size = '14px'
             p.left[0].group_label_orientation = 'horizontal'
             p.title.vertical_align = 'top'
@@ -168,10 +171,10 @@ class Plots(validation.GetInputInformation):
             pd.legend.label_text_font_size = "12px"
             pd.xaxis.axis_label_text_font_style = 'italic'
             pd.yaxis.axis_label_text_font_style = 'italic'
-            pd.xaxis.axis_label_text_font_size = "12pt"
+            pd.xaxis.axis_label_text_font_size = "14pt"
+            pd.yaxis.major_label_text_font_size = "14pt"
             pd.title.vertical_align = 'top'
             pd.title.align = "center"
-
             pd.output_backend = "svg"
             export_svgs(pd, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_DQ.svg")
@@ -184,7 +187,7 @@ class Plots(validation.GetInputInformation):
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
         if len(sas_fit.keys()) > 0:
-            Scores = ['\u03C7\u00b2 value fit ' +
+            Scores = [' \u03C7\u00b2 Fit ' +
                       str(int(m+1)) + ' ('+i+')' for i, j in sas_fit.items() for m, n in enumerate(j)]
             counts = [float(n) for i, j in sas_fit.items()
                       for m, n in enumerate(j)]
@@ -196,9 +199,11 @@ class Plots(validation.GetInputInformation):
             rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
                          source=source, alpha=0.8, line_color='black')
             pf.ygrid.grid_line_color = None
+            pf.title.text_font_size = '14pt'
+            pf.xaxis.axis_label = 'Fit value'
             pf.xaxis.major_label_text_font_size = "12pt"
             pf.yaxis.major_label_text_font_size = "12pt"
-            pf.title.text_font_size = '14pt'
+
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rf], index=i) for i in range(len(legends))], location="center",
                             orientation='vertical', label_text_font_size="12px")
@@ -207,6 +212,16 @@ class Plots(validation.GetInputInformation):
             pf.title.align = "center"
 
             pf.output_backend = "svg"
+            pf.legend.label_text_font_size = "12px"
+            pf.xaxis.axis_label_text_font_style = 'italic'
+            pf.yaxis.axis_label_text_font_style = 'italic'
+            pf.xaxis.axis_label_text_font_size = "14pt"
+            pf.yaxis.major_label_text_font_size = "14pt"
+
+            pf.title.vertical_align = 'top'
+            pf.title.align = "center"
+            pf.output_backend = "svg"
+
             export_svgs(pf, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_FQ.svg")
             export_png(pf, filename=self.filename+'/' +
