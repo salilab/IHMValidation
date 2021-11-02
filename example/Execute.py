@@ -104,9 +104,9 @@ template_flask = ["main.html",
 
 
 d = datetime.datetime.now()
-t = pytz.timezone("America/Los_Angeles")
-d1 = t.localize(d)
-timestamp = d1.strftime("%B %d, %Y - %I:%M %p")
+timezone = pytz.timezone("America/Los_Angeles")
+d_format = timezone.localize(d)
+timestamp = d_format.strftime("%B %d, %Y - %I:%M %p")
 dir_root_name = args.f.split('.')[0]
 dirNames = {
     'root': '../Validation/'+dir_root_name,
@@ -122,8 +122,6 @@ templateLoader = jinja2.FileSystemLoader(searchpath="../templates/")
 templateEnv = jinja2.Environment(loader=templateLoader)
 template_pdf = "template_pdf.html"
 template_file_supp = "supplementary_template.html"
-
-
 Template_Dict = {}
 Template_Dict['date'] = timestamp
 #############################################################################################################################
@@ -140,7 +138,7 @@ def createdirs(dirNames: dict):
             print("Directory ", name,  " already exists")
 
 
-def write_html(mmcif_file, Template_Dict, template_list, dirName):
+def write_html(mmcif_file: str, Template_Dict: dict, template_list: list, dirName: str):
     for template_file in template_list:
         template = templateEnv.get_template(template_file)
         outputText = template.render(Template_Dict)
@@ -157,10 +155,9 @@ def write_pdf(mmcif_file: str, Template_Dict: dict, template_file: str, dirName:
                      os.path.join(os.path.join(dirName_Output,
                                                utility.get_output_file_pdf(mmcif_file))),
                      options=options)
-    # os.remove(os.path.join(os.path.join(dirName,utility.get_output_file_temp_html(mmcif_file))))
 
 
-def write_supplementary_table(mmcif_file, Template_Dict, template_file, dirName, dirName_supp):
+def write_supplementary_table(mmcif_file: str, Template_Dict: dict, template_file: str, dirName: str, dirName_supp: str):
     template = templateEnv.get_template(template_file)
     outputText = template.render(Template_Dict)
     with open(os.path.join(os.path.join(dirName, utility.get_supp_file_html(mmcif_file))), "w") as fh:
@@ -171,7 +168,7 @@ def write_supplementary_table(mmcif_file, Template_Dict, template_file, dirName,
                      options=options_supp)
 
 
-def write_json(mmcif_file, Template_Dict, dirName, dirName_Output):
+def write_json(mmcif_file: str, Template_Dict: dict, dirName: str, dirName_Outputs: str):
     j = json.dumps([{'Category': k, 'Itemized_List': v}
                     for k, v in Template_Dict.items()], indent=4)
     with open(os.path.join(os.path.join(dirName, utility.get_output_file_json(mmcif_file))), "w") as fh:
@@ -179,7 +176,7 @@ def write_json(mmcif_file, Template_Dict, dirName, dirName_Output):
     fh.close()
 
 
-def convert_html_to_pdf(template_file, pdf_name, dirName, dirName_Output):
+def convert_html_to_pdf(template_file: str, pdf_name: str, dirName: str, dirName_Output: str):
     pdfkit.from_file(os.path.join(os.path.join(dirName, template_file)),
                      os.path.join(os.path.join(dirName_Output, pdf_name)),
                      options=options_supp)
@@ -200,6 +197,7 @@ if __name__ == "__main__":
     template_dict, molprobity_dict, exv_data = report.run_model_quality(
         template_dict, csvDirName=dirNames['csv'], htmlDirName=dirNames['template'])
     template_dict, sas_data, sas_fit = report.run_sas_validation(template_dict)
+    # uncomment below to run CX analysis
     # cx_fit, template_dict = report.run_cx_validation(template_dict)
     report.run_quality_glance(
         molprobity_dict, exv_data, sas_data, sas_fit, cx_fit=defaultdict(), imageDirName=dirNames['images'])
@@ -221,5 +219,4 @@ if __name__ == "__main__":
     write_html(args.f, template_dict, template_flask, dirNames['template'])
     write_pdf(args.f, template_dict, template_pdf,
               dirNames['pdf'], dirNames['pdf'])
-
     utility.clean_all()
