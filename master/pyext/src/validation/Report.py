@@ -23,15 +23,15 @@ from collections import Counter
 class WriteReport(object):
     def __init__(self, mmcif_file):
         self.mmcif_file = mmcif_file
-        self.Input = GetInputInformation(self.mmcif_file)
+        self.input = GetInputInformation(self.mmcif_file)
 
     def run_entry_composition(self, Template_Dict: dict) -> dict:
         '''
         get entry composition, relies on IHM library
         '''
         # check for ensembles
-        if self.Input.get_ensembles():
-            ensemble_info = utility.dict_to_JSlist(self.Input.get_ensembles())
+        if self.input.get_ensembles():
+            ensemble_info = utility.dict_to_JSlist(self.input.get_ensembles())
         else:
             ensemble_info = None
         # from here on, we just fill the template dict with terms
@@ -42,9 +42,9 @@ class WriteReport(object):
         # to construct tables with lists than any other data struc
         # utility module has functions to check outputs from python-ihm library and convert to JS friendly format
         Template_Dict['ensemble_info'] = ensemble_info
-        Template_Dict['sphere'] = self.Input.check_sphere()
-        Template_Dict['num_ensembles'] = self.Input.check_ensembles()
-        RB, flex, RB_nos, all_nos = self.Input.get_RB_flex_dict()
+        Template_Dict['sphere'] = self.input.check_sphere()
+        Template_Dict['num_ensembles'] = self.input.check_ensembles()
+        RB, flex, RB_nos, all_nos = self.input.get_RB_flex_dict()
         Template_Dict['Rigid_Body'] = RB_nos
         Template_Dict['Flexible_Unit'] = all_nos-RB_nos
         Template_Dict['RB_list'] = utility.dict_to_JSlist_rows(RB, flex)
@@ -52,39 +52,39 @@ class WriteReport(object):
             utility.dict_to_JSlist_rows(RB, flex))
         Template_Dict['flex'] = utility.get_flex(
             utility.dict_to_JSlist_rows(RB, flex))
-        Template_Dict['ID'] = self.Input.get_id()
-        Template_Dict['ID_w'] = self.Input.get_id().split()
-        Template_Dict['ID_T'] = self.Input.get_id()[0:6]+'_' + \
-            self.Input.get_id()[6:]
-        Template_Dict['ID_MP'] = [str(self.Input.get_id()[0:6]+'_' +
-                                      self.Input.get_id()[6:])]
+        Template_Dict['ID'] = self.input.get_id()
+        Template_Dict['ID_w'] = self.input.get_id().split()
+        Template_Dict['ID_T'] = self.input.get_id()[0:6]+'_' + \
+            self.input.get_id()[6:]
+        Template_Dict['ID_MP'] = [str(self.input.get_id()[0:6]+'_' +
+                                      self.input.get_id()[6:])]
         Template_Dict['ID_R'] = (
-            self.Input.get_id()[0:6]+'_'+self.Input.get_id()[6:]).split()
-        Template_Dict['Molecule'] = self.Input.get_struc_title()
-        Template_Dict['Title'] = self.Input.get_title()
-        Template_Dict['Authors'] = self.Input.get_authors()
+            self.input.get_id()[0:6]+'_'+self.input.get_id()[6:]).split()
+        Template_Dict['Molecule'] = self.input.get_struc_title()
+        Template_Dict['Title'] = self.input.get_title()
+        Template_Dict['Authors'] = self.input.get_authors()
         Template_Dict['Entry_list'] = utility.dict_to_JSlist(
-            self.Input.get_composition())
-        Template_Dict['number_of_molecules'] = self.Input.get_number_of_models()
-        Template_Dict['model_names'] = self.Input.get_model_names()
-        Template_Dict['number_of_software'] = self.Input.get_software_length()
+            self.input.get_composition())
+        Template_Dict['number_of_molecules'] = self.input.get_number_of_models()
+        Template_Dict['model_names'] = self.input.get_model_names()
+        Template_Dict['number_of_software'] = self.input.get_software_length()
         Template_Dict['soft_list'] = utility.dict_to_JSlist(
-            self.Input.get_software_comp())
-        Template_Dict['references'] = list(self.Input.ref_cit.values())
+            self.input.get_software_comp())
+        Template_Dict['references'] = list(self.input.ref_cit.values())
         Template_Dict['references'].sort()
-        Template_Dict['number_of_datasets'] = self.Input.get_dataset_length()
-        Template_Dict['Data'] = [i.upper() for i in list(set(self.Input.get_dataset_comp(
+        Template_Dict['number_of_datasets'] = self.input.get_dataset_length()
+        Template_Dict['Data'] = [i.upper() for i in list(set(self.input.get_dataset_comp(
         )['Dataset type']).difference({'Experimental model', 'Comparative model'}))]
         Template_Dict['Datasets_list'] = utility.dict_to_JSlist(
-            self.Input.get_dataset_comp())
+            self.input.get_dataset_comp())
         Template_Dict['Unique_dataset'] = utility.get_unique_datasets(
-            self.Input.get_dataset_comp())
-        Template_Dict['Protocols_number'] = self.Input.get_protocol_number()
+            self.input.get_dataset_comp())
+        Template_Dict['Protocols_number'] = self.input.get_protocol_number()
         Template_Dict['Sampling_list'] = utility.dict_to_JSlist(
-            self.Input.get_sampling())
-        Template_Dict['num_chains'] = int(len(self.Input.get_composition(
-        )['Chain ID']))/int(len(list(Counter(self.Input.get_composition()['Model ID']).keys())))
-        Template_Dict['ChainL'] = self.Input.get_composition()['Chain ID']
+            self.input.get_sampling())
+        Template_Dict['num_chains'] = int(len(self.input.get_composition(
+        )['Chain ID']))/int(len(list(Counter(self.input.get_composition()['Model ID']).keys())))
+        Template_Dict['ChainL'] = self.input.get_composition()['Chain ID']
         Template_Dict['number_of_fits'] = 0
         return Template_Dict
 
@@ -93,8 +93,8 @@ class WriteReport(object):
         test function to check rewrite_mmcif function without any hassle.
         not useful for processing, useful only for testing.
         '''
-        if self.Input.check_sphere() < 1:
-            self.Input.rewrite_mmcif()
+        if self.input.check_sphere() < 1:
+            self.input.rewrite_mmcif()
             # I_mp = molprobity.GetMolprobityInformation('test.cif')
             print("File rewritten...")
             print("Molprobity analysis is being calculated...")
@@ -120,7 +120,7 @@ class WriteReport(object):
         get molprobity info for atomic models
         exception: models with DNA--we need a way to assess models with DNA
         '''
-        if self.Input.check_sphere() < 1:
+        if self.input.check_sphere() < 1:
             # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
             # global clashscore; global rama; global sidechain;
             exv_data = None
@@ -153,7 +153,7 @@ class WriteReport(object):
             else:
                 # if molprobity for these entries have not yet been determined, go ahead and set them up to run
                 # we rewrite all files into a format that is suitable for molprobity
-                self.Input.rewrite_mmcif()
+                self.input.rewrite_mmcif()
                 I_mp = molprobity.GetMolprobityInformation('test.cif')
                 print("File rewritten...")
                 print("Molprobity analysis is being calculated...")
@@ -288,7 +288,7 @@ class WriteReport(object):
         get sas validation information from SASCIF or JSON files
         '''
         # we start by checking if sas dataset was used to build model
-        if self.Input.check_for_sas(self.Input.get_dataset_comp()):
+        if self.input.check_for_sas(self.input.get_dataset_comp()):
             Template_Dict['sas'] = ["True"]
             I_sas = sas.SasValidation(self.mmcif_file)
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
@@ -340,7 +340,7 @@ class WriteReport(object):
         get sas validation information from SASCIF or JSON files
         '''
         # again, we start by checking for sas datasets
-        if self.Input.check_for_sas(self.Input.get_dataset_comp()):
+        if self.input.check_for_sas(self.input.get_dataset_comp()):
             Template_Dict['sas'] = ["True"]
             I_sas = sas.SasValidation(self.mmcif_file)
             # create all relevant plots
@@ -366,7 +366,7 @@ class WriteReport(object):
         and not the enetire ensemble
         '''
         # if cx-ms dataset was used to build the model, then evaluate satisfaction
-        if self.Input.check_for_cx(self.Input.get_dataset_comp()):
+        if self.input.check_for_cx(self.input.get_dataset_comp()):
             Template_Dict['cx'] = ["True"]
             I_cx = cx.CxValidation(self.mmcif_file)
             # xl_df = I_cx.get_xl_data()
@@ -393,7 +393,7 @@ class WriteReport(object):
         NOTE: this function is incomplete, the plots are also ugly
         and need to be refined
         '''
-        if self.Input.check_for_cx(self.Input.get_dataset_comp()):
+        if self.input.check_for_cx(self.input.get_dataset_comp()):
             Template_Dict['cx'] = ["True"]
             cx_plt = validation.cx_plots.CxValidationPlots(self.mmcif_file)
             cx_plt.make_gridplot_intra()
@@ -426,41 +426,41 @@ class WriteReport(object):
         '''
         # this again uses python-ihm to fill in template dict
         # the output from ihm is modified to fit appropriate formats
-        if (self.Input.get_ensembles() is not None) and (utility.all_same(self.Input.get_ensembles()['Clustering method'])):
-            Template_Dict['clustering'] = self.Input.get_ensembles()[
+        if (self.input.get_ensembles() is not None) and (utility.all_same(self.input.get_ensembles()['Clustering method'])):
+            Template_Dict['clustering'] = self.input.get_ensembles()[
                 'Clustering method'][0]
-        elif self.Input.get_ensembles() is not None:
+        elif self.input.get_ensembles() is not None:
             Template_Dict['clustering'] = ', '.join(
-                self.Input.get_ensembles()['Clustering method'])
+                self.input.get_ensembles()['Clustering method'])
         else:
             Template_Dict['clustering'] = 'Not applicable'
         Template_Dict['location'] = location
-        Template_Dict['complex_name'] = self.Input.get_struc_title().lower()
-        Template_Dict['PDB_ID'] = self.Input.get_id()
+        Template_Dict['complex_name'] = self.input.get_struc_title().lower()
+        Template_Dict['PDB_ID'] = self.input.get_id()
         Template_Dict['Subunits'] = utility.get_subunits(
-            self.Input.get_composition())
-        Template_Dict['datasets'] = utility.get_datasets(self.Input.get_dataset_details(
-        )) if self.Input.get_dataset_details() is not None else 'Not provided or used'
+            self.input.get_composition())
+        Template_Dict['datasets'] = utility.get_datasets(self.input.get_dataset_details(
+        )) if self.input.get_dataset_details() is not None else 'Not provided or used'
         Template_Dict['physics'] = physics
         Template_Dict['software'] = utility.get_software(
-            self.Input.get_software_comp())
-        Template_Dict['struc'] = self.Input.get_atomic_coverage()
+            self.input.get_software_comp())
+        Template_Dict['struc'] = self.input.get_atomic_coverage()
         Template_Dict['method'] = utility.get_method_name(
-            self.Input.get_sampling())
+            self.input.get_sampling())
         Template_Dict['method_type'] = utility.get_method_type(
-            self.Input.get_sampling())
+            self.input.get_sampling())
         Template_Dict['method_details'] = method_details
-        Template_Dict['models'] = ', '.join(self.Input.get_ensembles(
-        )['Number of models']) if self.Input.get_ensembles() is not None else 'Not applicable'
+        Template_Dict['models'] = ', '.join(self.input.get_ensembles(
+        )['Number of models']) if self.input.get_ensembles() is not None else 'Not applicable'
         Template_Dict['sampling_validation'] = sampling_validation
-        Template_Dict['feature'] = self.Input.get_ensembles(
-        )['Clustering feature'][0] if self.Input.get_ensembles() is not None else 'Not applicable'
+        Template_Dict['feature'] = self.input.get_ensembles(
+        )['Clustering feature'][0] if self.input.get_ensembles() is not None else 'Not applicable'
         Template_Dict['cross_validation'] = cross_validation
-        Template_Dict['model_precision'] = ', '.join([i+'&#8491' for i in self.Input.get_ensembles(
-        )['Cluster precision']]) if self.Input.get_ensembles() is not None else \
+        Template_Dict['model_precision'] = ', '.join([i+'&#8491' for i in self.input.get_ensembles(
+        )['Cluster precision']]) if self.input.get_ensembles() is not None else \
             'Model precision can not be calculated with one structure'
-        Template_Dict['restraint_info'] = utility.get_restraints_info(self.Input.get_restraints(
-        )) if self.Input.get_restraints() is not None else 'Not provided or used'
+        Template_Dict['restraint_info'] = utility.get_restraints_info(self.input.get_restraints(
+        )) if self.input.get_restraints() is not None else 'Not provided or used'
         if 'Data_quality' not in list(Template_Dict.keys()):
             Template_Dict['Data_quality'] = Data_quality
         if 'validation_input' not in list(Template_Dict.keys()):
