@@ -85,7 +85,7 @@ class GetInputInformation(object):
             mol_name = strc
         return mol_name
 
-    def check_sphere(self):
+    def check_sphere(self) -> int:
         """check resolution of structure,
         returns 0 if its atomic and 1 if the model is multires"""
         spheres = [len(b._spheres) for i in self.system.state_groups
@@ -125,8 +125,8 @@ class GetInputInformation(object):
 
     def get_model_assem_dict(self) -> dict:
         """Map models to assemblies """
-        model_id = map(int, [b._id for i in self.system.state_groups
-                             for j in i for a in j for b in a])
+        model_id = [int(b._id) for i in self.system.state_groups
+                    for j in i for a in j for b in a]
         assembly_id = [int(asmb) for asmb in self.get_assembly_ID_of_models()]
         model_assembly = dict(zip(model_id, assembly_id))
         return model_assembly
@@ -134,8 +134,8 @@ class GetInputInformation(object):
     def get_model_rep_dict(self) -> dict:
         """Map models to representations
             useful especially for multi-state systems"""
-        model_id = map(int, [b._id for i in self.system.state_groups
-                             for j in i for a in j for b in a])
+        model_id = [int(b._id) for i in self.system.state_groups
+                    for j in i for a in j for b in a]
         rep_id = [int(repr) for repr in self.get_representation_ID_of_models()]
         model_rep = dict(zip(model_id, rep_id))
         return model_rep
@@ -320,7 +320,7 @@ class GetInputInformation(object):
             final_software_composition = {}
         return final_software_composition
 
-    def read_all_references(self):
+    def read_all_references(self) -> None:
         reference_filename = os.path.join(
             os.getcwd(), 'templates/', 'references.csv')
         self.ref_link = dict()
@@ -402,11 +402,11 @@ class GetInputInformation(object):
                 try:
                     loc = _.location.db_name
                 except AttributeError:
-                    loc = str('Not available')
+                    loc = 'Not available'
                 try:
                     acc = _.location.access_code
                 except AttributeError:
-                    acc = str('None')
+                    acc = 'None'
                 dataset_comp['ID'].append(_._id)
                 # if i.data_type=='unspecified' and 'None' not in i.details:
                 #    dataset_comp['Dataset type'].append(i.details)
@@ -449,32 +449,32 @@ class GetInputInformation(object):
                 restraints_comp['Restraint info'].append(
                     str(i.linker.auth_name) + ', ' +
                     str(len(i.experimental_cross_links)) + ' cross-links')
-            if isinstance(i, ihm.restraint.EM3DRestraint):
+            elif isinstance(i, ihm.restraint.EM3DRestraint):
                 restraints_comp['Restraint info'].append(
                     str(i.fitting_method) + ', '+str(i.number_of_gaussians))
 
-            if isinstance(i, ihm.restraint.PredictedContactRestraint):
+            elif isinstance(i, ihm.restraint.PredictedContactRestraint):
                 restraints_comp['Restraint info'].append('Distance: '+str(i.distance.distance)
                                                          + ' between residues ' +
                                                          str(i.resatom1.seq_id)
                                                          + ' and ' + str(i.resatom2.seq_id))
 
-            if isinstance(i, ihm.restraint.EM2DRestraint):
+            elif isinstance(i, ihm.restraint.EM2DRestraint):
                 restraints_comp['Restraint info'].append('Number of micrographs: '
                                                          + str(i.number_raw_micrographs)
                                                          + ',' + ' Image resolution: '
                                                          + str(i.image_resolution))
-            if isinstance(i, ihm.restraint.SASRestraint):
+            elif isinstance(i, ihm.restraint.SASRestraint):
                 restraints_comp['Restraint info'].append('Assembly name: '+str(
                     i.assembly.name)+' Fitting method: ' +
                     str(i.fitting_method) + ' Multi-state: ' + str(i.multi_state))
-            if isinstance(i, ihm.restraint.UpperBoundDistanceRestraint):
+            elif isinstance(i, ihm.restraint.UpperBoundDistanceRestraint):
                 restraints_comp['Restraint info'].append(
                     'Distance: '+str(i.distance))
-            if 'Mutagenesis' in str(i.__class__.__name__):
+            elif 'Mutagenesis' in str(i.__class__.__name__):
                 restraints_comp['Restraint info'].append(
                     'Details: '+str(i.details))
-            if isinstance(i, ihm.restraint.DerivedDistanceRestraint):
+            elif isinstance(i, ihm.restraint.DerivedDistanceRestraint):
                 dic = self.dataset_id_type_dic()
                 try:
                     ID = str(i.dataset._id)
@@ -514,7 +514,7 @@ class GetInputInformation(object):
                 try:
                     acc = i.location.access_code
                 except AttributeError:
-                    acc = str('Not available')
+                    acc = 'Not available'
                 dataset_comp['ID'].append(i._id)
                 if i.data_type == 'unspecified' and i.details is not None:
                     dataset_comp['Dataset type'].append(i.details)
@@ -542,10 +542,10 @@ class GetInputInformation(object):
         """Measure amount of atomic residues"""
         for _ in self.system.orphan_representations:
             if self.check_sphere() == 1:
-                flex = sum([int(x.asym_unit.seq_id_range[1]) -
-                            int(x.asym_unit.seq_id_range[0])+1 for x in _ if not x.rigid])
-                rigid = sum([int(x.asym_unit.seq_id_range[1]) -
-                             int(x.asym_unit.seq_id_range[0])+1 for x in _ if x.rigid])
+                flex = sum([(x.asym_unit.seq_id_range[1]) -
+                            (x.asym_unit.seq_id_range[0])+1 for x in _ if not x.rigid])
+                rigid = sum([(x.asym_unit.seq_id_range[1]) -
+                             (x.asym_unit.seq_id_range[0])+1 for x in _ if x.rigid])
 
                 if rigid > 0 or flex > 0:
                     percentage = str(round(rigid/(rigid+flex)*100))+'%'

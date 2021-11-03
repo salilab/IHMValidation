@@ -136,17 +136,17 @@ class WriteReport(object):
                     d_mp['molprobity'] = pickle.load(fp)
 
                 f_rota = os.path.abspath(os.path.join(
-                    os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
+                    '../Validation/results/', str(Template_Dict['ID'])+'_temp_rota.txt'))
                 with open(f_rota, 'rb') as fp:
                     d_mp['rota'] = pickle.load(fp)
 
                 f_rama = os.path.abspath(os.path.join(
-                    os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
+                    '../Validation/results/', str(Template_Dict['ID'])+'_temp_rama.txt'))
                 with open(f_rama, 'rb') as fp:
                     d_mp['rama'] = pickle.load(fp)
 
                 f_clash = os.path.abspath(os.path.join(
-                    os.getcwd(), '../Validation/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
+                    '../Validation/results/', str(Template_Dict['ID'])+'_temp_clash.txt'))
                 with open(f_clash, 'rb') as fp:
                     d_mp['clash'] = pickle.load(fp)
 
