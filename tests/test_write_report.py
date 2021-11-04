@@ -5,8 +5,7 @@ from collections import defaultdict
 import warnings
 import tempfile
 
-path = os.path.abspath("master/pyext/src/")
-sys.path.insert(0, path)
+os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
 from validation import GetInputInformation, utility
 from validation.Report import WriteReport
 

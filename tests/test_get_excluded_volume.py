@@ -7,9 +7,10 @@ import warnings
 import tempfile
 import ihm
 
-path = os.path.abspath("master/pyext/src/")
-sys.path.insert(0, path)
-print (path)
+# path = os.path.abspath("master/pyext/src/")
+os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
+# sys.path.insert(0, path)
+# print (path)
 from validation import GetInputInformation, utility 
 from validation.excludedvolume import GetExcludedVolume
 

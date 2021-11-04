@@ -4,10 +4,7 @@ import unittest
 import warnings
 import tempfile
 import ihm
-
-path = os.path.abspath("master/pyext/src/")
-sys.path.insert(0, path)
-print (path)
+os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
 from validation import GetInputInformation
 
 

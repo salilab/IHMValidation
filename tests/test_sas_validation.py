@@ -6,8 +6,7 @@ import warnings
 import tempfile
 import ihm
 
-path = os.path.abspath("master/pyext/src/")
-sys.path.insert(0, path)
+os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
 
 from validation import GetInputInformation, utility 
 from validation.sas import SasValidation
