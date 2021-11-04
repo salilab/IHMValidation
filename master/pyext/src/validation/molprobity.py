@@ -317,7 +317,9 @@ class GetMolprobityInformation(GetInputInformation):
             return "Your molprobity processing is incorrect, please check the code"
 
     def angle_summary_table(self, outlier_list: dict) -> dict:
-
+        '''
+        converts full detailed list to summary table
+        '''
         summary_dict = {'Angle type': [], 'Observed angle (&#176)': [], 'Ideal angle (&#176)': [
         ], 'Number of outliers': []}
         list_for_counter = list()
@@ -337,7 +339,9 @@ class GetMolprobityInformation(GetInputInformation):
         return summary_dict
 
     def bond_summary_table(self, outlier_list: dict) -> dict:
-
+        '''
+        converts full detailed list to summary table
+        '''
         summary_dict = {'Bond type': [], 'Observed distance (&#8491)': [
         ], 'Ideal distance (&#8491)': [], 'Number of outliers': []}
         list_for_counter = list()
@@ -358,6 +362,9 @@ class GetMolprobityInformation(GetInputInformation):
         return summary_dict
 
     def write_table_csv(self, output_list: list, csvDirName: str, table_filename: str):
+        '''
+        convert outlier list to csv
+        '''
         self.filename = os.path.join(csvDirName)+'/'+table_filename
         with open(self.filename, 'w') as f:
             write = csv.writer(f)
@@ -365,6 +372,9 @@ class GetMolprobityInformation(GetInputInformation):
                 write.writerow(row)
 
     def write_table_html(self, output_list: list, htmlDirName: str, table_filename: str):
+        '''
+        convert outlier list to html
+        '''
         self.filename = os.path.join(htmlDirName)+'/'+table_filename
         with open(self.filename, 'w') as f:
             f.write('<!DOCTYPE html>\n<html lang="en">\n<body>\n<p>\n')
