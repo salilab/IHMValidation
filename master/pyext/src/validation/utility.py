@@ -85,6 +85,9 @@ def format_tuple(tex: list) -> str:
 
 
 def dict_to_JSlist_rows(dict1: dict, dict2: dict) -> list:
+    '''
+    format rigid bodies and flexible elements
+    '''
     output_list = []
     output_list.append(['Chain ID', 'Rigid bodies', 'Non-rigid segments'])
     for ind, el in dict1.items():
@@ -94,12 +97,18 @@ def dict_to_JSlist_rows(dict1: dict, dict2: dict) -> list:
 
 
 def islistempty(inlist: list) -> bool:
+    '''
+    minor func
+    '''
     if isinstance(inlist, list):
         return all(map(islistempty, inlist))
     return False
 
 
 def cat_list_string(listn: list) -> str:
+    '''
+    minor func
+    '''
     result = ' '
     for ind in range(len(listn)):
         if ind == 0:
@@ -111,18 +120,30 @@ def cat_list_string(listn: list) -> str:
 
 
 def get_key_from_val(dict1: dict, val1: str) -> list:
+    '''
+    minor func
+    '''
     return dict1.keys()[dict1.values().index(val1)]
 
 
 def get_val_from_key(dict1: dict, key1: str) -> list:
+    '''
+    minor func
+    '''
     return dict1[key1]
 
 
-def get_name(name):
+def get_name(name) -> str:
+    '''
+    minor func
+    '''
     return str(name)
 
 
 def get_copy(name):
+    '''
+    minor func
+    '''
     if str(name) == '?':
         copy = 'None listed'
     elif '.' in name:
@@ -133,6 +154,11 @@ def get_copy(name):
 
 
 def get_unique_datasets(name: dict) -> list:
+    '''
+    get all datatypes that are yet to be validated
+    the ones that can't or the ones that have already been validated
+    are in the sub_data set
+    '''
     all_data = set(name['Dataset type'])
     sub_data = {'Integrative model', 'Other', 'Comparative model',
                 'Experimental model', 'De Novo model', 'SAS data'}
@@ -145,10 +171,16 @@ def get_unique_datasets(name: dict) -> list:
 
 
 def get_all_files(path_dir):
+    '''
+    minor func
+    '''
     return glob.glob(path_dir)
 
 
 def runInParallel(*fns):
+    '''
+    minor func
+    '''
     proc = []
     for fn in fns:
         p = Process(target=fn)
@@ -159,6 +191,9 @@ def runInParallel(*fns):
 
 
 def runInParallel_noargs(*fns):
+    '''
+    minor func
+    '''
     proc = []
     for fn in fns:
         p = Process(target=fn)
@@ -169,30 +204,51 @@ def runInParallel_noargs(*fns):
 
 
 def get_output_file_html(mmcif_file: str) -> str:
+    '''
+    minor func
+    '''
     return 'ValidationReport_'+mmcif_file+'.html'
 
 
 def get_supp_file_html(mmcif_file: str) -> str:
+    '''
+    minor func
+    '''
     return 'Supplementary_'+mmcif_file+'.html'
 
 
 def get_output_file_temp_html(mmcif_file: str) -> str:
+    '''
+    minor func
+    '''
     return 'temp.html'
 
 
 def get_output_file_pdf(mmcif_file: str) -> str:
+    '''
+    minor func
+    '''
     return mmcif_file+'.pdf'
 
 
 def get_output_file_json(mmcif_file: str) -> str:
+    '''
+    minor func
+    '''
     return 'ValidationReport_'+mmcif_file+'.json'
 
 
 def get_supp_file_pdf(mmcif_file: str) -> str:
+    '''
+    minor func
+    '''
     return 'Supplementary_'+mmcif_file+'.pdf'
 
 
 def get_subunits(sub_dict: dict) -> list:
+    '''
+    format chains for supplementary/summary table
+    '''
     model_number = len(sub_dict['Model ID'])
     sublist = ['%s: Chain %s (%s residues)' % (sub_dict['Subunit name'][i], sub_dict['Chain ID']
                                                [i], str(sub_dict['Total residues'][i])) for i in range(model_number)]
@@ -200,6 +256,10 @@ def get_subunits(sub_dict: dict) -> list:
 
 
 def get_datasets(data_dict: dict) -> list:
+    '''
+    format datasets for supplementary/summary table
+    '''
+
     dataset_number = len(data_dict['ID'])
     # print (data_dict)
     datalist = ['%s, %s' % (data_dict['Dataset type'][i], data_dict['Details'][i])
@@ -208,6 +268,10 @@ def get_datasets(data_dict: dict) -> list:
 
 
 def get_software(data_dict: dict) -> list:
+    '''
+    format software for supplementary/summary table
+    '''
+
     if len(data_dict) > 0:
         dataset_number = len(data_dict['ID'])
         datalist = ['%s (version %s)' % (data_dict['Software name'][i],
@@ -218,6 +282,10 @@ def get_software(data_dict: dict) -> list:
 
 
 def get_RB(data_list: list) -> list:
+    '''
+    format RB for supplementary/summary table
+    '''
+
     data_num = len(data_list)
     # datalist = ['%s: %s ' % (data_list[i][0], data_list[i][1],)
     #           for i in range(1, data_num)]
@@ -230,6 +298,10 @@ def get_RB(data_list: list) -> list:
 
 
 def get_flex(data_list: list) -> list:
+    '''
+    format flexible regions for supplementary/summary table
+    '''
+
     data_num = len(data_list)
     datalist = ['%s: %s ' % (data_list[i][0], data_list[i][2],)
                 for i in range(1, data_num)]
@@ -237,16 +309,28 @@ def get_flex(data_list: list) -> list:
 
 
 def get_method_name(sample_dict: dict) -> str:
+    '''
+    format method name for supplementary/summary table
+    '''
+
     datastr = '%s ' % (sample_dict['Method name'][0])
     return datastr.replace('monte carlo', 'Monte Carlo')
 
 
 def get_method_type(sample_dict: dict) -> str:
+    '''
+    format method type  for supplementary/summary table
+    '''
+
     datastr = '%s ' % (sample_dict['Method type'][0])
     return datastr.replace('monte carlo', 'Monte Carlo')
 
 
 def get_restraints_info(restraints: dict) -> list:
+    '''
+    format restraints info for supplementary/summary table
+    '''
+
     restraints_num = len(restraints['Restraint type'])
     datalist = []
     try:
@@ -265,6 +349,9 @@ def get_restraints_info(restraints: dict) -> list:
 
 
 def format_list_text(sublist: list) -> str:
+    '''
+    minor func
+    '''
     val = ''
     for el in sublist:
         if el == sublist[-1]:
@@ -277,10 +364,17 @@ def format_list_text(sublist: list) -> str:
 
 
 def all_same(items: list):
+    '''
+    minor func
+    '''
     return all(x == items[0] for x in items)
 
 
 def exv_readable_format(exv: dict) -> list:
+    '''
+    format exv for supplementary/summary table
+    '''
+
     fin_string = []
     print(exv)
     for ind, el in enumerate(exv['Models']):
@@ -290,6 +384,9 @@ def exv_readable_format(exv: dict) -> list:
 
 
 def mp_readable_format(mp: dict) -> list:
+    '''
+    format molprobity resukts for supplementary/summary table
+    '''
     fin_string = []
     for ind, el in enumerate(mp['Models']):
         fin_string.append('Model-'+str(el)+': '+'Clashscore = ' +
@@ -300,6 +397,10 @@ def mp_readable_format(mp: dict) -> list:
 
 
 def get_rg_data(rg_dict: dict) -> list:
+    '''
+    format rg data for supplementary/summary table
+    '''
+
     fin_rg = []
     for key, val in rg_dict.items():
         fin_rg.append(key+': Rg from Gunier is ' +
@@ -308,6 +409,10 @@ def get_rg_data(rg_dict: dict) -> list:
 
 
 def get_rg_data_fits(rg_dict: dict) -> list:
+    '''
+    format sas model fits for supplementary/summary table
+    '''
+
     fin_rg = []
     for key, val in rg_dict.items():
         for ind, el in enumerate(val):
@@ -318,6 +423,10 @@ def get_rg_data_fits(rg_dict: dict) -> list:
 
 
 def get_cx_data_fits(cx_dict: dict) -> list:
+    '''
+    format cx-ms data for supplementary/summary table
+    '''
+
     fin_cx = []
     count = 0
     for key, val in cx_dict.items():
@@ -328,6 +437,10 @@ def get_cx_data_fits(cx_dict: dict) -> list:
 
 
 def clean_all():
+    '''
+    delete all generated files
+    '''
+
     # dirname_ed = os.getcwd()
     os.listdir('.')
     for item in os.listdir('.'):
