@@ -50,7 +50,9 @@ class GetExcludedVolume(GetInputInformation):
         return (1-number_of_violations/number_of_combinations)*100
 
     def get_violation_normalized(self, models_spheres_df: pd.DataFrame, viols: dict) -> float:
-        """ """
+        """
+        normalize violations, not currently used.
+        """
         number_of_violations = sum(list(viols.values()))
         normalization_constant = models_spheres_df.shape[1]*math.log(
             models_spheres_df.shape[1], 10)
@@ -109,6 +111,9 @@ class GetExcludedVolume(GetInputInformation):
         return excluded_volume
 
     def get_exc_vol_for_models_normalized(self, model_dict: dict) -> dict:
+        '''
+        get normalized value, normalized to total number of pairwise distances
+        '''
         excluded_volume = {'Models': [], 'Excluded Volume Satisfaction': []}
         for indx, model in model_dict.items():
             excluded_volume['Models'].append(indx)
@@ -120,7 +125,9 @@ class GetExcludedVolume(GetInputInformation):
         return excluded_volume
 
     def get_exc_vol_given_sphere_parallel(self, sphere_list: list) -> (float, int):
-        """ """
+        """
+        get violations from cart coords
+        """
         df = self.get_xyzr(sphere_list)
         violation_dict = self.get_violation_dict(df)
         satisfaction = round(
@@ -152,11 +159,17 @@ class GetExcludedVolume(GetInputInformation):
         return excluded_volume
 
     def process_exv(self, filename: str) -> dict:
+        '''
+        function to format exv file, if exv has already been evaluated
+        '''
         df = pd.read_csv(filename, names=['key', 'val'], header=None)
         df['val'] = df['val'].apply(lambda x: x.strip('][').split(','))
         return dict(zip(df.key, df.val))
 
     def exv_readable_format(self, exv: dict) -> str:
+        '''
+        function to format text
+        '''
         fin_string = ''
         for i in exv['Models']:
             fin_string+'Model-' + \
