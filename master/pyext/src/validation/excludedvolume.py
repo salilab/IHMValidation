@@ -149,7 +149,9 @@ class GetExcludedVolume(GetInputInformation):
             excluded_volume = {'Models': list(model_dict.keys()),
                                'Excluded Volume Satisfaction': [i[0] for i in complete_list],
                                'Number of violations': [i[1] for i in complete_list]}
-            write_file = csv.writer(open(filename, 'w+'))
+
+            with open(filename, "w+") as file:
+                write_file = csv.writer(file)
             for key, val in excluded_volume.items():
                 write_file.writerow([key, val])
         else:
