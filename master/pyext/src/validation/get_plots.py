@@ -87,7 +87,7 @@ class Plots(validation.GetInputInformation):
                 counts = [float(i) for i in satisfaction]
             except (ValueError):
                 return
-            violations = exv_data['Excluded Volume Satisfaction']
+            violations = exv_data['Excluded Volume Satisfaction (%)']
             Scores = ['Model ' + str(i+1) for i, j in enumerate(model)]
             legends = ['Model ' + str(i+1) + ': ' + str(int(j)) +
                        '('+str(violations[i])+' %)' for i, j in enumerate(counts)]

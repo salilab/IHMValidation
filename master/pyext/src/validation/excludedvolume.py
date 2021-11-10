@@ -99,11 +99,11 @@ class GetExcludedVolume(GetInputInformation):
 
     def get_exc_vol_for_models(self, model_dict: dict) -> dict:
         excluded_volume = {
-            'Models': [], 'Excluded Volume Satisfaction': [], 'Number of violations': []}
+            'Models': [], 'Excluded Volume Satisfaction (%)': [], 'Number of violations': []}
         for indx, model in model_dict.items():
             excluded_volume['Models'].append(indx)
             df = self.get_xyzr(model)
-            excluded_volume['Excluded Volume Satisfaction'].append(
+            excluded_volume['Excluded Volume Satisfaction (%)'].append(
                 round(self.get_violation_percentage(df, self.get_violation_dict(df)), 2))
             excluded_volume['Number of violations'].append(
                 sum(self.get_violation_dict(df).values()))
@@ -114,13 +114,13 @@ class GetExcludedVolume(GetInputInformation):
         '''
         get normalized value, normalized to total number of pairwise distances
         '''
-        excluded_volume = {'Models': [], 'Excluded Volume Satisfaction': []}
+        excluded_volume = {'Models': [], 'Excluded Volume Satisfaction (%)': []}
         for indx, model in model_dict.items():
             excluded_volume['Models'].append(indx)
             df = self.get_xyzr(model)
             satisfaction = self.get_violation_percentage(
                 df, self.get_violation_dict(df))
-            excluded_volume['Excluded Volume Satisfaction'].append(
+            excluded_volume['Excluded Volume Satisfaction (%)'].append(
                 round(satisfaction, 2))
         return excluded_volume
 
@@ -147,7 +147,7 @@ class GetExcludedVolume(GetInputInformation):
             complete_list = pool.map(
                 self.get_exc_vol_given_sphere_parallel, list(model_dict.values()))
             excluded_volume = {'Models': list(model_dict.keys()),
-                               'Excluded Volume Satisfaction': [i[0] for i in complete_list],
+                               'Excluded Volume Satisfaction (%)': [i[0] for i in complete_list],
                                'Number of violations': [i[1] for i in complete_list]}
 
             with open(filename, "w+") as file:
@@ -156,7 +156,7 @@ class GetExcludedVolume(GetInputInformation):
                 write_file.writerow([key, val])
         else:
             excluded_volume = {'Models': ['All '+str(len(model_dict.keys()))],
-                               'Excluded Volume Satisfaction': ['0.0'],
+                               'Excluded Volume Satisfaction (%)': ['0.0'],
                                'Number of violations': ['0.0']}
         return excluded_volume
 

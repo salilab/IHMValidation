@@ -256,7 +256,7 @@ class WriteReport(object):
                     line = [ln.strip().replace('[', '').replace(']', '').replace('"', '').
                             replace(' ', '').split(',')[1:] for ln in inf.readlines()]
                 exv_data = {
-                    'Models': line[0], 'Excluded Volume Satisfaction':
+                    'Models': line[0], 'Excluded Volume Satisfaction (%)':
                     line[1], 'Number of violations': line[2]}
                 Template_Dict['NumModels'] = len(exv_data)
 
@@ -270,6 +270,7 @@ class WriteReport(object):
 
             # let's update template dict with appropriate terms
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
+            # print (Template_Dict['excluded_volume'])
             Template_Dict['assess_excluded_volume'] = utility.exv_readable_format(
                 exv_data)
             molprobity_dict = None
@@ -277,7 +278,7 @@ class WriteReport(object):
         # we now set the disclaimer tag to see if there are issues while calculating exc vol
         Template_Dict['disclaimer'] = 0
         if exv_data:
-            satisfaction = set(exv_data['Excluded Volume Satisfaction'])
+            satisfaction = set(exv_data['Excluded Volume Satisfaction (%)'])
             violation = set(exv_data['Number of violations'])
             if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
                 Template_Dict['disclaimer'] = 1
