@@ -12,8 +12,6 @@
 
 - `templates`  all HTML templates for static HTML reports, PDF files and supplementary table
 
-- `templates_for_flask`  all HTML templates for dynamic HTML reports
-
 - `tests`  tests for classes
 
 - `example_sas`  example script to create validation reports for SAS data
