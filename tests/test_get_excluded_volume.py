@@ -288,7 +288,7 @@ _ihm_sphere_obj_site.model_id
 """)
             self.IO=GetExcludedVolume(tmpfilepath)
             model_dict=self.IO.get_all_spheres()
-            output={'Models': [1, 2], 'Excluded Volume Satisfaction': [0.0, 100.0]}
+            output={'Models': [1, 2], 'Excluded Volume Satisfaction (%)': [0.0, 100.0]}
             self.assertEqual(output,(self.IO.get_exc_vol_for_models_normalized(model_dict)))
 
 
