@@ -121,13 +121,13 @@ After the initial setup, you can start executing the scripts to generate validat
 
 The input to the `Execute.py` script is a PDBDEV file in cif format. The output includes directories and files that are listed below:
 
--`Directory  ../Validation/PDBDEV_00000009`
--`Directory  ../Validation/PDBDEV_00000009/images` 
--`Directory  ../Validation/PDBDEV_00000009/pdf  `
--`Directory  ../Validation/PDBDEV_00000009/json `
--`Directory  ../Validation/PDBDEV_00000009/supplementary  `
--`Directory  ../Validation/PDBDEV_00000009/htmls  `
--`Directory  ../Validation/PDBDEV_00000009/csv `
+- `Directory  ../Validation/PDBDEV_00000009`
+- `Directory  ../Validation/PDBDEV_00000009/images` 
+- `Directory  ../Validation/PDBDEV_00000009/pdf  `
+- `Directory  ../Validation/PDBDEV_00000009/json `
+- `Directory  ../Validation/PDBDEV_00000009/supplementary  `
+- `Directory  ../Validation/PDBDEV_00000009/htmls  `
+- `Directory  ../Validation/PDBDEV_00000009/csv `
 
 Here's the description of all the directories:
 
