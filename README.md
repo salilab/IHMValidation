@@ -112,6 +112,39 @@ A solution to this error is using Autoconfig of decouple library to add the path
 
 A solution to this is to open your .venv/bin/activate file and add in the above six variables at the top as 6 lines of code using the format `export KEY=VALUE`. See this [`stackoverflow post`](https://stackoverflow.com/questions/9554087/setting-an-environment-variable-in-virtualenv) for specific details.
 
+## Running an example
+
+After the initial setup, you can start executing the scripts to generate validation reports. Here are the steps: 
+
+- Go to the `example` directory.
+- Command to execute: `python Execute.py -f PDBDEV_00000009.cif`
+
+The input to the `Execute.py` script is a PDBDEV file in cif format. The output includes directories and files that are listed below:
+
+`Directory  ../Validation/PDBDEV_00000009
+Directory  ../Validation/PDBDEV_00000009/images  
+Directory  ../Validation/PDBDEV_00000009/pdf  
+Directory  ../Validation/PDBDEV_00000009/json 
+Directory  ../Validation/PDBDEV_00000009/supplementary  
+Directory  ../Validation/PDBDEV_00000009/htmls  
+Directory  ../Validation/PDBDEV_00000009/csv `
+
+Here's the description of all the directories:
+
+- `Validation` is the main head directory and is located one step above the example directory [you can see that in the way this repo is structured]
+- `PDBDEV_00000009` is the entry directory with relevant files 
+- `PDBDEV_00000009/images` contains all the images generated for this entry
+- `PDBDEV_00000009/pdf` contains all the pdf files generated for this entry, including pdf version of the validation report 
+- `PDBDEV_00000009/json` contains the validation report in a json format as key-value pairs 
+- `PDBDEV_00000009/supplementary` contains the summary table in a PDF format
+- `PDBDEV_00000009/htmls` contains corresponding html pages 
+- `PDBDEV_00000009/csv` contains detailed molprobity tables for download 
+
+## Transferring files to the server
+
+The `Validation` folder that is generated needs to be transferred to the server.
+If individual entries are being evaluated, move/copy the entry directory from the local validation directory into the server's validation directory.
+
 ## Information
 
 _Author(s)_: Sai J. Ganesan
