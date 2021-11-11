@@ -240,6 +240,19 @@ _ihm_model_list.representation_id
             with open(tmpfilepath, 'w') as tmpfile:
                 tmpfile.write("""
 loop_
+_citation.id
+_citation.title
+_citation.journal_abbrev
+_citation.journal_volume
+_citation.page_first
+_citation.page_last
+_citation.year
+_citation.pdbx_database_id_PubMed
+_citation.pdbx_database_id_DOI
+1
+'Structural characterization by cross-linking reveals the detailed architecture of a coatomer-related heptameric module from the nuclear pore complex.'
+'Mol Cell Proteomics' 13 2927 2943 2014 25161197 10.1074/mcp.M114.041673
+loop_
 _ihm_model_list.model_id
 _ihm_model_list.model_name
 _ihm_model_list.assembly_id
@@ -258,7 +271,7 @@ _ihm_modeling_protocol_details.num_models_end
 1 1 1 YES NO banana apple 22
                     """)
             output = {'Step number': ['1'], 'Protocol ID': [1],
-                      'Method name': ['apple'], 'Method type': ['banana'],
+                      'Method name': ['<a href=https://pubmed.ncbi.nlm.nih.gov/25161197/>apple</a>'], 'Method type': ['banana'],
                       'Number of computed models': [22], 'Multi state modeling': ['False'],
                       'Multi scale modeling': ['True']}
             temp = GetInputInformation(tmpfilepath)
