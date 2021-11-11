@@ -199,9 +199,9 @@ class GetInputInformation(object):
                     str(step.multi_scale))
                 sampling_comp['Protocol ID'].append(
                     self.system.orphan_protocols.index(prot)+1)
-                cit=self.system.citations[0].pmid
-                link='https://pubmed.ncbi.nlm.nih.gov/'+str(cit)+'/'
-                method_link='<a href='+link+'>'+str(step.method)+'</a>'
+                cit = self.system.citations[0].pmid
+                link = 'https://pubmed.ncbi.nlm.nih.gov/'+str(cit)+'/'
+                method_link = '<a href='+link+'>'+str(step.method)+'</a>'
                 sampling_comp['Method name'].append(method_link)
                 sampling_comp['Method type'].append(step.name)
                 sampling_comp['Number of computed models'].append(
