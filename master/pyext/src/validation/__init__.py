@@ -199,7 +199,10 @@ class GetInputInformation(object):
                     str(step.multi_scale))
                 sampling_comp['Protocol ID'].append(
                     self.system.orphan_protocols.index(prot)+1)
-                sampling_comp['Method name'].append(step.method)
+                cit=self.system.citations[0].pmid
+                link='https://pubmed.ncbi.nlm.nih.gov/'+str(cit)+'/'
+                method_link='<a href='+link+'>'+str(step.method)+'</a>'
+                sampling_comp['Method name'].append(method_link)
                 sampling_comp['Method type'].append(step.name)
                 sampling_comp['Number of computed models'].append(
                     step.num_models_end)
@@ -322,7 +325,7 @@ class GetInputInformation(object):
 
     def read_all_references(self) -> None:
         reference_filename = os.path.join(
-            os.getcwd(), 'templates/', 'references.csv')
+            os.getcwd(), '../templates/', 'references.csv')
         self.ref_link = dict()
         self.ref_cit = dict()
         with open(reference_filename, 'r+') as inf:
