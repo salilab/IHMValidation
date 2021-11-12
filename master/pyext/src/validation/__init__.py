@@ -324,12 +324,21 @@ class GetInputInformation(object):
         return final_software_composition
 
     def read_all_references(self) -> None:
-        reference_filename = os.path.join(
-            os.getcwd(), '../templates/', 'references.csv')
         self.ref_link = dict()
         self.ref_cit = dict()
-        with open(reference_filename, 'r+') as inf:
-            allref = [_.strip().split('|') for _ in inf.readlines()]
+
+        try:
+            reference_filename = os.path.join(
+                os.getcwd(), '../templates/', 'references.csv')
+            with open(reference_filename, 'r+') as inf:
+                allref = [_.strip().split('|') for _ in inf.readlines()]
+
+        except FileNotFoundError:
+            reference_filename = os.path.join(
+                os.getcwd(), 'templates/', 'references.csv')
+            with open(reference_filename, 'r+') as inf:
+                allref = [_.strip().split('|') for _ in inf.readlines()]
+
         for line in allref:
             self.ref_link[line[0].lower().rstrip()] = line[1].rstrip().lstrip()
             self.ref_cit[line[0].lower()] = line[2]
