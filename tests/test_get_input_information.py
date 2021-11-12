@@ -556,12 +556,10 @@ _ihm_dataset_related_db_reference.details
 
             temp = GetInputInformation(tmpfilepath)
             self.assertEqual(output, temp.get_dataset_details())
-            self.assertEqual(False, temp.check_for_sas(
+            self.assertFalse(temp.check_for_sas(
                 temp.get_dataset_details()))
-            self.assertEqual(
-                True, (temp.check_for_cx(temp.get_dataset_details())))
-            self.assertEqual(
-                True, (temp.check_for_em(temp.get_dataset_details())))
+            self.assertTrue(temp.check_for_cx(temp.get_dataset_details()))
+            self.assertTrue(temp.check_for_em(temp.get_dataset_details()))
 
     def test_mmcif_get_lists(self):
         """Test AtomSiteHandler"""
