@@ -118,6 +118,7 @@ After the initial setup, you can start executing the scripts to generate validat
 
 - Go to the `example` directory.
 - Command to execute: `python Execute.py -f PDBDEV_00000009.cif`
+- If new software was used to build the structure, update reference.csv, located in the templates directory with appropriate software name, PubMed link, and citation.
 
 The input to the `Execute.py` script is a PDBDEV file in cif format. The output includes directories and files that are listed below:
 
