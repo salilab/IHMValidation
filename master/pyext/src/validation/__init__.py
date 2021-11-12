@@ -201,7 +201,11 @@ class GetInputInformation(object):
                     self.system.orphan_protocols.index(prot)+1)
                 cit = self.system.citations[0].pmid
                 link = 'https://pubmed.ncbi.nlm.nih.gov/'+str(cit)+'/'
-                method_link = '<a href='+link+'>'+str(step.method)+'</a>'
+                if step.name:
+                    method_link = '<a href='+link+'>'+str(step.method)+'</a>'
+                else:
+                    method_link = str(step.method)
+
                 sampling_comp['Method name'].append(method_link)
                 sampling_comp['Method type'].append(step.name)
                 sampling_comp['Number of computed models'].append(
