@@ -128,7 +128,7 @@ class SasValidation(GetInputInformation):
             all_lines = self.get_all_sascif(code)
             data = {}
             for indx, sascifline in enumerate(all_lines):
-                if len(sascifline) < 2 and len(sascifline) > 0 and 'scan_intensity' in sascifline[0]:
+                if 0 < len(sascifline) < 2 and 'scan_intensity' in sascifline[0]:
                     data[(sascifline[0].split('.')[1])] = []
                 if len(sascifline) > 2 and len(all_lines[indx-1]) > 0 and 'scan_intensity' in all_lines[indx-1][0]:
                     for indx_sub, sascifline_sub in enumerate(all_lines[indx:]):
