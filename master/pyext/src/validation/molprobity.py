@@ -64,7 +64,7 @@ class GetMolprobityInformation(GetInputInformation):
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
         d['rama'] = line
-        print(d['rama'])
+        # print(d['rama'])
         filename = os.path.join(
             os.getcwd(), self.resultpath, self.ID+'_temp_rama.txt')
         with open(filename, 'wb') as fp:
