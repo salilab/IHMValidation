@@ -13,7 +13,7 @@ from subprocess import run
 from validation import GetInputInformation
 import ihm
 import ihm.reader
-from decouple import AutoConfig
+from decouple import config
 import collections
 import pandas as pd
 import csv
@@ -58,7 +58,7 @@ class GetMolprobityInformation(GetInputInformation):
         """run ramalyze to get outliers """
         f_name = str(self.ID)+'_temp_rama.txt'
         f_name_handle = open(f_name, 'w+')
-        config = AutoConfig(search_path=self.envpath)
+        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
             run([config('Molprobity_ramalyze'), self.mmcif_file], stdout=outfile)
         with open(f_name, 'r+') as inf:
@@ -74,7 +74,7 @@ class GetMolprobityInformation(GetInputInformation):
         """run molprobity"""
         f_name = str(self.ID)+'_temp_mp.txt'
         f_name_handle = open(f_name, 'w+')
-        config = AutoConfig(search_path=self.envpath)
+        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
             run([config('Molprobity_molprobity'), self.mmcif_file], stdout=outfile)
         with open(f_name, 'r+') as inf:
@@ -89,7 +89,7 @@ class GetMolprobityInformation(GetInputInformation):
         """run clashscore to get information on steric clashes"""
         f_name = str(self.ID)+'_temp_clash.txt'
         f_name_handle = open(f_name, 'w+')
-        config = AutoConfig(search_path=self.envpath)
+        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
             run([config('Molprobity_clashscore'), self.mmcif_file], stdout=outfile)
         with open(f_name, 'r+') as inf:
@@ -104,7 +104,7 @@ class GetMolprobityInformation(GetInputInformation):
         """run rotalyZe to get rotameric outliers"""
         f_name = str(self.ID)+'_temp_rota.txt'
         f_name_handle = open(f_name, 'w+')
-        config = AutoConfig(search_path=self.envpath)
+        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
             run([config('Molprobity_rotalyze'), self.mmcif_file], stdout=outfile)
         with open(f_name, 'r+') as inf:
