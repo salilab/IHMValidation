@@ -140,6 +140,8 @@ def createdirs(dirNames: dict):
 
 def write_html(mmcif_file: str, Template_Dict: dict, template_list: list, dirName: str):
     for template_file in template_list:
+        if template_file in ['data_quality.html','formodeling.html'] and 'SAS DATA' not in Template_Dict['Data']:
+            continue
         template = templateEnv.get_template(template_file)
         outputText = template.render(Template_Dict)
         with open(os.path.join(os.path.join(dirName, template_file)), "w") as fh:
