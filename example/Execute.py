@@ -138,19 +138,19 @@ def createdirs(dirNames: dict):
             print("Directory ", name,  " already exists")
 
 
-def write_html(mmcif_file: str, Template_Dict: dict, template_list: list, dirName: str):
+def write_html(mmcif_file: str, template_dict: dict, template_list: list, dirName: str):
     for template_file in template_list:
-        if template_file in ['data_quality.html','formodeling.html'] and 'SAS DATA' not in Template_Dict['Data']:
+        if template_file in ['data_quality.html','formodeling.html'] and 'SAS DATA' not in template_dict['Data']:
             continue
         template = templateEnv.get_template(template_file)
-        outputText = template.render(Template_Dict)
+        outputText = template.render(template_dict)
         with open(os.path.join(os.path.join(dirName, template_file)), "w") as fh:
             fh.write(outputText)
 
 
-def write_pdf(mmcif_file: str, Template_Dict: dict, template_file: str, dirName: str, dirName_Output: str):
+def write_pdf(mmcif_file: str, template_dict: dict, template_file: str, dirName: str, dirName_Output: str):
     template = templateEnv.get_template(template_file)
-    outputText = template.render(Template_Dict)
+    outputText = template.render(template_dict)
     with open(os.path.join(os.path.join(dirName, utility.get_output_file_temp_html(mmcif_file))), "w") as fh:
         fh.write(outputText)
     pdfkit.from_file(os.path.join(os.path.join(dirName, utility.get_output_file_temp_html(mmcif_file))),
@@ -159,9 +159,9 @@ def write_pdf(mmcif_file: str, Template_Dict: dict, template_file: str, dirName:
                      options=options)
 
 
-def write_supplementary_table(mmcif_file: str, Template_Dict: dict, template_file: str, dirName: str, dirName_supp: str):
+def write_supplementary_table(mmcif_file: str, template_dict: dict, template_file: str, dirName: str, dirName_supp: str):
     template = templateEnv.get_template(template_file)
-    outputText = template.render(Template_Dict)
+    outputText = template.render(template_dict)
     with open(os.path.join(os.path.join(dirName, utility.get_supp_file_html(mmcif_file))), "w") as fh:
         fh.write(outputText)
     pdfkit.from_file(os.path.join(os.path.join(dirName, utility.get_supp_file_html(mmcif_file))),
@@ -170,9 +170,9 @@ def write_supplementary_table(mmcif_file: str, Template_Dict: dict, template_fil
                      options=options_supp)
 
 
-def write_json(mmcif_file: str, Template_Dict: dict, dirName: str, dirName_Outputs: str):
+def write_json(mmcif_file: str, template_dict: dict, dirName: str, dirName_Outputs: str):
     j = json.dumps([{'Category': k, 'Itemized_List': v}
-                    for k, v in Template_Dict.items()], indent=4)
+                    for k, v in template_dict.items()], indent=4)
     with open(os.path.join(os.path.join(dirName, utility.get_output_file_json(mmcif_file))), "w") as fh:
         fh.write(j)
     fh.close()
