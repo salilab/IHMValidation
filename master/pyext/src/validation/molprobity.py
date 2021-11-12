@@ -325,8 +325,8 @@ class GetMolprobityInformation(GetInputInformation):
         list_for_counter = []
 
         for ind, val in enumerate(outlier_list[1:]):
-            temp = val[4]+':'+str(round(float(val[5]), 2)) + \
-                ':'+str(round(float(val[6]), 2))
+            temp = '{0:s}:{1:.2f}:{2:.2f}'.format(
+                val[4], float(val[5]), float(val[6]))
             list_for_counter.append(temp)
 
         freq_dict = collections.Counter(list_for_counter)
@@ -347,8 +347,9 @@ class GetMolprobityInformation(GetInputInformation):
         list_for_counter = []
 
         for ind, val in enumerate(outlier_list[1:]):
-            temp = val[4]+':'+str(round(float(val[5]), 2)) + \
-                ':'+str(round(float(val[6]), 2))
+            temp = '{0:s}:{1:.2f}:{2:.2f}'.format(
+                val[4], float(val[5]), float(val[6]))
+
             list_for_counter.append(temp)
 
         freq_dict = collections.Counter(list_for_counter)
