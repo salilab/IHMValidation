@@ -5,8 +5,6 @@
 # ganesans@salilab.org
 ###################################
 from collections import defaultdict
-from validation import utility
-from validation.Report import WriteReport
 import os
 import datetime
 import decouple
@@ -18,6 +16,8 @@ import jinja2
 import pytz
 import sys
 sys.path.insert(0, "../master/pyext/src/")
+from validation import utility
+from validation.Report import WriteReport
 
 # from validation.WKhtmlToPdf import  wkhtmltopdf
 # import utility
