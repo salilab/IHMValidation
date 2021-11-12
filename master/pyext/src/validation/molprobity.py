@@ -183,18 +183,18 @@ class GetMolprobityInformation(GetInputInformation):
             angle_outliers = line[angle_index_beg:angle_index_end]
             return angle_outliers
         else:
-            return list()
+            return []
 
     def process_angles_list(self, line: list, chains: list) -> dict:
         """ process molprobity list to dict/table for output """
         angle_outliers = self.process_angles(line)
-        angle = list()
+        angle = []
 
         angledict = {'Number': [], 'Chain': [], 'Residue ID': [],
                      'Residue type': [], 'Angle': [], 'Observed angle (&#176)': [],
                      'Ideal angle (&#176)': [], 'key': [], 'Frequency': []}
 
-        list_for_counter = list()
+        list_for_counter = []
 
         for ind, outlier in enumerate(angle_outliers):
             sub_line = outlier.split()
@@ -210,7 +210,7 @@ class GetMolprobityInformation(GetInputInformation):
                 angledict['Observed angle (&#176)'].append(sub_line[4])
                 angledict['Ideal angle (&#176)'].append(sub_line[5])
                 angledict['key'].append('-'.join(sub_line[:4]))
-                angle = list()
+                angle = []
                 list_for_counter.append('-'.join(sub_line[:4]))
 
             elif len(sub_line) == 9:
@@ -235,7 +235,7 @@ class GetMolprobityInformation(GetInputInformation):
                 angledict['Observed angle (&#176)'].append(sub_line[4])
                 angledict['Ideal angle (&#176)'].append(sub_line[5])
                 angledict['key'].append('-'.join(sub_line[:4]))
-                angle = list()
+                angle = []
                 list_for_counter.append('-'.join(sub_line[:4]))
 
         freq_dict = collections.Counter(list_for_counter)
@@ -253,7 +253,7 @@ class GetMolprobityInformation(GetInputInformation):
 
     def add_angles_outliers(self, line: list, angledict: dict, chains: list) -> dict:
         """ add to angle outlier dict/table as molprobity outputs angle outliers in multiple formats """
-        list_for_counter = list()
+        list_for_counter = []
         existing_number = len(angledict['Number'])
         angledict['key'] = []
         for ind, outlier in enumerate(line):
@@ -322,7 +322,7 @@ class GetMolprobityInformation(GetInputInformation):
         '''
         summary_dict = {'Angle type': [], 'Observed angle (&#176)': [], 'Ideal angle (&#176)': [
         ], 'Number of outliers': []}
-        list_for_counter = list()
+        list_for_counter = []
 
         for ind, val in enumerate(outlier_list[1:]):
             temp = val[4]+':'+str(round(float(val[5]), 2)) + \
@@ -344,7 +344,7 @@ class GetMolprobityInformation(GetInputInformation):
         '''
         summary_dict = {'Bond type': [], 'Observed distance (&#8491)': [
         ], 'Ideal distance (&#8491)': [], 'Number of outliers': []}
-        list_for_counter = list()
+        list_for_counter = []
 
         for ind, val in enumerate(outlier_list[1:]):
             temp = val[4]+':'+str(round(float(val[5]), 2)) + \
@@ -413,7 +413,7 @@ class GetMolprobityInformation(GetInputInformation):
                     'Residue type': [], 'Bond': [], 'Observed distance (&#8491)': [],
                     'Ideal distance (&#8491)': [], 'key': [], 'Frequency': []}
 
-        list_for_counter = list()
+        list_for_counter = []
 
         for ind, outlier in enumerate(bond_outliers):
             sub_line = outlier.split()
