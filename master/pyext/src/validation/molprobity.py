@@ -76,7 +76,8 @@ class GetMolprobityInformation(GetInputInformation):
         f_name_handle = open(f_name, 'w+')
         # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
-            run([config('Molprobity_molprobity'), self.mmcif_file], stdout=outfile)
+            run([config('Molprobity_molprobity'), self.mmcif_file,
+                 "disable_uc_volume_vs_n_atoms_check=True"], stdout=outfile)
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
         d['molprobity'] = line
