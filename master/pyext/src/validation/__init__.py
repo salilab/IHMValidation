@@ -678,7 +678,8 @@ class GetInputInformation(object):
 
     def get_model_id_column(self, atom_site: dict()) -> int:
         for colnum, val in enumerate(atom_site.values()):
-            if '_atom_site.ihm_model_id' in val:
+            if val.lower() in ('_atom_site.ihm_model_id',
+                               '_atom_site.pdbx_pdb_model_num'):
                 return colnum
         return None
 
