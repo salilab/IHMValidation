@@ -44,6 +44,20 @@
 ## Test site
 - [`test web page`](https://modbase.compbio.ucsf.edu/pdbdev-test/home/) 
 
+## Docker image
+
+Rather than installing and configuring all dependencies (below), you can
+build a Docker (or podman) container by
+
+1. Downloading the [`ATSAS`](https://www.embl-hamburg.de/biosaxs/download.html)    CentOS 7 RPM and placing it in the `docker` subdirectory (this cannot be
+   redistributed by us; you must sign up at their web site for an academic
+   license).
+2. Building the image with `docker build -t ihm-validation docker`
+
+The resulting image has all dependencies in the default PATH and this
+repository available in the `/IHMValidation` directory; no further configuration
+should be necessary.
+
 ## Initial setup 
 
 This initial setup is performed once.
