@@ -163,8 +163,9 @@ class GetMolprobityInformation(GetInputInformation):
             angle_outliers = line[angle_index+2:end-1]
             return (bond_outliers, angle_outliers)
 
-    def process_angles(self, line: list) -> list:
+    def process_angles(self, line: list) -> (list, int):
         """ process molprobity files to extract relevant information """
+        total_angles = 0
         angle_index_beg = None
         angle_index_end = None
         ind_end = len(line)
@@ -175,6 +176,8 @@ class GetMolprobityInformation(GetInputInformation):
                     return ind-1
 
         for ind, el in enumerate(line):
+            if el.startswith('Bond angle restraints:'):
+                total_angles = int(el.split(':', 1)[1])
             if 'Bond angles' in el:
                 angle_index_beg = ind+3
                 break
@@ -182,13 +185,13 @@ class GetMolprobityInformation(GetInputInformation):
             angle_index_end = find_end_line(
                 angle_index_beg, ind_end, match_word='Min. delta:')
             angle_outliers = line[angle_index_beg:angle_index_end]
-            return angle_outliers
+            return angle_outliers, total_angles
         else:
-            return []
+            return [], total_angles
 
-    def process_angles_list(self, line: list, chains: list) -> dict:
+    def process_angles_list(self, line: list, chains: list) -> (dict, int):
         """ process molprobity list to dict/table for output """
-        angle_outliers = self.process_angles(line)
+        angle_outliers, total_angles = self.process_angles(line)
         angle = []
 
         angledict = {'Number': [], 'Chain': [], 'Residue ID': [],
@@ -248,9 +251,9 @@ class GetMolprobityInformation(GetInputInformation):
         del angledict['key']
 
         if self.check_molprobity_processing(angledict):
-            return angledict
+            return angledict, total_angles
         else:
-            return "Your molprobity processing is incorrect, please check the code"
+            return "Your molprobity processing is incorrect, please check the code", 0
 
     def add_angles_outliers(self, line: list, angledict: dict, chains: list) -> dict:
         """ add to angle outlier dict/table as molprobity outputs angle outliers in multiple formats """
@@ -384,8 +387,9 @@ class GetMolprobityInformation(GetInputInformation):
                 f.write(', '.join(line)+'<br>')
             f.write('</p>\n</body>\n</html>')
 
-    def process_bonds(self, line: list) -> (list, list):
+    def process_bonds(self, line: list) -> (list, int):
         """ process molprobity files to extract relevant information """
+        total_bonds = 0
         bond_index_beg = None
         bond_index_end = None
         ind_end = len(line)
@@ -396,6 +400,8 @@ class GetMolprobityInformation(GetInputInformation):
                     return ind-1
 
         for ind, el in enumerate(line):
+            if el.startswith('Bond restraints:'):
+                total_bonds = int(el.split(':', 1)[1])
             if 'Bond outliers' in el:
                 bond_index_beg = ind+2
                 break
@@ -405,12 +411,12 @@ class GetMolprobityInformation(GetInputInformation):
             bond_index_beg, ind_end, match_word='Angle')
         bond_index_end = min(bond_index_end1, bond_index_end2)
         bond_outliers = line[bond_index_beg:bond_index_end]
-        return bond_outliers
+        return bond_outliers, total_bonds
 
-    def process_bonds_list(self, line: list, chains: list) -> dict:
+    def process_bonds_list(self, line: list, chains: list) -> (dict, int):
         """ process molprobity files to extract relevant information """
 
-        bond_outliers = self.process_bonds(line)
+        bond_outliers, total_bonds = self.process_bonds(line)
         bonddict = {'Number': [], 'Chain': [], 'Residue ID': [],
                     'Residue type': [], 'Bond': [], 'Observed distance (&#8491)': [],
                     'Ideal distance (&#8491)': [], 'key': [], 'Frequency': []}
@@ -473,9 +479,9 @@ class GetMolprobityInformation(GetInputInformation):
         del bonddict['key']
 
         if self.check_molprobity_processing(bonddict):
-            return bonddict
+            return bonddict, total_bonds
         else:
-            return "Your molprobity processing is incorrect, please check the code"
+            return "Your molprobity processing is incorrect, please check the code", 0
 
     def process_clash(self, line: list) -> dict:
         """ process clash files to extract relevant information """

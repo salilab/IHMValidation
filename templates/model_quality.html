@@ -283,7 +283,7 @@
                                                                         var space = '<p class="ex2"> </p>';
                                                                         document.write(space);
                                                                         if ({{molp_b}}.length > 1) {
-                                                                            var intro = "<i> There are " + {{bond}} + " bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=../csv/bond_outliers.csv> here. </a> </i>";
+                                                                            var intro = "<i> There are " + {{bond}} + " bond outliers in this entry ({{ "%.1f"|format(bond / total_bonds * 100) }}% of all bonds). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/bond_outliers.csv> here. </a> </i>";
                                                                             document.write(intro);
                                                                             document.write(space);
                                                                             Write_Table(list_to_write = {{molp_b}})
@@ -302,7 +302,7 @@
                                                                         document.write(space);
 
                                                                         if ({{molp_a}}.length > 1) {
-                                                                            var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv> here. </a> </i>";
+                                                                            var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry ({{ "%.1f"|format(angle / total_angles * 100) }}% of all angles). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv> here. </a> </i>";
                                                                             document.write(intro2);
                                                                             document.write(space);
                                                                             Write_Table(list_to_write = {{molp_a}})

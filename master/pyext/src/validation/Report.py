@@ -176,20 +176,24 @@ class WriteReport(object):
 
                 # if we do have bond outliers, print all the ones, we will write this into a csv file
                 if bond_nos:
+                    bonddict, total_bonds = I_mp.process_bonds_list(
+                        d_mp['molprobity'], Template_Dict['ChainL'])
+                    Template_Dict['total_bonds'] = total_bonds
                     Template_Dict['molp_b_csv'] = utility.dict_to_JSlist(
-                        I_mp.process_bonds_list(d_mp['molprobity'], Template_Dict['ChainL']))
+                        bonddict)
 
                 # if we have angle outliers, print all the ones
                 # angle outliers are a little tricky as molprobity outputs angle outliers multiple times
                 # in different parts of the file
-                if angle_nos:
-                    angledict = I_mp.process_angles_list(
+                angledict, total_angles = I_mp.process_angles_list(
                         d_mp['molprobity'], Template_Dict['ChainL'])
+                Template_Dict['total_angles'] = total_angles
+                if angle_nos:
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
                         I_mp.add_angles_outliers(angle_nos, angledict, Template_Dict['ChainL']))
                 else:
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
-                        I_mp.process_angles_list(d_mp['molprobity'], Template_Dict['ChainL']))
+                        angledict)
 
                 # we compute total number of bond and angle outliers
                 try:
