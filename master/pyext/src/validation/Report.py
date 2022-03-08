@@ -186,7 +186,7 @@ class WriteReport(object):
                 # angle outliers are a little tricky as molprobity outputs angle outliers multiple times
                 # in different parts of the file
                 angledict, total_angles = I_mp.process_angles_list(
-                        d_mp['molprobity'], Template_Dict['ChainL'])
+                    d_mp['molprobity'], Template_Dict['ChainL'])
                 Template_Dict['total_angles'] = total_angles
                 if angle_nos:
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
