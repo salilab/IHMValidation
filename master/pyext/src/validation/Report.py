@@ -181,6 +181,8 @@ class WriteReport(object):
                     Template_Dict['total_bonds'] = total_bonds
                     Template_Dict['molp_b_csv'] = utility.dict_to_JSlist(
                         bonddict)
+                else:
+                    Template_Dict['total_bonds'] = 1
 
                 # if we have angle outliers, print all the ones
                 # angle outliers are a little tricky as molprobity outputs angle outliers multiple times
