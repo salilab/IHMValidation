@@ -108,15 +108,11 @@
                                                                                            }
 
                                                                                        </script>
-                                                                                       <script type="text/javascript">
-                                                                                        if ({{Data}}.includes('SAS DATA') >= 1) {
-                                                                                            var ex='<li><a class="nav-link " data-toggle="tab" href="#menu1">Data Quality</a></li>'
-                                                                                            document.write(ex);}
-                                                                                            else{
-                                                                                                var ex='<li><a class="nav-link disabled " data-toggle="tab" href="#menu1">Data Quality</a></li>'
-                                                                                                document.write(ex);
-                                                                                            }
-                                                                                        </script>
+{%- if sas %}
+<li><a class="nav-link" data-toggle="tab" href="#menu1">Data Quality</a></li>
+{%- else %}
+<li><a class="nav-link disabled" data-toggle="tab" href="#menu1" title="No input data were found in public databases">Data Quality</a></li>
+{%- endif %}
                                                                                         <li>
 
                                                                                             <script type="text/javascript">
