@@ -15,6 +15,7 @@ import pdfkit
 import jinja2
 import pytz
 import sys
+import logging
 sys.path.insert(0, "../master/pyext/src/")
 from validation import utility
 from validation.Report import WriteReport
@@ -27,6 +28,8 @@ from validation.Report import WriteReport
 #####################################################################
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-v', dest='verbose', action='store_true',
+                    help="Verbose output")
 parser.add_argument('-p', type=str, default='No',
                     help="Physical principles used in modeling yes/no?")
 parser.add_argument('-f', default='PDBDEV_00000001.cif',
@@ -59,6 +62,9 @@ if args.p.upper() == 'YES':
     physics = 'Excluded volume and Sequence connectivity.'
 else:
     physics = 'Information about physical principles was not provided'
+
+logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
+
 #############################################################################################################################
 # Input for Jinja
 ####################################################################################
@@ -189,22 +195,34 @@ def convert_html_to_pdf(template_file: str, pdf_name: str, dirName: str, dirName
 #################################################
 
 if __name__ == "__main__":
+    logging.info("Clean up and create output directories")
     utility.clean_all()
     createdirs(dirNames)
     manager = Manager()  # create only 1 mgr
     d = manager.dict()  # create only 1 dict
     report = WriteReport(args.f)
+    logging.info("Entry composition")
     template_dict = report.run_entry_composition(Template_Dict)
 
+    logging.info("Model quality")
     template_dict, molprobity_dict, exv_data = report.run_model_quality(
         template_dict, csvDirName=dirNames['csv'], htmlDirName=dirNames['template'])
+
+    logging.info("SAS validation")
     template_dict, sas_data, sas_fit = report.run_sas_validation(template_dict)
+
     # uncomment below to run CX analysis
     # cx_fit, template_dict = report.run_cx_validation(template_dict)
+
+    logging.info("Quality at a glance")
     report.run_quality_glance(
         molprobity_dict, exv_data, sas_data, sas_fit, cx_fit=defaultdict(), imageDirName=dirNames['images'])
+
+    logging.info("SAS validation plots")
     report.run_sas_validation_plots(
         template_dict, imageDirName=dirNames['images'])
+
+    logging.info("Supplementary table")
     template_dict = report.run_supplementary_table(template_dict,
                                                    location=args.ls,
                                                    physics=physics,
@@ -217,8 +235,16 @@ if __name__ == "__main__":
                                                    resolution=args.res)
     write_supplementary_table(
         args.f, template_dict, template_file_supp, dirNames['supp'], dirNames['supp'])
+
+    logging.info("Write JSON")
     write_json(args.f, template_dict, dirNames['json'], dirNames['json'])
+
+    logging.info("Write HTML")
     write_html(args.f, template_dict, template_flask, dirNames['template'])
+
+    logging.info("Write PDF")
     write_pdf(args.f, template_dict, template_pdf,
               dirNames['pdf'], dirNames['pdf'])
+
+    logging.info("Final cleanup")
     utility.clean_all()
