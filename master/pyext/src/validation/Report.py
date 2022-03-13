@@ -194,6 +194,7 @@ class WriteReport(object):
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
                         I_mp.add_angles_outliers(angle_nos, angledict, Template_Dict['ChainL']))
                 else:
+                    Template_Dict['total_angles'] = 1
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
                         angledict)
 
@@ -250,6 +251,8 @@ class WriteReport(object):
                 Template_Dict['NumModels'] = len(molprobity_dict['Names'])
 
         else:
+            Template_Dict['bond'] = Template_Dict['angle'] = 0
+            Template_Dict['total_bonds'] = Template_Dict['total_angles'] = 1
             # if there are spheres, wed have coarse grained beadas, so we go ahead and calculate excluded volume
             # set the appropriate flag for assessing atomic segments
             Template_Dict['assess_atomic_segments'] = 'Not applicable'
