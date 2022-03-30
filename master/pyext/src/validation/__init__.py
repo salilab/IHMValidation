@@ -42,9 +42,16 @@ def get_operational_mode() -> str:
 IHMV_MODE: Final = get_operational_mode()  # Set constant for the operational mode
 logging.info(f"Current operational mode is: {IHMV_MODE}")
 
+# Setup default values for variables
+__max_num_models = 100000  # Hopefully this value is large enough
+
 # Alter variables for the DEVELOPMENT mode
 if IHMV_MODE == 'DEVELOPMENT':
-    pass
+    __max_num_models = 20  # Cap number of structures for development purposes
+
+# Setup final values for constants
+MAX_NUM_MODELS: Final = __max_num_models  # Set constant for maximum number of models in a file
+
 
 #########################
 # Get information from IHM reader
@@ -731,7 +738,7 @@ class GetInputInformation(object):
         for i, j in atom_site.items():
             file_re.write(''.join(j)+'\n')
         for i, j in atoms.items():
-            if int(j[model_col]) < 21:  # adding model num limit for molprobity analysis
+            if int(j[model_col]) <= MAX_NUM_MODELS:  # adding model num limit for molprobity analysis
                 file_re.write(' '.join(j)+'\n')
         for i, j in enumerate(after_atom):
             temp = ' '.join(j)
