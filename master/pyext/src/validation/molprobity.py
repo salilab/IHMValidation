@@ -6,10 +6,11 @@
 # ganesans - Salilab - UCSF
 # ganesans@salilab.org
 ###################################
-
+import logging
 import pickle
 import os
 from subprocess import run
+import validation
 from validation import GetInputInformation
 import ihm
 import ihm.reader
@@ -17,13 +18,13 @@ from decouple import config
 import collections
 import pandas as pd
 import csv
-
+import re
 
 class GetMolprobityInformation(GetInputInformation):
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)
         self.ID = str(self.get_id())
-        self.nos = min(20, self.get_number_of_models())
+        self.nos = min(self.get_number_of_models(), validation.MAX_NUM_MODELS)
         self.resultpath = '../Validation/results/'
         self.csvpath = '../Validation/'
 
@@ -492,7 +493,7 @@ class GetMolprobityInformation(GetInputInformation):
             clashes = {'Model '+model.split('MODEL')[1]: [] for model in vals}
         else:
             clashes = {'Model 1': []}
-        count.append(len(line)-self.nos)
+        count.append(self.find_clashscore_records(line))
 
         for ind in range(0, len(clashes.keys())):
             output_line = [j for k, j in enumerate(line) if k > int(
@@ -500,6 +501,23 @@ class GetMolprobityInformation(GetInputInformation):
             clashes[list(clashes.keys())[ind]].append(output_line)
         clashes_ordered = dict(sorted(clashes.items()))
         return clashes_ordered
+
+    @staticmethod
+    def find_clashscore_records(line: list) -> int:
+        """ look for the beginning of clashscore records in clash data.
+        searches for strings like 'MODEL 1 clashscore = 42.58'
+        """
+        found = False
+        q = re.compile('clashscore')
+        for i, line_ in enumerate(line):
+            if q.search(line_):
+                found = True
+                break
+
+        if not found:
+            logging.warning('Could not find clashscore records')
+
+        return i
 
     def process_rota(self, line: list) -> dict:
         """ process rota files to extract relevant information """
@@ -557,7 +575,10 @@ class GetMolprobityInformation(GetInputInformation):
                                     self.ID+'_clash_summary.txt'), 'w+')
         clashes = self.process_clash(line)
         if self.nos > 1:
-            clashscore_list = line[len(line)-self.nos:]
+            # Find the beginning of clashscore records
+            cs_start = self.find_clashscore_records(line)
+            # Extract only X models
+            clashscore_list = line[cs_start:cs_start + self.nos]
         else:
             clashscore_list = ['Model 1 ' + (line[len(line)-self.nos:])[0]]
         dict1 = {'Model ID': [], 'Clash score': [], 'Number of clashes': []}
@@ -567,9 +588,8 @@ class GetMolprobityInformation(GetInputInformation):
                 str(clashval.split(' ')[0].title()+' '+clashval.split(' ')[1]))
             dict1['Clash score'].append(clashval.split(' ')[-1])
 
-        for clashnos in list(clashes.values()):
-            # print (clashes.values())
-            dict1['Number of clashes'].append(len(clashnos[0]))
+        for model_id in dict1['Model ID']:
+            dict1['Number of clashes'].append(len(clashes[model_id][0]))
         clash_total = (sum(dict1['Number of clashes']))
         dict1 = self.orderclashdict(dict1)
         print(dict1['Model ID'], file=f_clash)
