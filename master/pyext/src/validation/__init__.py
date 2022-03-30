@@ -16,6 +16,35 @@ import os
 from collections import defaultdict
 from validation import utility
 
+import logging
+from typing import Final
+
+#########################
+# Setup operational mode
+#########################
+
+logging.basicConfig(level=logging.INFO)
+IHMV_MODES: Final = ["PRODUCTION", "DEVELOPMENT"]  # Available modes
+
+
+def get_operational_mode() -> str:
+    """ Check environment variables and set the operational mode"""
+    ihmv_env: str = "PRODUCTION"  # Default mode
+    ihmv_env_name = "IHMV_MODE"  # Name of the environment variable
+    ihmv_env_ = os.environ.get(ihmv_env_name)  # Check the environment variable
+
+    if (ihmv_env_ is not None) and (ihmv_env_ in IHMV_MODES):
+        ihmv_env = ihmv_env_
+        logging.info(f"Picked up environment variable: {ihmv_env_name}={ihmv_env}")
+
+    return ihmv_env
+
+IHMV_MODE: Final = get_operational_mode()  # Set constant for the operational mode
+logging.info(f"Current operational mode is: {IHMV_MODE}")
+
+# Alter variables for the DEVELOPMENT mode
+if IHMV_MODE == 'DEVELOPMENT':
+    pass
 
 #########################
 # Get information from IHM reader
