@@ -18,35 +18,38 @@ from validation import utility
 
 import logging
 from typing import Final
+from enum import Enum
 
 #########################
 # Setup operational mode
 #########################
 
 logging.basicConfig(level=logging.INFO)
-IHMV_MODES: Final = ["PRODUCTION", "DEVELOPMENT"]  # Available modes
 
+class IHMVAvailableModes(Enum):
+    PRODUCTION = 0
+    DEVELOPMENT = 1
 
-def get_operational_mode() -> str:
+def get_operational_mode() -> IHMVAvailableModes:
     """ Check environment variables and set the operational mode"""
-    ihmv_env: str = "PRODUCTION"  # Default mode
     ihmv_env_name = "IHMV_MODE"  # Name of the environment variable
-    ihmv_env_ = os.environ.get(ihmv_env_name)  # Check the environment variable
 
-    if (ihmv_env_ is not None) and (ihmv_env_ in IHMV_MODES):
-        ihmv_env = ihmv_env_
-        logging.info(f"Picked up environment variable: {ihmv_env_name}={ihmv_env}")
+    try:
+        ihmv_mode = IHMVAvailableModes[os.environ.get(ihmv_env_name)]  # Check the environment variable
+        logging.info(f"Picked up environment variable: {ihmv_env_name}={ihmv_mode.name}")
+    except KeyError:
+        ihmv_mode = IHMVAvailableModes.PRODUCTION  # Default mode
 
-    return ihmv_env
+    return ihmv_mode
 
 IHMV_MODE: Final = get_operational_mode()  # Set constant for the operational mode
-logging.info(f"Current operational mode is: {IHMV_MODE}")
+logging.info(f"Current operational mode is: {IHMV_MODE.name}")
 
 # Setup default values for variables
 __max_num_models = 100000  # Hopefully this value is large enough
 
 # Alter variables for the DEVELOPMENT mode
-if IHMV_MODE == 'DEVELOPMENT':
+if IHMV_MODE == IHMVAvailableModes.DEVELOPMENT:
     __max_num_models = 20  # Cap number of structures for development purposes
 
 # Setup final values for constants
