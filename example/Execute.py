@@ -112,7 +112,7 @@ template_flask = ["main.html",
 d = datetime.datetime.now()
 timezone = pytz.timezone("America/Los_Angeles")
 d_format = timezone.localize(d)
-timestamp = d_format.strftime("%B %d, %Y - %I:%M %p")
+timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
 dir_root_name = args.f.split('.')[0]
 dirNames = {
     'root': '../Validation/'+dir_root_name,
