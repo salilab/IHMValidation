@@ -1,11 +1,7 @@
 # only pytest tests
 name: test
 
-on: 
-  push:
-    branches:
-      - main
-      - development
+on: [push, pull_request]
 
 jobs:
   build:
