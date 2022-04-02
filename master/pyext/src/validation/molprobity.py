@@ -20,6 +20,7 @@ import pandas as pd
 import csv
 import re
 
+
 class GetMolprobityInformation(GetInputInformation):
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)

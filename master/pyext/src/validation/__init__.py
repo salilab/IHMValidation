@@ -26,9 +26,11 @@ from enum import Enum
 
 logging.basicConfig(level=logging.INFO)
 
+
 class IHMVAvailableModes(Enum):
     PRODUCTION = 0
     DEVELOPMENT = 1
+
 
 def get_operational_mode() -> IHMVAvailableModes:
     """ Check environment variables and set the operational mode"""
@@ -41,6 +43,7 @@ def get_operational_mode() -> IHMVAvailableModes:
         ihmv_mode = IHMVAvailableModes.PRODUCTION  # Default mode
 
     return ihmv_mode
+
 
 IHMV_MODE: Final = get_operational_mode()  # Set constant for the operational mode
 logging.info(f"Current operational mode is: {IHMV_MODE.name}")
