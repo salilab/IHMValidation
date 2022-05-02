@@ -11,10 +11,12 @@ import os
 import glob
 from collections import Counter
 from multiprocessing import Process
+import numpy as np
 
 
-def dict_to_JSlist(d: dict) -> list:
+def dict_to_JSlist_v0(d: dict) -> list:
     '''
+    TO BE REMOVED
     convert dictionary to list of lists
     output_list = []
     if bool(d):
@@ -40,6 +42,35 @@ def dict_to_JSlist(d: dict) -> list:
                 el = ['_' if str(i) == '?' else str(i) for i in el]
                 sublist.append(str(el[ind]))
             output_list.append(sublist)
+    return output_list
+
+
+def dict_to_JSlist(d: dict) -> list:
+    '''
+    convert dictionary to list of lists
+    '''
+    output_list = []
+
+    if bool(d) and len(list(d.keys())) > 0:
+        # add headers for table, which are the keys of the dict
+        header = list(d.keys())
+        # Get number of columns
+        N = len(header)
+        # Get number of rows. +1 for header.
+        M = len(d[header[0]]) + 1
+        output_list = np.empty((M, N), dtype=object)
+        output_list[0, :] = header
+        # iterate over dict keys - columns
+        for j, v in enumerate(d.values()):
+            # iterate over values of every key - fill rows
+            for i, el in enumerate(v, start=1):
+                el_ = str(el)
+                if el_ == '?':
+                    el_ = '_'
+                output_list[i, j] =  el_
+
+        output_list = output_list.tolist()
+
     return output_list
 
 
