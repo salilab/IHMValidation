@@ -14,6 +14,7 @@ from multiprocessing import Process
 import numpy as np
 import logging
 
+
 def dict_to_JSlist_v0(d: dict) -> list:
     '''
     TO BE REMOVED
@@ -68,9 +69,10 @@ def dict_to_JSlist(d: dict) -> list:
                 if el_ == '?':
                     el_ = '_'
                 try:
-                    output_list[i, j] =  el_
+                    output_list[i, j] = el_
                 except IndexError:
-                    logging.error('Dict has excessive elements. Ignoring them.')
+                    logging.error(
+                        'Dict has excessive elements. Ignoring them.')
 
         output_list = output_list.tolist()
 
