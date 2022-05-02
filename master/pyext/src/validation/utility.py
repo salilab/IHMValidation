@@ -12,7 +12,7 @@ import glob
 from collections import Counter
 from multiprocessing import Process
 import numpy as np
-
+import logging
 
 def dict_to_JSlist_v0(d: dict) -> list:
     '''
@@ -67,7 +67,10 @@ def dict_to_JSlist(d: dict) -> list:
                 el_ = str(el)
                 if el_ == '?':
                     el_ = '_'
-                output_list[i, j] =  el_
+                try:
+                    output_list[i, j] =  el_
+                except IndexError:
+                    logging.error('Dict has excessive elements. Ignoring them.')
 
         output_list = output_list.tolist()
 
