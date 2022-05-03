@@ -17,6 +17,7 @@ from validation import GetInputInformation
 from subprocess import run
 from decouple import config
 import operator
+import logging
 
 
 class SasValidation(GetInputInformation):
@@ -28,6 +29,7 @@ class SasValidation(GetInputInformation):
         self.imagepath = '../static/images/'
         self.saslink = 'https://www.sasbdb.org/media/sascif/sascif_files/'
         self.sasentry = 'https://www.sasbdb.org/rest-api/entry/summary/'
+        self.SASBDB_cache = dict()
 
     def get_SASBDB_code(self) -> list:
         '''
@@ -66,10 +68,20 @@ class SasValidation(GetInputInformation):
         for code in self.get_SASBDB_code():
             if 'None' not in str(code):
                 url_f = self.sasentry+code+'.json'
-                response = requests.get(url_f, data={'key': 'value'})
-                if response.status_code != 200:
-                    print(
-                        "Error....unable to fetch data from SASBDB, please check the entry ID")
+
+                # Check if we already requested the data
+                try:
+                    response = self.SASBDB_cache[url_f]
+                except KeyError:
+                    response = requests.get(url_f, data={'key': 'value'})
+                    response.encoding = 'ascii'
+                    if response.status_code != 200:
+                        logging.error(
+                            "Unable to fetch data from SASBDB, "
+                            "please check the entry ID")
+                    else:
+                        self.SASBDB_cache[url_f] = response
+
                 data_dic[code] = response.json()
                 with open(code+'.json', 'w') as f:
                     formatted_data = json.dumps(
@@ -85,9 +97,16 @@ class SasValidation(GetInputInformation):
         for code in self.get_SASBDB_code():
             if 'None' not in str(code):
                 url_f = self.saslink+code+'.sascif'
-                response = requests.get(url_f)
-                if response.status_code == 200:
-                    output.append('True')
+
+                # Check if we already requested the data
+                try:
+                    response = self.SASBDB_cache[url_f]
+                except KeyError:
+                    response = requests.get(url_f)
+                    response.encoding = 'ascii'
+                    if response.status_code == 200:
+                        self.SASBDB_cache[url_f] = response
+                        output.append('True')
 
         return output
 
@@ -98,10 +117,20 @@ class SasValidation(GetInputInformation):
         for code in self.get_SASBDB_code():
             if 'None' not in str(code):
                 url_f = self.saslink+code+'.sascif'
-                response = requests.get(url_f)
-                if response.status_code != 200:
-                    print(
-                        "Error....unable to fetch data from SASBDB, please check the entry ID")
+
+                # Check if we already requested the data
+                try:
+                    response = self.SASBDB_cache[url_f]
+                except KeyError:
+                    response = requests.get(url_f)
+                    response.encoding = 'ascii'
+                    if response.status_code != 200:
+                        logging.error(
+                            "Unable to fetch data from SASBDB, "
+                            "please check the entry ID")
+                    else:
+                        self.SASBDB_cache[url_f] = response
+
                 with open(code+'.sascif', 'w') as f:
                     f.write(response.text)
 
@@ -324,10 +353,20 @@ class SasValidation(GetInputInformation):
                     pval_table['SASDB ID'].append(key)
                     pval_table['Model'].append(fitnum+1)
                     target_url = val['fits'][fitnum]['fit_data']
-                    fit = requests.get(target_url)
-                    if fit.status_code != 200:
-                        print(
-                            "Error....unable to fetch data from SASBDB, please check the entry ID")
+
+                    # Check if we already requested the data
+                    try:
+                        fit = self.SASBDB_cache[target_url]
+                    except KeyError:
+                        fit = requests.get(target_url)
+                        fit.encoding = 'ascii'
+                        if fit.status_code != 200:
+                            logging.error(
+                                "Unable to fetch data from SASBDB, "
+                                "please check the entry ID")
+                        else:
+                            self.SASBDB_cache[target_url] = fit
+
                     fname = key+str(fitnum)+'fit.csv'
                     with open(fname, 'w') as f:
                         f.write(fit.text)
@@ -686,10 +725,19 @@ class SasValidation(GetInputInformation):
             if num > 0:
                 for fitnum in range(0, num):
                     target_url = val['fits'][fitnum]['fit_data']
-                    fit = requests.get(target_url)
-                    if fit.status_code != 200:
-                        print(
-                            "Error....unable to fetch data from SASBDB, please check the entry ID")
+
+                    # Check if we already requested the data
+                    try:
+                        fit = self.SASBDB_cache[target_url]
+                    except KeyError:
+                        fit = requests.get(target_url)
+                        fit.encoding = 'ascii'
+                        if fit.status_code != 200:
+                            logging.error(
+                                "Unable to fetch data from SASBDB, "
+                                "please check the entry ID")
+                        else:
+                            self.SASBDB_cache[target_url] = fit
 
                     fname = key+str(fitnum)+'fit.csv'
                     with open(fname, 'w') as f:
@@ -745,10 +793,20 @@ class SasValidation(GetInputInformation):
             if num > 0:
                 for fitnum in range(0, num):
                     target_url = val['fits'][fitnum]['models'][0]['model_plot']
-                    fitdata = requests.get(target_url)
-                    if fitdata.status_code != 200:
-                        print(
-                            "Error....unable to fetch data from SASBDB, please check the entry ID")
+
+                    # Check if we already requested the data
+                    try:
+                        fitdata = self.SASBDB_cache[target_url]
+                    except KeyError:
+                        fitdata = requests.get(target_url)
+                        fitdata.encoding = 'ascii'
+                        if fitdata.status_code != 200:
+                            logging.error(
+                                "Unable to fetch data from SASBDB, "
+                                "please check the entry ID")
+                        else:
+                            self.SASBDB_cache[target_url] = fitdata
+
                     # dirname = os.path.dirname(os.path.abspath(__file__))
                     filename = os.path.abspath(os.path.join(
                         os.getcwd(), self.imagepath, self.ID+key+str(fitnum)+'fit.png'))
