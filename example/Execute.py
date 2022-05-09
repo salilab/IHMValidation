@@ -106,10 +106,11 @@ template_flask = ["main.html",
                   "model_composition.html",
                   "formodeling.html"]
 
-
-d = datetime.datetime.now()
+# Get the UTC time from ruser
+d = pytz.utc.localize(datetime.datetime.utcnow())
+# Set UCSF's timezone
 timezone = pytz.timezone("America/Los_Angeles")
-d_format = timezone.localize(d)
+d_format = d.astimezone(timezone)
 timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
 dir_root_name = args.f.split('.')[0]
 dirNames = {
