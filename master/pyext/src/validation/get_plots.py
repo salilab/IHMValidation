@@ -14,7 +14,7 @@ import bokeh
 import numpy as np
 from bokeh.io import output_file, curdoc, export_png, export_svgs, show
 from bokeh.models import (ColumnDataSource, Legend, LegendItem, FactorRange,
-    Div, BasicTickFormatter)
+                          Div, BasicTickFormatter)
 from bokeh.palettes import viridis, Reds256, linear_palette
 from bokeh.plotting import figure, save
 from bokeh.models.widgets import Tabs, Panel
@@ -75,15 +75,15 @@ class Plots(validation.GetInputInformation):
                     x_range=(0, upper),
                     plot_height=120,
                     plot_width=700
-                    )
+                )
 
                 p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
-                    right=source.data['counts'][i * 3: (i + 1) * 3],
-                    width=0.9, line_color="white",
-                    fill_color=factor_cmap('y', palette=viridis(len(Scores)),
-                    factors=Scores,
-                    start=1, end=2)
-                   )
+                       right=source.data['counts'][i * 3: (i + 1) * 3],
+                       width=0.9, line_color="white",
+                       fill_color=factor_cmap('y', palette=viridis(len(Scores)),
+                                              factors=Scores,
+                                              start=1, end=2)
+                       )
                 # set labels and fonts
                 p.xaxis.major_label_text_font_size = "12pt"
                 p.yaxis.major_label_text_font_size = "12pt"
@@ -97,20 +97,20 @@ class Plots(validation.GetInputInformation):
                 plots.append(p)
 
                 export_svgs(p, filename=self.filename+'/' +
-                   self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg")
+                            self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg")
 
             grid = gridplot(plots, ncols=1,
-                merge_tools=True,
-                toolbar_location='right')
+                            merge_tools=True,
+                            toolbar_location='right')
             grid.children[1].css_classes = ['scrollable']
             grid.children[1].sizing_mode = 'fixed'
             grid.children[1].height = 450
             grid.children[1].width = 800
 
             title = Div(text="<p>Model Quality: Molprobity Analysis</p>",
-                style={"font-size": "1.5em", "font-weight": "bold",
-                "text-align": "center", "width": '100%'}, width=800
-                )
+                        style={"font-size": "1.5em", "font-weight": "bold",
+                               "text-align": "center", "width": '100%'}, width=800
+                        )
 
             fullplot = column(title, grid)
 
@@ -133,7 +133,6 @@ class Plots(validation.GetInputInformation):
             source = ColumnDataSource(
                 data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(n)))
 
-
             #  build plots
             plots = []
 
@@ -142,7 +141,7 @@ class Plots(validation.GetInputInformation):
 
             for i, name_ in enumerate(model):
                 p = figure(y_range=source.data['Scores'][i: i + 1], x_range=(lower, upper), plot_height=100,
-                           plot_width=700) # , title='Model Quality: Excluded Volume Analysis')
+                           plot_width=700)  # , title='Model Quality: Excluded Volume Analysis')
                 # p.xaxis.formatter = BasicTickFormatter(use_scientific=True, power_limit_high=3)
                 p.xaxis.ticker.desired_num_ticks = 3
 
@@ -150,8 +149,8 @@ class Plots(validation.GetInputInformation):
                            alpha=0.8, line_color='black')
                 p.xaxis.axis_label = 'Number of violations'
                 legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
-                            r], index=j) for j in range(len(legends[i:i + 1]))], location='center',
-                            label_text_font_size='12px', orientation='vertical')
+                    r], index=j) for j in range(len(legends[i:i + 1]))], location='center',
+                    label_text_font_size='12px', orientation='vertical')
                 p.add_layout(legend, 'right')
                 p.xaxis.major_label_text_font_size = "12pt"
                 p.yaxis.major_label_text_font_size = "12pt"
@@ -161,20 +160,20 @@ class Plots(validation.GetInputInformation):
                 plots.append(p)
 
                 export_svgs(p, filename=self.filename+'/' +
-                   self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg")
+                            self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg")
 
             grid = gridplot(plots, ncols=1,
-                merge_tools=True,
-                toolbar_location='right')
+                            merge_tools=True,
+                            toolbar_location='right')
             grid.children[1].css_classes = ['scrollable']
             grid.children[1].sizing_mode = 'fixed'
             grid.children[1].height = 450
             grid.children[1].width = 800
 
             title = Div(text='<p>Model Quality: Excluded Volume Analysis</p>',
-                style={"font-size": "1.5em", "font-weight": "bold",
-                "text-align": "center", "width": '100%'}, width=800
-                )
+                        style={"font-size": "1.5em", "font-weight": "bold",
+                               "text-align": "center", "width": '100%'}, width=800
+                        )
 
             fullplot = column(title, grid)
 
@@ -204,8 +203,9 @@ class Plots(validation.GetInputInformation):
         export_svgs(fullplot, filename=self.filename+'/' +
                     self.ID+"quality_at_glance_MQ.svg")
         export_png(fullplot, filename=self.filename+'/' +
-                    self.ID+"quality_at_glance_MQ.png")
-        save(fullplot, filename=self.filename+'/'+self.ID+"quality_at_glance_MQ.html")
+                   self.ID+"quality_at_glance_MQ.png")
+        save(fullplot, filename=self.filename+'/' +
+             self.ID+"quality_at_glance_MQ.html")
         # DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
