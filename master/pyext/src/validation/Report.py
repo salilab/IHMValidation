@@ -267,7 +267,7 @@ class WriteReport(object):
                 exv_data = {
                     'Models': line[0], 'Excluded Volume Satisfaction (%)':
                     line[1], 'Number of violations': line[2]}
-                Template_Dict['NumModels'] = len(exv_data)
+                Template_Dict['NumModels'] = len(exv_data['Models'])
 
             # if not, let's calculate it
             else:
@@ -275,7 +275,7 @@ class WriteReport(object):
                 I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file)
                 model_dict = I_ev.get_all_spheres()
                 exv_data = I_ev.run_exc_vol_parallel(model_dict)
-                Template_Dict['NumModels'] = len(exv_data)
+                Template_Dict['NumModels'] = len(exv_data['Models'])
 
             # let's update template dict with appropriate terms
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
