@@ -488,3 +488,54 @@ def clean_all():
             os.remove(item)
         if item.endswith('.sascif'):
             os.remove(item)
+
+
+# Adapted from
+# https://stackoverflow.com/questions/52859751/
+# most-efficient-way-to-find-order-of-magnitude-of-float-in-python
+def order_of_magnitude(value: float) -> float:
+    '''
+    calculate the order of magnitude for a given number
+
+    >>> order_of_magnitude(135)
+    2.0
+
+    '''
+    if value <= 0:
+        raise(f'Wrong value: {value}. '
+              'This function works only for positive values')
+    return np.floor(np.log10(value))
+
+
+def calc_optimal_range(counts: list) -> tuple:
+    '''
+    heuristics to find optimal range for plots
+
+    >>> calc_optimal_range((10, 1567))
+    (9.0, 1568.5669999999998)
+
+    '''
+
+    # Find min/max values
+    upper = max(counts)
+    lower = min(counts)
+
+    # In peculiar cases add an arbitary offset to the range
+    if upper == 0:
+        upper = 10
+        lower = 0
+
+    # Find the data's order of magnitude and make offset.
+    # Typically it would be .001%
+    if upper > 0:
+        oom = order_of_magnitude(upper)
+        upper = upper * (1 + 10 ** (-oom))
+
+    if lower > 0:
+        oom = order_of_magnitude(lower)
+        # Do not allow the range to go below zero
+        lower = max(0, lower * (1 - 10 ** (-oom)))
+
+    assert lower >= 0 and upper > 0
+
+    return(lower, upper)
