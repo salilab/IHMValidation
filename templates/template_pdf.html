@@ -257,38 +257,40 @@
                     <h3 align="center"><a name='qual'><u>Overall quality</u></a>  <a class='help1' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev-beta.wwpdb.org/validation_help.html#overview">?</a></h3>
                     <p align="justify"> <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development.</em> </p>
 
-                    <div class="box text-center container-fluid no-padding" align='center'>
-                        <script>
-                            if ({{NumModels}}>10 && {{disclaimer}}==0){
-                            var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_MQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:1310px;width:100%;border:none;overflow:hidden;></iframe>'
-                            document.write(section);
-                        } else if ({{NumModels}}<10 && {{disclaimer}} == 0) {
-                            var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_MQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:510px;width:100%;border:none;overflow:hidden;></iframe>'
-                                document.write(section);
+                    <div class="box text-center container-fluid no-padding" align='center' style="break-inside: avoid;">
+                      {% if disclaimer == 0 %}
+												{% if assess_excluded_volume[0] == 'Not applicable' %}
+													<p><h5><b>Model Quality: Molprobity Analysis</b></h5></p>
+												{% else %}
+													<p><h5><b>Model Quality: Excluded Volume Analysis</b></h5></p>
+												{% endif %}
 
-                        } else if ({{disclaimer}}==1) {
-
-                            var docx='<p align="justify"><em>Molprobity assessments and/or excluded volume assessments can not be evaluated for this current model.</em></p>'
-                            document.write(docx)
-
-                            }
-                        </script>
+												{% for i in range(NumModels) %}
+													<div><object width=100% data={{ "../images/" ~ ID_w[0] ~ '_' ~ i ~ '_quality_at_glance_MQ.svg'}}></object></div>
+												{% endfor %}
+											{% elif disclaimer == 1 -%}
+												<p align="justify"><em>Molprobity assessments and/or excluded volume assessments can not be evaluated for this current model.</em></p>
+											{% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-            var sec='<div class="card-body"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFFFFF ;"><div class="box text-center container-fluid no-padding" align="center">'
-            document.write(sec);
-            var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_DQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:510px;width:100%;border:none;overflow:hidden;></iframe>'
-            document.write(section);
-            var sec2='</div></div></div></div></div>'
-            document.write(sec2);}
-        </script>
-
+    {% if ( (sas|length > 0) and (sasdb_sascif|length > 0) ) %}
+    	<div class="card-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="card-header" style="background-color: #FFFFFF ;">
+							<div class="box text-center container-fluid no-padding" align="center">
+								<iframe src={{"../images/" ~ ID_w[0]  ~ "quality_at_glance_DQ.svg"}} onload="javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this));" style="height:510px;width:100%;border:none;overflow:hidden;">
+								</iframe>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
         <script>
             if ({{number_of_fits}}  > 0 && {{sasdb_sascif}}.length > 0) {
                 var sec='<div class="card-body"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFFFFF ;"><div class="box text-center container-fluid no-padding" align="center">'
@@ -441,6 +443,7 @@
                                 } else {
                                     var write_prot = "<i>This entry is a result of " + {{Protocols_number}} + " distinct protocols.</i>";
                                     document.write(write_prot);
+									}
                                 </script>
                                 <p class="ex2"> </p>
                                 <script>
