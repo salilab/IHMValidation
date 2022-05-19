@@ -9,10 +9,12 @@
 ###################################
 import os
 import validation
+from validation import utility
 import bokeh
 import numpy as np
 from bokeh.io import output_file, curdoc, export_png, export_svgs, show
-from bokeh.models import ColumnDataSource, Legend, LegendItem, FactorRange
+from bokeh.models import (ColumnDataSource, Legend, LegendItem, FactorRange,
+    Div, BasicTickFormatter)
 from bokeh.palettes import viridis, Reds256, linear_palette
 from bokeh.plotting import figure, save
 from bokeh.models.widgets import Tabs, Panel
@@ -20,6 +22,7 @@ from bokeh.layouts import row
 from bokeh.core.validation import silence
 from bokeh.core.validation.warnings import MISSING_RENDERERS, EMPTY_LAYOUT
 from bokeh.transform import factor_cmap
+from bokeh.layouts import gridplot, column
 silence(MISSING_RENDERERS, True)
 silence(EMPTY_LAYOUT, True)
 
@@ -58,25 +61,58 @@ class Plots(validation.GetInputInformation):
             # if there are more than 7 models, we will increase the size of the plots
             # this is important, else the plots look ugly
 
-            if len(molprobity_data['Names']) > 7:
-                p = figure(y_range=FactorRange(*y), plot_height=1200,
-                           plot_width=700, title="Model Quality: Molprobity Analysis")
-            else:
+            plots = []
 
-                p = figure(y_range=FactorRange(*y), plot_height=450,
-                           plot_width=800, title="Model Quality: Molprobity Analysis")
+            # get data ranges
+            lower, upper = utility.calc_optimal_range(counts)
+
             # create plot
-            p.hbar(y='y', right='counts', width=0.9, source=source, line_color="white",
-                   fill_color=factor_cmap('y', palette=viridis(len(Scores)), factors=Scores, start=1, end=2))
-            # set labels and fonts
-            p.xaxis.major_label_text_font_size = "12pt"
-            p.yaxis.major_label_text_font_size = "12pt"
-            p.xaxis.axis_label = 'Outliers'
-            p.xaxis.axis_label_text_font_style = 'italic'
-            p.left[0].group_text_font_size = '14px'
-            p.left[0].group_label_orientation = 'horizontal'
-            p.title.vertical_align = 'top'
-            p.title.align = "center"
+            for i, name_ in enumerate(molprobity_data['Names']):
+
+                p = figure(
+                    y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
+                    # Force left limit at zero
+                    x_range=(0, upper),
+                    plot_height=120,
+                    plot_width=700
+                    )
+
+                p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
+                    right=source.data['counts'][i * 3: (i + 1) * 3],
+                    width=0.9, line_color="white",
+                    fill_color=factor_cmap('y', palette=viridis(len(Scores)),
+                    factors=Scores,
+                    start=1, end=2)
+                   )
+                # set labels and fonts
+                p.xaxis.major_label_text_font_size = "12pt"
+                p.yaxis.major_label_text_font_size = "12pt"
+                p.xaxis.axis_label = 'Outliers'
+                p.xaxis.axis_label_text_font_style = 'italic'
+                p.left[0].group_text_font_size = '14px'
+                p.left[0].group_label_orientation = 'horizontal'
+                p.title.vertical_align = 'top'
+                p.title.align = "center"
+                p.output_backend = "svg"
+                plots.append(p)
+
+                export_svgs(p, filename=self.filename+'/' +
+                   self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg")
+
+            grid = gridplot(plots, ncols=1,
+                merge_tools=True,
+                toolbar_location='right')
+            grid.children[1].css_classes = ['scrollable']
+            grid.children[1].sizing_mode = 'fixed'
+            grid.children[1].height = 450
+            grid.children[1].width = 800
+
+            title = Div(text="<p>Model Quality: Molprobity Analysis</p>",
+                style={"font-size": "1.5em", "font-weight": "bold",
+                "text-align": "center", "width": '100%'}, width=800
+                )
+
+            fullplot = column(title, grid)
 
         # if there isn't molprobity data, we plot exc vol data
         elif exv_data:
@@ -96,28 +132,51 @@ class Plots(validation.GetInputInformation):
             n = 3 if len(model) < 3 else len(model)
             source = ColumnDataSource(
                 data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(n)))
-            if len(model) > 1:
-                upper = max(counts) + (max(counts)-min(counts))
-                lower = min(counts)-(max(counts)-min(counts))
-            else:
-                upper = max(counts) + 20
-                lower = min(counts)-20
-            if upper == lower:
-                upper = lower+20
-            # build plots
-            p = figure(y_range=Scores, x_range=(lower, upper), plot_height=450,
-                       plot_width=800, title='Model Quality: Excluded Volume Analysis')
-            r = p.hbar(y='Scores', right='counts', color='color', height=0.5,
-                       source=source, alpha=0.8, line_color='black')
-            p.xaxis.axis_label = 'Number of violations'
-            legend = Legend(items=[LegendItem(label=legends[i], renderers=[
-                            r], index=i) for i in range(len(legends))], location='center',
+
+
+            #  build plots
+            plots = []
+
+            # get ranges
+            lower, upper = utility.calc_optimal_range(counts)
+
+            for i, name_ in enumerate(model):
+                p = figure(y_range=source.data['Scores'][i: i + 1], x_range=(lower, upper), plot_height=100,
+                           plot_width=700) # , title='Model Quality: Excluded Volume Analysis')
+                # p.xaxis.formatter = BasicTickFormatter(use_scientific=True, power_limit_high=3)
+                p.xaxis.ticker.desired_num_ticks = 3
+
+                r = p.hbar(y=source.data['Scores'][i:i + 1], right=source.data['counts'][i: i + 1], color=source.data['color'][i:i + 1], height=0.5,
+                           alpha=0.8, line_color='black')
+                p.xaxis.axis_label = 'Number of violations'
+                legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
+                            r], index=j) for j in range(len(legends[i:i + 1]))], location='center',
                             label_text_font_size='12px', orientation='vertical')
-            p.add_layout(legend, 'right')
-            p.xaxis.major_label_text_font_size = "12pt"
-            p.yaxis.major_label_text_font_size = "12pt"
-            p.title.vertical_align = 'top'
-            p.title.align = "center"
+                p.add_layout(legend, 'right')
+                p.xaxis.major_label_text_font_size = "12pt"
+                p.yaxis.major_label_text_font_size = "12pt"
+                p.title.vertical_align = 'top'
+                p.title.align = "center"
+                p.output_backend = "svg"
+                plots.append(p)
+
+                export_svgs(p, filename=self.filename+'/' +
+                   self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg")
+
+            grid = gridplot(plots, ncols=1,
+                merge_tools=True,
+                toolbar_location='right')
+            grid.children[1].css_classes = ['scrollable']
+            grid.children[1].sizing_mode = 'fixed'
+            grid.children[1].height = 450
+            grid.children[1].width = 800
+
+            title = Div(text='<p>Model Quality: Excluded Volume Analysis</p>',
+                style={"font-size": "1.5em", "font-weight": "bold",
+                "text-align": "center", "width": '100%'}, width=800
+                )
+
+            fullplot = column(title, grid)
 
         # if neither exc vol nor molp data exists, we create a blank plot
         # pdb-dev visuals keep changing, so this plot might or might not make sense
@@ -130,27 +189,23 @@ class Plots(validation.GetInputInformation):
                 data=dict(Scores=Scores, counts=counts, legends=legends))
             p = figure(y_range=Scores, x_range=(0, 1),
                        plot_height=300, plot_width=800)
-        Scores = ['']
-        counts = ['']
-        legends = ['']
-        source = ColumnDataSource(
-            data=dict(Scores=Scores, counts=counts, legends=legends))
-        p1 = figure(y_range=Scores, x_range=(0, 1),
-                    plot_height=300, plot_width=700, title='Under Development')
-        p.ygrid.grid_line_color = p1.ygrid.grid_line_color = None
-        p.xaxis.axis_label_text_font_size = p1.xaxis.axis_label_text_font_size = "14pt"
-        p.yaxis.axis_label_text_font_size = p1.yaxis.axis_label_text_font_size = "14pt"
-        p.title.text_font_size = p1.title.text_font_size = '14pt'
-        p.title.align = p1.title.align = "center"
-        p.output_backend = p1.output_backend = "svg"
-        p.title.vertical_align = 'top'
+
+            p.ygrid.grid_line_color = None
+            p.xaxis.axis_label_text_font_size = "14pt"
+            p.yaxis.axis_label_text_font_size = "14pt"
+            p.title.text_font_size = '14pt'
+            p.title.align = "center"
+
+            p.output_backend = "svg"
+            p.title.vertical_align = 'top'
+            fullplot = p
         # make panel figures
         # first panel is model quality
-        export_svgs(p, filename=self.filename+'/' +
+        export_svgs(fullplot, filename=self.filename+'/' +
                     self.ID+"quality_at_glance_MQ.svg")
-        export_png(p, filename=self.filename+'/' +
-                   self.ID+"quality_at_glance_MQ.png")
-        save(p, filename=self.filename+'/'+self.ID+"quality_at_glance_MQ.html")
+        export_png(fullplot, filename=self.filename+'/' +
+                    self.ID+"quality_at_glance_MQ.png")
+        save(fullplot, filename=self.filename+'/'+self.ID+"quality_at_glance_MQ.html")
         # DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete

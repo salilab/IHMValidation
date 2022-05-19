@@ -64,7 +64,7 @@
                                                                         <div class="row">
                                                                             <div class="col-lg-12">
                                                                                 <script type="text/javascript">
-                                                                                    var tex='<div class="card-header" style="background-color: #FFFFFF; border-color:#003366; height: 90rem;">'
+                                                                                    var tex='<div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">'
                                                                                     document.write(tex);
                                                                                 </script>
 
@@ -139,7 +139,7 @@
                                                                                                         <script type="text/javascript">
 
                                                                                                         if ({{disclaimer}}==0){
-                                                                                                            var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_MQ.html frameborder=0 scrolling=yes width=100% height=1250vh align=center text-align: center style=position:relative></iframe>'
+                                                                                                            var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_MQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;"></iframe>'
                                                                                                             document.write(section); }
 
                                                                                                         </script>
@@ -156,7 +156,7 @@
                                                                                                 <div id="menu2" class="tab-pane fade">
                                                                                                     <div class="box text-center container-fluid no-padding" align='center'>
                                                                                                         <script>
-                                                                                                            var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_FQ.html frameborder=0 scrolling=yes width=90% height=500vh align=center text-align: center style=position:relative></iframe>'
+                                                                                                            var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_FQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;"></iframe>'
                                                                                                             document.write(section);
                                                                                                         </script>
                                                                                                     </div>
@@ -181,19 +181,12 @@
                                                                                 <p style=margin-bottom:1cm;> </p>
                                                                                 <p align="justify">The following software was used in the production of this report.</p>
                                                                                 <ul style="list-style-type:none;">
-                                                                                    <script>
-                                                                                        var s = 0
-                                                                                        if (s < 1) {
-                                                                                            var docx = "<li><em><a href='http://molprobity.biochem.duke.edu/'>Molprobity</a> Version 4.4</em></li>";
-                                                                                            document.write(docx);
-                                                                                        }
-                                                                                        if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0){
+                                                                                    <li><em><a href='http://molprobity.biochem.duke.edu/'>Molprobity</a> Version 4.4</em></li>
+                                                                                        
+																					{% if sas|length > 0 and sasdb_sascif|length > 0 %}
+                                                                                   	  <li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a>  Version 3.0.3</em></li>
+																					{% endif %}
 
-                                                                                            var docx = "<li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a>  Version 3.0.3</em></li>";
-                                                                                            document.write(docx);
-
-                                                                                        }
-                                                                                    </script>
                                                                                     <li><em><a href='https://github.com/salilab/IHMValidation'>Integrative Modeling Validation</a>  Version 1.0</em></li>
                                                                                     <li><em><a href='https://integrativemodeling.org/'>Integrative Modeling Platform</a> Version 2.15.0</em></li>
 
