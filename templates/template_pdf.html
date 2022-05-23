@@ -169,7 +169,7 @@
             <div class="col-lg-12">
                 <div class="card-header" style="background-color: #E4E4E4; height: 17rem;">
                     <h1 align="center">Integrative Structure Validation Report   <a class='help1' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev-beta.wwpdb.org/validation_help.html#overview">?</a></h1>
-                    <h2 align="center">{{date}}</h2>
+                    <h2 align="center">{{ date }}</h2>
                     <p><b> The following software was used in the production of this report:</b></p>
 
                     <ul style="list-style-type:none;">
@@ -179,7 +179,7 @@
                                 var docx = "<li><em><a href='http://molprobity.biochem.duke.edu/'>Molprobity</a> Version 4.4</em></li>";
                                 document.write(docx);
                             }
-                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0){
+                            if ({{ sas }}.length > 0 && {{ sasdb_sascif }}.length > 0){
 
                                 var docx = "<li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a>  Version 3.0.3</em></li>";
                                 document.write(docx);
@@ -206,20 +206,20 @@
                             <thead>
                                 <tr>
                                     <th align="center" class="text-center">PDB ID</th>
-                                    <th align="center" class="text-center">{{ID_T}}</th>
+                                    <th align="center" class="text-center">{{ ID_T }}</th>
                                 </tr>
                             </thead>
                             <tr>
                                 <td class="align-middle" class="text-center">Structure Name</td>
-                                <td class="align-middle" class="text-center">{{Molecule}} </td>
+                                <td class="align-middle" class="text-center">{{ Molecule }} </td>
                             </tr>
                             <tr>
                                 <td class="align-middle" class="text-center">Publication Title</td>
-                                <td class="align-middle" class="text-center">{{Title}}</td>
+                                <td class="align-middle" class="text-center">{{ Title }}</td>
                             </tr>
                             <tr>
                                 <td class="align-middle" class="text-center">Authors</td>
-                                <td class="align-middle" class="text-center">{{Authors}}</td>
+                                <td class="align-middle" class="text-center">{{ Authors }}</td>
                             </tr>
                         </table>
                     </div>
@@ -292,11 +292,11 @@
 			</div>
 		{% endif %}
         <script>
-            if ({{number_of_fits}}  > 0 && {{sasdb_sascif}}.length > 0) {
+            if ({{ number_of_fits }}  > 0 && {{ sasdb_sascif }}.length > 0) {
                 var sec='<div class="card-body"><div class="row"><div class="col-lg-12"><div class="card-header" style="background-color: #FFFFFF ;"><div class="box text-center container-fluid no-padding" align="center">'
                 document.write(sec);
 
-                var section = '<iframe src=../images/' + {{ID_w}}  + 'quality_at_glance_FQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:510px;width:100%;border:none;overflow:hidden;></iframe>'
+                var section = '<iframe src=../images/' + {{ ID_w }}  + 'quality_at_glance_FQ.svg onload=javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+px;}(this)); style=height:510px;width:100%;border:none;overflow:hidden;></iframe>'
                 document.write(section);}
 
                 var sec2='</div></div></div></div></div>'
@@ -310,7 +310,7 @@
                     <div class="col-lg-12">
                         <div class="card-header" style="background-color: #FFF;">
                             <script>
-                                var n = {{num_ensembles}};
+                                var n = {{ num_ensembles }};
                                 var section = '<h4 align="center"><u><a name="ensemble">Ensemble information</a></u>  <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev-beta.wwpdb.org/validation_help.html#ensemble">?</a></h4>';
                                 if (n < 2) {
                                     section += '<p class ="ex2"><i>This entry consists of ' + n + ' distinct ensemble.</i></p>';
@@ -325,7 +325,7 @@
                                 document.write(div2);
                                 var write1 = '';
                                 write1 += '<h4 class="ex2" align="center"><u><a name=summary>Summary</a></u>  <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev-beta.wwpdb.org/validation_help.html#summary">?</a></h4>';
-                                write1 += '<p align="justify"><i>This entry consists of ' + {{number_of_molecules}} + ' unique models, with ' + String({{num_chains}}) + ' subunits in each model. A total of ' + {{number_of_datasets}} + ' datasets or restraints was used to build this entry. Each model is represented by ' + String({{Rigid_Body}}) + ' rigid bodies and ' + String({{Flexible_Unit}}) + ' flexible or non-rigid units. </i> </p>';
+                                write1 += '<p align="justify"><i>This entry consists of ' + {{ number_of_molecules }} + ' unique models, with ' + String({{ num_chains }}) + ' subunits in each model. A total of ' + {{ number_of_datasets }} + ' datasets or restraints was used to build this entry. Each model is represented by ' + String({{ Rigid_Body }}) + ' rigid bodies and ' + String({{ Flexible_Unit }}) + ' flexible or non-rigid units. </i> </p>';
                                 document.write(write1);
                             </script>
                         </div>
@@ -368,11 +368,11 @@
                                         document.write(docx);
                                     }
                                 }
-                                write_intro_1(input_variable = {{number_of_molecules}})
-                                write_model_name(input_variable = {{model_names}})
+                                write_intro_1(input_variable = {{ number_of_molecules }})
+                                write_model_name(input_variable = {{ model_names }})
                             </script>
                             <script>
-                                var input_list = {{Entry_list}};
+                                var input_list = {{ Entry_list }};
 
                                 Write_Table(list_to_write = input_list)
                             </script>
@@ -398,11 +398,11 @@
                                         document.write(docx);
                                     }
                                 }
-                                write_dataset(input_variable = {{number_of_datasets}})
+                                write_dataset(input_variable = {{ number_of_datasets }})
                             </script>
                             <p class="ex2"> </p>
                             <script>
-                                var input_list_2 = {{Datasets_list}};
+                                var input_list_2 = {{ Datasets_list }};
 
                                 Write_Table(list_to_write = input_list_2)
                             </script>
@@ -416,10 +416,10 @@
                     <div class="col-lg-12">
                         <div class="card-header" style="background-color: #FFF;">
                             <h4 class="ex2" align="center"><u><a name="representation">Representation</a></u>   <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev-beta.wwpdb.org/validation_help.html#representation">?</a></h4>
-                            <p class="ex2" align="justify"><i>This entry has only one representation and includes {{Rigid_Body}} rigid bodies and {{Flexible_Unit}} flexible units.</i></p>
+                            <p class="ex2" align="justify"><i>This entry has only one representation and includes {{ Rigid_Body }} rigid bodies and {{ Flexible_Unit }} flexible units.</i></p>
                             <p class="ex2"> </p>
                             <script>
-                                var input_list_3 = {{RB_list}};
+                                var input_list_3 = {{ RB_list }};
 
                                 Write_Table(list_to_write = input_list_3)
                             </script>
@@ -435,18 +435,18 @@
                         <h4 class="ex2" align="center">
                             <u><a name="methods">Methodology and software</a></u>   <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev-beta.wwpdb.org/validation_help.html#software">?</a></h4>
                             <script>
-                                var n = {{Protocols_number}}
+                                var n = {{ Protocols_number }}
                                 if (n < 2) {
-                                    var write_prot = "<i>This entry is a result of " + {{Protocols_number}} + " distinct protocol.</i>";
+                                    var write_prot = "<i>This entry is a result of " + {{ Protocols_number }} + " distinct protocol.</i>";
                                     document.write(write_prot);
                                 } else {
-                                    var write_prot = "<i>This entry is a result of " + {{Protocols_number}} + " distinct protocols.</i>";
+                                    var write_prot = "<i>This entry is a result of " + {{ Protocols_number }} + " distinct protocols.</i>";
                                     document.write(write_prot);
 																};
                             </script>
                                 <p class="ex2"> </p>
                                 <script>
-                                    var input_list_3 = {{Sampling_list}};
+                                    var input_list_3 = {{ Sampling_list }};
 
                                     Write_Table(list_to_write = input_list_3)
                                 </script>
@@ -463,11 +463,11 @@
                                             document.write(docx);
                                         }
                                     }
-                                    write_software(software_list = {{number_of_software}})
+                                    write_software(software_list = {{ number_of_software }})
                                 </script>
                                 <p class="ex2"> </p>
                                 <script>
-                                    var input_list = {{soft_list}};
+                                    var input_list = {{ soft_list }};
 
                                     Write_Table(list_to_write = input_list)
                                 </script>
@@ -689,9 +689,9 @@
                                 <script>
 
 
-                                    for (var i=0; i<{{Unique_dataset}}.length; i++){
+                                    for (var i=0; i<{{ Unique_dataset }}.length; i++){
                                         var ex="<div><div class=row><div class=col-lg-12>";
-                                        ex += "<h5 class= ex2 align= center><u><a name=last>"+{{Unique_dataset}}[i]+"</a></u></h5>";
+                                        ex += "<h5 class= ex2 align= center><u><a name=last>"+{{ Unique_dataset }}[i]+"</a></u></h5>";
                                         ex+="<p align=justify>Validation for this section is under development.</p>"
                                         ex += "<p style=margin-bottom:2cm;> </p>";
                                         ex +="</div></div></div>"
@@ -714,38 +714,35 @@
                                     <h4 align="center"><u>Model quality</u>  <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev-beta.wwpdb.org/validation_help.html#modelquality'>?</a> </h4>
 
                                      <p class="ex2"> For models with atomic structures, molprobity analysis is performed. For models with coarse-grained or multi-scale structures, excluded volume analysis is performed.</p>
-                                    <script>
-                                        var sphere = {{sphere}}
-                                        var disclaimer= {{disclaimer}}
+																		{% if sphere > 0 %} 
+																			<h5 align= left>Excluded volume satisfaction  <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev-beta.wwpdb.org/validation_help.html#exv'>?</a>
+																			</h5>
+																			
+																			<i> Excluded volume satisfaction for the models in the entry are listed below. </i>
+                                      
+																			<p class="ex2"> </p>
+                                      <script>
+																				Write_Table(list_to_write = {{ excluded_volume }})
+                                      </script>
 
-                                        if (sphere > 0) {
-                                            var ex = "<h5 class= ex2 align= left>Excluded volume satisfaction  <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev-beta.wwpdb.org/validation_help.html#exv'>?</a> </h5>";
-                                            ex += "<i> Excluded volume satisfaction for the models in the entry are listed below. </i>";
-                                            document.write(ex);
-                                            var space = '<p class="ex2"> </p>';
-                                            document.write(space);
-                                            Write_Table(list_to_write = {{excluded_volume}})
-                                            document.write(space);
-                                        }
-                                        if (disclaimer > 0) {
-                                            var space = '<p class="ex2"> </p>';
-                                            document.write(space);
-                                            var ex2 = "<i> NOTE: Based on existing standards, there are no model quality assessments for this entry.</i>";
-                                            document.write(ex2);
-                                            var space = '<p class="ex2"> </p>';
-                                            document.write(space); }
+																		{% endif %}
 
-                                        </script>
+																		{% if disclaimer > 0 %}
+		                                  <p class="ex2"> </p>
+	                                    <i> NOTE: Based on existing standards, there are no model quality assessments for this entry.</i>
+			                                <p class="ex2"> </p>
+																		{% endif %}
+
                                         <script>
-                                            if ({{sphere}}< 1) {
+                                            if ({{ sphere }}< 1) {
                                                 var intro = "<h5 class= ex2 align= center><u><a name='geometry'>Standard geometry: bond outliers</a></u>   <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='https://pdb-dev-beta.wwpdb.org/validation_help.html#molprobity'>?</a></h5>";
                                                 document.write(intro)
                                                 var space = '<p class="ex2"> </p>';
                                                 document.write(space);
-                                                if ({{molp_b}}.length > 1) {
-                                                    var intro = "<i> There are " + {{bond}} + " bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev-beta.wwpdb.org/"+{{ID_MP}}+"/html/bond_outliers.html> here.</a></i>";
+                                                if ({{ molp_b }}.length > 1) {
+                                                    var intro = "<i> There are " + {{ bond }} + " bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev-beta.wwpdb.org/"+{{ ID_MP }}+"/html/bond_outliers.html> here.</a></i>";
                                                     document.write(intro)
-                                                    Write_Table(list_to_write = {{molp_b}})
+                                                    Write_Table(list_to_write = {{ molp_b }})
                                                     document.write(space);
                                                 }
 
@@ -760,11 +757,11 @@
                                                 var space = '<p class="ex2"> </p>';
                                                 document.write(space);
 
-                                                if ({{molp_a}}.length > 1) {
-                                                    var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev-beta.wwpdb.org/"+{{ID_MP}}+"/html/angle_outliers.html> here.</a></i>";
+                                                if ({{ molp_a }}.length > 1) {
+                                                    var intro2 = "<i> There are " + {{ angle }} + " angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev-beta.wwpdb.org/"+{{ ID_MP }}+"/html/angle_outliers.html> here.</a></i>";
                                                     document.write(intro2);
                                                     document.write(space);
-                                                    Write_Table(list_to_write = {{molp_a}})
+                                                    Write_Table(list_to_write = {{ molp_a }})
                                                     document.write(space);
                                                 }
                                             else {
@@ -777,17 +774,17 @@
                                                 docx += "<p align='justify'><i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i></p>";
                                                 document.write(docx);
                                                 document.write(space);
-                                                if ({{clashscore_list}}.length > 1) {
-                                                    Write_Table(list_to_write = {{clashscore_list}})
+                                                if ({{ clashscore_list }}.length > 1) {
+                                                    Write_Table(list_to_write = {{ clashscore_list }})
                                                     document.write(space);
                                                 }
 
 
-                                                var text1 = "<i> All " + {{tot}} + " close contacts within the same asymmetric unit are listed below, sorted by their clash magnitude.</i>";
+                                                var text1 = "<i> All " + {{ tot }} + " close contacts within the same asymmetric unit are listed below, sorted by their clash magnitude.</i>";
                                                 document.write(text1);
                                                 document.write(space);
-                                                if ({{clashlist}}.length > 1) {
-                                                    Write_Table(list_to_write = {{clashlist}})
+                                                if ({{ clashlist }}.length > 1) {
+                                                    Write_Table(list_to_write = {{ clashlist }})
                                                     document.write(space);
                                                 }
 
@@ -795,8 +792,8 @@
                                                 text2 += "<p align='justify'><i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed. </i></p>"
                                                 document.write(text2);
                                                 document.write(space);
-                                                if ({{ramascore}}.length > 1) {
-                                                    Write_Table(list_to_write = {{ramascore}})
+                                                if ({{ ramascore }}.length > 1) {
+                                                    Write_Table(list_to_write = {{ ramascore }})
                                                     document.write(space);
                                                 }
 
@@ -804,8 +801,8 @@
                                                 var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
                                                 document.write(text4);
                                                 document.write(space);
-                                                if ({{ramalist}}.length > 1) {
-                                                    Write_Table(list_to_write = {{ramalist}})
+                                                if ({{ ramalist }}.length > 1) {
+                                                    Write_Table(list_to_write = {{ ramalist }})
                                                     document.write(space);
                                                 }
 
@@ -814,8 +811,8 @@
                                                 text3 += "<i> In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
                                                 document.write(text3);
                                                 document.write(space);
-                                                if ({{rotascore}}.length > 1) {
-                                                    Write_Table(list_to_write = {{rotascore}})
+                                                if ({{ rotascore }}.length > 1) {
+                                                    Write_Table(list_to_write = {{ rotascore }})
                                                     document.write(space);
                                                 }
 
@@ -823,8 +820,8 @@
                                                 var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
                                                 document.write(text4);
                                                 document.write(space);
-                                                if ({{rotalist}}.length > 1) {
-                                                    Write_Table(list_to_write = {{rotalist}})
+                                                if ({{ rotalist }}.length > 1) {
+                                                    Write_Table(list_to_write = {{ rotalist }})
                                                     document.write(space);
                                                 }
 
@@ -844,11 +841,11 @@
                                     <div class="col-lg-12">
                                         <h4 class="ex2" align="center"> <u><a name='first'>Fit of model to data used for modeling</a></u>       <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev-beta.wwpdb.org/validation_help.html#fittodata'>?</a></h4>
                                         <script>
-                                            if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
+                                            if ({{ sas }}.length > 0 && {{ sasdb_sascif }}.length > 0) {
                                                 var ex = "<h5 class= ex2 align= center><u> Fit of model(s) to SAS data</u></h5>";
                                                 document.write(ex)
                                             }
-                                            if ({{sasdb_sascif}}.length < 1) {
+                                            if ({{ sasdb_sascif }}.length < 1) {
                                              var ex2 = '<p align=justify> SAS data used in this integrative model could not be validated as the sascif file is currently unavailable. </p>';
                                              document.write(ex2);
                                          }
@@ -864,12 +861,12 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <script>
-                                        if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-                                            if ({{number_of_fits}} > 0) {
+                                        if ({{ sas }}.length > 0 && {{ sasdb_sascif }}.length > 0) {
+                                            if ({{ number_of_fits }} > 0) {
                                                 var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u>     <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev-beta.wwpdb.org/validation_help.html#goodness'>?</a></h5>";
                                                 ex2 += "<p class =ex2><i>Model and fits displayed below were obtained from SASBDB. \u03C7\u00b2 values are a measure of fit of the model to data. A perfect fit has a \u03C7\u00b2 value of zero.</i>";
                                                 document.write(ex2)
-                                                var input_list = {{chi_table}};
+                                                var input_list = {{ chi_table }};
                                                 Write_Table(list_to_write = input_list)
                                             } else {
                                                 var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u></h5>";
@@ -887,9 +884,9 @@
                             </div>
 
                             <script>
-                                if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-                                    var sasdb_code_html={{sasdb_code_html}}  
-                                    var sasdb_code_fits={{sasdb_code_fits}}   
+                                if ({{ sas }}.length > 0 && {{ sasdb_sascif }}.length > 0) {
+                                    var sasdb_code_html={{ sasdb_code_html }}  
+                                    var sasdb_code_fits={{ sasdb_code_fits }}   
                                     for (var i = 0; i < sasdb_code_html.length; i++) {
                                         for (var j=0; j<sasdb_code_fits[i]; j++) {
                                             var k=j+1
@@ -897,15 +894,15 @@
                                             document.write(ex3)
 
                                             var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding align=center style=height:60vh >';
-                                            ex4 +='<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+String(j)+'fit1.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative></iframe>'
+                                            ex4 +='<iframe src=../images/' + {{ ID_w }} + sasdb_code_html[i]+String(j)+'fit1.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative></iframe>'
                                             document.write(ex4)
 
                                             var ex5 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh  >';
-                                            ex5 += '<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+ String (j)+'residuals.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative></iframe>';
+                                            ex5 += '<iframe src=../images/' + {{ ID_w }} + sasdb_code_html[i]+ String (j)+'residuals.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative></iframe>';
                                             document.write(ex5)
 
                                             var ex6 ='</div></div> <div class=col-lg-12><div class=box text-center container-fluid no-padding align=center style=height:60vh  >';
-                                            ex6 += '<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+ String (j)+'residuals_wt.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative></iframe>';
+                                            ex6 += '<iframe src=../images/' + {{ ID_w }} + sasdb_code_html[i]+ String (j)+'residuals_wt.svg frameborder=0 scrolling=yes width=70% height=550vh  style=position:relative></iframe>';
                                             document.write(ex6)
 
                                             var ex7 ='</div></div> </div>';
@@ -921,12 +918,12 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <script>
-                                    if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-                                        if ({{number_of_fits}} > 0) {
+                                    if ({{ sas }}.length > 0 && {{ sasdb_sascif }}.length > 0) {
+                                        if ({{ number_of_fits }} > 0) {
                                             var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u>     <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev-beta.wwpdb.org/validation_help.html#cormap'>?</a></h5>";
                                             ex2 += "<p class =ex2><i>ATSAS datcmp was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis. </i>";
                                             document.write(ex2)
-                                            var input_list = {{p_val}};
+                                            var input_list = {{ p_val }};
                                             Write_Table(list_to_write = input_list)
                                         } else {
                                             var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u></h5>";
@@ -940,9 +937,9 @@
 
 
                                 <script>
-                                    for (var i=0; i<{{Unique_dataset}}.length; i++){
+                                    for (var i=0; i<{{ Unique_dataset }}.length; i++){
                                         var ex="<div><div class=row><div class=col-lg-12>";
-                                        ex += "<h5 class= ex2 align= center><u><a name=last>"+{{Unique_dataset}}[i]+"</a></u></h5>";
+                                        ex += "<h5 class= ex2 align= center><u><a name=last>"+{{ Unique_dataset }}[i]+"</a></u></h5>";
                                         ex+="<p align=justify>Validation for this section is under development.</p>"
                                         ex += "<p style=margin-bottom:1cm;> </p>";
                                         ex +="</div></div></div>"
