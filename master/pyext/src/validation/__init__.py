@@ -30,6 +30,7 @@ logging.basicConfig(level=logging.INFO)
 class IHMVAvailableModes(Enum):
     PRODUCTION = 0
     DEVELOPMENT = 1
+    DEBUG = 2
 
 
 def get_operational_mode() -> IHMVAvailableModes:
@@ -54,6 +55,10 @@ __max_num_models = 100000  # Hopefully this value is large enough
 # Alter variables for the DEVELOPMENT mode
 if IHMV_MODE == IHMVAvailableModes.DEVELOPMENT:
     __max_num_models = 20  # Cap number of structures for development purposes
+
+# Alter variables for the DEBUG mode
+if IHMV_MODE == IHMVAvailableModes.DEBUG:
+    logging.getLogger().setLevel(logging.DEBUG)
 
 # Setup final values for constants
 MAX_NUM_MODELS: Final = __max_num_models  # Set constant for maximum number of models in a file
@@ -349,12 +354,42 @@ class GetInputInformation(object):
         if len(lists) > 0:
             for software in lists:
                 software_comp['ID'].append(software._id)
+
+                # Get the name of software from mmCIF
                 ref_name = software.name.lower()
-                ref_tot = '<a href="' + \
-                    self.ref_link[ref_name]+'">'+software.name+"</a>"
-                ref_loc = '<a href="'+software.location+'">'+software.location+"</a>"
+
+                # Check if URL for sotware was defined in the mmCIF and parsed
+                # and parsed by ihm
+                if software.location is None:
+                    try:
+                        self.ref_link[ref_name]
+                    except KeyError:
+                        logging.warning(
+                            f'The URL for {software.name} is missing from '
+                                'from both mmCIF and references.csv'
+                            )
+                    else:
+                        logging.debug(
+                            f'Filling the url for {software.name} from '
+                            'references.csv'
+                            )
+
+                        software.location = self.ref_link[ref_name]
+
+                if software.location is None:
+                    ref_tot = f'{software.name}'
+                    ref_loc = f'Not available'
+
+                else:
+                    ref_tot = f'<a href="{software.location}">' \
+                                f'{software.name}</a>'
+
+                    ref_loc = f'<a href="{software.location}">' \
+                                f'{software.location}</a>'
+
                 software_comp['Software name'].append(ref_tot)
                 software_comp['Software location'].append(ref_loc)
+
                 if str(software.version) == ihm.unknown:
                     vers = 'Not available'
                 elif str(software.version) == '?':
