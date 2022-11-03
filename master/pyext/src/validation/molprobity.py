@@ -14,7 +14,6 @@ import validation
 from validation import GetInputInformation
 import ihm
 import ihm.reader
-from decouple import config
 import collections
 import pandas as pd
 import csv
@@ -60,9 +59,8 @@ class GetMolprobityInformation(GetInputInformation):
         """run ramalyze to get outliers """
         f_name = str(self.ID)+'_temp_rama.txt'
         f_name_handle = open(f_name, 'w+')
-        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
-            run([config('Molprobity_ramalyze'), self.mmcif_file], stdout=outfile)
+            run(['molprobity.ramalyze', self.mmcif_file], stdout=outfile)
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
         d['rama'] = line
@@ -76,9 +74,8 @@ class GetMolprobityInformation(GetInputInformation):
         """run molprobity"""
         f_name = str(self.ID)+'_temp_mp.txt'
         f_name_handle = open(f_name, 'w+')
-        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
-            run([config('Molprobity_molprobity'), self.mmcif_file,
+            run(['molprobity.molprobity', self.mmcif_file,
                  "disable_uc_volume_vs_n_atoms_check=True"], stdout=outfile)
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
@@ -92,9 +89,8 @@ class GetMolprobityInformation(GetInputInformation):
         """run clashscore to get information on steric clashes"""
         f_name = str(self.ID)+'_temp_clash.txt'
         f_name_handle = open(f_name, 'w+')
-        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
-            run([config('Molprobity_clashscore'), self.mmcif_file], stdout=outfile)
+            run(['molprobity.clashscore', self.mmcif_file], stdout=outfile)
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
         d['clash'] = line
@@ -107,9 +103,8 @@ class GetMolprobityInformation(GetInputInformation):
         """run rotalyZe to get rotameric outliers"""
         f_name = str(self.ID)+'_temp_rota.txt'
         f_name_handle = open(f_name, 'w+')
-        # config = AutoConfig(search_path=self.envpath)
         with f_name_handle as outfile:
-            run([config('Molprobity_rotalyze'), self.mmcif_file], stdout=outfile)
+            run(['molprobity.rotalyze', self.mmcif_file], stdout=outfile)
         with open(f_name, 'r+') as inf:
             line = [_.strip() for _ in inf.readlines()]
         d['rota'] = line

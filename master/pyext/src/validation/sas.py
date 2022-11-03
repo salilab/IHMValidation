@@ -15,7 +15,6 @@ from sklearn.linear_model import LinearRegression
 from decimal import Decimal
 from validation import GetInputInformation
 from subprocess import run
-from decouple import config
 import operator
 import logging
 
@@ -381,7 +380,7 @@ class SasValidation(GetInputInformation):
                     fit_2.to_csv('fit2.csv', header=False, index=False)
                     f1 = open('pval.txt', 'w+')
                     with f1 as outfile:
-                        run([config('ATSAS'), 'fit1.csv',
+                        run(['datcmp', 'fit1.csv',
                              'fit2.csv'], stdout=outfile, shell=False)
                     f2 = open('pval.txt', 'r')
                     all_lines = [j.strip().split()
