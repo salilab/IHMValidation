@@ -502,7 +502,7 @@ def order_of_magnitude(value: float) -> float:
 
     '''
     if value <= 0:
-        raise(f'Wrong value: {value}. '
+        raise (f'Wrong value: {value}. '
               'This function works only for positive values')
     return np.floor(np.log10(value))
 
@@ -538,4 +538,4 @@ def calc_optimal_range(counts: list) -> tuple:
 
     assert lower >= 0 and upper > 0
 
-    return(lower, upper)
+    return (lower, upper)
