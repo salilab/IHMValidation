@@ -68,7 +68,7 @@ logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
 #############################################################################################################################
 # Input for Jinja
 ####################################################################################
-config = pdfkit.configuration(wkhtmltopdf=decouple.config('wkhtmltopdf'))
+config = pdfkit.configuration()
 options = {
     'page-size': 'Letter',
     'margin-top': '0.5in',
