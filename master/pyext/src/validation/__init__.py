@@ -241,12 +241,17 @@ class GetInputInformation(object):
                     str(step.multi_scale))
                 sampling_comp['Protocol ID'].append(
                     self.system.orphan_protocols.index(prot)+1)
-                cit = self.system.citations[0].pmid
-                link = 'https://pubmed.ncbi.nlm.nih.gov/'+str(cit)+'/'
-                if step.name:
-                    method_link = '<a href='+link+'>'+str(step.method)+'</a>'
+                cit = str(self.system.citations[0].pmid)
+
+                if cit == '.' or cit == '?':
+                    link = None
                 else:
-                    method_link = str(step.method)
+                    link = f'https://pubmed.ncbi.nlm.nih.gov/{cit}/'
+
+                if step.name and link is not None:
+                    method_link = f'<a href={link}>{step.method}</a>'
+                else:
+                    method_link = f'{step.method}'
 
                 sampling_comp['Method name'].append(method_link)
                 sampling_comp['Method type'].append(step.name)
