@@ -1,0 +1,294 @@
+<!Template for writing Supplemental Table page>
+<! ganesans - Salilab - UCSF>
+<!ganesans@salilab.org>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+         table#t01 {
+         font-family: Times New Roman;
+         border-collapse: collapse;
+         width: 100%;
+         table-layout:fixed;
+         }
+         td, th {
+         border: 1px solid;
+         text-align: left;
+         padding: 12px;
+         }
+         tr:nth-child(even) {
+         background-color: ;
+         }
+         table tr:first-child td {
+         border-top: 0;
+         }
+         table tr td:first-child {
+         border-left: 0;
+         }
+         table tr:last-child td {
+         border-bottom: 0;
+         }
+         table tr td:last-child {
+         border-right: 0;
+         }
+         img {
+         display: block;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         body {
+         height: 297mm;
+         width: 210mm;
+         margin-left: auto;
+         margin-right: auto;
+         }
+         .center {
+         text-align: center
+         }
+         .ex1 {
+         margin-top: 50px;
+         }
+         .ex2 {
+         margin-top: 30px;
+         }
+         hr {
+         width: 120%;
+         height: 2px;
+         margin-left: auto;
+         margin-right: auto;
+         background-color:#666;
+         border: 0 none;
+         margin-top: 10px;
+         margin-bottom:10px;
+         }
+      </style>
+   </head>
+   <body>
+      <h3 class="center" font = 'Times New Roman'>Summary of integrative structure determination of {{complex_name}} ({{ID_T}}) </h3>
+      <div class="ex1">
+         <script>
+
+            function write_bullet(RB_list){
+            for (var j=0;j<RB_list.length;j++) {
+            var j1=j+1
+            var docx=j1 + ". "+ RB_list[j]+ "\n";
+                    document.write(docx);
+                    document.write ("<br>")}
+                    }
+
+            function write_bullet(RB_list){
+            for (var j=0;j<RB_list.length;j++) {
+            var docx= '- ' + RB_list[j]+ "\n";
+                    document.write(docx);
+                    document.write ("<br>")}
+                    }
+
+            function write_no_bullet(RB_list){
+            for (var j=0;j<RB_list.length;j++) {
+            var docx= RB_list[j]+ "\n";
+                    document.write(docx);
+                    document.write ("<br>")}
+                    }   
+         </script>
+         <table ID=t01>
+         <tr bgcolor ='silver'>
+            <td><b><i>1. Model Composition</i></b></td>
+            <td></td>
+         </tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtab">Entry composition</a></i></td>
+            <td>
+               <script>write_bullet(RB_list={{Subunits}}) </script>
+            </td>
+         </tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabdata">Datasets used for modeling</a></i></td>
+            <td>
+               <script>write_bullet(RB_list={{datasets}})</script>
+            </td>
+         </tr>
+         <tr bgcolor = 'silver'>
+            <td><b><i>2. Representation </i></b></td>
+            <td></td>
+         </tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabres">Resolution</a></i></td>
+            <td>
+               {{resolution}}
+            </td>
+         </tr>
+         <tr>
+            <td><i>Number of <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrigid">rigid bodies</a>, <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabflex">flexible units</a></i></td>
+            <td>{{Rigid_Body}}, {{Flexible_Unit}}</td>
+         </tr>
+         {% if Rigid_Body|int > 0 %}
+           <tr>
+             <td><i> &nbsp; &nbsp; &nbsp; Rigid bodies</i></td>
+             <td>
+               <script>write_bullet(RB_list={{RB}})</script>
+             </td>
+           </tr>
+         {% endif %}
+
+         {% if Flexible_Unit|int > 0 %}
+           <tr>
+             <td><i> &nbsp; &nbsp; &nbsp; Flexible units</i></td>
+             <td>
+               <script>write_bullet(RB_list={{flex}})</script>
+             </td>
+           </tr>
+         {% endif %}
+         </tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabatom">Structural coverage (rigid bodies)</a></i></td>
+            <td>{{struc}}</td>
+         </tr>
+         <tr bgcolor = 'silver'>
+            <td><b><i>3. Restraints </i></b></td>
+            <td></td>
+         </tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabresphys">Physical principles</a></i></td>
+            <td>
+              {% if physics|length > 1 %}
+                {% for i in range(physics|length) %}
+                  - {{ physics[i] }}<br>
+                {% endfor %}
+              {% else %}
+                {{ physics[0] }}
+              {% endif %}
+            </td>
+         </tr>
+         <tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabresexp">Experimental data</a></i></td>
+            <td>
+               <script>write_bullet(RB_list={{restraint_info}})</script>
+            </td>
+         </tr>
+         <tr>
+         <tr bgcolor = 'silver'>
+            <td><b><i>4. Validation</i></b></td>
+            <td></td>
+         </tr>
+         {% if sampling_validation is not none %}
+           <tr>
+             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabval">Sampling validation</a></i></td>
+             <td>
+               <script>write_bullet(RB_list={{sampling_validation}})</script>
+             </td>
+           </tr>
+          {% endif %}
+<!--
+          {% if clustering is not none %}
+            <tr>
+	            <td><i> <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabclus1">Clustering algorithm</a> ,<a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabclus2">clustering feature</a></i></td>
+	            <td>{{clustering}}, {{feature}}</td>
+            </tr>
+          {% endif %}
+-->
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabnum1">Number of ensembles</a></i></td>
+            <td>{{num_ensembles}}</td>
+         </tr>
+
+         <tr>
+           <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabnum2">Number of models in ensembles</a></i></td>
+           <td>{{models}}</td>
+	       </tr>
+         <tr>
+           <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabnum2">Number of deposited models</a></i></td>
+           <td>{{number_of_models}}</td>
+	       </tr>
+         <tr>
+            <td><i> <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabprec">Model precision (uncertainty of models)</a></i></td>
+            <td>{{model_precision}}</td>
+         </tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrvaldata">Data quality</a></i></td>
+            <td>
+              {% if Data_quality|length > 1 %}
+                {% for i in range(Data_quality|length) %}
+                  - {{ Data_quality[i] }}</br>
+                {% endfor %}
+              {% else %}
+                {{ Data_quality[0] }}
+              {% endif %}
+            </td>
+         </tr>
+         {% if assess_atomic_segments %}
+           <tr>
+             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalatom">Model quality: assessment of atomic segments</a></i></td>
+             <td><script>write_bullet(RB_list={{assess_atomic_segments}})</script></td>
+           </tr>
+         {% endif %}
+         {% if assess_excluded_volume is not none%}
+           <tr>
+             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalexv">Model quality: assessment of excluded volume</a></i></td>
+             <td>
+               {{assess_excluded_volume}}
+             </td>
+           </tr>
+        {% endif %}
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabfit1">Fit to data used for modeling</a></i></td>
+            <td>
+              {% if validation_input|length > 1 %}
+                {% for i in range(validation_input|length) %}
+                  - {{ validation_input[i] }}</br>
+                {% endfor %}
+              {% else %}
+                {{ validation_input[0] }}
+              {% endif %}
+            </td>
+         </tr>
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabfit2">Fit to data used for validation</a></i></td>
+            <td>
+               <script>write_bullet(RB_list={{cross_validation}})</script>
+            </td>
+         </tr>
+         </tr>
+         <tr bgcolor ='silver'>
+            <td><b><i>5. Methodology and Software</i></b></td>
+            <td></td>
+         </tr>
+         {% for i in range(method_info['Step number']|length) %} 
+           <tr>
+             <td><i>{{ i + 1 }}. <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabmet">Method</a></i></td>
+             <td>{{ method_info['Method type'][i] }}</td>
+           </tr>
+           <tr>
+             <td><i> &nbsp; &nbsp; &nbsp; <a href="hhttps://pdb-dev.wwpdb.org/validation_help.html#sumtabmet1">Name</a></i></td>
+             <td>
+               {{ method_info['Method name'][i]}}
+             </td>
+           </tr>
+           {% if method_info['Method description'][i] is not none %}
+             <tr>
+               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabmet2">Description</a></i></td>
+               <td>
+                 {{ method_info['Method description'][i] }}
+               </td>
+             </tr>
+            {% endif %}
+            {% if method_info['Number of computed models'][i] is not none %}
+              <tr>
+               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabmet2">Number of computed models</a></i></td>
+               <td>
+                 {{ method_info['Number of computed models'][i] }}
+               </td>
+             </tr>
+            {% endif %}
+         {% endfor %}
+         <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabsoft">Software</a></i></td>
+            <td>
+               <script>write_bullet(RB_list={{software}})</script>
+            </td>
+         </tr>
+      </div>
+   </body>
+</html>
+

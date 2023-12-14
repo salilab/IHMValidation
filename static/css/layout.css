@@ -1,0 +1,35 @@
+ @charset "UTF-8";
+ a {
+     color: #333399;
+     font-weight: 450;
+}
+ .clearfloat {
+    /* this class can be placed on a <br /> or empty div as the final element following the last floated div (within the #container) if the #footer is removed or taken out of the #container */
+     clear:both;
+     height:0;
+     font-size: 1px;
+     line-height: 0px;
+}
+ body {
+     background-color: #669966;
+     margin: 0;
+     padding: 0;
+}
+ .home-header {
+     display: flex;
+}
+ .dropdown-submenu {
+     position: relative;
+}
+ .dropdown-submenu a::after {
+     transform: rotate(-90deg);
+     position: absolute;
+     right: 6px;
+     top: .8em;
+}
+ .dropdown-submenu .dropdown-menu {
+     top: 0;
+     left: 100%;
+     margin-left: .1rem;
+     margin-right: .1rem;
+}
