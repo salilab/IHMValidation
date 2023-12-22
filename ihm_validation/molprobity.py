@@ -201,7 +201,10 @@ class GetMolprobityInformation(GetInputInformation):
 
         with open(f_name, 'w+') as f:
             run(['molprobity.molprobity', self._tempcif,
-                 "disable_uc_volume_vs_n_atoms_check=True",
+                 # "disable_uc_volume_vs_n_atoms_check=True",
+                 # This is a legacy option and causes extremely
+                 # large memory consumption with recent
+                 # molprobity versions on PDB-Dev entries
                  "coot=False"],
                 stdout=f,
                 cwd=self.cache)
