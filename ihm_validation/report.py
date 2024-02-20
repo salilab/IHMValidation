@@ -70,8 +70,10 @@ class WriteReport(object):
         Template_Dict['ID_R'] = (
             self.input.get_id()[0:6]+'_'+self.input.get_id()[6:]).split()
         Template_Dict['Molecule'] = self.input.get_struc_title()
-        Template_Dict['Title'] = self.input.get_title()
         Template_Dict['Authors'] = self.input.get_authors()
+        title, authors = self.input.get_primary_citation_info()
+        Template_Dict['Citation_Title'] = title
+        Template_Dict['Citation_Authors'] = authors
         Template_Dict['Entry_list'] = utility.dict_to_JSlist(
             self.input.get_composition())
         Template_Dict['number_of_molecules'] = self.input.get_number_of_models()
@@ -510,10 +512,12 @@ class WriteReport(object):
         #     Template_Dict['validation_input'] = validation_input
 
         validation_input = []
-        if Template_Dict['cx_stats_per_model']:
-            min_cx = min(Template_Dict['cx_stats_per_model'])
-            max_cx = max(Template_Dict['cx_stats_per_model'])
-            validation_input.append(f'Satisfaction of crosslinks: {min_cx:.2f}-{max_cx:.2f}%')
+        if 'cx_stats_per_model' in Template_Dict:
+            if Template_Dict['cx_stats_per_model']:
+                min_cx = min(Template_Dict['cx_stats_per_model'])
+                max_cx = max(Template_Dict['cx_stats_per_model'])
+                validation_input.append(f'Satisfaction of crosslinks: {min_cx:.2f}-{max_cx:.2f}%')
+
         if len(validation_input) == 0:
             validation_input.append('Fit of model to information used to compute it has not been determined')
         Template_Dict['validation_input'] = validation_input

@@ -112,23 +112,38 @@ class GetInputInformation(object):
                     entry = entry_init.strip()
         return entry
 
-    def get_title(self) -> str:
-        """get title from citations """
-        title = None
+    def get_primary_citation_info(self) -> tuple:
+        '''get title and authors for the primary citation'''
+        title, authors = None, None
         for citation in self.system.citations:
             if citation.is_primary:
                 try:
                     title = citation.title
                 except AttributeError:
                     title = 'Title not available/Citation not provided'
-        return title
+
+                try:
+                    authors =  '; '.join(citation.authors)
+                except AttributeError:
+                    authors = 'Authors are not available/Citation not provided'
+
+        return (title, authors)
+
 
     def get_authors(self) -> str:
-        """get names of authors from citations """
-        cit = self.system.citations
-        if cit:
-            return '; '.join(cit[0].authors)
-        return 'Citation not present in file'
+        """get authors of the structure; fallback to authors of primary citation """
+        output = None
+        if len(self.system.authors) > 0:
+            output = '; '.join(self.system.authors)
+        elif len(self.system.citations) > 0:
+            for citation in self.system.citations:
+                if citation.is_primary and len(citation.authors) > 0:
+                    output =  '; '.join(citation.authors)
+
+        if output is None:
+            output = 'Authors are not available'
+
+        return output
 
     def get_struc_title(self) -> str:
         """get name of molecule"""

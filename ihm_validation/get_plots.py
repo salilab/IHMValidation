@@ -12,7 +12,7 @@ import utility
 from mmcif_io import GetInputInformation
 import bokeh
 import numpy as np
-from bokeh.io import output_file, curdoc, export_png, export_svg, show
+from bokeh.io import output_file, curdoc, export_svg, show
 from bokeh.models import (ColumnDataSource, Legend, LegendItem, FactorRange,
                           Div, BasicTickFormatter)
 from bokeh.palettes import viridis, Reds256, linear_palette
@@ -25,7 +25,6 @@ from bokeh.transform import factor_cmap
 from bokeh.layouts import gridplot, column
 silence(MISSING_RENDERERS, True)
 silence(EMPTY_LAYOUT, True)
-
 
 
 class Plots(GetInputInformation):
@@ -101,6 +100,7 @@ class Plots(GetInputInformation):
                 export_svg(p, filename=self.filename+'/' +
                             self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg", webdriver=self.driver)
 
+
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
                             toolbar_location='right')
@@ -131,7 +131,8 @@ class Plots(GetInputInformation):
                        '('+str(violations[i])+' %)' for i, j in enumerate(counts)]
 
             # set the size of the axis
-            n = 3 if len(model) < 3 else len(model)
+            # n = 3 if len(model) < 3 else len(model)
+            n = len(counts)
             source = ColumnDataSource(
                 data=dict(Scores=Scores, counts=counts, legends=legends, color=viridis(n)))
 
@@ -204,10 +205,9 @@ class Plots(GetInputInformation):
         # first panel is model quality
         export_svg(fullplot, filename=self.filename+'/' +
                     self.ID+"quality_at_glance_MQ.svg", webdriver=self.driver)
-        export_png(fullplot, filename=self.filename+'/' +
-                   self.ID+"quality_at_glance_MQ.png", webdriver=self.driver)
         save(fullplot, filename=self.filename+'/' +
              self.ID+"quality_at_glance_MQ.html")
+
         # DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
@@ -243,10 +243,9 @@ class Plots(GetInputInformation):
             pd.output_backend = "svg"
             export_svg(pd, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_DQ.svg", webdriver=self.driver)
-            export_png(pd, filename=self.filename+'/' +
-                       self.ID+"quality_at_glance_DQ.png", webdriver=self.driver)
             save(pd, filename=self.filename+'/' +
                  self.ID+"quality_at_glance_DQ.html")
+
         # FIT TO DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
@@ -284,38 +283,5 @@ class Plots(GetInputInformation):
             pf.output_backend = "svg"
             export_svg(pf, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_FQ.svg", webdriver=self.driver)
-            export_png(pf, filename=self.filename+'/' +
-                       self.ID+"quality_at_glance_FQ.png", webdriver=self.driver)
             save(pf, filename=self.filename+'/' +
                  self.ID+"quality_at_glance_FQ.html")
-        # check for XL_MS data, if exists, plot
-#        if len(cx_fit.keys()) > 0:
-#            Scores = ['Model '+str(i) for i, j in cx_fit.items()]
-#            counts = [round(float(j), 2) for i, j in cx_fit.items()]
-#            # legends=[str(i) for i in counts]
-#            legends = ['Model ' + str(i+1) + ': ' +
-#                       str(j)+'%' for i, j in enumerate(counts)]
-#            source = ColumnDataSource(data=dict(
-#                Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-#            pf1 = figure(y_range=Scores, x_range=(0, max(counts)+1),
-#                         plot_height=450, plot_width=800, title="Fit to XL-MS Input")
-#            rf1 = pf1.hbar(y='Scores', right='counts', color='color',
-#                           source=source, alpha=0.8, line_color='black')
-#            pf1.ygrid.grid_line_color = None
-#            pf1.xaxis.major_label_text_font_size = "12pt"
-#            pf1.yaxis.major_label_text_font_size = "12pt"
-#            pf1.title.text_font_size = '12pt'
-#            pf1.title.align = "center"
-#            pf1.title.vertical_align = 'top'
-#
-#            legend = Legend(items=[LegendItem(label=legends[i], renderers=[
-#                            rf1], index=i) for i in range(len(legends))], location='center',
-#                            orientation='vertical', label_text_font_size="12px")
-#            pf1.add_layout(legend, 'right')
-#            pf1.output_backend = "svg"
-#            export_svgs(pf1, filename=self.filename+'/' +
-#                        self.ID+"quality_at_glance_FQ1.svg")
-#            export_png(pf1, filename=self.filename+'/' +
-#                       self.ID+"quality_at_glance_FQ1.png")
-#            save(pf1, filename=self.filename+'/' +
-#                 self.ID+"quality_at_glance_FQ1.html")

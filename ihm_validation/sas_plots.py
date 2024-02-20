@@ -11,7 +11,7 @@ import pandas as pd
 import os
 from mmcif_io import GetInputInformation
 import sas
-from bokeh.io import output_file, export_svgs, export_png, export_svg
+from bokeh.io import output_file, export_svg
 from bokeh.models import Span, ColumnDataSource
 from bokeh.plotting import figure, save
 from bokeh.layouts import column, gridplot
@@ -65,8 +65,6 @@ class SasValidationPlots(sas.SasValidation):
         p.output_backend = "svg"
         export_svg(p, height=350, width=350, filename=self.filename +
                     '/'+self.ID+sasbdb+"intensities.svg", webdriver=self.driver)
-        export_png(p, height=350, width=350, filename=self.filename +
-                   '/'+self.ID+sasbdb+"intensities.png", webdriver=self.driver)
 
     def plot_intensities_log(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -99,8 +97,6 @@ class SasValidationPlots(sas.SasValidation):
         p.output_backend = "svg"
         export_svg(p, height=350, width=350, filename=self.filename +
                     '/'+self.ID+sasbdb+"intensities_log.svg", webdriver=self.driver)
-        export_png(p, height=350, width=350, filename=self.filename +
-                   '/'+self.ID+sasbdb+"intensities_log.png", webdriver=self.driver)
 
     def plot_kratky(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -131,8 +127,6 @@ class SasValidationPlots(sas.SasValidation):
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"Kratky.html")
         p.output_backend = "svg"
         export_svg(p, filename=self.filename+'/'+self.ID+sasbdb+"Kratky.svg", webdriver=self.driver)
-        export_png(p,  height=350, width=350,
-                   filename=self.filename+'/'+self.ID+sasbdb+"Kratky.png", webdriver=self.driver)
 
     def plot_porod_debye(self, sasbdb: str, df: pd.DataFrame):
         '''
@@ -160,8 +154,6 @@ class SasValidationPlots(sas.SasValidation):
         p.output_backend = "svg"
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"porod.html")
         export_svg(p, filename=self.filename+'/'+self.ID+sasbdb+"porod.svg", webdriver=self.driver)
-        export_png(p,  height=350, width=350,
-                   filename=self.filename+'/'+self.ID+sasbdb+"porod.png", webdriver=self.driver)
 
     def plot_pddf(self, sasbdb: str, df: pd.DataFrame, Rg=None, Dmax=None):
         '''
@@ -207,8 +199,6 @@ class SasValidationPlots(sas.SasValidation):
         p.yaxis.axis_label_text_font_style = 'italic'
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"pddf.html")
         export_svg(p, height=350, width=350, filename=self.filename+'/'+self.ID+sasbdb+"pddf.svg", webdriver=self.driver)
-        export_png(p,  height=350, width=350,
-                   filename=self.filename+'/'+self.ID+sasbdb+"pddf.png", webdriver=self.driver)
 
     def plot_pddf_int_rwt(self, sasbdb: str,
                       df_int: pd.DataFrame,
@@ -221,9 +211,9 @@ class SasValidationPlots(sas.SasValidation):
         source1 = ColumnDataSource(df_int)
         source2 = ColumnDataSource(df_pofr)
         p1 = figure(plot_height=350, plot_width=350,
-                   title="P(r) extrapolated fit for "+sasbdb)
+                   title=f"P(r) extrapolated fit for\n{sasbdb}")
         legend1 = 'Experimental data'
-        legend2 = "Linear fit"
+        legend2 = "Extrapolated fit"
         p1.circle(x='Q', y='logI', source=source1, color='blue',
                  line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p1.line(x='Q', y='logI', source=source2, color='red',
@@ -243,6 +233,7 @@ class SasValidationPlots(sas.SasValidation):
         p1.xaxis.axis_label_text_font_style = 'italic'
         p1.yaxis.axis_label_text_font_style = 'italic'
         p1.xaxis.visible = False
+        p1.output_backend = "svg"
 
         source3 = ColumnDataSource(df_error)
         p2 = figure(plot_height=150, plot_width=350,
@@ -266,10 +257,12 @@ class SasValidationPlots(sas.SasValidation):
         p2.yaxis.axis_label_text_font_size = '14pt'
         p2.xaxis.axis_label_text_font_style = 'italic'
         p2.yaxis.axis_label_text_font_style = 'italic'
+        p2.output_backend = "svg"
 
         p = gridplot([p1, p2], ncols=1,
                      toolbar_location="above",
-                     sizing_mode='stretch_width')
+                     # sizing_mode='stretch_width'
+                     )
 
         p.width = 350
         p.height = 550
@@ -278,8 +271,6 @@ class SasValidationPlots(sas.SasValidation):
         # p.output_backend = "svg"
         export_svg(p, filename=self.filename+'/' +
                     self.ID+sasbdb+"pddf_int.svg", webdriver=self.driver)
-        export_png(p, filename=self.filename+'/' +
-                   self.ID+sasbdb+"pddf_int.png", webdriver=self.driver)
 
     def Guinier_plot_fit_rwt(self, sasbdb: str, df: pd.DataFrame, score: float):
         '''
@@ -308,7 +299,10 @@ class SasValidationPlots(sas.SasValidation):
         p1.yaxis.axis_label_text_font_size = '14pt'
         p1.xaxis.axis_label_text_font_style = 'italic'
         p1.yaxis.axis_label_text_font_style = 'italic'
+        p1.yaxis.ticker.desired_num_ticks = 3
+        p1.xaxis.ticker.desired_num_ticks = 3
         p1.xaxis.visible = False
+        p1.output_backend = "svg"
 
         p2 = figure(plot_height=150, plot_width=350,
                     x_range=p1.x_range
@@ -331,21 +325,22 @@ class SasValidationPlots(sas.SasValidation):
         p2.yaxis.axis_label_text_font_size = '14pt'
         p2.xaxis.axis_label_text_font_style = 'italic'
         p2.yaxis.axis_label_text_font_style = 'italic'
+        p2.xaxis.ticker.desired_num_ticks = 3
         p2.yaxis.ticker.desired_num_ticks = 3
+        p2.output_backend = "svg"
 
         p = gridplot([p1, p2], ncols=1,
                      toolbar_location="above",
-                     sizing_mode='stretch_width')
+                     # sizing_mode='stretch_width'
+                     )
 
         p.width = 350
         p.height = 550
 
 
         save(p, filename=self.filename+'/'+self.ID+sasbdb+"guinier.html")
-        # p.output_backend = "svg"
         export_svg(p, filename=self.filename+'/'+self.ID+sasbdb+"guinier.svg", webdriver=self.driver)
-        export_png(p, filename=self.filename +
-                   '/'+self.ID+sasbdb+"guinier.png", webdriver=self.driver)
+
 
     def plot_multiple(self):
         for sasbdb, df in self.df_dict.items():
@@ -394,7 +389,7 @@ class SasValidationPlots(sas.SasValidation):
         p1 = figure(plot_height=350, plot_width=350,
                    title=f"Model fit for {sasbdb}, model {fit + 1}")
         legend1 = 'Experimental data'
-        legend2 = "Linear fit"
+        legend2 = "Model fit"
         p1.circle(x='Q', y='logIe', source=source, color='blue',
                  line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p1.line(x='Q', y='logIb', source=source, color='red',
@@ -411,6 +406,9 @@ class SasValidationPlots(sas.SasValidation):
         p1.yaxis.axis_label = 'Log I(q)'
         p1.yaxis.axis_label_text_font_size = '14pt'
         p1.yaxis.axis_label_text_font_style = 'italic'
+        p1.yaxis.ticker.desired_num_ticks = 3
+        p1.xaxis.ticker.desired_num_ticks = 3
+        p1.output_backend = "svg"
 
         p2 = figure(plot_height=150, plot_width=350,
                    title=None, x_range=p1.x_range)
@@ -426,6 +424,8 @@ class SasValidationPlots(sas.SasValidation):
         p2.yaxis.ticker = [-3, 0, 3]
         p2.yaxis.axis_label_text_font_size = '14pt'
         p2.yaxis.axis_label_text_font_style = 'italic'
+        p2.xaxis.ticker.desired_num_ticks = 3
+        p2.output_backend = "svg"
 
         hline = Span(location=0, dimension='width',
                      line_color='red', line_width=3)
@@ -442,7 +442,5 @@ class SasValidationPlots(sas.SasValidation):
 
         save(p, filename=self.filename+'/'+self.ID+sasbdb+str(fit)+"fit1.html")
         # p.output_backend = "svg"
-        export_svg(p, height=500, width=500, filename=self.filename+'/' +
+        export_svg(p, filename=self.filename+'/' +
                     self.ID+sasbdb+str(fit)+"fit1.svg", webdriver=self.driver)
-        export_png(p,  height=500, width=500, filename=self.filename+'/' +
-                   self.ID+sasbdb+str(fit)+"fit1.png", webdriver=self.driver)

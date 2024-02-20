@@ -20,6 +20,7 @@ import logging
 from pathlib import Path
 import utility
 from report import WriteReport
+from distutils.util import strtobool
 
 # from validation.WKhtmlToPdf import  wkhtmltopdf
 # import utility
@@ -80,6 +81,11 @@ parser.add_argument('-dv', type=list, default=[
                     'Quality of input data has not be assessed'], help="Add information on quality of input data")
 parser.add_argument('-res', type=list, default=['Rigid bodies: 1 residue per bead.',
                                                 'Flexible regions: N/A'], help="Add information on model quality (molprobity or excluded volume)")
+
+parser.add_argument('--enable-sas', default=True, type=lambda x: bool(strtobool(x)),
+                        help="Run SAS validation")
+parser.add_argument('--enable-cx', default=False, type=lambda x: bool(strtobool(x)),
+                        help="Run crosslinking-MS validation")
 
 args = parser.parse_args()
 if args.p.upper() == 'YES':
@@ -155,8 +161,14 @@ output_path = Path(output_root, output_prefix)
 
 dirNames = {
     'root': str(output_path),
-    'html': str(Path(output_path, f'{output_prefix}_html')),
+    'root_html': str(Path(output_path, output_prefix)),
 }
+
+dirNames.update(
+    {
+        'html': str(Path(dirNames['root_html'], 'htmls')),
+    }
+)
 
 dirNames.update(
     {
@@ -185,7 +197,7 @@ def createdirs(dirNames: dict):
         if Path(name).is_dir():
             logging.info(f"Directory {name} already exists")
         else:
-            os.mkdir(name)
+            Path(name).mkdir(parents=True)
             logging.info(f"Directory {name} created ")
 
 
@@ -244,9 +256,14 @@ def write_json(mmcif_file: str, template_dict: dict, dirName: str, dirName_Outpu
 if __name__ == "__main__":
     from pyvirtualdisplay import Display
     from selenium import webdriver
-    display = Display(visible=0, size=(1024, 768))
-    display.start()
-    driver = webdriver.Firefox()
+    # display = Display(visible=0, size=(1024, 768))
+    # display.start()
+    # driver = webdriver.Firefox()
+
+    firefox_options = webdriver.FirefoxOptions()
+    firefox_options.add_argument('--headless')
+    driver = webdriver.Firefox(options=firefox_options)
+
 
     logging.info("Clean up and create output directories")
     utility.clean_all()
@@ -280,25 +297,41 @@ if __name__ == "__main__":
     template_dict, molprobity_dict, exv_data = report.run_model_quality(
         template_dict, csvDirName=dirNames['csv'], htmlDirName=dirNames['html'])
 
-    logging.info("SAS validation")
-    template_dict, sas_data, sas_fit = report.run_sas_validation(template_dict)
+    if args.enable_sas:
+        logging.info("SAS validation")
+        template_dict, sas_data, sas_fit = report.run_sas_validation(template_dict)
 
-    logging.info("SAS validation plots")
-    report.run_sas_validation_plots(
-        template_dict, imageDirName=dirNames['images'])
+        logging.info("SAS validation plots")
+        report.run_sas_validation_plots(
+            template_dict, imageDirName=dirNames['images'])
+
+    else:
+        sas_data = {}
+        sas_fit = {}
 
     # uncomment below to run CX analysis
-    logging.info("CX validation")
-    template_dict, cx_data, cx_ertypes = report.run_cx_validation(template_dict)
-    cx_fit = None
+    if args.enable_cx:
+        logging.info("CX validation")
+        template_dict, cx_data, cx_ertypes = report.run_cx_validation(template_dict)
+        cx_fit = None
 
-    logging.info("CX validation plots")
-    report.run_cx_validation_plots(template_dict,
-                                   imageDirName=dirNames['images'])
+        logging.info("CX validation plots")
+        report.run_cx_validation_plots(template_dict,
+                                       imageDirName=dirNames['images'])
+
+    else:
+        cx_fit = None
 
     logging.info("Quality at a glance")
     report.run_quality_glance(
         molprobity_dict, exv_data, sas_data, sas_fit, cx_fit, imageDirName=dirNames['images'])
+
+    logging.info("Write PDF")
+    output_pdf = write_pdf(args.f, template_dict, template_pdf,
+              dirNames['pdf'], dirNames['pdf'])
+    shutil.copy(output_pdf, str(output_path))
+
+    template_dict['validation_pdf'] = Path(output_pdf).name
 
     logging.info("Supplementary table")
     template_dict = report.run_supplementary_table(template_dict,
@@ -315,6 +348,8 @@ if __name__ == "__main__":
         args.f, template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
     shutil.copy(output_pdf, str(output_path))
 
+    template_dict['supplementary_pdf'] = Path(output_pdf).name
+
     # logging.info("Write JSON")
     # write_json(args.f, template_dict, dirNames['json'], dirNames['json'])
 
@@ -329,22 +364,18 @@ if __name__ == "__main__":
         )
     # Compress html output to one file
     shutil.make_archive(
-        base_name=dirNames['html'],
         root_dir=output_path,
+        base_dir=output_prefix,
+        base_name=f'{dirNames["root_html"]}_html',
         format='gztar')
 
-    logging.info("Write PDF")
-    output_pdf = write_pdf(args.f, template_dict, template_pdf,
-              dirNames['pdf'], dirNames['pdf'])
-
-    shutil.copy(output_pdf, str(output_path))
 
     # Keep uncompressed html output for convience
     # otherwise delete
     if args.keep_html:
         pass
     else:
-        shutil.rmtree(dirNames['html'])
+        shutil.rmtree(dirNames['root_html'])
 
     logging.info("Final cleanup")
     utility.clean_all()

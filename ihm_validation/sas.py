@@ -250,13 +250,13 @@ class SasValidation(GetInputInformation):
             rg_table['Rg error'].append(val)
 
             try:
-                val = f'{float(data["MW_standard"]):.2f} kDa'
+                val = f'{float(data["MW_standard"]):.1f} kDa'
             except ValueError:
                 val = 'N/A'
             rg_table['MW'].append(val)
 
             try:
-                val = f'{float(data["MW_standard_error"]):.2f} kDa'
+                val = f'{float(data["MW_standard_error"]):.1f} kDa'
             except ValueError:
                 val = 'N/A'
             rg_table['MW error'].append(val)
@@ -535,13 +535,13 @@ class SasValidation(GetInputInformation):
             parameter_table['SASDB ID'].append(code)
 
             try:
-                val = f'{float(data["experimental_MW"]):.2f} kDa'
+                val = f'{float(data["experimental_MW"]):.1f} kDa'
             except ValueError:
                 val = 'N/A'
             parameter_table['Chemical composition MW'].append(val)
 
             try:
-                val = f'{float(data["MW_standard"]):.2f} kDa'
+                val = f'{float(data["MW_standard"]):.1f} kDa'
             except ValueError:
                 val = 'N/A'
             parameter_table['Standard MW'].append(val)
@@ -589,25 +589,25 @@ class SasValidation(GetInputInformation):
             data = sascif[main]['_sas_result']
 
             try:
-                val = f'{float(data["D_max"]):.2f} nm'
+                val = f'{float(data["D_max"]):.3f} nm'
             except ValueError:
                 val = 'N/A'
             pddf_info['Dmax'].append(val)
 
             try:
-                val = f'{float(data["Rg_from_PR"]):.2f} nm'
+                val = f'{float(data["Rg_from_PR"]):.3f} nm'
             except ValueError:
                 val = 'N/A'
             pddf_info['Rg'].append(val)
 
             try:
-                val = f'{float(data["Dmax_error"]):.2f} nm'
+                val = f'{float(data["Dmax_error"]):.3f} nm'
             except ValueError:
                 val = 'N/A'
             pddf_info['Dmax error'].append(val)
 
             try:
-                val = f'{float(data["Rg_from_PR_error"]):.2f} nm'
+                val = f'{float(data["Rg_from_PR_error"]):.3f} nm'
             except ValueError:
                 val = 'N/A'
             pddf_info['Rg error'].append(val)

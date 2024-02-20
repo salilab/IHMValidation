@@ -1,7 +1,7 @@
 <!-- Define a macro for generation of table from list of lists -->
 {% macro write_table(list_to_write) %}
   <div class='bs-example' class='text-center'>
-    <table class='table table-bordered' style='border-color':#003366;>
+    <table class='table table-bordered' style='border-color:#003366;'>
       <thead>
         <tr>
           {% for i in range(list_to_write[0]|length) %}
@@ -26,6 +26,20 @@
   </div>
 {% endmacro %}
 <!-- end of macro definition -->
+
+
+<!-- Define a macro with bullet points for the summary validation pdf -->
+{% macro write_bullet(RB_list) %}
+  {% if RB_list|length == 1 %}
+    {{ RB_list[0] }}
+  {% else %}
+    {% for j in range(RB_list|length) %}
+      - {{ RB_list[j] }} <br>
+    {% endfor %}
+  {% endif %}
+{% endmacro %}
+<!-- end of macro definition -->
+
 
 <!-- Define a macro for the insertion of SAS plots -->
 {% macro insert_sas_plot(id, sasdb_id, plot_name) %}

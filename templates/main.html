@@ -46,14 +46,18 @@
               <td class="align-middle" class="text-center">Structure title</td>
               <td class="align-middle" class="text-center">{{Molecule}} </td>
             </tr>
-            {% if Title is not none %}
+            <tr>
+              <td class="align-middle" class="text-center">Structure authors</td>
+              <td class="align-middle" class="text-center">{{Authors}}</td>
+            </tr>
+            {% if Citation_Title is not none %}
               <tr>
                 <td class="align-middle" class="text-center">Publication Title</td>
-                <td class="align-middle" class="text-center">{{Title}}</td>
+                <td class="align-middle" class="text-center">{{Citation_Title}}</td>
               </tr>
               <tr>
                 <td class="align-middle" class="text-center">Authors</td>
-                <td class="align-middle" class="text-center">{{Authors}}</td>
+                <td class="align-middle" class="text-center">{{Citation_Authors}}</td>
               </tr>
           {% endif %}
           </table>
