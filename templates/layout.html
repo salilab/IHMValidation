@@ -10,8 +10,8 @@
       <link rel="stylesheet" href="static/css/main.css">
       <link rel="stylesheet" href="static/css/layout.css">
     {% else %}
-      <link rel="stylesheet" href="/css/main.css">
-      <link rel="stylesheet" href="/css/layout.css">
+      <link rel="stylesheet" href="https://pdb-dev.wwpdb.org/css/main.css">
+      <link rel="stylesheet" href="https://pdb-dev.wwpdb.org/css/layout.css">
     {% endif %}
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -41,7 +41,7 @@
                 {% if html_mode == 'local' %}
                   <img src="static/images/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 0px; margin-bottom: 0px" />
                 {% else %}
-                  <img src="/images/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 0px; margin-bottom: 0px" />
+                  <img src="https://pdb-dev.wwpdb.org/images/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 0px; margin-bottom: 0px" />
                 {% endif %}
                 <p>
                   <h1 style="margin-left: 0px; color: #003366;">PDB-Dev</h1>
@@ -83,7 +83,7 @@
               
               <!-- About validation -->
               <li class="nav-item mr-4 dropdown">
-                <a class="btn btn-primary " href="about_validation.html"><span class="overview">About <br> Validation</span></a>
+                <a class="btn btn-primary " href="https://pdb-dev.wwpdb.org/about_validation.html"><span class="overview">About <br> Validation</span></a>
               </li>
               <li class="nav-item mr-4 dropdown">
                 <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location='main.html';>Validation <br> Overview</button></a>
@@ -107,10 +107,10 @@
               
               <!-- Model details -->
               <li class="nav-item mr-4 dropdown">
-                {% if 'SAS DATA' in Data %}
+                {% if ('SAS DATA' in Data) and enable_sas %}
                   <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location="data_quality.html";>Data <br> Quality </button></a>
                       
-                {% elif 'SAS DATA' not in Data and Unique_dataset|length > 0 %}
+                {% elif (('SAS DATA' not in Data) or not enable_sas) and Unique_dataset|length > 0 %}
                   <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary">Data <br> Quality </button></a>
                           
                 {% else %}
@@ -118,7 +118,7 @@
                 {% endif %}
 
                 <div class="dropdown-menu">
-                  {% if 'SAS DATA' in Data and sasdb_sascif|length > 0 %}
+                  {% if ('SAS DATA' in Data) and (sasdb_sascif|length > 0) and enable_sas %}
                     <a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#first>SAS</a>
                     <ul class=dropdown-submenu>                  
                       <li>
@@ -141,7 +141,7 @@
                         <a class=dropdown-item2 href=data_quality.html#firstG>Guinier analysis </a>
                       </li>
                     </ul>
-                  {% elif 'SAS DATA' in Data and sasdb_sascif|length < 1 %}
+                  {% elif ('SAS DATA' in Data) and (sasdb_sascif|length < 1) and enable_sas %}
                     <a class="dropdown-item colorclass" dropdown-toggle type=button href=data_quality.html#first>SAS</a>
                   {% endif %}
                     
@@ -169,7 +169,7 @@
               
               <!-- Fit to data used for modeling -->
               <li class="nav-item mr-4 dropdown">
-                {% if 'SAS DATA' in Data or 'CX-MS DATA' in Data%}
+                {% if (('SAS DATA' in Data) and enable_sas) or (('CX-MS DATA' in Data) and enable_cx) %}
                   <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location="formodeling.html";>Fit to Data <br> Used for Modeling </button></a>
                       
                 {% elif Unique_dataset|length > 0 %}
@@ -180,7 +180,7 @@
                 {% endif %}
                 
 								<div class="dropdown-menu">
-                  {% if 'SAS DATA' in Data and sasdb_sascif|length > 0 %}
+                  {% if ('SAS DATA' in Data) and (sasdb_sascif|length > 0) and enable_sas %}
                     <a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html>SAS</a>
                     <ul class=dropdown-submenu>
                       <li>
@@ -190,11 +190,11 @@
                         <a  class=dropdown-item2 href=formodeling.html#second>Cormap analysis </a>
                       </li>
                     </ul>
-                  {% elif 'SAS DATA' in Data and sasdb_sascif|length < 1 %}
+                  {% elif ('SAS DATA' in Data) and (sasdb_sascif|length < 1) and enable_sas%}
                     <a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>
                   {% endif %}
                   
-									{% if 'CX-MS DATA' in Data %}
+									{% if ('CX-MS DATA' in Data) and enable_cx %}
                     <a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html#cxms>
                       CX-MS
                     </a>
@@ -227,7 +227,7 @@
                 </div>
               </li>
               <li class="nav-item mr-4 dropdown">
-                <a class="btn btn-primary " href="validation_help.html"><span class="overview">Validation <br> Help</span></a>
+                <a class="btn btn-primary " href="https://pdb-dev.wwpdb.org/validation_help.html"><span class="overview">Validation <br> Help</span></a>
               </li>
             </ul>
           </div>
@@ -241,11 +241,11 @@
           <div class="container-fluid">
             <div class="row" style="/color:#FFF; background-color: rgba(102,153,102, 0.5); padding-top: 10px; padding-bottom: 2px;">
               <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
-                <a href="http://www.wwpdb.org/" target="_blank">
+                <a href="https://www.wwpdb.org/" target="_blank">
                 {% if html_mode == 'local' %}
                   <img src="static/images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
                 {% else %}
-                  <img src="/images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
+                  <img src="https://pdb-dev.wwpdb.org/images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
                 {% endif %}
               </div>
               <div class="col-sm-6">

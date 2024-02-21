@@ -12,21 +12,21 @@
           </a>
         </h3>
         <div class="box text-center no-padding float-left" style="text-align: center" >
-          <a href="pdf/{{validation_pdf}}">
+          <a href="../pdf/{{validation_pdf}}">
             <button style="background-color: #669966; margin-top: 10px;margin-bottom:10px; margin-right:0px;color: #FFF;height: 85px; width: 10em; border-radius: 10px;cursor: pointer; font-size:0.8em;">
               <h5 align="center" style="text-align: center";>Download Validation Report</h5>
             </button>
           </a>
         </div>
         <div class="box text-center no-padding float-right" style="text-align: center" >
-          <a href="pdf/{{supplementary_pdf}}">
+          <a href="../pdf/{{supplementary_pdf}}">
             <button style="background-color: #669966; margin-top: 10px;margin-bottom:10px; margin-right:0px;color: #FFF;height: 85px; width: 10em; border-radius: 10px;cursor: pointer; font-size:0.8em;">
               <h5 align="center" style="text-align: center";>Download Summary Table</h5>
             </button>
           </a>
         </div>
         <div class="box text-center container-fluid no-padding">
-          <img src=/images/{{ID_R[0]}}_resize_1.png class=image-fluid alt=Model Image style=width:300px align=center>
+          <img src=https://pdb-dev.wwpdb.org/images/{{ID_R[0]}}_resize_1.png class=image-fluid alt=Model Image style=width:300px align=center>
         </div>
       </div>
       <!-- end card header -->
@@ -78,7 +78,7 @@
       <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
         <h3 align="center">
           <a name='qual'>Overall quality</a>
-          <a class='help' title='help' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="validation_help.html#overview">?</a>
+          <a class='help' title='help' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#overview">?</a>
         </h3>
         <p align="justify">
           <em>This validation report contains model quality assessments for all structures. For more detail for each assessment, use the dropdown menus at the top of this page.
@@ -144,20 +144,20 @@
             <div id="home" class="tab-pane active">
               <div class="box text-center container-fluid no-padding" align='center'>
                 {% if not disclaimer %}
-                  <iframe src=images/{{ID_w[0]}}quality_at_glance_MQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;">
+                  <iframe src=../images/{{ID_w[0]}}quality_at_glance_MQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;">
                   </iframe>
                 {% endif %}
               </div>
             </div>
             <div id="menu1" class="tab-pane fade">
               <div class="box text-center container-fluid no-padding" align='center'>
-                <iframe src=images/{{ID_w[0]}}quality_at_glance_DQ.html frameborder=0 scrolling=yes width=90% height=500vh align=center text-align: center style=position:relative>
+                <iframe src=../images/{{ID_w[0]}}quality_at_glance_DQ.html frameborder=0 scrolling=yes width=90% height=500vh align=center text-align: center style=position:relative>
                 </iframe>
               </div>
             </div>
             <div id="menu2" class="tab-pane fade">
               <div class="box text-center container-fluid no-padding" align='center'>
-                <iframe src=images/{{ID_w[0]}}quality_at_glance_FQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;">
+                <iframe src=../images/{{ID_w[0]}}quality_at_glance_FQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;">
                 </iframe>
               </div>
             </div>
@@ -180,7 +180,7 @@
           <p align="justify"><em>Implementation of validation methods for SAS data and SAS-based models are funded by <a href='https://www.rcsb.org/'>RCSB PDB </a> (grant number DBI-1832184). Dr. Stephen Burley, Dr. John Westbrook, and Dr. Jasmine Young from <a href='https://www.rcsb.org/'>RCSB PDB</a>,  Dr. Jill Trewhella, Dr. Helen M. Berman, Dr. Dina Schneidman, and members of <a href='https://www.sasbdb.org/'>SASBDB </a> repository are acknowledged for their advice and support in implementing SAS validation methods. </em></p>
         </li>
         <li>
-          <p align="justify"><em>Members of the <a href='http://www.wwpdb.org/task/hybrid'>wwPDB Integrative/Hybrid Methods Task Force</a> provided recommendations and community support for the project. </em> </p>
+          <p align="justify"><em>Members of the <a href='https://www.wwpdb.org/task/hybrid'>wwPDB Integrative/Hybrid Methods Task Force</a> provided recommendations and community support for the project. </em> </p>
         </li>
       </ul>
       <p style=margin-bottom:1cm;> </p>

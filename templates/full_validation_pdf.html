@@ -600,7 +600,7 @@
                 </h5>
                 
                 {% if molp_b|length > 1 %}
-                  <i>There are {{ bond }} bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/{{ ID_MP }}/html/bond_outliers.html>here</a>.</i>
+                  <i>There are {{ bond }} bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID_MP[0] }}/htmls/bond_outliers.html>here</a>.</i>
                   {{ write_table(molp_b) }}
                 {% else %}
                   <i> Bond length outliers can not be evaluated for this model</i>
@@ -608,10 +608,10 @@
                     
                 <!-- Angle outliers -->
                 <h5 align=center>
-                  <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help1' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='../../../validation_help.html#molprobity'>?</a></h5>
+                  <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help1' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a></h5>
            
                 {% if molp_a|length > 1 %}
-                  <i>There are {{ angle }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/{{ ID_MP }}/html/angle_outliers.html>here</a>.</i>
+                  <i>There are {{ angle }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID_MP[0] }}/htmls/angle_outliers.html>here</a>.</i>
                   {{ write_table(molp_a) }}
                 {% else %}
                   <i>Bond angle outliers do not exist or can not be evaluated for this model</i>
@@ -795,7 +795,7 @@
               <p align="justify"><em>Implementation of validation methods for SAS data and SAS-based models are funded by <a href='https://www.rcsb.org/'>RCSB PDB</a> (grant number DBI-1832184). Dr. Stephen Burley, Dr. John Westbrook, and Dr. Jasmine Young from <a href='https://www.rcsb.org/'>RCSB PDB</a>,  Dr. Jill Trewhella, Dr. Dina Schneidman, and members of the <a href='https://www.sasbdb.org/'>SASBDB</a> repository are acknowledged for their advice and support in implementing SAS validation methods.</em></p>
             </li>
             <li>
-              <p align="justify"><em>Members of the <a href='http://www.wwpdb.org/task/hybrid'>wwPDB Integrative/Hybrid Methods Task Force</a> provided recommendations and community support for the project. </em> </p>
+              <p align="justify"><em>Members of the <a href='https://www.wwpdb.org/task/hybrid'>wwPDB Integrative/Hybrid Methods Task Force</a> provided recommendations and community support for the project. </em> </p>
             </li>
           </ul>
         </div>

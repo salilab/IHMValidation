@@ -191,7 +191,14 @@
              </td>
            </tr>
          {% endif %}
-         {% if assess_excluded_volume is not none %}
+         {% if disclaimer > 0 %}
+           <tr>
+             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html">Model quality</a></i></td>
+             <td>
+               Based on existing standards, there are no model quality assessments for this entry.
+             </td>
+           </tr>
+         {% elif (disclaimer < 1 ) and (assess_excluded_volume is not none) %}
            <tr>
              <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalexv">Model quality: assessment of excluded volume</a></i></td>
              <td>

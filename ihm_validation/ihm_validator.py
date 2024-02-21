@@ -48,7 +48,7 @@ parser.add_argument('--output-root', type=str, default=str(Path(Path(__file__).p
                     help="Path to a directory where the output will be written")
 parser.add_argument('--output-prefix', type=str, default=None,
                     help="Prefix of the output directory. Default is a stem of the mmCIF file")
-parser.add_argument('--html-mode', type=str, default='local',
+parser.add_argument('--html-mode', type=str, default='pdb-dev',
                     choices=['local', 'pdb-dev'],
                     help="HTML mode affects paths to various statis resources")
 parser.add_argument('--html-resources',
@@ -139,8 +139,8 @@ template_flask = [
     "model_quality.html",
     "model_composition.html",
     "formodeling.html",
-    "about_validation.html",
-    "validation_help.html",
+#    "about_validation.html",
+#    "validation_help.html",
 ]
 
 # Get the UTC time from ruser
@@ -172,9 +172,9 @@ dirNames.update(
 
 dirNames.update(
     {
-        'images':  str(Path(dirNames['html'], 'images')),
-        'csv':  str(Path(dirNames['html'], 'csv')),
-        'pdf':  str(Path(dirNames['html'], 'pdf')),
+        'images':  str(Path(dirNames['root_html'], 'images')),
+        'csv':  str(Path(dirNames['root_html'], 'csv')),
+        'pdf':  str(Path(dirNames['root_html'], 'pdf')),
         # 'json': str(Path(output_path, 'json')),
     }
 )
@@ -297,6 +297,7 @@ if __name__ == "__main__":
     template_dict, molprobity_dict, exv_data = report.run_model_quality(
         template_dict, csvDirName=dirNames['csv'], htmlDirName=dirNames['html'])
 
+    template_dict['enable_sas'] = args.enable_sas
     if args.enable_sas:
         logging.info("SAS validation")
         template_dict, sas_data, sas_fit = report.run_sas_validation(template_dict)
@@ -310,6 +311,7 @@ if __name__ == "__main__":
         sas_fit = {}
 
     # uncomment below to run CX analysis
+    template_dict['enable_cx'] = args.enable_cx
     if args.enable_cx:
         logging.info("CX validation")
         template_dict, cx_data, cx_ertypes = report.run_cx_validation(template_dict)
