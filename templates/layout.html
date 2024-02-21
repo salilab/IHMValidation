@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{%- block title -%}PDB-Dev Validation Report{%- endblock -%}</title>
     <!-- add bootstrap css file -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {% if html_mode == 'local' %}
       <link rel="stylesheet" href="static/css/main.css">
       <link rel="stylesheet" href="static/css/layout.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {% else %}
-      <link rel="stylesheet" href="https://pdb-dev.wwpdb.org/css/main.css">
-      <link rel="stylesheet" href="https://pdb-dev.wwpdb.org/css/layout.css">
+      <link rel="stylesheet" href="/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/css/main.css">
+      <link rel="stylesheet" href="/css/layout.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {% endif %}
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -41,7 +43,7 @@
                 {% if html_mode == 'local' %}
                   <img src="static/images/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 0px; margin-bottom: 0px" />
                 {% else %}
-                  <img src="https://pdb-dev.wwpdb.org/images/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 0px; margin-bottom: 0px" />
+                  <img src="/images/logon.png" class="float-left" alt="PDBDEV.org" height="100" width="110" style="margin-top: 0px; margin-bottom: 0px" />
                 {% endif %}
                 <p>
                   <h1 style="margin-left: 0px; color: #003366;">PDB-Dev</h1>
@@ -83,7 +85,7 @@
               
               <!-- About validation -->
               <li class="nav-item mr-4 dropdown">
-                <a class="btn btn-primary " href="https://pdb-dev.wwpdb.org/about_validation.html"><span class="overview">About <br> Validation</span></a>
+                <a class="btn btn-primary " href="/about_validation.html"><span class="overview">About <br> Validation</span></a>
               </li>
               <li class="nav-item mr-4 dropdown">
                 <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location='main.html';>Validation <br> Overview</button></a>
@@ -227,7 +229,7 @@
                 </div>
               </li>
               <li class="nav-item mr-4 dropdown">
-                <a class="btn btn-primary " href="https://pdb-dev.wwpdb.org/validation_help.html"><span class="overview">Validation <br> Help</span></a>
+                <a class="btn btn-primary " href="/validation_help.html"><span class="overview">Validation <br> Help</span></a>
               </li>
             </ul>
           </div>
@@ -245,7 +247,7 @@
                 {% if html_mode == 'local' %}
                   <img src="static/images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
                 {% else %}
-                  <img src="https://pdb-dev.wwpdb.org/images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
+                  <img src="/images/wwpdb-logo11.png" alt="wwpdb" height="35px" width="160px"></a>
                 {% endif %}
               </div>
               <div class="col-sm-6">

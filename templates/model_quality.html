@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="card-header" style="background-color: #FFF;">
-          <h4 align="center"><u>Model quality</u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#modelquality'>?</a></h4>
+          <h4 align="center"><u>Model quality</u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#modelquality'>?</a></h4>
           <p class="ex2"> For models with atomic structures, molprobity analysis is performed. For models with coarse-grained or multi-scale structures, excluded volume analysis is performed.</p>
           <!-- Bad systems without proper metrics -->
           {% if disclaimer > 0 %}
@@ -18,7 +18,7 @@
           {% else %}
             <!-- Excluded volume for systems with coarse grain beads -->
             {% if sphere|int > 0 %}
-              <h5 class= ex2 align= left>Excluded volume satisfaction<a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#exv'>?</a>
+              <h5 class= ex2 align= left>Excluded volume satisfaction<a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#exv'>?</a>
               </h5>
               <i>Excluded volume satisfaction for the models in the entry are listed below.</i>
               <p class="ex2"></p>
@@ -27,7 +27,7 @@
             <!-- Atomic systems (molprobity) -->
             {% else %}
               <h5 class= ex2 align= center>
-                <u><a name='geometry1'>Standard geometry: bond outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                <u><a name='geometry1'>Standard geometry: bond outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
               </h5>
               <p class="ex2"></p>
               {% if molp_b|length > 1 %}
@@ -42,7 +42,7 @@
               {% endif %}
   
               <h5 class= ex2 align= center>
-                <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
               </h5>
               <p class="ex2"></p>
               {% if molp_a|length > 1 %}
@@ -58,7 +58,7 @@
   
               {% if clashscore_list|length > 1 %}
                 <h5 class= ex2 align= center>
-                  <u><a name='contacts'>Too-close contacts</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                  <u><a name='contacts'>Too-close contacts</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
                 </h5>
                 <p align='justify'>
                   <i>The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry.</i>
@@ -79,7 +79,7 @@
   
               {% if ramascore|length > 1 %}
                 <h5 class=ex2 align= center>
-                  <u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                  <u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
                 </h5>
                 <p align='justify'>
                   <i>In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed.</i>
@@ -98,7 +98,7 @@
   
               {% if rotascore|length > 1 %}
                 <h5 class=ex2 align=center>
-                  <u><a name='outliers'>Torsion angles : Protein sidechains</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                  <u><a name='outliers'>Torsion angles : Protein sidechains</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
                 </h5>
                 <i>In the following table, sidechain rotameric outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed.</i>
                 <p class="ex2"></p>
