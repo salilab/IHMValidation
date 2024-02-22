@@ -263,7 +263,7 @@
   
             <!-- Fit to data -->
             <!-- SAS -->
-            {% if ( (sasdb_sascif|length > 0) and (sasdb_code_fits|length > 0) ) %}
+            {% if ( (sasdb_sascif|length > 0) and (number_of_fits|int > 0 ) ) %}
               <div class="card-body">
                 <div class="row">
                   <div class="col-lg-12">
