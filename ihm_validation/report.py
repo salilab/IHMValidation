@@ -443,15 +443,18 @@ class WriteReport(object):
         if bool(Template_Dict['cx']):
             if Template_Dict['cx_stats'] is not None:
 
-                html_fn, json_fn = self.I_cx.plot_distograms_per_model_group(imageDirName)
+                self.I_cx.driver = self.driver
+                html_fn, json_fn, svgs_fn = self.I_cx.plot_distograms_per_model_group(imageDirName)
                 with open(json_fn, 'r') as f:
                     plot = json.dumps(json.load(f))
                 Template_Dict['cx_distograms_plot_json'] = plot
+                Template_Dict['cx_distograms_plots_svg'] = svgs_fn
 
-                html_fn, json_fn = self.I_cx.plot_satisfaction_per_ensemble(imageDirName)
+                html_fn, json_fn, svgs_fn = self.I_cx.plot_satisfaction_per_ensemble(imageDirName)
                 with open(json_fn, 'r') as f:
                     plot = json.dumps(json.load(f))
                 Template_Dict['cx_satisfaction_plot_json'] = plot
+                Template_Dict['cx_satisfaction_plots_svg'] = svgs_fn
 
     def run_quality_glance(self, molprobity_dict: dict, exv_data: dict,
                            sas_data: dict, sas_fit: dict,

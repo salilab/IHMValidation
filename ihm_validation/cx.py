@@ -21,6 +21,7 @@ from bokeh.resources import CDN
 import iqplot
 import json
 from bokeh.embed import json_item
+from bokeh.io import export_svgs
 
 pd.options.mode.chained_assignment = None
 NA = 'Not available'
@@ -66,6 +67,9 @@ def get_hierarchy_from_model(model):
 
 
 class CxValidation(GetInputInformation):
+    ID = None
+    driver = None
+
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)
         self.ID = str(self.get_id())
@@ -730,6 +734,8 @@ class CxValidation(GetInputInformation):
                 marker_kwargs=dict(alpha=0.5, size=7)
             )
 
+            p.output_backend = "svg"
+
             p.x_range = Range1d(xmin, xmax)
             p.xaxis.axis_label = 'Satisfaction rate, %'
 
@@ -777,7 +783,7 @@ class CxValidation(GetInputInformation):
                     out_stats = pd.DataFrame(out_stats_)
 
                     p = scatter_plot(out_stats)
-                    title = f'{self.ID}\\nSatisfaction rates in model group {gimg}'
+                    title = f'Satisfaction rates in model group {gimg}'
                     p.title.text = title
 
                     p.title.text_font_size = "12pt"
@@ -823,11 +829,13 @@ class CxValidation(GetInputInformation):
                     data=data_, q='Crosslinks', density=False,
                     bins=bins,
                     style="step_filled",
-                    frame_width=400, frame_height=100,
+                    frame_width=500, frame_height=100,
                     # sizing_mode='scale_width',
                 )
 
-                title = f'{self.ID}\\n{lt}: {rt}, {d:.1f} Å'
+                p.output_backend = "svg"
+
+                title = f"Model group {gimg}; {lt}: {rt}, {d:.1f} Å"
 
                 p.title.text_font_size = "12pt"
                 p.xaxis.axis_label_text_font_size = "14pt"
@@ -861,9 +869,11 @@ class CxValidation(GetInputInformation):
         return self.save_plots(tabs, title, imgDirname)
 
     def save_plots(self, plot, title, imgDirname='.'):
+        stem = f'{self.ID}_{title}'
+
         imgpath = Path(
             imgDirname,
-            f'{self.ID}_{title}.html')
+            f'{stem}.html')
         save(
             plot, imgpath,
             resources=CDN,
@@ -872,9 +882,18 @@ class CxValidation(GetInputInformation):
 
         imgpath_json = Path(
             imgDirname,
-            f'{self.ID}_{title}.json')
+            f'{stem}.json')
 
         with open(imgpath_json, 'w') as f:
             json.dump(json_item(plot, title), f)
 
-        return (imgpath, imgpath_json)
+        imgpath_svg = Path(
+            imgDirname,
+            f'{stem}.svg')
+
+        svgs = export_svgs(plot, filename=imgpath_svg,
+                   webdriver=self.driver)
+
+        svgs = [Path(x).name for x in svgs]
+
+        return (imgpath, imgpath_json, svgs)
