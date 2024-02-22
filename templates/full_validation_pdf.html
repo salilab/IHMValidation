@@ -748,6 +748,162 @@
               <p style=margin-bottom:0.5cm;> </p>                                                                                                                                                                                                    
             {% endif %}
 
+            {% if cx %}
+              <h5 align=center id="cxms">
+                <u> Fit of model(s) to CX-MS data</u>
+              </h5>
+
+              <h5 align=center id="cxms_ertypes">
+                <u>Restraint types</u>
+              </h5>
+              
+              {% if cx_ertypes is none %}
+                <p>Restraint types in this entry are not supported at the moment.</p>
+              {% else %}
+                <div class="row">
+                  <div class='col-lg-12'>
+                    <p>There are {{ cx_num_of_restraints }} crosslinking restraints 
+                    combined in {{ cx_num_of_restraint_groups }} restraint groups. 
+                    Restraint types are summarized in the table below. 
+                    Only atomic or per-residue restraints are supported at the moment.
+                    </p>
+                    <div class='table-responsive text-center' style="max-height: 75vh; overflow: auto;">
+                      <table id='cx_ertypes_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
+                        <thead>
+                          <tr>
+                            <th align='center' class='text-center' style='vertical-align:middle'>
+                              Type #
+                            </th>
+                            {% for k in cx_ertypes['columns'] %}
+                            <th align='center' class='text-center' style='vertical-align:middle'>
+                              {{ k }}
+                            </th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        
+                        {% for i in range(cx_ertypes['data']|length) %}
+                          <tr>
+                            <td>{{ i }}</td>
+                            {% for v in cx_ertypes['data'][i] %}
+                              <td>{{ v }}</td>
+                            {% endfor %}
+                          </tr>
+                        {% endfor %}
+                      </table>
+                    </div>
+                  </div>
+                  <div class=col-lg-12>
+                    <div text-center container-fluid no-padding align=center>
+                      <div>
+                        <p><u>Distograms of individual restraints</u></p>
+                      </div>
+                      {% if cx_stats is none %}
+                        <p>Distograms for this entry are unavailable the moment.</p>
+                      {% else %}
+                        <p style='text-align: left'><i>Restraints with identical thresholds are grouped into one plot. Only best distance per restraint per model group/ensemble is plotted. Intra- and intermolecular self-link restraints are also grouped into one plot.</i></p>
+                        {% for i in range(cx_distograms_plots_svg|length) %}
+                          <img id='cx_distograms_plot_{{ i }}' src='../images/{{ cx_distograms_plots_svg[i] }}'>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+              <!-- end of cx_ertypes --> 
+              
+              <h5 align=center id="cxms_satisfaction">
+                <u>Satisfaction of restraints</u>
+              </h5>
+              
+              {% if cx_stats is none %}
+                <p>Satisfaction rates for this entry are unavailable at the moment.</p>
+              {% else %}
+                <div class=row>
+                  <div class=col-lg-12>
+                    <p>
+                      <i>
+                        Satisfaction of restraints is calculated on a restraint 
+                        group level. Satisfaction of a restraint group depends on 
+                        satisfaction of individual restraints in the group and the 
+                        conditionality (all/any). Restraint group is considered 
+                        satisfied, if condition was met in at least one model of 
+                        the model group/ensemble. Only deposited models are used 
+                        for validation right now.
+                      </i>
+                    </p>
+                  
+                    <div class='table-responsive text-center'>
+                      <table id='cx_satisfaction_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
+                        <thead>
+                          <tr>
+                            <th style='vertical-align:middle'>
+                              State group
+                            </th>
+                            <th style='vertical-align:middle'>
+                              State
+                            </th>
+                            <th style='vertical-align:middle'>
+                              Model group
+                            </th>
+                            <th style='vertical-align:middle'>
+                              # of Deposited models/Total
+                            </th>
+                            <th style='vertical-align:middle'>
+                              Restraint group type
+                            </th>
+                            <th  style='vertical-align:middle'>
+                              Satisfied (%)
+                            </th>
+                            <th style='vertical-align:middle'>
+                              Violated (%)
+                            </th>
+                            <th style='vertical-align:middle'>
+                              Count
+                            </th>
+                          </tr>
+                        </thead>
+                        {% for sg, sgv in cx_stats.items() %}
+                          {% set state_group_loop = loop %}
+                          {% for st, stv in sgv.items() %}
+                            {% for mg, mgv in stv.items() %}
+                              {% for k, v in mgv["cx_stats"].items() %}
+                              {% set rowspan = mgv["cx_stats"]|length %}
+                                <tr>
+                                  {% if loop.index == 1 %}
+                                    <td rowspan={{ rowspan }}>{{ sg }}</td>
+                                    <td rowspan={{ rowspan }}>{{ st }}</td>
+                                    <td rowspan={{ rowspan }}>{{ mg }}</td>
+                                    <td rowspan={{ rowspan }}>{{ mgv["ens_stats"]["num_models_deposited"] ~ "/" ~ mgv["ens_stats"]["num_models"]}}</td>
+                                  {% endif %}
+                                  <td>{{ k | replace("/", "/<br>")}}</td>
+                                  <td>{{ v["Satisfied"] }}</td>
+                                  <td>{{ v["Violated"] }}</td>
+                                  <td style='horizontal-align:right'>{{ v["Count"] }}</td>
+                                </tr>
+                              {% endfor %}
+                            {% endfor %}
+                          {% endfor %}
+                        {% endfor %}
+                      </table>
+                    </div>
+                  </div>
+                  <div class=col-lg-12>
+                    <div text-center container-fluid no-padding align=center>
+                      <p><u>Per-model satisfaction rates in ensembles</u></p>
+                      <p style="text-align: left"><i>Every point represents one model in a model group/ensemble. Where possible, boxplots with quartile marks are also plotted.</i></p>
+                      {% for i in range(cx_satisfaction_plots_svg|length) %}
+                        <img id='cx_satisfaction_plot_{{ i }}' src='../images/{{ cx_satisfaction_plots_svg[i] }}'>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              <!-- end of cx_stats --> 
+              {% endif %}
+              <p style=margin-bottom:0.5cm;> </p>
+            <!-- end of cx --> 
+            {% endif %}
+                
             {% for i in range(Unique_dataset|length) %}
               <h5 align= center>
                 <u><a name=last>{{ Unique_dataset[i] }}</a></u>
@@ -756,8 +912,7 @@
                 Validation for this section is under development.
               </p>
             
-              <p style=margin-bottom:0.5cm;> </p>                                                                                                                                                                                                    
- 
+              <p style=margin-bottom:0.5cm;> </p>
             {% endfor %}
           </div>
         </div>
