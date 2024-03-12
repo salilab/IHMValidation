@@ -630,13 +630,26 @@ class GetMolprobityInformation(GetInputInformation):
         else:
             return "Your molprobity processing is incorrect, please check the code", 0
 
+    @staticmethod
+    def get_model_id_str(line: str) -> str:
+        """ extract MODEL X substring """
+        m = re.search('MODEL\s*(?P<model_id>\d+)', line, re.IGNORECASE)
+
+        mid = None
+
+        if m:
+            g = m.groupdict()
+            mid = g['model_id']
+
+        return mid
+
+
     def process_clash(self, line: list) -> dict:
         """ process clash files to extract relevant information """
         count = [i for i, j in enumerate(line) if 'Bad Clashes' in j]
         if self.nos > 1:
-            vals = [j.split(' ')[5]
-                    for i, j in enumerate(line) if 'Bad Clashes' in j]
-            clashes = {'Model '+model.split('MODEL')[1]: [] for model in vals}
+            clashes = {f'Model {self.get_model_id_str(j)}':[]
+                    for i, j in enumerate(line) if 'Bad Clashes' in j}
         else:
             clashes = {'Model 1': []}
         count.append(self.find_clashscore_records(line))
@@ -645,8 +658,8 @@ class GetMolprobityInformation(GetInputInformation):
             output_line = [j for k, j in enumerate(line) if k > int(
                 count[ind]) and k < int(count[ind+1])]
             clashes[list(clashes.keys())[ind]].append(output_line)
-        clashes_ordered = dict(sorted(clashes.items()))
-        return clashes_ordered
+
+        return clashes
 
     @staticmethod
     def find_clashscore_records(line: list) -> int:
@@ -716,6 +729,18 @@ class GetMolprobityInformation(GetInputInformation):
 
     def clash_summary_table(self, line: list) -> (dict, int):
         """ format clash data to print to file """
+        def get_clash_score(line: str) -> str:
+            """ parse clash line """
+            m = re.search(
+                'clashscore\s+=\s+(?P<clashscore>\d+\.\d+)',
+                line,
+                re.IGNORECASE
+            )
+
+            g = m.groupdict()
+
+            return g['clashscore']
+
         with open(
             str(Path(self.cache,  self.ID+'_clash_summary.txt')), 'w+') as f_clash:
 
@@ -730,14 +755,14 @@ class GetMolprobityInformation(GetInputInformation):
             dict1 = {'Model ID': [], 'Clash score': [], 'Number of clashes': []}
 
             for clashval in clashscore_list:
-                dict1['Model ID'].append(
-                    str(clashval.split(' ')[0].title()+' '+clashval.split(' ')[1]))
-                dict1['Clash score'].append(clashval.split(' ')[-1])
+                mid = self.get_model_id_str(clashval)
+                clashscore = get_clash_score(clashval)
+                dict1['Model ID'].append(mid)
+                dict1['Clash score'].append(clashscore)
 
             for model_id in dict1['Model ID']:
-                dict1['Number of clashes'].append(len(clashes[model_id][0]))
+                dict1['Number of clashes'].append(len(clashes[f'Model {model_id}'][0]))
             clash_total = (sum(dict1['Number of clashes']))
-            dict1 = self.orderclashdict(dict1)
             print(dict1['Model ID'], file=f_clash)
             print(dict1['Clash score'], file=f_clash)
             print(dict1['Number of clashes'], file=f_clash)
@@ -745,7 +770,7 @@ class GetMolprobityInformation(GetInputInformation):
         return dict1, clash_total
 
     def orderclashdict(self, modeldict: dict) -> dict:
-        """molprobity returns output in lexicographic order
+        """ DEPRECATED molprobity returns output in lexicographic order
         this is to change it to number order
          """
         df = pd.DataFrame(modeldict)
@@ -837,7 +862,7 @@ class GetMolprobityInformation(GetInputInformation):
         for ind, el in clashes.items():
             for line in el[0]:
                 subline = [_ for _ in line.split(' ') if _ not in '']
-                dict1['Model ID'].append(ind.title()[-1])
+                dict1['Model ID'].append(self.get_model_id_str(ind))
                 if len(subline) < 9 and len(subline[0]) > 2:
                     dict1['Atom-1'].append(':'.join(subline[0:3]))
                 else:
