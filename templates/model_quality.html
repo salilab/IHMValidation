@@ -46,8 +46,15 @@
               </h5>
               <p class="ex2"></p>
               {% if molp_a|length > 1 %}
-                <i>There are {{ angle|int }} angle outliers in this entry ({{ "%.1f"|format(angle / total_angles * 100) }}% of all angles). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv>here</a>.
-                </i>
+                {% if total_angles|int > 1 %}
+                  <i>
+                    There are {{ angle|int }} angle outliers in this entry ({{ "%.1f"|format(angle / total_angles * 100) }}% of all angles). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv>here</a>.
+                  </i>
+                {% else %}
+                  <i>
+                    There are {{ angle|int }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv>here</a>.
+                  </i>
+                {% endif %}
                 <p class="ex2"></p>
                 {{ write_table(molp_a) }}
                 <p class="ex2"></p>
