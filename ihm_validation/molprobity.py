@@ -763,6 +763,7 @@ class GetMolprobityInformation(GetInputInformation):
             for model_id in dict1['Model ID']:
                 dict1['Number of clashes'].append(len(clashes[f'Model {model_id}'][0]))
             clash_total = (sum(dict1['Number of clashes']))
+            dict1 = self.orderclashdict(dict1)
             print(dict1['Model ID'], file=f_clash)
             print(dict1['Clash score'], file=f_clash)
             print(dict1['Number of clashes'], file=f_clash)
@@ -770,11 +771,11 @@ class GetMolprobityInformation(GetInputInformation):
         return dict1, clash_total
 
     def orderclashdict(self, modeldict: dict) -> dict:
-        """ DEPRECATED molprobity returns output in lexicographic order
+        """molprobity returns output in lexicographic order
         this is to change it to number order
          """
         df = pd.DataFrame(modeldict)
-        df['ID'] = df['Model ID'].apply(lambda x: int(x.split()[1]))
+        df['ID'] = df['Model ID'].apply(lambda x: int(x))
         df = df.sort_values(by='ID')
         df = df.drop(['ID'], axis=1)
         df_dict = df.to_dict()
