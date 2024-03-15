@@ -527,7 +527,14 @@ class GetInputInformation(object):
                 try:
                     acc = _.location.access_code
                 except AttributeError:
-                    acc = 'None'
+                    if isinstance(_.location, ihm.location.InputFileLocation) \
+                            or isinstance(_.location, ihm.location.FileLocation):
+                        try:
+                            acc = _.location.repo.doi
+                        except AttributeError:
+                            acc = utility.NA
+                    else:
+                        acc = utility.NA
                 dataset_comp['ID'].append(_._id)
                 # if i.data_type=='unspecified' and 'None' not in i.details:
                 #    dataset_comp['Dataset type'].append(i.details)
@@ -655,7 +662,15 @@ class GetInputInformation(object):
                     if acc is not utility.NA:
                         dataset_comp['Details'].append(f'{loc}: {acc}')
                     elif isinstance(i.location, ihm.location.FileLocation):
-                        dataset_comp['Details'].append(f'File')
+                        doi = utility.NA
+                        try:
+                            doi = i.location.repo.doi
+                        except AttributeError:
+                            doi = utility.NA
+
+                        acc1 = f'File: {doi}'
+                        dataset_comp['Details'].append(acc1)
+
                     else:
                         dataset_comp['Details'].append(acc)
 
