@@ -19,7 +19,7 @@ import collections
 import pandas as pd
 import csv
 import re
-
+import string
 
 class GetMolprobityInformation(GetInputInformation):
     _tempfiles = []
@@ -162,7 +162,23 @@ class GetMolprobityInformation(GetInputInformation):
         if loop and not skip_loop:
                 out.extend(loop_lines)
 
-        with open(outfn, 'w', encoding=encoding) as f:
+        # Filter non-ascii characters for molprobity
+        printable = set(string.printable)
+        out = [''.join(filter(lambda x: x in printable, s)) for s in out]
+
+        # Hack to avoid . for B-factors and other values
+        atomsite = False
+        for i, line in enumerate(out):
+            if atomsite:
+                out[i] = re.sub(' \. ', ' 0 ', line)
+
+            elif re.match('loop_', line):
+                if re.match('_atom_site', out[i + 1]):
+                    atomsite = True
+                else:
+                    atomsite = False
+
+        with open(outfn, 'w', encoding='utf-8') as f:
             f.write(''.join(out))
 
 
@@ -943,7 +959,8 @@ class GetMolprobityInformation(GetInputInformation):
 
     def cleanup(self):
         for f_name in self._tempfiles:
-            try:
-                os.remove(f_name)
-            except OSError:
-                logging.error(f"Coldn't delete temp file: {f_name}")
+            if Path(f_name).is_file():
+                try:
+                    os.remove(f_name)
+                except OSError:
+                    logging.error(f"Coldn't delete temp file: {f_name}")
