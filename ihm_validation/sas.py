@@ -67,8 +67,8 @@ class SasValidation(GetInputInformation):
         returns a list of SASBDB codes
         '''
         sas_ids = []
-        for indx, datatype in enumerate(self.dataset['Dataset type']):
-            if 'SAS' in str(datatype):
+        for indx, datatype in enumerate(self.dataset['Database name']):
+            if str(datatype) == 'SASBDB':
                 sas_id = self.dataset['Data access code'][indx]
                 sas_ids.append(sas_id)
         return sas_ids
