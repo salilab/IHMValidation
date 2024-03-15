@@ -167,17 +167,17 @@
               <table class="table table-bordered" style="height: 16rem;">
                 <thead>
                   <tr>
-                    <th align="center" class="text-center">PDB ID</th>
-                    <th align="center" class="text-center">{{ ID_T }}</th>
+                    <th align="center" class="text-center" style="text-align:center; vertical-align: middle;">PDB ID</th>
+                    <th align="center" class="text-center" style="text-align:center; vertical-align: middle;">{{ ID_T }}</th>
                   </tr>
                 </thead>
                 <tr>
-                  <td class="align-middle" class="text-center">Structure Name</td>
-                  <td class="align-middle" class="text-center">{{ Molecule }}</td>
+                  <td class="align-middle" class="text-center" style="text-align:center; vertical-align: middle;">Structure Name</td>
+                  <td class="align-middle" class="text-center" style="text-align:center; vertical-align: middle;">{{ Molecule }}</td>
                 </tr>
                 <tr>
-                  <td class="align-middle" class="text-center">Structure Authors</td>
-                  <td class="align-middle" class="text-center">{{ Authors }}</td>
+                  <td class="align-middle" class="text-center" style="text-align:center; vertical-align: middle;">Structure Authors</td>
+                  <td class="align-middle" class="text-center" style="text-align:center; vertical-align: middle;">{{ Authors }}</td>
                 </tr>
               </table>
             </div>
@@ -577,7 +577,7 @@
             <p> For models with atomic structures, molprobity analysis is performed. For models with coarse-grained or multi-scale structures, excluded volume analysis is performed.</p>
 
             <!-- Disclaimer -->
-            {% if disclaimer > 0 %}
+            {% if disclaimer %}
               <p>
                 <i> NOTE: Based on existing standards, there are no model quality assessments for this entry.</i>
               </p>
