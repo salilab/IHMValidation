@@ -160,22 +160,19 @@ class GetExcludedVolume(GetInputInformation):
         filename = str(Path(self.cache, self.ID + '_exv.txt'))
         if os.path.exists(filename):
             return self.process_exv(filename)
-        if len(model_dict.keys()) <= 25:  # this is an arbitrary cutoff
-            pool = mp.Pool(processes=len(model_dict.keys()))
-            complete_list = pool.map(
-                self.get_exc_vol_given_sphere_parallel, list(model_dict.values()))
-            excluded_volume = {'Models': list(model_dict.keys()),
-                               'Excluded Volume Satisfaction (%)': [i[0] for i in complete_list],
-                               'Number of violations': [i[1] for i in complete_list]}
 
-            with open(filename, "w+") as file:
-                write_file = csv.writer(file)
-                for key, val in excluded_volume.items():
-                    write_file.writerow([key, val])
-        else:
-            excluded_volume = {'Models': ['All '+str(len(model_dict.keys()))],
-                               'Excluded Volume Satisfaction (%)': ['0.0'],
-                               'Number of violations': ['0.0']}
+        pool = mp.Pool(processes=len(model_dict.keys()))
+        complete_list = pool.map(
+            self.get_exc_vol_given_sphere_parallel, list(model_dict.values()))
+        excluded_volume = {'Models': list(model_dict.keys()),
+                           'Excluded Volume Satisfaction (%)': [i[0] for i in complete_list],
+                           'Number of violations': [i[1] for i in complete_list]}
+
+        with open(filename, "w+") as file:
+            write_file = csv.writer(file)
+            for key, val in excluded_volume.items():
+                write_file.writerow([key, val])
+
         return excluded_volume
 
     def process_exv(self, filename: str) -> dict:
