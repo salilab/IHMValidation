@@ -118,7 +118,7 @@ class SasValidation(GetInputInformation):
             response.encoding = 'ascii'
             if response.status_code != 200:
                 logging.error(
-                    "Unable to fetch data from SASBDB, "
+                    f"Unable to fetch data for {code} from SASBDB, "
                     "please check the entry ID")
                 fn = None
             else:
@@ -132,7 +132,7 @@ class SasValidation(GetInputInformation):
         get intensity data from SASCIF file
         '''
         ints = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
 
             main = f'{code}_MAIN'
@@ -196,7 +196,7 @@ class SasValidation(GetInputInformation):
         get Rg values from SASCIF file, if unavailabel, get it from JSON
         '''
         Rg_dict = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]['_sas_result']
@@ -215,7 +215,7 @@ class SasValidation(GetInputInformation):
         get rg information from SASCIF file
         '''
         rg_and_io = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]['_sas_result']
@@ -230,7 +230,7 @@ class SasValidation(GetInputInformation):
         '''
         rg_table = {'SASDB ID': [], 'Rg': [],
                     'Rg error': [], 'MW': [], 'MW error': []}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]['_sas_result']
@@ -268,7 +268,7 @@ class SasValidation(GetInputInformation):
         get chi-squared values from SASCIF files
         '''
         fit_dict = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             fits = []
             sascif = self.sascif_dicts[code]
 
@@ -285,7 +285,7 @@ class SasValidation(GetInputInformation):
         get pair-dist distribution from SASCIF files
         '''
         pofr_dict = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             data = {}
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
@@ -312,7 +312,7 @@ class SasValidation(GetInputInformation):
         num_of_fits = self.get_number_of_fits()
         pval_table = {'SASDB ID': [], 'Model': [], 'χ²': [], 'p-value': []}
 
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]
@@ -373,7 +373,7 @@ class SasValidation(GetInputInformation):
         get pair-distance details from SASCIF files
         '''
         pofr_dict = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = self.sascif_dicts[code][f'{code}_MAIN']
@@ -398,7 +398,7 @@ class SasValidation(GetInputInformation):
         pofr_dict = self.get_pofr_ext()
         Int_dict = self.intensities
         compiled_dict = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             I_df = Int_dict[code]
             I_df_dict = dict(zip(I_df.Q, I_df.I))
             I_df_err_dict = dict(zip(I_df.Q, I_df.E))
@@ -477,7 +477,7 @@ class SasValidation(GetInputInformation):
         parameter_table = {'SASDB ID': [], 'Estimated Volume': [], 'Porod Volume': [], 'Specific Volume': [],
                            'Sample Contrast': [], 'Sample Concentration': []}
 
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
 
@@ -526,7 +526,7 @@ class SasValidation(GetInputInformation):
         parameter_table = {'SASDB ID': [], 'Chemical composition MW': [
         ], 'Standard MW': [], 'Porod Volume/MW': []}
 
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
 
@@ -579,7 +579,7 @@ class SasValidation(GetInputInformation):
         pddf_info = {'SASDB ID': [], 'Software used': [],
                      'Dmax': [], 'Dmax error': [], 'Rg': [], 'Rg error': []}
 
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]['_sas_p_of_R_details']
@@ -620,7 +620,7 @@ class SasValidation(GetInputInformation):
         get number of fits
         '''
         num_of_fits = {}
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             c = 0
             sascif = self.sascif_dicts[code]
 
@@ -651,7 +651,7 @@ class SasValidation(GetInputInformation):
         num_of_fits = self.get_number_of_fits()
         data_fit = {}
 
-        for code in self.sasbdb_ids:
+        for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]
