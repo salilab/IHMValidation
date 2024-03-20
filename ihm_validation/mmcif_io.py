@@ -228,7 +228,7 @@ class GetInputInformation(object):
     def get_composition(self) -> dict:
         """Get composition dictionary"""
         entry_comp = {'Model ID': [], 'Subunit number': [], 'Subunit ID': [],
-                      'Subunit name': [], 'Chain ID': [],
+                      'Subunit name': [], 'Chain ID': [], 'Chain ID [auth]': [],
                       'Total residues': []}
         for i, j in self.get_model_assem_dict().items():
             for m in self.system.orphan_assemblies:
@@ -242,7 +242,16 @@ class GetInputInformation(object):
                             entry_comp['Subunit ID'].append(n.entity._id)
                             entry_comp['Subunit name'].append(
                                 str(n.entity.description))
-                            entry_comp['Chain ID'].append(n._id)
+                            if isinstance(n, ihm.AsymUnit):
+                                aid = n.id
+                                sid = n.strand_id
+                            elif isinstance(n, ihm.AsymUnitRange):
+                                aid = n.asym.id
+                                sid = n.asym.strand_id
+                            else:
+                                raise(ValueError('Unexpected entity type. Only AsymUnit and AsymUnitRange are allowed'))
+                            entry_comp['Chain ID'].append(aid)
+                            entry_comp['Chain ID [auth]'].append(sid)
                             entry_comp['Total residues'].append(
                                 self.get_residues(n))
                         except AttributeError:
@@ -833,3 +842,33 @@ class GetInputInformation(object):
             reprs['coarse-grain_levels'] = levels
 
         return reprs
+
+    def get_auth_label_map(self, system=None) -> dict:
+        """get map between auth_seq_id and label_seq_id"""
+
+        logging.info('Building label <-> auth map')
+        if system is None:
+            system = self.system
+
+        emap = {}
+        for st in system.state_groups:
+            for s in st:
+                for mg in s:
+                    for m in mg:
+                        for a in m.get_atoms():
+                            label_asym_id = a.asym_unit.id
+                            auth_asym_id = a.asym_unit.strand_id
+
+                            label_seq_id = str(a.seq_id)
+                            auth_seq_id = str(a.asym_unit.residue(a.seq_id).auth_seq_id)
+
+                            key = (auth_asym_id, auth_seq_id)
+                            val = (label_asym_id, label_seq_id)
+
+                            if key not in emap:
+                                emap[key] = val
+                            else:
+                                if emap[key] != val:
+                                    raise(KeyError("Conflicting entity ids"))
+
+        return emap

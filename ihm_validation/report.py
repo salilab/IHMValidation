@@ -96,7 +96,8 @@ class WriteReport(object):
             self.input.get_sampling())
         Template_Dict['num_chains'] = int(len(self.input.get_composition(
         )['Chain ID']))/int(len(list(Counter(self.input.get_composition()['Model ID']).keys())))
-        Template_Dict['ChainL'] = self.input.get_composition()['Chain ID']
+        Template_Dict['ChainL'] = self.input.get_composition()['Chain ID [auth]']
+        Template_Dict['ChainLMap'] = self.input.get_auth_label_map()
         Template_Dict['number_of_fits'] = 0
         return Template_Dict
 
@@ -197,7 +198,7 @@ class WriteReport(object):
                 # if we do have bond outliers, print all the ones, we will write this into a csv file
                 if bond_nos:
                     bonddict, total_bonds = I_mp.process_bonds_list(
-                        d_mp['molprobity'], Template_Dict['ChainL'])
+                        d_mp['molprobity'], Template_Dict['ChainL'], Template_Dict['ChainLMap'])
                     Template_Dict['total_bonds'] = total_bonds
                     Template_Dict['molp_b_csv'] = utility.dict_to_JSlist(
                         bonddict)
@@ -208,11 +209,11 @@ class WriteReport(object):
                 # angle outliers are a little tricky as molprobity outputs angle outliers multiple times
                 # in different parts of the file
                 angledict, total_angles = I_mp.process_angles_list(
-                    d_mp['molprobity'], Template_Dict['ChainL'])
+                    d_mp['molprobity'], Template_Dict['ChainL'], Template_Dict['ChainLMap'])
                 Template_Dict['total_angles'] = total_angles
                 if angle_nos:
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
-                        I_mp.add_angles_outliers(angle_nos, angledict, Template_Dict['ChainL']))
+                        I_mp.add_angles_outliers(angle_nos, angledict, Template_Dict['ChainL'], Template_Dict['ChainLMap']))
                 else:
                     Template_Dict['total_angles'] = 1
                     Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
@@ -252,17 +253,17 @@ class WriteReport(object):
                 Template_Dict['rotascore'] = utility.dict_to_JSlist(
                     I_mp.rota_summary_table(I_mp.process_rota(d_mp['rota'])))
                 Template_Dict['rotalist'] = utility.dict_to_JSlist(
-                    I_mp.rota_detailed_table(I_mp.process_rota(d_mp['rota']), Template_Dict['ChainL']))
+                    I_mp.rota_detailed_table(I_mp.process_rota(d_mp['rota']), Template_Dict['ChainL'], Template_Dict['ChainLMap']))
                 Template_Dict['ramascore'] = utility.dict_to_JSlist(
                     I_mp.rama_summary_table(I_mp.process_rama(d_mp['rama'])))
                 Template_Dict['ramalist'] = utility.dict_to_JSlist(
-                    I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama']), Template_Dict['ChainL']))
+                    I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama']), Template_Dict['ChainL'], Template_Dict['ChainLMap']))
                 clashscores, Template_Dict['tot'] = I_mp.clash_summary_table(
                     d_mp['clash'])
                 Template_Dict['clashscore_list'] = utility.dict_to_JSlist(
                     clashscores)
                 Template_Dict['clashlist'] = utility.dict_to_JSlist(I_mp.clash_detailed_table(
-                    d_mp['clash']))
+                    d_mp['clash'], Template_Dict['ChainLMap']))
                 Template_Dict['assess_excluded_volume'] = 'Not applicable'
                 molprobity_dict = I_mp.get_data_for_quality_at_glance(Template_Dict['clashscore_list'],
                                                                       Template_Dict['rotascore'], Template_Dict['ramascore'])

@@ -352,7 +352,7 @@ class GetMolprobityInformation(GetInputInformation):
         else:
             return [], total_angles
 
-    def process_angles_list(self, line: list, chains: list) -> (dict, int):
+    def process_angles_list(self, line: list, chains: list, chains_map: dict) -> (dict, int):
         """ process molprobity list to dict/table for output """
         angle_outliers, total_angles = self.process_angles(line)
         angle = []
@@ -369,10 +369,13 @@ class GetMolprobityInformation(GetInputInformation):
                 angle.append(sub_line[-1])
 
             elif len(sub_line) == 10:
+                val1 = sub_line[0]
+                val2 = sub_line[1]
+                chid, resid = chains_map[(val1, val2)]
                 angle.append(sub_line[3])
                 angledict['Angle'].append('-'.join(angle))
-                angledict['Chain'].append(sub_line[0])
-                angledict['Residue ID'].append(sub_line[1])
+                angledict['Chain'].append(chid)
+                angledict['Residue ID'].append(resid)
                 angledict['Residue type'].append(sub_line[2])
                 angledict['Observed angle (&#176)'].append(sub_line[4])
                 angledict['Ideal angle (&#176)'].append(sub_line[5])
@@ -385,18 +388,27 @@ class GetMolprobityInformation(GetInputInformation):
                 angledict['Angle'].append('-'.join(angle))
 
                 if sub_line[0] in chains:
-                    angledict['Chain'].append(sub_line[0])
-                    angledict['Residue ID'].append(sub_line[1])
+                    val1 = sub_line[0]
+                    val2 = sub_line[1]
+                    chid, resid = chains_map[(val1, val2)]
+                    angledict['Chain'].append(chid)
+                    angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[2])
 
                 elif len(sub_line[0]) > 1 and sub_line[0][:1] in chains:
-                    angledict['Chain'].append(sub_line[0][:1])
-                    angledict['Residue ID'].append(sub_line[0][1:])
+                    val1 = sub_line[0][:1]
+                    val2 = sub_line[1][1:]
+                    chid, resid = chains_map[(val1, val2)]
+                    angledict['Chain'].append(chid)
+                    angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
 
                 elif len(sub_line[0]) > 1 and sub_line[0][:2] in chains:
-                    angledict['Chain'].append(sub_line[0][:2])
-                    angledict['Residue ID'].append(sub_line[0][2:])
+                    val1 = sub_line[0][:2]
+                    val2 = sub_line[1][2:]
+                    chid, resid = chains_map[(val1, val2)]
+                    angledict['Chain'].append(chid)
+                    angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
 
                 angledict['Observed angle (&#176)'].append(sub_line[4])
@@ -418,7 +430,7 @@ class GetMolprobityInformation(GetInputInformation):
         else:
             return "Your molprobity processing is incorrect, please check the code", 0
 
-    def add_angles_outliers(self, line: list, angledict: dict, chains: list) -> dict:
+    def add_angles_outliers(self, line: list, angledict: dict, chains: list, chains_map: dict) -> dict:
         """ add to angle outlier dict/table as molprobity outputs angle outliers in multiple formats """
         list_for_counter = []
         existing_number = len(angledict['Number'])
@@ -427,8 +439,11 @@ class GetMolprobityInformation(GetInputInformation):
             sub_line = outlier.split()
 
             if sub_line[0] in chains or len(sub_line[0]) == 1:
-                angledict['Chain'].append(sub_line[0])
-                angledict['Residue ID'].append(sub_line[1])
+                val1 = sub_line[0]
+                val2 = sub_line[1]
+                chid, resid = chains_map[(val1, val2)]
+                angledict['Chain'].append(chid)
+                angledict['Residue ID'].append(resid)
                 angledict['Residue type'].append(sub_line[2])
 
             else:
@@ -437,15 +452,17 @@ class GetMolprobityInformation(GetInputInformation):
                 if temp[:1] in chains:
                     val1 = temp[:1]
                     val2 = temp[1:]
-                    angledict['Chain'].append(val1)
-                    angledict['Residue ID'].append(val2)
+                    chid, resid = chains_map[(val1, val2)]
+                    angledict['Chain'].append(chid)
+                    angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
 
                 elif temp[:2] in chains:
                     val1 = temp[:2]
                     val2 = temp[2:]
-                    angledict['Chain'].append(val1)
-                    angledict['Residue ID'].append(val2)
+                    chid, resid = chains_map[(val1, val2)]
+                    angledict['Chain'].append(chid)
+                    angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
 
             angledict['key'].append('-'.join(sub_line[:4]))
@@ -576,7 +593,7 @@ class GetMolprobityInformation(GetInputInformation):
         bond_outliers = line[bond_index_beg:bond_index_end]
         return bond_outliers, total_bonds
 
-    def process_bonds_list(self, line: list, chains: list) -> (dict, int):
+    def process_bonds_list(self, line: list, chains: list, chains_map: dict) -> (dict, int):
         """ process molprobity files to extract relevant information """
 
         bond_outliers, total_bonds = self.process_bonds(line)
@@ -589,10 +606,17 @@ class GetMolprobityInformation(GetInputInformation):
         for ind, outlier in enumerate(bond_outliers):
             sub_line = outlier.split()
 
+            found_residue = False
+
             if sub_line[0] in chains or len(sub_line[0]) == 1:
-                bonddict['Chain'].append(sub_line[0])
-                bonddict['Residue ID'].append(sub_line[1])
+                val1 = sub_line[0]
+                val2 = sub_line[1]
+                chid, resid = chains_map[(val1, val2)]
+                bonddict['Chain'].append(chid)
+                bonddict['Residue ID'].append(resid)
                 bonddict['Residue type'].append(sub_line[2])
+
+                found_residue = True
 
             else:
                 temp = sub_line[0]
@@ -600,16 +624,26 @@ class GetMolprobityInformation(GetInputInformation):
                 if temp[:1] in chains:
                     val1 = temp[:1]
                     val2 = temp[1:]
-                    bonddict['Chain'].append(val1)
-                    bonddict['Residue ID'].append(val2)
+                    chid, resid = chains_map[(val1, val2)]
+                    bonddict['Chain'].append(chid)
+                    bonddict['Residue ID'].append(resid)
                     bonddict['Residue type'].append(sub_line[1])
+
+                    found_residue = True
 
                 elif temp[:2] in chains:
                     val1 = temp[:2]
                     val2 = temp[2:]
-                    bonddict['Chain'].append(val1)
-                    bonddict['Residue ID'].append(val2)
+                    chid, resid = chains_map[(val1, val2)]
+                    bonddict['Chain'].append(chid)
+                    bonddict['Residue ID'].append(resid)
                     bonddict['Residue type'].append(sub_line[1])
+
+                    found_residue = True
+
+            if not found_residue:
+                logging.warning(f'Skipping line: {outlier}')
+                continue
 
             bonddict['key'].append('-'.join(sub_line[:4]))
             bonddict['Number'].append(ind+1)
@@ -692,7 +726,12 @@ class GetMolprobityInformation(GetInputInformation):
         if not found:
             logging.warning('Could not find clashscore records')
 
-        return i
+        if found:
+            out = i
+        else:
+            out = None
+
+        return out
 
     def process_rota(self, line: list) -> dict:
         """ process rota files to extract relevant information """
@@ -760,21 +799,28 @@ class GetMolprobityInformation(GetInputInformation):
         with open(
             str(Path(self.cache,  self.ID+'_clash_summary.txt')), 'w+') as f_clash:
 
+            dict1 = {'Model ID': [], 'Clash score': [], 'Number of clashes': []}
             clashes = self.process_clash(line)
-            if self.nos > 1:
-                # Find the beginning of clashscore records
-                cs_start = self.find_clashscore_records(line)
+
+            # Find the beginning of clashscore records
+            cs_start = self.find_clashscore_records(line)
+
+            if cs_start is not None:
                 # Extract only X models
                 clashscore_list = line[cs_start:cs_start + self.nos]
-            else:
-                clashscore_list = ['Model 1 ' + (line[len(line)-self.nos:])[0]]
-            dict1 = {'Model ID': [], 'Clash score': [], 'Number of clashes': []}
 
-            for clashval in clashscore_list:
-                mid = self.get_model_id_str(clashval)
-                clashscore = get_clash_score(clashval)
-                dict1['Model ID'].append(mid)
-                dict1['Clash score'].append(clashscore)
+                for clashval in clashscore_list:
+                    mid = self.get_model_id_str(clashval)
+                    clashscore = get_clash_score(clashval)
+                    dict1['Model ID'].append(mid)
+                    dict1['Clash score'].append(clashscore)
+
+            else:
+                # Hack if clashes are empty
+                for mid in range(1, self.nos + 1):
+                    dict1['Model ID'].append(mid)
+                    dict1['Clash score'].append(0.0)
+
 
             for model_id in dict1['Model ID']:
                 dict1['Number of clashes'].append(len(clashes[f'Model {model_id}'][0]))
@@ -827,7 +873,7 @@ class GetMolprobityInformation(GetInputInformation):
         print(dict1['Outliers'], file=f_rota)
         return dict1
 
-    def rama_detailed_table(self, models: dict, chains: list) -> dict:
+    def rama_detailed_table(self, models: dict, chains: list, chains_map: dict) -> dict:
         """ format rama information to print to file"""
         dict1 = {'Model ID': [], 'Chain': [],
                  'Residue ID': [], 'Residue type': []}
@@ -846,23 +892,27 @@ class GetMolprobityInformation(GetInputInformation):
                         if temp[:1] in chains:
                             val1 = temp[:1]
                             val2 = temp[1:]
-                            dict1['Chain'].append(val1)
-                            dict1['Residue ID'].append(val2)
+                            chid, resid = chains_map[(val1, val2)]
+                            dict1['Chain'].append(chid)
+                            dict1['Residue ID'].append(resid)
                         elif temp[:2] in chains:
                             val1 = temp[:2]
                             val2 = temp[2:]
-                            dict1['Chain'].append(val1)
-                            dict1['Residue ID'].append(val2)
+                            chid, resid = chains_map[(val1, val2)]
+                            dict1['Chain'].append(chid)
+                            dict1['Residue ID'].append(resid)
                         elif temp[:3] in chains:
                             val1 = temp[:3]
                             val2 = temp[3:]
-                            dict1['Chain'].append(val1)
-                            dict1['Residue ID'].append(val2)
+                            chid, resid = chains_map[(val1, val2)]
+                            dict1['Chain'].append(chid)
+                            dict1['Residue ID'].append(resid)
                     else:
                         val1 = line.strip().split()[0]
                         val2 = line.strip().split()[1]
-                        dict1['Chain'].append(val1)
-                        dict1['Residue ID'].append(val2)
+                        chid, resid = chains_map[(val1, val2)]
+                        dict1['Chain'].append(chid)
+                        dict1['Residue ID'].append(resid)
 
         print(dict1['Model ID'], file=f_rama_D)
         print(dict1['Chain'], file=f_rama_D)
@@ -870,7 +920,7 @@ class GetMolprobityInformation(GetInputInformation):
         print(dict1['Residue type'], file=f_rama_D)
         return dict1
 
-    def clash_detailed_table(self, line: list) -> dict:
+    def clash_detailed_table(self, line: list, chains_map: dict) -> dict:
         """process molprobity clash information and format to table"""
         f_clash_D = open(str(Path(self.cache, self.ID+'_clash_detailed.txt')), 'w+')
         dict1 = {'Model ID': [], 'Atom-1': [],
@@ -881,13 +931,29 @@ class GetMolprobityInformation(GetInputInformation):
                 subline = [_ for _ in line.split(' ') if _ not in '']
                 dict1['Model ID'].append(self.get_model_id_str(ind))
                 if len(subline) < 9 and len(subline[0]) > 2:
-                    dict1['Atom-1'].append(':'.join(subline[0:3]))
+                    val1 = subline[0]
+                    val2 = subline[1]
+                    chid, resid = chains_map[(val1, val2)]
+                    out = f'{chid}:{resid}:{subline[2]}'
+                    dict1['Atom-1'].append(out)
                 else:
-                    dict1['Atom-1'].append(':'.join(subline[0:4]))
+                    val1 = subline[0]
+                    val2 = subline[1]
+                    chid, resid = chains_map[(val1, val2)]
+                    out = f'{chid}:{resid}:{subline[2]}:{subline[3]}'
+                    dict1['Atom-1'].append(out)
                 if len(subline) < 9 and len(subline[3]) > 4:
-                    dict1['Atom-2'].append(':'.join(subline[3:-1]))
+                    val1 = subline[3]
+                    val2 = subline[4]
+                    chid, resid = chains_map[(val1, val2)]
+                    out = f'{chid}:{resid}:' + ':'.join(subline[5:-1])
+                    dict1['Atom-2'].append(out)
                 else:
-                    dict1['Atom-2'].append(':'.join(subline[4:-1]))
+                    val1 = subline[4]
+                    val2 = subline[5]
+                    chid, resid = chains_map[(val1, val2)]
+                    out = f'{chid}:{resid}:' + ':'.join(subline[6:-1])
+                    dict1['Atom-2'].append(out)
                 dict1['Clash overlap (&#8491)'].append(
                     subline[-1].replace(':', ''))
 
@@ -897,7 +963,7 @@ class GetMolprobityInformation(GetInputInformation):
         print(dict1['Clash overlap (&#8491)'], file=f_clash_D)
         return dict1
 
-    def rota_detailed_table(self, models: dict, chains: list) -> dict:
+    def rota_detailed_table(self, models: dict, chains: list, chains_map: dict) -> dict:
         """process molprobity rotamers information and format to table"""
         f_rota_D = open(str(Path(self.cache,
                                      self.ID+'_rota_detailed.txt')), 'w+')
@@ -914,26 +980,30 @@ class GetMolprobityInformation(GetInputInformation):
                         if temp[:1] in chains:
                             val1 = temp[:1]
                             val2 = temp[1:]
-                            dict1['Chain'].append(val1)
-                            dict1['Residue ID'].append(val2)
+                            chid, resid = chains_map[(val1, val2)]
+                            dict1['Chain'].append(chid)
+                            dict1['Residue ID'].append(resid)
 
                         elif temp[:2] in chains:
                             val1 = temp[:2]
                             val2 = temp[2:]
-                            dict1['Chain'].append(val1)
-                            dict1['Residue ID'].append(val2)
+                            chid, resid = chains_map[(val1, val2)]
+                            dict1['Chain'].append(chid)
+                            dict1['Residue ID'].append(resid)
 
                         elif temp[:3] in chains:
                             val1 = temp[:3]
                             val2 = temp[3:]
-                            dict1['Chain'].append(val1)
-                            dict1['Residue ID'].append(val2)
+                            chid, resid = chains_map[(val1, val2)]
+                            dict1['Chain'].append(chid)
+                            dict1['Residue ID'].append(resid)
 
                     else:
                         val1 = line.strip().split()[0]
                         val2 = line.strip().split()[1]
-                        dict1['Chain'].append(val1)
-                        dict1['Residue ID'].append(val2)
+                        chid, resid = chains_map[(val1, val2)]
+                        dict1['Chain'].append(chid)
+                        dict1['Residue ID'].append(resid)
 
         print(dict1['Model ID'], file=f_rota_D)
         print(dict1['Chain'], file=f_rota_D)
