@@ -101,27 +101,28 @@ class GetMolprobityInformation(GetInputInformation):
         else:
             raise OSError('Molprobity core.php module is missing')
 
-
-
-    def check_for_molprobity(self, filetemp=None) -> bool:
+    def check_for_molprobity(self, fname: str) -> bool:
         """ Check the biso and occupancy columns for mmcif files"""
-        if filetemp is not None:
+        out = False
+        if fname is not None:
             model = ihm.model.Model
-            system, = ihm.reader.read(filetemp,
-                                      model_class=model)
+            with open(fname, 'r') as f:
+                system, = ihm.reader.read(f, model_class=model)
             models = [
                 b for i in system.state_groups for j in i for a in j for b in a]
         else:
             """check if file is in the right format for molprobity analysis """
             models = [
                 b for i in self.system.state_groups for j in i for a in j for b in a]
-        # and  models[0]._atoms[0].occupancy is not None:
-        if models[0]._atoms[0].biso is not None:
-            print("File in the appropriate format for molprobity")
-            return True
+
+        if models[0]._atoms[0].biso is None or models[0]._atoms[0].occupancy is None:
+            logging.info("File is not in the appropriate format for molprobity")
+            logging.info("Trying to rescue the file")
+            out = False
         else:
-            print("File is not in the appropriate format for molprobity")
-            return False
+            out = True
+
+        return out
 
     def rewrite_mmcif(self, outfn='temp.cif'):
         '''Workaround to generate molprobity-compliant mmCIF'''
@@ -167,16 +168,45 @@ class GetMolprobityInformation(GetInputInformation):
         out = [''.join(filter(lambda x: x in printable, s)) for s in out]
 
         # Hack to avoid . for B-factors and other values
-        atomsite = False
-        for i, line in enumerate(out):
-            if atomsite:
-                out[i] = re.sub(' \. ', ' 0 ', line)
+        if not self.check_for_molprobity(fn):
+            atomsite = False
+            atomsite_start = None
+            atomsite_header_end = None
+            atomsite_occupancy = False
 
-            elif re.match('loop_', line):
-                if re.match('_atom_site', out[i + 1]):
-                    atomsite = True
-                else:
-                    atomsite = False
+            for i, line in enumerate(out):
+                if atomsite and re.match('(ATOM|HETATM)', line):
+                    # 20 symbols to skip _atom_site.alt_id
+                    out[i] = line[:20] + re.sub(' \. ', ' 0 ', line[20:])
+
+                elif re.match('^loop_', line):
+                    if re.match('^_atom_site', out[i + 1]):
+                        atomsite = True
+                        atomsite_start = i + 1
+
+                        j = atomsite_start
+                        line_ = out[j]
+
+                        while re.match('^_atom_site', line_):
+                            if re.match('^_atom_site.occupancy$', line):
+                                atomsite_occupancy = True
+                            j += 1
+                            line_ = out[j]
+                        atomsite_header_end = j
+
+                    else:
+                        atomsite = False
+
+            # Add missing occupancy
+            if not atomsite_occupancy:
+                out.insert(atomsite_header_end, '_atom_site.occupancy\n')
+
+                for i, line in enumerate(out[atomsite_header_end:], atomsite_header_end):
+                    if re.match('(ATOM|HETATM)', line):
+                        if re.match('(ATOM|HETATM)', out[i - 1]) or re.match('(ATOM|HETATM)', out[i + 1]):
+                            out[i] = f'{out[i].strip()} 0.0\n'
+                        elif re.match('(ATOM|HETATM)', out[i - 2]) or re.match('(ATOM|HETATM)', out[i + 2]):
+                            out[i + 1] = f'{out[i + 1].strip()} 0.0\n'
 
         with open(outfn, 'w', encoding='utf-8') as f:
             f.write(''.join(out))
