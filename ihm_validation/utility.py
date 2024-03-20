@@ -17,37 +17,6 @@ import logging
 
 NA = 'Not available'
 
-def dict_to_JSlist_v0(d: dict) -> list:
-    '''
-    TO BE REMOVED
-    convert dictionary to list of lists
-    output_list = []
-    if bool(d):
-        if len(list(d.keys()))>0:
-            output_list.append(list(d.keys()))
-            target=list(d.values())
-            for ind in range(len(target[0])):
-                sublist=[]
-                for el in target:
-                    sublist.append(str(el[ind]))
-                output_list.append(sublist)
-    return output_list
-    '''
-    output_list = []
-    if bool(d) and len(list(d.keys())) > 0:
-        # add headers for table, which are the keys of the dict
-        output_list.append(list(d.keys()))
-        # add each row of the table as a list
-        target = list(d.values())
-        for ind in range(len(target[0])):
-            sublist = []
-            for el in target:
-                el = ['_' if str(i) == '?' else str(i) for i in el]
-                sublist.append(str(el[ind]))
-            output_list.append(sublist)
-    return output_list
-
-
 def dict_to_JSlist(d: dict) -> list:
     '''
     convert dictionary to list of lists
@@ -299,7 +268,6 @@ def get_datasets(data_dict: dict) -> list:
     '''
 
     dataset_number = len(data_dict['ID'])
-    # print (data_dict)
     datalist = ['%s, %s' % (data_dict['Dataset type'][i], data_dict['Details'][i])
                 for i in range(dataset_number)]
     return datalist
@@ -414,7 +382,6 @@ def exv_readable_format(exv: dict) -> list:
     '''
 
     fin_string = []
-    # print(exv)
     for ind, el in enumerate(exv['Models']):
         fin_string.append('Model-'+str(el)+': '+'Number of violations = ' +
                           str(exv['Number of violations'][ind]) + ' ')

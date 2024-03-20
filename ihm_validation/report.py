@@ -171,7 +171,6 @@ class WriteReport(object):
             else:
                 # if molprobity for these entries have not yet been determined, go ahead and set them up to run
                 # we rewrite all files into a format that is suitable for molprobity
-                I_mp = molprobity.GetMolprobityInformation(self.mmcif_file, cache=self.cache)
                 logging.info("Molprobity analysis is being calculated...")
                 try:
                     manager = Manager()
@@ -246,8 +245,6 @@ class WriteReport(object):
                     Template_Dict['molp_a_csv'], htmlDirName, table_filename='angle_outliers.html')
                 I_mp.write_table_html(
                     Template_Dict['molp_b_csv'], htmlDirName, table_filename='bond_outliers.html')
-                # print (Template_Dict['bond'],sum(I_mp.bond_summary_table(Template_Dict['molp_b_csv'])['Number of outliers']))
-                # print (Template_Dict['angle'],sum(I_mp.angle_summary_table(Template_Dict['molp_a_csv'])['Number of outliers']))
 
                 # after anle and bond outliers, we move onto processing rotamers, ramachandran outliers, and clashlists
                 Template_Dict['rotascore'] = utility.dict_to_JSlist(
@@ -301,9 +298,6 @@ class WriteReport(object):
 
             # let's update template dict with appropriate terms
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
-            # print (Template_Dict['excluded_volume'])
-            # Template_Dict['assess_excluded_volume'] = utility.exv_readable_format(
-            #    exv_data)
             Template_Dict['assess_excluded_volume'] = f'Satisfaction: {min_viol_percent:.2f}-{max_viol_percent:.2f}%'
             molprobity_dict = None
 
