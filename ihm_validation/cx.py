@@ -371,7 +371,7 @@ class CxValidation(GetInputInformation):
         return nrg
 
     def get_cx_data(self) -> (pd.DataFrame, pd.DataFrame):
-        """Extract CX-MS data from mmcif file"""
+        """Extract crosslinking-MS data from mmcif file"""
 
         output = (None, None)
         raw_restraints = self.get_raw_restraints()

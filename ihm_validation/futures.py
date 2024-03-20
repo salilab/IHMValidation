@@ -40,7 +40,7 @@ class CXMSValidator(Validator):
         self.supported_particles = (ihm.model.Atom, ihm.model.Sphere)
 
     def load_restraint(self, restraint: ihm.restraint.CrossLinkRestraint) -> None:
-        """Extract CX-MS data from mmcif file"""
+        """Extract crosslinking-MS data from mmcif file"""
 
         raw_restraints = self._load_restraint_raw(restraint)
 
