@@ -89,7 +89,7 @@ def format_RB_text(tex: list) -> str:
     for el in tex:
         for subel in el:
             if subel == el[-1] and el == tex[-1]:
-                val.append(str(subel)+'. ')
+                val.append(str(subel))
             elif subel == el[-1] and el != tex[-1]:
                 val.append(str(subel)+', ')
             else:
@@ -108,7 +108,7 @@ def format_flex_text(tex: list) -> str:
     for el in tex:
         for subel in el:
             if subel == el[-1] and el == tex[-1]:
-                val.append(str(subel)+'. ')
+                val.append(str(subel))
             else:
                 val.append(str(subel)+', ')
 

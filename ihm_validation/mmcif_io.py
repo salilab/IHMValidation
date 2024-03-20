@@ -222,7 +222,7 @@ class GetInputInformation(object):
         if asym.seq_id_range[0] is not None:
             residues = asym.seq_id_range[1]-asym.seq_id_range[0]+1
         elif asym.seq_id_range[0] is None:
-            residues = 'None available'
+            residues = utility.NA
         return residues
 
     def get_composition(self) -> dict:
