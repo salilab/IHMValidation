@@ -37,7 +37,6 @@ class GetExcludedVolume(GetInputInformation):
             model_object = [
                 b for i in system.state_groups for j in i for a in j for b in a]
             model_dict = {i+1: j._spheres for i, j in enumerate(model_object)}
-            # print (model_dict)
         return model_dict
 
     def get_nCr(self, n, r):
@@ -161,7 +160,7 @@ class GetExcludedVolume(GetInputInformation):
         if os.path.exists(filename):
             return self.process_exv(filename)
 
-        pool = mp.Pool(processes=len(model_dict.keys()))
+        pool = mp.Pool(processes=min(4, len(model_dict.keys())))
         complete_list = pool.map(
             self.get_exc_vol_given_sphere_parallel, list(model_dict.values()))
         excluded_volume = {'Models': list(model_dict.keys()),
