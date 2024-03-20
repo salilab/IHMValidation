@@ -105,9 +105,16 @@ class GetMolprobityInformation(GetInputInformation):
         """ Check the biso and occupancy columns for mmcif files"""
         out = False
         if fname is not None:
-            model = ihm.model.Model
-            with open(fname, 'r') as f:
-                system, = ihm.reader.read(f, model_class=model)
+
+            encoding = 'utf8'
+            try:
+                with open(fname, 'r', encoding=encoding) as fh:
+                    system, = ihm.reader.read(fh)
+            except UnicodeDecodeError:
+                encoding = 'ascii'
+                with open(fname, 'r', encoding=encoding, errors='ignore') as fh:
+                    system, = ihm.reader.read(fh)
+
             models = [
                 b for i in system.state_groups for j in i for a in j for b in a]
         else:
@@ -401,7 +408,11 @@ class GetMolprobityInformation(GetInputInformation):
             elif len(sub_line) == 10:
                 val1 = sub_line[0]
                 val2 = sub_line[1]
-                chid, resid = chains_map[(val1, val2)]
+                try:
+                    chid, resid = chains_map[(val1, val2)]
+                except KeyError:
+                    logging.warning(f'Skipping line: {outlier}')
+                    continue
                 angle.append(sub_line[3])
                 angledict['Angle'].append('-'.join(angle))
                 angledict['Chain'].append(chid)
@@ -414,13 +425,14 @@ class GetMolprobityInformation(GetInputInformation):
                 list_for_counter.append('-'.join(sub_line[:4]))
 
             elif len(sub_line) == 9:
-                angle.append(sub_line[2])
-                angledict['Angle'].append('-'.join(angle))
-
                 if sub_line[0] in chains:
                     val1 = sub_line[0]
                     val2 = sub_line[1]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {outlier}')
+                        continue
                     angledict['Chain'].append(chid)
                     angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[2])
@@ -428,7 +440,11 @@ class GetMolprobityInformation(GetInputInformation):
                 elif len(sub_line[0]) > 1 and sub_line[0][:1] in chains:
                     val1 = sub_line[0][:1]
                     val2 = sub_line[1][1:]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {outlier}')
+                        continue
                     angledict['Chain'].append(chid)
                     angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
@@ -436,11 +452,17 @@ class GetMolprobityInformation(GetInputInformation):
                 elif len(sub_line[0]) > 1 and sub_line[0][:2] in chains:
                     val1 = sub_line[0][:2]
                     val2 = sub_line[1][2:]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {outlier}')
+                        continue
                     angledict['Chain'].append(chid)
                     angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
 
+                angle.append(sub_line[2])
+                angledict['Angle'].append('-'.join(angle))
                 angledict['Observed angle (&#176)'].append(sub_line[4])
                 angledict['Ideal angle (&#176)'].append(sub_line[5])
                 angledict['key'].append('-'.join(sub_line[:4]))
@@ -471,7 +493,11 @@ class GetMolprobityInformation(GetInputInformation):
             if sub_line[0] in chains or len(sub_line[0]) == 1:
                 val1 = sub_line[0]
                 val2 = sub_line[1]
-                chid, resid = chains_map[(val1, val2)]
+                try:
+                    chid, resid = chains_map[(val1, val2)]
+                except KeyError:
+                    logging.warning(f'Skipping line: {outlier}')
+                    continue
                 angledict['Chain'].append(chid)
                 angledict['Residue ID'].append(resid)
                 angledict['Residue type'].append(sub_line[2])
@@ -482,7 +508,11 @@ class GetMolprobityInformation(GetInputInformation):
                 if temp[:1] in chains:
                     val1 = temp[:1]
                     val2 = temp[1:]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {outlier}')
+                        continue
                     angledict['Chain'].append(chid)
                     angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
@@ -490,7 +520,11 @@ class GetMolprobityInformation(GetInputInformation):
                 elif temp[:2] in chains:
                     val1 = temp[:2]
                     val2 = temp[2:]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {outlier}')
+                        continue
                     angledict['Chain'].append(chid)
                     angledict['Residue ID'].append(resid)
                     angledict['Residue type'].append(sub_line[1])
@@ -641,7 +675,12 @@ class GetMolprobityInformation(GetInputInformation):
             if sub_line[0] in chains or len(sub_line[0]) == 1:
                 val1 = sub_line[0]
                 val2 = sub_line[1]
-                chid, resid = chains_map[(val1, val2)]
+                try:
+                    chid, resid = chains_map[(val1, val2)]
+                except KeyError:
+                    logging.warning(f'Skipping line: {outlier}')
+                    continue
+
                 bonddict['Chain'].append(chid)
                 bonddict['Residue ID'].append(resid)
                 bonddict['Residue type'].append(sub_line[2])
@@ -654,7 +693,11 @@ class GetMolprobityInformation(GetInputInformation):
                 if temp[:1] in chains:
                     val1 = temp[:1]
                     val2 = temp[1:]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {outlier}')
+                        continue
                     bonddict['Chain'].append(chid)
                     bonddict['Residue ID'].append(resid)
                     bonddict['Residue type'].append(sub_line[1])
@@ -664,7 +707,11 @@ class GetMolprobityInformation(GetInputInformation):
                 elif temp[:2] in chains:
                     val1 = temp[:2]
                     val2 = temp[2:]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {outlier}')
+                        continue
                     bonddict['Chain'].append(chid)
                     bonddict['Residue ID'].append(resid)
                     bonddict['Residue type'].append(sub_line[1])
@@ -837,7 +884,10 @@ class GetMolprobityInformation(GetInputInformation):
 
             if cs_start is not None:
                 # Extract only X models
-                clashscore_list = line[cs_start:cs_start + self.nos]
+                if self.nos == 1:
+                    clashscore_list = ['Model 1 ' + (line[len(line)-self.nos:])[0]]
+                else:
+                    clashscore_list = line[cs_start:cs_start + self.nos]
 
                 for clashval in clashscore_list:
                     mid = self.get_model_id_str(clashval)
@@ -914,33 +964,51 @@ class GetMolprobityInformation(GetInputInformation):
                     subline = ':'.join(line.strip().split()[-3:])
                 else:
                     subline = line.strip().split()[-1]
-                if subline.split(':')[4] == 'OUTLIER':
+
+                if re.search('OUTLINE', line):
                     dict1['Model ID'].append(ind)
                     dict1['Residue type'].append(subline.split(':')[0])
-                    if len(line.strip().split()[0]) > 2:
-                        temp = line.strip().split()[0]
+                    temp = line.strip().split()[0]
+                    if len(temp) > 2:
                         if temp[:1] in chains:
                             val1 = temp[:1]
                             val2 = temp[1:]
-                            chid, resid = chains_map[(val1, val2)]
+                            try:
+                                chid, resid = chains_map[(val1, val2)]
+                            except KeyError:
+                                logging.warning(f'Skipping line: {line}')
+                                continue
+
                             dict1['Chain'].append(chid)
                             dict1['Residue ID'].append(resid)
                         elif temp[:2] in chains:
                             val1 = temp[:2]
                             val2 = temp[2:]
-                            chid, resid = chains_map[(val1, val2)]
+                            try:
+                                chid, resid = chains_map[(val1, val2)]
+                            except KeyError:
+                                logging.warning(f'Skipping line: {line}')
+                                continue
                             dict1['Chain'].append(chid)
                             dict1['Residue ID'].append(resid)
                         elif temp[:3] in chains:
                             val1 = temp[:3]
                             val2 = temp[3:]
-                            chid, resid = chains_map[(val1, val2)]
+                            try:
+                                chid, resid = chains_map[(val1, val2)]
+                            except KeyError:
+                                logging.warning(f'Skipping line: {line}')
+                                continue
                             dict1['Chain'].append(chid)
                             dict1['Residue ID'].append(resid)
                     else:
                         val1 = line.strip().split()[0]
                         val2 = line.strip().split()[1]
-                        chid, resid = chains_map[(val1, val2)]
+                        try:
+                            chid, resid = chains_map[(val1, val2)]
+                        except KeyError:
+                            logging.warning(f'Skipping line: {line}')
+                            continue
                         dict1['Chain'].append(chid)
                         dict1['Residue ID'].append(resid)
 
@@ -959,31 +1027,48 @@ class GetMolprobityInformation(GetInputInformation):
         for ind, el in clashes.items():
             for line in el[0]:
                 subline = [_ for _ in line.split(' ') if _ not in '']
-                dict1['Model ID'].append(self.get_model_id_str(ind))
                 if len(subline) < 9 and len(subline[0]) > 2:
                     val1 = subline[0]
                     val2 = subline[1]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {line}')
+                        continue
                     out = f'{chid}:{resid}:{subline[2]}'
                     dict1['Atom-1'].append(out)
                 else:
                     val1 = subline[0]
                     val2 = subline[1]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {line}')
+                        continue
                     out = f'{chid}:{resid}:{subline[2]}:{subline[3]}'
                     dict1['Atom-1'].append(out)
                 if len(subline) < 9 and len(subline[3]) > 4:
                     val1 = subline[3]
                     val2 = subline[4]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {line}')
+                        continue
                     out = f'{chid}:{resid}:' + ':'.join(subline[5:-1])
                     dict1['Atom-2'].append(out)
                 else:
                     val1 = subline[4]
                     val2 = subline[5]
-                    chid, resid = chains_map[(val1, val2)]
+                    try:
+                        chid, resid = chains_map[(val1, val2)]
+                    except KeyError:
+                        logging.warning(f'Skipping line: {line}')
+                        continue
                     out = f'{chid}:{resid}:' + ':'.join(subline[6:-1])
                     dict1['Atom-2'].append(out)
+
+                dict1['Model ID'].append(self.get_model_id_str(ind))
                 dict1['Clash overlap (&#8491)'].append(
                     subline[-1].replace(':', ''))
 
@@ -1001,39 +1086,58 @@ class GetMolprobityInformation(GetInputInformation):
                  'Residue ID': [], 'Residue type': []}
         for ind, el in models.items():
             for line in el:
-                if line.strip().split()[-1].split(':')[-2] == 'OUTLIER':
-                    dict1['Model ID'].append(ind)
-                    dict1['Residue type'].append(
-                        line.strip().split()[-1].split(':')[0])
-                    if len(line.strip().split()[0]) > 2:
-                        temp = line.strip().split()[0]
+                if re.search('OUTLIER', line):
+                    temp = line.strip().split()[0]
+                    if len(temp) > 2:
                         if temp[:1] in chains:
                             val1 = temp[:1]
                             val2 = temp[1:]
-                            chid, resid = chains_map[(val1, val2)]
+                            try:
+                                chid, resid = chains_map[(val1, val2)]
+                            except KeyError:
+                                logging.warning(f'Skipping line: {line}')
+                                continue
+
                             dict1['Chain'].append(chid)
                             dict1['Residue ID'].append(resid)
 
                         elif temp[:2] in chains:
                             val1 = temp[:2]
                             val2 = temp[2:]
-                            chid, resid = chains_map[(val1, val2)]
+                            try:
+                                chid, resid = chains_map[(val1, val2)]
+                            except KeyError:
+                                logging.warning(f'Skipping line: {line}')
+                                continue
+
                             dict1['Chain'].append(chid)
                             dict1['Residue ID'].append(resid)
 
                         elif temp[:3] in chains:
                             val1 = temp[:3]
                             val2 = temp[3:]
-                            chid, resid = chains_map[(val1, val2)]
+                            try:
+                                chid, resid = chains_map[(val1, val2)]
+                            except KeyError:
+                                logging.warning(f'Skipping line: {line}')
+                                continue
                             dict1['Chain'].append(chid)
                             dict1['Residue ID'].append(resid)
 
                     else:
                         val1 = line.strip().split()[0]
                         val2 = line.strip().split()[1]
-                        chid, resid = chains_map[(val1, val2)]
+                        try:
+                            chid, resid = chains_map[(val1, val2)]
+                        except KeyError:
+                            logging.warning(f'Skipping line: {line}')
+                            continue
                         dict1['Chain'].append(chid)
                         dict1['Residue ID'].append(resid)
+
+                    dict1['Model ID'].append(ind)
+                    dict1['Residue type'].append(
+                        line.strip().split()[-1].split(':')[0])
 
         print(dict1['Model ID'], file=f_rota_D)
         print(dict1['Chain'], file=f_rota_D)

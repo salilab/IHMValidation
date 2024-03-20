@@ -846,7 +846,7 @@ class GetInputInformation(object):
     def get_auth_label_map(self, system=None) -> dict:
         """get map between auth_seq_id and label_seq_id"""
 
-        logging.info('Building label <-> auth map')
+        logging.info('Building auth <-> label map')
         if system is None:
             system = self.system
 
@@ -869,6 +869,6 @@ class GetInputInformation(object):
                                 emap[key] = val
                             else:
                                 if emap[key] != val:
-                                    raise(KeyError("Conflicting entity ids"))
+                                    logging.warning(f"Conflicting residue ids. auth, label1, label2 {key}, {emap[key]}, {val}. Keeping first {key} -> {emap[key]}")
 
         return emap
