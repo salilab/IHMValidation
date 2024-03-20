@@ -217,7 +217,7 @@
               <a name='qual'><u>Overall quality</u></a> <a class='help1' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#overview">?</a>
             </h3>
             <p align="justify">
-              <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development.</em>
+            <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development. Number of plots is limited to {{MAXPLOTS}}.</em>
             </p>
             
             <!-- Molprobity or excluded volume -->
@@ -233,7 +233,7 @@
                   </h5>
                 {% endif %}
                 
-                {% for i in range(NumModels) %}
+                {% for i in range([NumModels, MAXPLOTS] | min) %}
                   <div>
                     <img src={{ "../images/" ~ ID_w[0] ~ '_' ~ i ~ '_quality_at_glance_MQ.svg'}}>
                   </div>

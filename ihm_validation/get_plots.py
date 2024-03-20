@@ -26,6 +26,7 @@ from bokeh.layouts import gridplot, column
 silence(MISSING_RENDERERS, True)
 silence(EMPTY_LAYOUT, True)
 
+MAXPLOTS = 256
 
 class Plots(GetInputInformation):
     def __init__(self, mmcif, imageDirName, driver):
@@ -118,14 +119,16 @@ class Plots(GetInputInformation):
 
         # if there isn't molprobity data, we plot exc vol data
         elif exv_data:
-            model = exv_data['Models']
-            satisfaction = exv_data['Number of violations']
+            numplots = min(len(exv_data['Models']), MAXPLOTS)
+
+            model = exv_data['Models'][:numplots]
+            satisfaction = exv_data['Number of violations'][:numplots]
             # make sure data is plot-able
             try:
                 counts = [float(i) for i in satisfaction]
             except (ValueError):
                 return
-            violations = exv_data['Excluded Volume Satisfaction (%)']
+            violations = exv_data['Excluded Volume Satisfaction (%)'][:numplots]
             Scores = ['Model ' + str(i+1) for i, j in enumerate(model)]
             legends = ['Model ' + str(i+1) + ': ' + str(int(j)) +
                        '('+str(violations[i])+' %)' for i, j in enumerate(counts)]

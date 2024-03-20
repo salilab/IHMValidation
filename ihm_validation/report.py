@@ -99,6 +99,7 @@ class WriteReport(object):
         Template_Dict['ChainL'] = self.input.get_composition()['Chain ID [auth]']
         Template_Dict['ChainLMap'] = self.input.get_auth_label_map()
         Template_Dict['number_of_fits'] = 0
+        Template_Dict['MAXPLOTS'] = get_plots.MAXPLOTS
         return Template_Dict
 
     def check_mmcif(self, Template_Dict: dict) -> None:
