@@ -429,14 +429,14 @@ def get_rg_data_fits(rg_dict: dict) -> list:
 
 def get_cx_data_fits(cx_dict: dict) -> list:
     '''
-    format cx-ms data for supplementary/summary table
+    format crosslinking-MS data for supplementary/summary table
     '''
 
     fin_cx = []
     count = 0
     for key, val in cx_dict.items():
         count += 1
-        fin_cx.append('CX-MS Fit of medioid: model # ' + str(count) +
+        fin_cx.append('Crosslinking-MS Fit of medioid: model # ' + str(count) +
                       ', percentage satisfied ' + str(round(val, 2))+'%')
     return fin_cx
 

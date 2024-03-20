@@ -395,7 +395,7 @@ class WriteReport(object):
         it currently evaluates satisfaction from mmcif files
         and not the enetire ensemble
         '''
-        # if cx-ms dataset was used to build the model, then evaluate satisfaction
+        # if crosslinking-MS dataset was used to build the model, then evaluate satisfaction
         Template_Dict['cx'] = False
         Template_Dict['cx_stats'] = None
         Template_Dict['cx_ertypes'] = None

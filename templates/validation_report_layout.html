@@ -83,6 +83,19 @@
             {% elif ('SAS DATA' in Data) and (sasdb_sascif|length < 1) and enable_sas %}
               <a class="dropdown-item colorclass" dropdown-toggle type=button href=data_quality.html#first>SAS</a>
             {% endif %}
+            
+            {% if ('CX-MS DATA' in Data) and enable_cx %}
+                <a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#crosslinking-ms>Crosslinking-MS</a>
+                {% if cx_data_quality|length > 0 %}
+                  <ul class=dropdown-submenu>                  
+                    {% for data in cx_data_quality %}
+                      <li>
+                        <a class=dropdown-item2 href=data_quality.html#{{ data["pride_id"] }}>{{ data["pride_id"] }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+            {% endif %}
               
             {% for item in Unique_dataset %}
               <a class=dropdown-item-text dropdown-toggle type=button>{{item}}</a>
@@ -133,25 +146,25 @@
               <a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>
             {% endif %}
             
-  					{% if ('CX-MS DATA' in Data) and enable_cx %}
-              <a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html#cxms>
-                CX-MS
+						{% if ('CX-MS DATA' in Data) and enable_cx %}
+              <a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html#crosslinking-ms>
+                Crosslinking-MS
               </a>
-  
+
               <ul class=dropdown-submenu>
                 <li>
-                  <a class=dropdown-item2 href=formodeling.html#cxms_ertypes>
+                  <a class=dropdown-item2 href=formodeling.html#crosslinking-ms_ertypes>
                     Restraint types
                   </a>
                 </li>
                 <li>
-                  <a class=dropdown-item2 href=formodeling.html#cxms_satisfaction>
+                  <a class=dropdown-item2 href=formodeling.html#crosslinking-ms_satisfaction>
                     Satisfaction of restraints
                   </a>
                 </li>
               </ul>
             {% endif %}
-            
+  					
             {% for item in Unique_dataset %}
               <a class=dropdown-item-text dropdown-toggle type=button>{{item}}</a>
             {% endfor %}
