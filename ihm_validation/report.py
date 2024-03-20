@@ -23,6 +23,8 @@ from multiprocessing import Manager
 from collections import Counter
 import numpy as np
 
+REPORT_VERSION = '1.1'
+
 class WriteReport(object):
     def __init__(self, mmcif_file, db, driver, cache, nocache=False):
         self.mmcif_file = mmcif_file
@@ -32,6 +34,7 @@ class WriteReport(object):
         self.driver = driver
         self.cache = cache
         self.nocache = nocache
+        self.report_version = REPORT_VERSION
 
 
     def run_entry_composition(self, Template_Dict: dict) -> dict:
@@ -50,6 +53,8 @@ class WriteReport(object):
         # to print out tables. Why Sai?--because JS is annoying and it is just easier
         # to construct tables with lists than any other data struc
         # utility module has functions to check outputs from python-ihm library and convert to JS friendly format
+        Template_Dict['report_version'] = self.report_version
+        Template_Dict['python_ihm_version'] = utility.get_python_ihm_version()
         Template_Dict['ensemble_info'] = ensemble_info
         Template_Dict['sphere'] = self.input.check_sphere()
         Template_Dict['num_ensembles'] = self.input.check_ensembles()

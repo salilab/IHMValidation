@@ -518,3 +518,8 @@ def compress_cx_stats(cx_stats: dict) -> list:
                 out_stats.append(mgv['cx_stats']['All']['Satisfied'])
 
     return out_stats
+
+def get_python_ihm_version() -> str:
+    """returns Python-IHM version"""
+    import ihm
+    return ihm.__version__
