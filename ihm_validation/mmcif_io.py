@@ -579,7 +579,14 @@ class GetInputInformation(object):
                     str(i.fitting_method)) # + ', '+str(i.number_of_gaussians) + ' components')
 
             elif isinstance(i, ihm.restraint.PredictedContactRestraint):
-                restraints_comp['Restraint info'].append('Distance: '+str(i.distance.distance))
+                # Temporary fix for Entry 161;
+                # Should be unified with DerivedRestraint
+                if isinstance(i.distance, ihm.restraint.LowerUpperBoundDistanceRestraint):
+                    restraints_comp['Restraint info'].append(
+                        ('Lower Upper Bound Distance: '+str(i.distance.distance_lower_limit)+'-' +
+                         str(i.distance.distance_upper_limit)))
+                else:
+                    restraints_comp['Restraint info'].append('Distance: '+str(i.distance.distance))
 #                                                         + ' between residues ' +
 #                                                         str(i.resatom1.seq_id)
 #                                                         + ' and ' + str(i.resatom2.seq_id))
