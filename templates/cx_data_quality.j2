@@ -1,0 +1,92 @@
+{% if enable_cx %}
+  <div class="card-body border-success" style="border-color: solid black;">
+    <!-- start overall card body for front page -->
+    <div class="card-header" style="background-color: #FFF;">
+      <!-- Data quality header -->
+      <div class="row">
+        <div class="col-lg-12">
+          <h5 class= ex2 align= center>
+            <u><a name=crosslinking-ms>Crosslinking-MS</a></u>
+          </h5>
+          <p align=justify>
+            <em>At the moment, data validation is only available for crosslinking-MS datasets deposited in a standardized mzIdentML format to PRIDE</em>.
+          </p>
+          {% if cx_data_quality|length > 0 %}
+            {% for data in cx_data_quality %}
+              <div name=crosslinking-ms-{{ data["pride_id"] }} {{ 'class="card-header" style="background-color: #FFF;"' if cx_data_quality|length > 1 }}>
+                <table vertical-align: middle;">
+                  <tr>
+                    <td>Crosslinking-MS dataset (<a href=https://www.ebi.ac.uk/pride/>PRIDE ID</a>)</td>
+                    <td><a href=https://www.ebi.ac.uk/pride/archive/crosslinking/{{ data["pride_id"] }}>{{ data["pride_id"] }}</a></td>
+                  </tr>
+                  <tr>
+                    <td>Number of entities in the crosslinking-MS dataset:</td>
+                    <td>{{ data['entities_ms'] }}</td>
+                  </tr>
+                  <tr>
+                    <td>Number of entities in the entry:</td>
+                    <td>{{ data['entities'] }}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">Matching entities:</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <div>
+                        <table class='table table-bordered' style='border-color:#003366;'>
+                          <tr>
+                            <td>Entity ID</td>
+                            <td>Crosslinking-MS Entity ID</td>
+                            <td>E-value</td>
+                            <td>Exact_match</td>
+                          </tr>
+                          {% for match in data['matches'] %}
+                            <tr>
+                              <td>{{ match['entity'] }}</td>
+                              <td>{{ match['entity_ms'] }}</td>
+                              <td>{{ match['e-value'] }}</td>
+                              <td>{{ match['exact_match'] }}</td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">Residue pairs stats:</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <div>
+                        <table class='table table-bordered' style='border-color:#003366;'>
+                          <tr>
+                            <td>Source</td>
+                            <td>Total</td>
+                            <td>In matched entities</td>
+                            <td>Total matched</td>
+                          </tr>
+                          <tr>
+                            <td>Crosslinking-MS dataset</td>
+                            <td>{{ data['stats']['ms']['total'] }}</td>
+                            <td>{{ data['stats']['ms']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['ms']['mapped_entities_pct']) }}%)</td>
+                            <td>{{ data['stats']['ms']['matched'] }} ({{ "%.2f"|format(data['stats']['ms']['matched_pct']) }}% )</td>
+                          </tr>
+                          <tr>
+                            <td>Entry</td>
+                            <td>{{ data['stats']['entry']['total'] }}</td>
+                            <td>{{ data['stats']['entry']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['entry']['mapped_entities_pct']) }}%)</td>
+                            <td>{{ data['stats']['entry']['matched'] }} ({{ "%.2f"|format(data['stats']['entry']['matched_pct']) }}%)</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
