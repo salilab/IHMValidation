@@ -110,7 +110,7 @@
               
               <!-- Model details -->
               <li class="nav-item mr-4 dropdown">
-                {% if ('SAS DATA' in Data) and enable_sas %}
+                {% if (('SAS DATA' in Data) and enable_sas ) or (('CX-MS DATA' in Data) and enable_cx) %}
                   <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location="data_quality.html";>Data <br> Quality </button></a>
                       
                 {% elif (('SAS DATA' not in Data) or not enable_sas) and Unique_dataset|length > 0 %}
@@ -151,6 +151,19 @@
                   {% for item in Unique_dataset %}
                     <a class=dropdown-item-text dropdown-toggle type=button>{{item}}</a>
                   {% endfor %}
+                
+                  {% if ('CX-MS DATA' in Data) and enable_cx %}
+                      <a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#crosslinking-ms>Crosslinking-MS</a>
+                      {% if cx_data_quality|length > 0 %}
+                        <ul class=dropdown-submenu>                  
+                          {% for data in cx_data_quality %}
+                            <li>
+                              <a class=dropdown-item2 href=data_quality.html#{{ data["pride_id"] }}>{{ data["pride_id"] }}</a>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+                  {% endif %}
                 </div>
               </li>
 

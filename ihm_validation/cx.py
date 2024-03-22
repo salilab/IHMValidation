@@ -22,6 +22,9 @@ import iqplot
 import json
 from bokeh.embed import json_item
 from bokeh.io import export_svgs
+import requests
+import pickle
+import pyhmmer
 
 pd.options.mode.chained_assignment = None
 NA = 'Not available'
@@ -70,9 +73,10 @@ class CxValidation(GetInputInformation):
     ID = None
     driver = None
 
-    def __init__(self, mmcif_file):
+    def __init__(self, mmcif_file, cache):
         super().__init__(mmcif_file)
         self.ID = str(self.get_id())
+        self.cache = cache
         self.nos = self.get_number_of_models()
         self.dataset = self.get_dataset_comp()
         # Only atomic structures are supported so far
@@ -897,3 +901,229 @@ class CxValidation(GetInputInformation):
         svgs = [Path(x).name for x in svgs]
 
         return (imgpath, imgpath_json, svgs)
+
+    @staticmethod
+    def request_pride(url: str) -> dict:
+        ''' pull data from PRIDE using crosslinking PDB-DEV API '''
+        result = None
+        r = requests.get(url)
+
+        if not r.ok:
+            # Wait until cold request completes and go to DB cache
+            logging.info('Retrying pulling data from PRIDE')
+            time.sleep(60)
+            r = requests.get(url)
+
+        if r.ok:
+            try:
+                result = r.json()
+            except JSONDecodeError:
+                pass
+
+        return result
+
+    def get_sequences_pride(self, pid: str) -> dict:
+        '''get sequences from PRIDE entry'''
+        url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/pdbdev/projects/{pid}/sequences"
+        result = self.request_pride(url)['data']
+        return result
+
+    def get_residue_pairs_pride(self, pid: str, page_size: int = 99) -> dict:
+        '''get sequences from PRIDE entry'''
+        url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/pdbdev/projects/{pid}/residue-pairs/based-on-reported-psm-level/passing"
+        page = 1
+        url_ = f"{url}?page={page}&page_size={page_size}"
+
+        result = self.request_pride(url_)
+
+        if result is not None:
+            session = requests.Session()
+
+            max_page = int(result['page']["total_pages"])
+            page_size = int(result['page']["page_size"])
+
+            rps = []
+            for i in range(1, max_page + 1):
+                url_ = f"{url}?page={i}&page_size={page_size}"
+                rps_ = session.get(url_).json()['data']
+                rps.extend(rps_)
+
+            result = rps
+
+        return result
+
+    def get_pride_data(self, code):
+        '''
+        get data from PRIDE
+        '''
+        cache_fn = Path(self.cache, f'{code}.pickle')
+        data = None
+
+        # Check if we already requested the data
+        if Path(cache_fn).is_file():
+            logging.info(f'Found {code} in cache! {cache_fn}')
+            with open(cache_fn, 'rb') as f:
+                data = pickle.load(f)
+        elif not Path(cache_fn).is_file():
+            ms_seqs = self.get_sequences_pride(code)
+            ms_res_pairs = self.get_residue_pairs_pride(code)
+
+            data = {
+                'pride_id': code,
+                'sequences': ms_seqs,
+                'residue_pairs': ms_res_pairs
+            }
+
+            with open(cache_fn, 'wb') as f:
+                pickle.dump(data, f)
+
+        return data
+
+    def get_pride_ids(self) -> list:
+        '''
+        get a list of all PRIDE ids from entry
+        '''
+        ids = []
+        for i, d in enumerate(self.system.orphan_datasets):
+            if isinstance(d, ihm.dataset.MassSpecDataset) or isinstance(d, ihm.dataset.CXMSDataset):
+                if isinstance(d.location, ihm.location.PRIDELocation):
+                    try:
+                        pid = d.location.access_code
+                        ids.append(pid)
+                    except AttributeError:
+                        pass
+
+        return ids
+
+    def validate_pride_data(self, data: dict) -> dict:
+
+        out = None
+
+        # Unpack pride data
+        pid = data['pride_id']
+        ms_res_pairs = data['residue_pairs']
+        ms_seqs_ = data['sequences']
+
+        # Get sequences from mmcif entry
+        mmcif_seqs = {}
+        for e in self.system.entities:
+            if e.is_polymeric:
+                seq = ''.join([x.code_canonical for x in e.sequence])
+                seq = pyhmmer.easel.TextSequence(sequence=seq, name=e._id.encode('utf-8'), description=e.description.encode('utf-8')).digitize(pyhmmer.easel.Alphabet.amino())
+                mmcif_seqs[e._id] = seq
+
+        # Get sequences from crosslinking-MS data
+        ms_seqs = [
+            pyhmmer.easel.TextSequence(
+                sequence=x['sequence'],
+                name=x['id'].encode('utf-8'),
+                source=x['file'].encode('utf-8')
+            ).digitize(pyhmmer.easel.Alphabet.amino()) for x in ms_seqs_
+        ]
+
+        matches_seqs = {}
+        matches_seqs_ids = {}
+        matches_residue_pairs = {}
+        for k, v in mmcif_seqs.items():
+            best_hit = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0][0]
+            matches_seqs[k] = best_hit
+            matches_seqs_ids[k] = best_hit.best_domain.hit.name.decode("utf-8")
+
+        matched_ms_seqs = list(matches_seqs_ids.values())
+        matched_mmcif_entities = list(matches_seqs_ids.keys())
+
+        ms_rps_total_ = len(ms_res_pairs)
+        ms_rps_mmcif_entities = 0
+
+        sxls = []
+        for r in ms_res_pairs:
+            if r['prot1'] in matched_ms_seqs and r['prot2'] in matched_ms_seqs:
+                eid1 = r['prot1']
+                rid1 = r['pos1']
+                eid2 = r['prot2']
+                rid2 = r['pos2']
+                sxl = tuple(sorted(((eid1, rid1), (eid2, rid2))))
+                sxls.append(sxl)
+
+        sxls = set(sxls)
+
+        ms_rps_mmcif_entities = len(sxls)
+
+        exls = []
+
+        for restr_ in self.system.restraints:
+            # We are interested only in Chemical crosslinks
+            if type(restr_) != ihm.restraint.CrossLinkRestraint:
+                continue
+
+            # Iterate over all crosslinks in the dataset
+            for xl in restr_.cross_links:
+                eid1 = xl.experimental_cross_link.residue1.entity._id
+                rid1 = xl.experimental_cross_link.residue1.seq_id
+                eid2 = xl.experimental_cross_link.residue1.entity._id
+                rid2 = xl.experimental_cross_link.residue2.seq_id
+                exl = tuple(sorted(((eid1, rid1), (eid2, rid2))))
+                exls.append(exl)
+
+        exls = list(set(exls))
+
+
+        mmcif_rps_ms_entities = 0
+
+        emxls = []
+        for (eid1, rid1), (eid2, rid2) in exls:
+            if eid1 in matched_mmcif_entities and eid2 in matched_mmcif_entities:
+                mmcif_rps_ms_entities += 1
+                eid1_ = matches_seqs_ids[eid1]
+                eid2_ = matches_seqs_ids[eid2]
+                exl = tuple(sorted(((eid1_, rid1), (eid2_, rid2))))
+                emxls.append(exl)
+
+        rps_both = len(set(emxls) & set(sxls))
+        mmcif_rps = len(exls)
+        ms_rps = len(ms_res_pairs)
+
+        out = {
+            'pride_id': pid,
+            'entities_ms': len(ms_seqs),
+            'entities': len(mmcif_seqs),
+            'matches': [
+                {
+                    'entity': k,
+                    'entity_ms': v.best_domain.hit.name.decode("utf-8"),
+                    'e-value': v.best_domain.c_evalue,
+                    'exact_match': v.best_domain.alignment.target_sequence == v.best_domain.alignment.hmm_sequence.upper()
+                } for k, v in matches_seqs.items()
+            ],
+            'stats': {
+                'entry': {
+                    'total': mmcif_rps,
+                    'mapped_entities': mmcif_rps_ms_entities,
+                    'mapped_entities_pct': mmcif_rps_ms_entities / mmcif_rps * 100.,
+                    'matched': rps_both,
+                    'matched_pct': rps_both / mmcif_rps * 100.,
+                },
+                'ms': {
+                    'total': ms_rps,
+                    'mapped_entities': ms_rps_mmcif_entities,
+                    'mapped_entities_pct': ms_rps_mmcif_entities / ms_rps * 100.,
+                    'matched': rps_both,
+                    'matched_pct': rps_both / ms_rps * 100.,
+                }
+            }
+        }
+
+        return out
+
+    def validate_all_pride_data(self) -> list:
+        '''perform data quality validation for all crosslinking-MS datasets'''
+
+        codes = self.get_pride_ids()
+        outs = []
+        for code in codes:
+            data = self.get_pride_data(code)
+            out = self.validate_pride_data(data)
+            if out is not None:
+                outs.append(out)
+
+        return outs
