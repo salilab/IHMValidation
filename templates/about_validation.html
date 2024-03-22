@@ -3,30 +3,65 @@
 <!-- ganesans - Salilab - UCSF -->
 <!-- ganesans@salilab.org -->
 
+{% block navbar %}
+  <nav class="navbar navbar-expand-xl navbar-dark">
+    <div class="dropdown">
+      <a class="navbar-brand" href="/Validation/about.html">
+        <h5>About the PDB-Dev validation reports for integrative structures</h5>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+  
+  {% include 'static_navbar.j2' %}
+{% endblock %}
+
 {% block body %}
   <div class="card-body">
     <!-- start overall card body for front page -->
     <div class="row">
       <div class="col-lg-12">
         <div class="card-header" style="background-color: #E4E4E4;">
-          <p class=ex2 align='center' ><b><u> <a name='overview'>PDB-Dev Validation Report</a></u> </b></p>
+          <p class=ex2 align='center'>
+            <b><u><a name='overview'>PDB-Dev Validation Report</a></u></b>
+          </p>
   
-          <p class=ex2 align='justify' > This validation report was created based on guidelines and recommendations from IHM TaskForce <a href='https://pubmed.ncbi.nlm.nih.gov/31780431/'>(Berman et al. 2019)</a>. The first version of the PDB-Dev validation report consists of four categories, (i) model composition, (ii) data quality assessments, (iii) model quality assessments, and (iv) fit to data used to build the model. A fifth category, fit to data used to validate the model is under development. 
+          <p class=ex2 align='justify'>
+            This validation report was created based on guidelines and recommendations from IHM TaskForce <a href='https://pubmed.ncbi.nlm.nih.gov/31780431/'>(Berman et al. 2019)</a>. The first version of the PDB-Dev validation report consists of four categories, (i) model composition, (ii) data quality assessments, (iii) model quality assessments, and (iv) fit to data used to build the model. A fifth category, fit to data used to validate the model is under development. 
   
           Data quality assessments and fit to data used for modeling categories are dependent on the different types of experimental data used in integrative modeling. We are breaking down this section based on experimental data type and addressing each method separately. The first version of the validation report is focused on validating models built using Small Angle Scattering (SAS) data and is based on the model and data validation guidelines published by the <a href='https://www.wwpdb.org/task/sas'>wwPDB SAS validation task force</a> <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'>(Trewhella et al. 2017)</a>.
-          <p style=margin-bottom:0.5cm;> </p>
+          </p>
+
+          <p style=margin-bottom:0.5cm;></p>
   
-          <p class=ex2 align='justify' > Validation of models built using Chemical Crosslinking Mass Spectrometry (CX-MS), Förster Resonance Energy Transfer (FRET) and 3D Electron Microscopy (3DEM) data are under development and will be included in subsequent versions of the validation report. </p>
+          <p class=ex2 align='justify'>
+            Validation of models built using Chemical Crosslinking Mass Spectrometry (CX-MS), Förster Resonance Energy Transfer (FRET) and 3D Electron Microscopy (3DEM) data are under development and will be included in subsequent versions of the validation report.
+          </p>
   
-          <p style=margin-bottom:0.5cm;> </p>
-          <p class=ex2 align='center' ><b><u> <a name='references1'>References</a></u> </b></p>
+          <p style=margin-bottom:0.5cm;></p>
+
+          <p class=ex2 align='center'>
+            <b><u><a name='references1'>References</a></u></b>
+          </p>
+          
           <ol>
-            <li><p class=ex2> Berman, Helen M., Paul D. Adams, Alexandre A. Bonvin, Stephen K. Burley, Bridget Carragher, Wah Chiu, Frank DiMaio, et al. 2019. “Federating Structural Models and Data: Outcomes from A Workshop on Archiving Integrative Structures.” Structure  27 (12): 1745–59. </p></li>
-  
-            <li><p class=ex2> Trewhella, Jill, Anthony P. Duff, Dominique Durand, Frank Gabel, J. Mitchell Guss, Wayne A. Hendrickson, Greg L. Hura, et al. 2017. “2017 Publication Guidelines for Structural Modelling of Small-Angle Scattering Data from Biomolecules in Solution: An Update.” Acta Crystallographica. Section D, Structural Biology 73 (Pt 9): 710–28. </p></li>
+            <li>
+              <p class=ex2> Berman, Helen M., Paul D. Adams, Alexandre A. Bonvin, Stephen K. Burley, Bridget Carragher, Wah Chiu, Frank DiMaio, et al. 2019. “Federating Structural Models and Data: Outcomes from A Workshop on Archiving Integrative Structures.” Structure  27 (12): 1745–59.
+              </p>
+            </li>
+            
+            <li>
+              <p class=ex2>Trewhella, Jill, Anthony P. Duff, Dominique Durand, Frank Gabel, J. Mitchell Guss, Wayne A. Hendrickson, Greg L. Hura, et al. 2017. “2017 Publication Guidelines for Structural Modelling of Small-Angle Scattering Data from Biomolecules in Solution: An Update.” Acta Crystallographica. Section D, Structural Biology 73 (Pt 9): 710–28.
+              </p>
+            </li>
           </ol>  
         </div>
       </div>
     </div>
   </div>
+  
+  {% include 'report_version.j2' %}
+
 {% endblock %}
