@@ -553,6 +553,8 @@
               SAS data used in this integrative model could not be validated as the sascif file is currently unavailable.
             </p>
           {% endif %}
+  
+          {% include 'cx_data_quality.j2' %}
           
           <!-- Other datasets -->
           {% for i in range(Unique_dataset|length) %}

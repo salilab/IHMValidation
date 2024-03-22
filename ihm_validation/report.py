@@ -406,7 +406,7 @@ class WriteReport(object):
 
         if self.input.check_for_cx(self.input.get_dataset_comp()):
             Template_Dict['cx'] = True
-            I_cx = cx.CxValidation(self.mmcif_file)
+            I_cx = cx.CxValidation(self.mmcif_file, cache=self.cache)
             self.I_cx = I_cx
 
             raw_data = None
@@ -428,6 +428,8 @@ class WriteReport(object):
             Template_Dict['cx_num_of_restraint_groups'] = nrg
             Template_Dict['cx_stats'] = stats
             Template_Dict['cx_stats_per_model'] = I_cx.get_per_model_satifaction_rates()
+
+            Template_Dict['cx_data_quality'] = I_cx.validate_all_pride_data()
 
             output = (Template_Dict, raw_data, raw_ertypes)
 
