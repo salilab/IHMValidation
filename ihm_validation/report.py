@@ -22,20 +22,32 @@ import json
 from multiprocessing import Manager
 from collections import Counter
 import numpy as np
+from selenium import webdriver
 
 REPORT_VERSION = '1.1'
 
 class WriteReport(object):
-    def __init__(self, mmcif_file, db, driver, cache, nocache=False):
+    def __init__(self, mmcif_file, db, cache, nocache=False):
         self.mmcif_file = mmcif_file
         self.db = db
         self.input = GetInputInformation(self.mmcif_file)
         # Webdriver for figures
-        self.driver = driver
+        self.driver = self.create_webdriver()
         self.cache = cache
         self.nocache = nocache
         self.report_version = REPORT_VERSION
 
+    def create_webdriver(self) -> webdriver.Firefox:
+        '''instantiate webdriver for rendering plots'''
+        firefox_options = webdriver.FirefoxOptions()
+        firefox_options.add_argument('--headless')
+        driver = webdriver.Firefox(options=firefox_options)
+        return driver
+
+    def clean(self) -> None:
+        '''cleanup'''
+        if self.driver:
+            self.driver.quit()
 
     def run_entry_composition(self, Template_Dict: dict) -> dict:
         '''

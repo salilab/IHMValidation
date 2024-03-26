@@ -441,7 +441,7 @@ def get_cx_data_fits(cx_dict: dict) -> list:
     return fin_cx
 
 
-def clean_all():
+def clean_all(report=None):
     '''
     delete all generated files
     '''
@@ -457,6 +457,9 @@ def clean_all():
             os.remove(item)
         if item.endswith('.sascif'):
             os.remove(item)
+
+    if report:
+        report.clean()
 
 
 # Adapted from

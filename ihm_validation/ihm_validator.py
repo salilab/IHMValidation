@@ -254,17 +254,6 @@ def write_json(mmcif_file: str, template_dict: dict, dirName: str, dirName_Outpu
 #################################################
 
 if __name__ == "__main__":
-    from pyvirtualdisplay import Display
-    from selenium import webdriver
-    # display = Display(visible=0, size=(1024, 768))
-    # display.start()
-    # driver = webdriver.Firefox()
-
-    firefox_options = webdriver.FirefoxOptions()
-    firefox_options.add_argument('--headless')
-    driver = webdriver.Firefox(options=firefox_options)
-
-
     logging.info("Clean up and create output directories")
     utility.clean_all()
 
@@ -286,7 +275,6 @@ if __name__ == "__main__":
     d = manager.dict()  # create only 1 dict
     report = WriteReport(args.f,
                          db=args.databases_root,
-                         driver=driver,
                          cache=args.cache_root,
                          nocache=args.nocache)
 
@@ -380,4 +368,4 @@ if __name__ == "__main__":
         shutil.rmtree(dirNames['root_html'])
 
     logging.info("Final cleanup")
-    utility.clean_all()
+    utility.clean_all(report=report)
