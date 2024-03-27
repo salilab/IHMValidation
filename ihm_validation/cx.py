@@ -933,10 +933,10 @@ class CxValidation(GetInputInformation):
         url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/pdbdev/projects/{pid}/residue-pairs/based-on-reported-psm-level/passing"
         page = 1
         url_ = f"{url}?page={page}&page_size={page_size}"
-
         result = self.request_pride(url_)
 
-        if result is not None:
+        rps = []
+        if result is not None and 'page' in result:
             session = requests.Session()
 
             max_page = int(result['page']["total_pages"])
@@ -948,9 +948,7 @@ class CxValidation(GetInputInformation):
                 rps_ = session.get(url_).json()['data']
                 rps.extend(rps_)
 
-            result = rps
-
-        return result
+        return rps
 
     def get_pride_data(self, code):
         '''
@@ -1003,6 +1001,9 @@ class CxValidation(GetInputInformation):
         pid = data['pride_id']
         ms_res_pairs = data['residue_pairs']
         ms_seqs_ = data['sequences']
+
+        if len(ms_seqs_) == 0 or len(ms_res_pairs) == 0:
+            return out
 
         # Get sequences from mmcif entry
         mmcif_seqs = {}
