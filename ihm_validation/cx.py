@@ -1169,3 +1169,8 @@ class CxValidation(GetInputInformation):
                 outs.append(out)
 
         return outs
+
+    @staticmethod
+    def get_pyhmmer_version():
+        """return pyhmmer version"""
+        return pyhmmer.__version__

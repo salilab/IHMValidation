@@ -196,6 +196,10 @@
         {% if sas|length > 0 and sasdb_sascif|length > 0 %}
           <li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a> Version {{ atsas_version }}</em></li>
         {% endif %}
+              
+        {% if cx_data_quality|length > 0 %}
+          <li><em><a href='https://pyhmmer.readthedocs.io/en/stable/'>pyHMMER</a> Version {{pyhmmer_version }}</em></li>
+        {% endif %}
         
         <li><em><a href='https://github.com/salilab/IHMValidation'>Integrative Modeling Validation</a> Version {{ report_version }}</em></li>
       </ul>

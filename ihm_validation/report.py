@@ -430,6 +430,7 @@ class WriteReport(object):
             Template_Dict['cx_stats_per_model'] = I_cx.get_per_model_satifaction_rates()
 
             Template_Dict['cx_data_quality'] = I_cx.validate_all_pride_data()
+            Template_Dict['pyhmmer_version'] = I_cx.get_pyhmmer_version()
 
             output = (Template_Dict, raw_data, raw_ertypes)
 
