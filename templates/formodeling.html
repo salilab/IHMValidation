@@ -80,10 +80,16 @@
             {% else %}
               <div class="row">
                 <div class='col-lg-6'>
-                  <p>There are {{ cx_num_of_restraints }} crosslinking restraints 
-                  combined in {{ cx_num_of_restraint_groups }} restraint groups. 
-                  Restraint types are summarized in the table below. 
-                  Only atomic or per-residue restraints are supported at the moment.
+                  <p>
+                    <i>
+                      Restraint types are summarized in the table below. 
+                      Restraints assigned "<a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Items/_ihm_cross_link_restraint.model_granularity.html>by-residue</a>" are interpreted as between CA atoms. 
+                      Restraints between coarse-grained beads are indicated as "coarse-grained".
+                    </i>
+                  </p>
+                  <p>
+                    There are {{ cx_num_of_restraints }} crosslinking restraints 
+                    combined in {{ cx_num_of_restraint_groups }} restraint groups. 
                   </p>
                   <div class='table-responsive text-center' style="max-height: 75vh; overflow: auto;">
                     <table id='cx_ertypes_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
@@ -119,7 +125,15 @@
                     {% if cx_stats is none %}
                       <p>Distograms for this entry are unavailable the moment.</p>
                     {% else %}
-                      <p style='text-align: left'><i>Restraints with identical thresholds are grouped into one plot. Only best distance per restraint per model group/ensemble is plotted. Intra- and intermolecular self-link restraints are also grouped into one plot.</i></p>
+                      <p style='text-align: left'>
+                        <i>Restraints with identical thresholds are grouped into one plot. 
+                          Only best distance per restraint per model group/ensemble is plotted. 
+                          Intra- and intermolecular self-link restraints are also grouped into one plot.
+                          Distance for a restraint between coarse-grained beads is calculated as a minimal distance 
+                          between shells; if beads intersect, the distance will be reported as 0.0. 
+                          A bead with the finest available resolution for a given residue is used for the assesment.
+                        </i>
+                      </p>
                       <div class='bk-root' id='cx_distograms_plot' style="max-height: 75vh; overflow: auto;">
                       </div>
                       <script type="text/javascript">

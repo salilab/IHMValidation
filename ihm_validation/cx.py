@@ -55,18 +55,41 @@ def get_hierarchy_from_model(model):
                            r.asym_unit.seq_id_range[1] + 1):
                 root[r.asym_unit.asym.id][i]['CA'] = None
 
+        elif r.granularity == 'by-feature':
+            for i in range(r.asym_unit.seq_id_range[0],
+                           r.asym_unit.seq_id_range[1] + 1):
+                root[r.asym_unit.asym.id][i]['coarse-grained'] = None
+
     for s in model.get_spheres():
         # Consider only by-residue spheres
-        seq_ids = list(set(s.seq_id_range))
-        if len(seq_ids) != 1:
-            continue
+        bs = get_bead_size(s)
+        if bs == 1:
 
-        seq_id = seq_ids[0]
+            seq_id = s.seq_id_range[0]
 
-        if root[s.asym_unit.id][seq_id]['CA'] is None:
-            root[s.asym_unit.id][seq_id]['CA'] = s
+            if root[s.asym_unit.id][seq_id]['CA'] is None:
+                root[s.asym_unit.id][seq_id]['CA'] = s
+
+        else:
+
+            for seq_id in range(s.seq_id_range[0], s.seq_id_range[1] + 1):
+
+                if root[s.asym_unit.id][seq_id]['coarse-grained'] is None:
+                    root[s.asym_unit.id][seq_id]['coarse-grained'] = s
+                else:
+                    s_ = root[s.asym_unit.id][seq_id]['coarse-grained']
+                    # Select best possible resolution
+                    if get_bead_size(s) < get_bead_size(s_):
+                        root[s.asym_unit.id][seq_id]['coarse-grained'] = s
+
 
     return root
+
+def get_bead_size(sphere: ihm.model.Sphere) -> int:
+    """Number of residues per bead"""
+    return sphere.seq_id_range[1] - sphere.seq_id_range[0] + 1
+
+
 
 
 class CxValidation(GetInputInformation):
@@ -142,6 +165,9 @@ class CxValidation(GetInputInformation):
                     # represented by the alpha carbon atom
                     a1n = 'CA'
                     a2n = 'CA'
+                elif xl.granularity == 'by-feature':
+                    a1n = 'coarse-grained'
+                    a2n = 'coarse-grained'
                 else:
                     logging.debug(Exception('Unsupported xl granularity'))
                     continue
@@ -341,7 +367,22 @@ class CxValidation(GetInputInformation):
 
         if a1 is None or a2 is None:
             d = None
+        elif row['name1'] == 'coarse-grained' or row['name2'] == 'coarse-grained':
+
+            if row['name1'] == row['name2'] == 'coarse-grained':
+                # Calculate distance between spheres
+                a1_ = np.array([a1.x, a1.y, a1.z])
+                r1_ = a1.radius
+                a2_ = np.array([a2.x, a2.y, a2.z])
+                r2_ = a2.radius
+                # In case spheres overlap
+                d = max(0, np.linalg.norm(a2_ - a1_) - (r1_ + r2_))
+
+            else:
+                logging.warning(r'Incompatible crosslinking-MS granularities')
+                d = None
         else:
+            # Assume atomic distances
             # Calculate distance
             a1_ = np.array([a1.x, a1.y, a1.z])
             a2_ = np.array([a2.x, a2.y, a2.z])
