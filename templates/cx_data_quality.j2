@@ -48,7 +48,7 @@
                             <tr>
                               <td>{{ match['entity'] }}</td>
                               <td>{{ match['entity_ms'] }}</td>
-                              <td>{{ match['e-value'] }}</td>
+                              <td>{{ "%.2e"|format(match['e-value']) }}</td>
                               <td>{{ match['exact_match'] }}</td>
                             </tr>
                           {% endfor %}
