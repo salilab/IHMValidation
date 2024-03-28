@@ -143,7 +143,7 @@
               <li><em><a href='https://github.com/ihmwg/python-ihm'>Python-IHM</a> Version {{ python_ihm_version }}</em></li>
             
               {% if molprobity_version is not none %}
-                <li><em><a href='http://molprobity.biochem.duke.edu/'>Molprobity</a> Version {{ molprobity_version }}</em></li>
+                <li><em><a href='http://molprobity.biochem.duke.edu/'>MolProbity</a> Version {{ molprobity_version }}</em></li>
               {% endif %}
 
               {% if sas|length > 0 and sasdb_sascif|length > 0 %}
@@ -222,12 +222,12 @@
             <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development. Number of plots is limited to {{MAXPLOTS}}.</em>
             </p>
             
-            <!-- Molprobity or excluded volume -->
+            <!-- MolProbity or excluded volume -->
             <div class="box text-center container-fluid no-padding" align='center' style="break-inside: avoid;">
               {% if disclaimer == 0 %}
                 {% if assess_excluded_volume == 'Not applicable' %}
                   <h5 align=center>
-                    Model Quality: Molprobity Analysis
+                    Model Quality: MolProbity Analysis
                   </h5>
                 {% else %}
                   <h5 align=center>
@@ -242,7 +242,7 @@
                 {% endfor %}
               {% elif disclaimer == 1 %}
                 <p align="justify">
-                  <em>Molprobity assessments and/or excluded volume assessments can not be evaluated for this current model.</em>
+                  <em>MolProbity assessments and/or excluded volume assessments can not be evaluated for this current model.</em>
                 </p>
               {% endif %}
             </div>
@@ -594,7 +594,7 @@
                 {{ write_table(excluded_volume) }}
               
               {% else %} 
-              <!-- Molprobity -->
+              <!-- MolProbity -->
               
                 <!-- Bond outliers -->
                 <h5 align=center>
@@ -679,7 +679,7 @@
                   {% endif %}
                 {% endif %}
               
-              <!-- End Molprobity -->
+              <!-- End MolProbity -->
               {% endif %}
             
             <!-- End Model Quality -->

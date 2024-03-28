@@ -42,7 +42,7 @@
                         <li><a href="#modelquality" style="color: #003366;">5. Model Quality Assessment</a>
                           <ul>
                             <li><a href="#exv" style="color: #003366;">5.1a Excluded Volume Analysis</a></li>
-                            <li><a href="#molprobity" style="color: #003366;">5.1b Molprobity Analysis </a></li>
+                            <li><a href="#molprobity" style="color: #003366;">5.1b MolProbity Analysis </a></li>
                         </ul>
                     </li>
 
@@ -83,7 +83,7 @@
 
                 <p class=ex2 align='justify'><a name='understanding'><i>1.2. Data quality assessment :</i></a> Data quality assessments are only available for Small Angle Scattering datasets (SAS). This section was developed in collaboration with the SASBDB community. For details on the metrics, guidelines, and recommendations used, refer the 2017 community article <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'>(Trewhella et al. 2017)</a>. All experimental datasets used to build the model are listed, however, validation criteria for other experimental datasets are currently under development.</p>
 
-                <p class=ex2 align='justify'><a name='understanding'><i>1.3. Model quality assessment :</i></a> Model quality for models at atomic resolution is assessed using Molprobity <a href='https://pubmed.ncbi.nlm.nih.gov/29067766/'> (Williams et al. 2018)</a>, consistent with <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'>PDB</a>. Model quality for coarse-grained or multi-resolution structures are assessed by computing excluded volume satisfaction based on reported distances and sizes of beads in the structures.</p>
+                <p class=ex2 align='justify'><a name='understanding'><i>1.3. Model quality assessment :</i></a> Model quality for models at atomic resolution is assessed using MolProbity <a href='https://pubmed.ncbi.nlm.nih.gov/29067766/'> (Williams et al. 2018)</a>, consistent with <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'>PDB</a>. Model quality for coarse-grained or multi-resolution structures are assessed by computing excluded volume satisfaction based on reported distances and sizes of beads in the structures.</p>
 
                 <p class=ex2 align='justify'><a name='understanding'><i> 1.4. Fit to data used to build the model  :</i></a> Fit to data used to build the model is only available for SAS datasets. This section was developed in collaboration with the SASBDB <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4383894/'>(Valentini et al. 2015)</a>. For details on the metrics, guidelines, and recommendations used, refer the 2017 community article <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'>(Trewhella et al. 2017)</a>. All experimental datasets used to build the model are listed, however, validation criteria for other experimental datasets are currently under development.</p>
 
@@ -166,7 +166,7 @@
                 <p class=ex2 align='center' ><b><u> <a name='modelquality'>5. Model Quality Assessment </a></u> </b></p>
                 <p class=ex2 align='justify' > Excluded volume assessments are performed for coarse-grained structures and MolProbity analysis is performed for atomic structures.</p>
                 <p class=ex2 align='justify' ><a name='exv'><i>5.1a. Excluded Volume Analysis :</i></a> Excluded volume violation is defined as percentage of overlaps between coarse-grained beads in a structure. This percentage is obtained by dividing the number of overlaps/violations by the total number of pair distances in a structure. An overlap or violation between two beads occurs if the distance between the two beads is less than the sum of their radii <a href='https://pubmed.ncbi.nlm.nih.gov/29539637/'>(S. J. Kim et al. 2018)</a>.  </p>
-                <p class=ex2 align='justify' ><a name='molprobity'> <i>5.1b. Molprobity Analysis :</i></a> Molprobity analysis for atomic structures reported is consistent with PDB standards for X-ray structures <a href='https://pubmed.ncbi.nlm.nih.gov/29067766/'>(Williams et al. 2018)</a>. Summarized information is available in both the HTML and PDF reports. Detailed information is available for download as csv files, both from the HTML and the PDF reports. Please refer to the <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'>PDB user guide</a> for details. </p>
+                <p class=ex2 align='justify' ><a name='molprobity'> <i>5.1b. MolProbity Analysis :</i></a> MolProbity analysis for atomic structures reported is consistent with PDB standards for X-ray structures <a href='https://pubmed.ncbi.nlm.nih.gov/29067766/'>(Williams et al. 2018)</a>. Summarized information is available in both the HTML and PDF reports. Detailed information is available for download as csv files, both from the HTML and the PDF reports. Please refer to the <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'>PDB user guide</a> for details. </p>
                 <p style=margin-bottom:0.5cm;> </p>
             </div>
         </div>
