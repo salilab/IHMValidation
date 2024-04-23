@@ -547,7 +547,7 @@ class GetInputInformation(object):
     def get_dataset_xl_info(self, id: int) -> str:
         """Get dataset XL info given dataset ID"""
         restraints = self.get_restraints()
-        return 'Linker name and number of cross-links: %s' % (restraints
+        return 'Linker name and number of crosslinks: %s' % (restraints
                                                               ['Restraint info']
                                                               [restraints['Dataset ID']
                                                                .index(id)])
@@ -636,7 +636,7 @@ class GetInputInformation(object):
             if isinstance(i, ihm.restraint.CrossLinkRestraint):
                 restraints_comp['Restraint info'].append(
                     str(i.linker.auth_name) + ', ' +
-                    str(len(i.experimental_cross_links)) + ' cross-links')
+                    str(len(i.experimental_cross_links)) + ' crosslinks')
             elif isinstance(i, ihm.restraint.EM3DRestraint):
                 restraints_comp['Restraint info'].append(
                     str(i.fitting_method)) # + ', '+str(i.number_of_gaussians) + ' components')
