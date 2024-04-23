@@ -1074,21 +1074,26 @@ class CxValidation(GetInputInformation):
         matched_ms_seqs = list(matches_seqs_ids.values())
         matched_mmcif_entities = list(matches_seqs_ids.keys())
 
-        ms_rps_total_ = len(ms_res_pairs)
-        ms_rps_mmcif_entities = 0
-
-        sxls = []
+        ms_rps_filtered = []
         for r in ms_res_pairs:
-            if r['prot1'] in matched_ms_seqs and r['prot2'] in matched_ms_seqs:
-                eid1 = r['prot1']
-                rid1 = r['pos1']
-                eid2 = r['prot2']
-                rid2 = r['pos2']
-                sxl = tuple(sorted(((eid1, rid1), (eid2, rid2))))
-                sxls.append(sxl)
+            eid1 = r['prot1']
+            rid1 = r['pos1']
+            eid2 = r['prot2']
+            rid2 = r['pos2']
+            sxl = tuple(sorted(((eid1, rid1), (eid2, rid2))))
+            ms_rps_filtered.append(sxl)
+
+        ms_rps_filtered = set(ms_rps_filtered)
+
+        ms_rps_mmcif_entities = 0
+        sxls = []
+        for r in ms_rps_filtered:
+            (eid1, rid1), (eid2, rid2) = r
+
+            if eid1 in matched_ms_seqs and eid2 in matched_ms_seqs:
+                sxls.append(r)
 
         sxls = set(sxls)
-
         ms_rps_mmcif_entities = len(sxls)
 
         exls = []
@@ -1123,7 +1128,7 @@ class CxValidation(GetInputInformation):
 
         rps_both = len(set(emxls) & set(sxls))
         mmcif_rps = len(exls)
-        ms_rps = len(ms_res_pairs)
+        ms_rps = len(ms_rps_filtered)
 
         out = {
             'pride_id': pid,
