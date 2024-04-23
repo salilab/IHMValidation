@@ -713,6 +713,8 @@ class GetInputInformation(object):
                 dataset_comp['ID'].append(i._id)
                 if i.data_type == 'unspecified' and i.details is not None:
                     dataset_comp['Dataset type'].append(i.details)
+                elif i.data_type == 'CX-MS data':
+                    dataset_comp['Dataset type'].append('Crosslinking-MS')
                 else:
                     dataset_comp['Dataset type'].append(i.data_type)
                 dataset_comp['Database name'].append(str(loc))
