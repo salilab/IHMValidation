@@ -131,7 +131,7 @@
                           Intra- and intermolecular self-link restraints are also grouped into one plot.
                           Distance for a restraint between coarse-grained beads is calculated as a minimal distance 
                           between shells; if beads intersect, the distance will be reported as 0.0. 
-                          A bead with the finest available resolution for a given residue is used for the assessment.
+                          A bead with the highest available resolution for a given residue is used for the assessment.
                         </i>
                       </p>
                       <div class='bk-root' id='cx_distograms_plot' style="max-height: 75vh; overflow: auto;">
@@ -157,8 +157,8 @@
                       Satisfaction of restraints is calculated on a <a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Categories/ihm_cross_link_restraint.html>restraint 
                         group level</a>. Satisfaction of a restraint group depends on 
                       satisfaction of individual restraints in the group and the 
-                      conditionality (all/any). Restraint group is considered 
-                      satisfied, if condition was met in at least one model of 
+                      conditionality (all/any). A restraint group is considered 
+                      satisfied, if the condition was met in at least one model of 
                       the model group/ensemble. Only deposited models are used 
                       for validation right now.
                     </i>
