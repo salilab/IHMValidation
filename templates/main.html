@@ -115,7 +115,7 @@
               </li>
             {% endif %}
           
-            {%- if sas %}
+            {% if (sas) or (cx_data_quality|length > 0) %}
               <li>
                 <a class="nav-link" data-toggle="tab" href="#menu1">Data Quality</a>
               </li>

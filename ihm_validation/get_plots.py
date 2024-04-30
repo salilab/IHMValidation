@@ -38,7 +38,7 @@ class Plots(GetInputInformation):
         self.driver=driver
 
     def plot_quality_at_glance(self, molprobity_data: dict, exv_data: dict,
-                               sas_data: dict, sas_fit: dict, cx_fit: dict) -> bokeh.plotting.figure:
+                               sas_data: dict, sas_fit: dict, cx_data_quality: dict, cx_fit: dict) -> bokeh.plotting.figure:
 
         # create tabs list to add all the panel figures (model quality, data quality.. etc)
         output_file(self.ID+"quality_at_glance.html", mode="inline")
@@ -249,6 +249,89 @@ class Plots(GetInputInformation):
 
             dq_plots.append(pd)
 
+        if cx_data_quality is not None and len(cx_data_quality) > 0:
+            # if molprobity data, plot that
+            # every model has clashscore, rama outliers, and rota outliers
+            Models = [data["pride_id"] for data in cx_data_quality]
+            Scores = ['Total', 'Mapped to matching entities', 'Matched']
+            legends = []
+            for data in cx_data_quality:
+                legends.append(f'{data["stats"]["ms"]["total"]}')
+                legends.append(f'{data["stats"]["ms"]["mapped_entities"]} ({data["stats"]["ms"]["mapped_entities_pct"]:.2f}%)')
+                legends.append(f'{data["stats"]["ms"]["matched"]} ({data["stats"]["ms"]["matched_pct"]:.2f}%)')
+
+            data = {'models': Models,
+                    'Total': [data['stats']['ms']['total'] for data in cx_data_quality],
+                    'Mapped to matching entities': [data['stats']['ms']['mapped_entities'] for data in cx_data_quality],
+                    'Matched': [data['stats']['ms']['matched'] for data in cx_data_quality]
+                    }
+            y = [(model, score) for model in Models for score in Scores]
+            counts = sum(zip(data['Total'], data['Mapped to matching entities'],
+                         data['Matched']), ())
+            source = ColumnDataSource(data=dict(y=y, counts=counts, legends=legends))
+
+            # if there are more than 7 models, we will increase the size of the plots
+            # this is important, else the plots look ugly
+
+            plots = []
+
+            # get data ranges
+            lower, upper = utility.calc_optimal_range(counts)
+
+            # create plot
+            for i, name_ in enumerate(Models):
+
+                p = figure(
+                    y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
+                    # Force left limit at zero
+                    x_range=(0, upper),
+                    plot_height=120,
+                    plot_width=700
+                )
+
+                rd = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
+                       right=source.data['counts'][i * 3: (i + 1) * 3],
+                       width=0.9, line_color="white",
+                       fill_color=factor_cmap('y', palette=viridis(len(Scores)),
+                                              factors=Scores,
+                                              start=1, end=2)
+                       )
+                legends_ = source.data['legends'][i * 3: (i + 1) * 3]
+                legend = Legend(items=[LegendItem(label=legends_[j], renderers=[
+                            rd], index=j) for j in range(len(legends_))], location='center',
+                            orientation='vertical', label_text_font_size="12px")
+                legend.items = legend.items[::-1]
+                p.add_layout(legend, 'right')
+                # set labels and fonts
+                p.xaxis.major_label_text_font_size = "12pt"
+                p.yaxis.major_label_text_font_size = "12pt"
+                p.yaxis.major_label_text_align='right'
+                p.xaxis.axis_label = 'Residue pairs'
+                p.xaxis.axis_label_text_font_style = 'italic'
+                p.left[0].group_text_font_size = '14px'
+                p.left[0].group_label_orientation = 'horizontal'
+                p.title.vertical_align = 'top'
+                p.title.align = "center"
+                p.output_backend = "svg"
+                plots.append(p)
+
+            grid = gridplot(plots, ncols=1,
+                            merge_tools=True,
+                            toolbar_location='right')
+            grid.children[1].css_classes = ['scrollable']
+            grid.children[1].sizing_mode = 'fixed'
+            grid.children[1].height = 450
+            grid.children[1].width = 800
+
+            title = Div(text="<p>Crosslinking-MS Data Quality</p>",
+                        style={"font-size": "1.5em", "font-weight": "bold",
+                               "text-align": "center", "width": '100%'}, width=800
+                        )
+
+            fullplot = column(title, grid)
+
+            dq_plots.append(fullplot)
+
         if len(dq_plots) > 0:
             pd = gridplot(dq_plots, ncols=1,
                      toolbar_location="above",
@@ -313,11 +396,11 @@ class Plots(GetInputInformation):
                         Scores.append(f'Model group/Ensemble {i}')
                         counts.append(s)
 
-            legends = [str(i) for i in counts]
+            legends = [f'{i} %' for i in counts]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
             pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 25,
-                        plot_width=800, title="Crosslink satisfaction")
+                        plot_width=700, title="Crosslink satisfaction")
             rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
                          source=source, alpha=0.8, line_color='black')
             pf.ygrid.grid_line_color = None

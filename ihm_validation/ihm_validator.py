@@ -304,6 +304,7 @@ if __name__ == "__main__":
         logging.info("CX validation")
         template_dict, cx_data, cx_ertypes = report.run_cx_validation(template_dict)
         cx_fit = template_dict['cx_stats']
+        cx_data_quality = template_dict['cx_data_quality']
 
         logging.info("CX validation plots")
         report.run_cx_validation_plots(template_dict,
@@ -311,10 +312,15 @@ if __name__ == "__main__":
 
     else:
         cx_fit = None
+        cx_data_quality = None
 
     logging.info("Quality at a glance")
     report.run_quality_glance(
-        molprobity_dict, exv_data, sas_data, sas_fit, cx_fit, imageDirName=dirNames['images'])
+        molprobity_dict, exv_data,
+        sas_data, sas_fit,
+        cx_data_quality, cx_fit,
+        imageDirName=dirNames['images']
+    )
 
     logging.info("Write PDF")
     output_pdf = write_pdf(output_prefix, template_dict, template_pdf,
