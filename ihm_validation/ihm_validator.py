@@ -303,7 +303,7 @@ if __name__ == "__main__":
     if args.enable_cx:
         logging.info("CX validation")
         template_dict, cx_data, cx_ertypes = report.run_cx_validation(template_dict)
-        cx_fit = None
+        cx_fit = template_dict['cx_stats']
 
         logging.info("CX validation plots")
         report.run_cx_validation_plots(template_dict,

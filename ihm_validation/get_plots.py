@@ -298,12 +298,52 @@ class Plots(GetInputInformation):
             pf.output_backend = "svg"
             fq_plots.append(pf)
 
+        if cx_fit is not None and len(cx_fit) > 0:
+            Scores = []
+            counts = []
+            i = 0
+            for sg, sgv in cx_fit.items():
+                for st, stv in sgv.items():
+                    for mg, mgv in stv.items():
+                        i += 1
+                        try:
+                            s = float(mgv['cx_stats']['All']['Satisfied'])
+                        except ValueError:
+                            continue
+                        Scores.append(f'Model group/Ensemble {i}')
+                        counts.append(s)
+
+            legends = [str(i) for i in counts]
+            source = ColumnDataSource(data=dict(
+                Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
+            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 25,
+                        plot_width=800, title="Crosslink satisfaction")
+            rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
+                         source=source, alpha=0.8, line_color='black')
+            pf.ygrid.grid_line_color = None
+            pf.title.text_font_size = '14pt'
+            pf.xaxis.axis_label = 'Satisfaction rate, %'
+            pf.xaxis.major_label_text_font_size = "12pt"
+            pf.yaxis.major_label_text_font_size = "12pt"
+            legend = Legend(items=[LegendItem(label=legends[i], renderers=[
+                            rf], index=i) for i in range(len(legends))], location="center",
+                            orientation='vertical', label_text_font_size="12px")
+            pf.add_layout(legend, 'right')
+            pf.title.vertical_align = 'top'
+            pf.title.align = "center"
+            pf.output_backend = "svg"
+            pf.legend.label_text_font_size = "12px"
+            pf.xaxis.axis_label_text_font_style = 'italic'
+            pf.yaxis.axis_label_text_font_style = 'italic'
+            pf.xaxis.axis_label_text_font_size = "14pt"
+            pf.yaxis.major_label_text_font_size = "14pt"
+            fq_plots.append(pf)
+
         if len(fq_plots) > 0:
             pf = gridplot(fq_plots, ncols=1,
                      toolbar_location="above",
                      # sizing_mode='stretch_width'
                      )
-
 
             export_svg(pf, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_FQ.svg", webdriver=self.driver)
