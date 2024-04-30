@@ -214,6 +214,8 @@ class Plots(GetInputInformation):
         # DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
+        dq_plots = []
+
         if len(sas_data.keys()) > 0:
             Rgl = {0: 'P(r)', 1: 'Guinier'}
             Scores = [Rgl[m] + ' ('+i+')' for i, j in sas_data.items()
@@ -244,14 +246,24 @@ class Plots(GetInputInformation):
             pd.title.vertical_align = 'top'
             pd.title.align = "center"
             pd.output_backend = "svg"
+
+            dq_plots.append(pd)
+
+        if len(dq_plots) > 0:
+            pd = gridplot(dq_plots, ncols=1,
+                     toolbar_location="above",
+                     # sizing_mode='stretch_width'
+                     )
+
             export_svg(pd, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_DQ.svg", webdriver=self.driver)
             save(pd, filename=self.filename+'/' +
-                 self.ID+"quality_at_glance_DQ.html")
+                     self.ID+"quality_at_glance_DQ.html")
 
         # FIT TO DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
+        fq_plots = []
         if len(sas_fit.keys()) > 0:
             Scores = [' \u03C7\u00b2 Fit ' +
                       str(int(m+1)) + ' ('+i+')' for i, j in sas_fit.items() for m, n in enumerate(j)]
@@ -284,6 +296,15 @@ class Plots(GetInputInformation):
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
+            fq_plots.append(pf)
+
+        if len(fq_plots) > 0:
+            pf = gridplot(fq_plots, ncols=1,
+                     toolbar_location="above",
+                     # sizing_mode='stretch_width'
+                     )
+
+
             export_svg(pf, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_FQ.svg", webdriver=self.driver)
             save(pf, filename=self.filename+'/' +
