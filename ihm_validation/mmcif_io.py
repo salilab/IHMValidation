@@ -112,6 +112,26 @@ class GetInputInformation(object):
                     entry = entry_init.strip()
         return entry
 
+    def get_pdb_id(self) -> str:
+        """Check database2 table for PDB ID"""
+        entry_id = None
+        if len(self.system.databases) > 0:
+            for db in self.system.databases:
+                if db.id == 'PDB':
+                    entry_id =  db.code
+
+        return entry_id
+
+    def get_pdb_dev_id(self) -> str:
+        """Check database2 table for PDB ID"""
+        entry_id = None
+        if len(self.system.databases) > 0:
+            for db in self.system.databases:
+                if db.id == 'PDB-Dev':
+                    entry_id =  db.code
+
+        return entry_id
+
     def get_primary_citation_info(self) -> tuple:
         '''get title and authors for the primary citation'''
         title, authors = None, None

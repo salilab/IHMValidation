@@ -24,7 +24,7 @@ from collections import Counter
 import numpy as np
 from selenium import webdriver
 
-REPORT_VERSION = '1.1'
+REPORT_VERSION = '1.2-dev'
 
 class WriteReport(object):
     def __init__(self, mmcif_file, db, cache, nocache=False):
@@ -87,6 +87,8 @@ class WriteReport(object):
                                       entry_id[6:])]
         Template_Dict['ID_R'] = (
             entry_id[0:6]+'_'+entry_id[6:]).split()
+        Template_Dict['PDB_ID'] = self.input.get_pdb_id()
+        Template_Dict['PDBDEV_ID'] = self.input.get_pdb_dev_id()
         Template_Dict['Molecule'] = self.input.get_struc_title()
         Template_Dict['Authors'] = self.input.get_authors()
         title, authors = self.input.get_primary_citation_info()
@@ -493,7 +495,6 @@ class WriteReport(object):
             Template_Dict['clustering'] = None
         Template_Dict['location'] = location
         Template_Dict['complex_name'] = self.input.get_struc_title()
-        Template_Dict['PDB_ID'] = self.input.get_id()
         Template_Dict['Subunits'] = utility.get_subunits(
             self.input.get_composition())
         Template_Dict['datasets'] = utility.get_datasets(self.input.get_dataset_details(

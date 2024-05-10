@@ -36,12 +36,24 @@
       <div class="card-header" style="background-color:#FFFFFF; border-color:#003366;">
         <div class="bs-example" class="text-center">
           <table class="table table-bordered" style="border-color:#003366; height: 25rem;">
-            <thead>
+            {% if PDB_ID is not none %} 
               <tr>
-                <th align="center" class="text-center">PDB ID</th>
-                <th align="center" class="text-center">{{ID_T}}</th>
+                <td align="center" class="text-center">PDB ID</td>
+                <td align="center" class="text-center">{{PDB_ID}}</td>
               </tr>
-            </thead>
+            {% endif %}
+            {% if PDBDEV_ID is not none %} 
+              <tr>
+                <td align="center" class="text-center">PDBDEV ID</td>
+                <td align="center" class="text-center">{{PDBDEV_ID}}</td>
+              </tr>
+            {% endif %}
+            {% if ((PDB_ID is none) and (PDBDEV_ID is none))  %} 
+              <tr>
+                <td align="center" class="text-center">Entry ID</td>
+                <td align="center" class="text-center">{{ID_T}}</td>
+              </tr>
+            {% endif %}
             <tr>
               <td class="align-middle" class="text-center">Structure title</td>
               <td class="align-middle" class="text-center">{{Molecule}} </td>

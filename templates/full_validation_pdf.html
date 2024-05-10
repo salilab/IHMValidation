@@ -167,12 +167,24 @@
           <div class="card-header" style="background-color: #FFFFFF;">
             <div class="bs-example" class="text-center">
               <table class="table table-bordered" style="height: 16rem;">
-                <thead>
+                {% if PDB_ID is not none %} 
                   <tr>
-                    <th align="center" class="text-center" style="text-align:center; vertical-align: middle;">PDB ID</th>
-                    <th align="center" class="text-center" style="text-align:center; vertical-align: middle;">{{ ID_T }}</th>
+                    <td align="center" class="text-center" style="text-align:center; vertical-align: middle;">PDB ID</td>
+                    <td align="center" class="text-center" style="text-align:center; vertical-align: middle;">{{ PDB_ID }}</td>
                   </tr>
-                </thead>
+                {% endif %}
+                {% if PDBDEV_ID is not none %} 
+                  <tr>
+                    <td align="center" class="text-center" style="text-align:center; vertical-align: middle;">PDBDEV ID</td>
+                    <td align="center" class="text-center" style="text-align:center; vertical-align: middle;">{{ PDBDEV_ID }}</td>
+                  </tr>
+                {% endif %}
+                {% if ((PDB_ID is none) and (PDBDEV_ID is none))  %} 
+                  <tr>
+                    <td align="center" class="text-center" style="text-align:center; vertical-align: middle;">Entry ID</td>
+                    <td align="center" class="text-center" style="text-align:center; vertical-align: middle;">{{ ID_T }}</td>
+                  </tr>
+                {% endif %}
                 <tr>
                   <td class="align-middle" class="text-center" style="text-align:center; vertical-align: middle;">Structure Name</td>
                   <td class="align-middle" class="text-center" style="text-align:center; vertical-align: middle;">{{ Molecule }}</td>
