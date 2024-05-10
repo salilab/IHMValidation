@@ -78,14 +78,15 @@ class WriteReport(object):
             utility.dict_to_JSlist_rows(RB, flex))
         Template_Dict['flex'] = utility.get_flex(
             utility.dict_to_JSlist_rows(RB, flex))
-        Template_Dict['ID'] = self.input.get_id()
-        Template_Dict['ID_w'] = self.input.get_id().split()
-        Template_Dict['ID_T'] = self.input.get_id()[0:6]+'_' + \
-            self.input.get_id()[6:]
-        Template_Dict['ID_MP'] = [str(self.input.get_id()[0:6]+'_' +
-                                      self.input.get_id()[6:])]
+        entry_id = self.input.get_id()
+        Template_Dict['ID'] = entry_id
+        Template_Dict['ID_w'] = entry_id.split()
+        Template_Dict['ID_T'] = entry_id[0:6]+'_' + \
+            entry_id[6:]
+        Template_Dict['ID_MP'] = [str(entry_id[0:6]+'_' +
+                                      entry_id[6:])]
         Template_Dict['ID_R'] = (
-            self.input.get_id()[0:6]+'_'+self.input.get_id()[6:]).split()
+            entry_id[0:6]+'_'+entry_id[6:]).split()
         Template_Dict['Molecule'] = self.input.get_struc_title()
         Template_Dict['Authors'] = self.input.get_authors()
         title, authors = self.input.get_primary_citation_info()
