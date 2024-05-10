@@ -210,46 +210,46 @@ def runInParallel_noargs(*fns):
         p.join()
 
 
-def get_output_file_html(mmcif_file: str) -> str:
+def get_output_file_html(prefix: str) -> str:
     '''
     minor func
     '''
-    return f'ValidationReport_{Path(mmcif_file).stem}.html'
+    return f'ValidationReport_{prefix}.html'
 
 
-def get_supp_file_html(mmcif_file: str) -> str:
+def get_supp_file_html(prefix: str) -> str:
     '''
     minor func
     '''
-    return f'Supplementary_{Path(mmcif_file).stem}.html'
+    return f'Supplementary_{prefix}.html'
 
 
-def get_output_file_temp_html(mmcif_file: str) -> str:
+def get_output_file_temp_html(prefix: str) -> str:
     '''
     minor func
     '''
     return 'temp.html'
 
 
-def get_output_file_pdf(mmcif_file: str) -> str:
+def get_output_file_pdf(prefix: str) -> str:
     '''
     minor func
     '''
-    return f'{Path(mmcif_file).stem}_full_validation.pdf'
+    return f'{prefix}_full_validation.pdf'
 
 
-def get_output_file_json(mmcif_file: str) -> str:
+def get_output_file_json(prefix: str) -> str:
     '''
     minor func
     '''
-    return f'ValidationReport_{Path(mmcif_file).stem}.json'
+    return f'ValidationReport_{prefix}.json'
 
 
-def get_supp_file_pdf(mmcif_file: str) -> str:
+def get_supp_file_pdf(prefix: str) -> str:
     '''
     minor func
     '''
-    return f'{Path(mmcif_file).stem}_summary_validation.pdf'
+    return f'{prefix}_summary_validation.pdf'
 
 
 def get_subunits(sub_dict: dict) -> list:

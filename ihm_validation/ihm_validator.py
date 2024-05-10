@@ -201,7 +201,7 @@ def createdirs(dirNames: dict):
             logging.info(f"Directory {name} created ")
 
 
-def write_html(mmcif_file: str, template_dict: dict, template_list: list, dirName: str):
+def write_html(prefix: str, template_dict: dict, template_list: list, dirName: str):
     for template_file in template_list:
         template = templateEnv.get_template(template_file)
         outputText = template.render(template_dict)
@@ -210,11 +210,11 @@ def write_html(mmcif_file: str, template_dict: dict, template_list: list, dirNam
                 fh.write(outputText)
 
 
-def write_pdf(mmcif_file: str, template_dict: dict, template_file: str, dirName: str, dirName_Output: str):
+def write_pdf(prefix: str, template_dict: dict, template_file: str, dirName: str, dirName_Output: str):
     template = templateEnv.get_template(template_file)
     outputText = template.render(template_dict)
-    temp_html = os.path.join(dirName, utility.get_output_file_temp_html(mmcif_file))
-    output_pdf = os.path.join(dirName_Output, utility.get_output_file_pdf(mmcif_file))
+    temp_html = os.path.join(dirName, utility.get_output_file_temp_html(prefix))
+    output_pdf = os.path.join(dirName_Output, utility.get_output_file_pdf(prefix))
 
     with open(temp_html, "w") as fh:
         fh.write(outputText)
@@ -224,11 +224,11 @@ def write_pdf(mmcif_file: str, template_dict: dict, template_file: str, dirName:
 
     return output_pdf
 
-def write_supplementary_table(mmcif_file: str, template_dict: dict, template_file: str, dirName: str, dirName_supp: str):
+def write_supplementary_table(prefix: str, template_dict: dict, template_file: str, dirName: str, dirName_supp: str):
     template = templateEnv.get_template(template_file)
     outputText = template.render(template_dict)
-    temp_html = os.path.join(dirName, utility.get_supp_file_html(mmcif_file))
-    output_pdf = os.path.join(dirName_supp, utility.get_supp_file_pdf(mmcif_file))
+    temp_html = os.path.join(dirName, utility.get_supp_file_html(prefix))
+    output_pdf = os.path.join(dirName_supp, utility.get_supp_file_pdf(prefix))
 
     with open(temp_html, "w") as fh:
         fh.write(outputText)
@@ -317,7 +317,7 @@ if __name__ == "__main__":
         molprobity_dict, exv_data, sas_data, sas_fit, cx_fit, imageDirName=dirNames['images'])
 
     logging.info("Write PDF")
-    output_pdf = write_pdf(args.f, template_dict, template_pdf,
+    output_pdf = write_pdf(output_prefix, template_dict, template_pdf,
               dirNames['pdf'], dirNames['pdf'])
     shutil.copy(output_pdf, str(output_path))
 
@@ -335,7 +335,7 @@ if __name__ == "__main__":
                                                    clustering=None,
                                                    )
     output_pdf = write_supplementary_table(
-        args.f, template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
+        output_prefix, template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
     shutil.copy(output_pdf, str(output_path))
 
     template_dict['supplementary_pdf'] = Path(output_pdf).name
@@ -346,7 +346,7 @@ if __name__ == "__main__":
     logging.info("Write HTML")
     # set html mode
     template_dict['html_mode'] = args.html_mode
-    write_html(args.f, template_dict, template_flask, dirNames['html'])
+    write_html(output_prefix, template_dict, template_flask, dirNames['html'])
     if args.html_mode == 'local':
         shutil.copytree(
             args.html_resources,
