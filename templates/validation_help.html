@@ -59,6 +59,7 @@
                 <li><a href="#flexibility" style="color: #003366;">4.3 SAS: Flexibility Analysis</a></li>
                 <li><a href="#pofr" style="color: #003366;">4.4 SAS: P(r) Analysis</a></li>
                 <li><a href="#guinier" style="color: #003366;">4.5 SAS: Guinier Analysis</a></li>
+                <li><a href="#dq-crosslinking-ms" style="color: #003366;">4.6 Crosslinking-MS</a></li>
               </ul>
             </li>
             <li>
@@ -73,6 +74,8 @@
               <ul>
                 <li><a href="#goodness" style="color: #003366;">6.1 SAS:  &#x3A7;&#178; Goodness of Fit Assessment </a></li>
                 <li><a href="#cormap" style="color: #003366;">6.2: SAS: Cormap Analysis </a></li>
+                <li><a href="#fq-crosslinking-ms-restraints" style="color: #003366;">6.3 Crosslinking-MS: Restraint Types</a></li>
+                <li><a href="#fq-crosslinking-ms-satisfaction" style="color: #003366;">6.4 Crosslinking-MS: Satisfaction Rates</a></li>
               </ul>
             </li>
             <li>
@@ -216,6 +219,12 @@
             <a name='guinier'><i>4.5. SAS: Guinier Analysis:</i></a> Agreement between the P(r) and Guinier-determined R<sub>g</sub> (table below) is a good measure of the self-consistency of the SAS profile. The linearity of the Guinier plot is a sensitive indicator of the quality of the experimental SAS data; a linear Guinier plot is a necessary but not sufficient demonstration that a solution contains monodisperse particles of the same size. Deviations from linearity usually point to strong interference effects, polydispersity of the samples or improper background subtraction <a href='https://link.springer.com/book/10.1007/978-1-4757-6624-0'> (Feigin and Svergun 1987)</a>. Residual value plot and coefficient of determination (R<sup>2</sup>) are measures to assess linear fit to the data. A perfect fit has an R<sup>2</sup> value of 1. Residual values should be equally and randomly spaced around the horizontal axis.
           </p>
           
+          <p class=ex2 align='justify'>
+            <a name='dq-crosslinking-ms'><i>4.6. Crosslinking-MS:</i></a> At the moment, data validation is only available for crosslinking-MS data deposited as a fully <a href=https://www.ebi.ac.uk/pride/markdownpage/crosslinking>compliant</a> dataset in <a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE</a> database. 
+              Correspondence between crosslinking-MS and entry entities is established using <a href=https://pyhmmer.readthedocs.io/en/stable/>pyHMMER</a>. Only residue pairs that passed the reported threshold are used for the analysis. The values in the report have to be interpreted in the context
+              of the experiment (i.e. only a minor fraction of in-situ or in-vivo dataset can be used for modeling).
+          </p>
+          
           <p style=margin-bottom:0.5cm;></p>
         </div>
       </div>
@@ -309,6 +318,14 @@
           
           <p class=ex2 align='justify'>
             <a name='cormap'><i>6.2. SAS: Cormap Analysis:</i></a> ATSAS datcmp <a href='https://pubmed.ncbi.nlm.nih.gov/33833657/'>(Manalastas-Cantos et al. 2021)</a> was used for hypothesis testing, using the null hypothesis that all data sets (i.e. the fit and the data collected) are similar. The reported p-value is a measure of evidence against the null hypothesis; the smaller the value, the stronger the evidence that the null hypothesis should be rejected.
+          </p>
+          
+          <p class=ex2 align='justify'>
+            <a name='fq-crosslinking-ms-restraints'><i>6.3. Crosslinking-MS: Restraint types:</i> Summary table of crosslinking-MS restraint types reported in the entry and distogram plots. Restraints assigned <a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Items/_ihm_cross_link_restraint.model_granularity.html>"by-residue"</a> are interpreted as between CA atoms. Restraints between coarse-grained beads are indicated as "coarse-grained". Restraints with identical thresholds are grouped into one plot. Only best distance per restraint per model group/ensemble is plotted. Intra- and intermolecular self-link restraints are also grouped into one plot. Distance for a restraint between coarse-grained beads is calculated as a minimal distance between shells; if beads intersect, the distance will be reported as 0.0. A bead with the highest available resolution for a given residue is used for the assessment.
+          </p>
+          
+          <p class=ex2 align='justify'>
+            <a name='fq-crosslinking-ms-satisfaction'><i>6.4. Crosslinking-MS: Satisfaction rates:</i> Satisfaction of restraints is calculated on a restraint group level. Satisfaction of a restraint group depends on satisfaction of individual restraints in the group and the conditionality (all/any). A restraint group is considered satisfied, if the condition was met in at least one model of the model group/ensemble. Only deposited models are used for validation right now.
           </p>
           
           <p style=margin-bottom:0.5cm;> </p>
