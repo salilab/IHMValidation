@@ -132,6 +132,58 @@ class GetInputInformation(object):
 
         return entry_id
 
+    def get_ranked_id_list(self) -> list:
+        """Get sorted list of multiple ids"""
+        ids = []
+        entry_id = self.system.id
+
+        # Sort primary/secondary IDs
+        # If we have database2 table
+        if len(self.system.databases) > 0:
+            pdb_id = self.get_pdb_id()
+            pdb_dev_id = self.get_pdb_dev_id()
+            # if PDB is a primary
+            if pdb_id is not None and entry_id == pdb_id:
+                k = ('PDB ID', pdb_id)
+                ids.append(k)
+
+                if pdb_dev_id is not None:
+                    k = ('PDB-Dev ID', pdb_dev_id)
+                    ids.append(k)
+
+            # if PDB-Dev is a primary
+            elif pdb_dev_id is not None and entry_id == pdb_dev_id:
+                k = ('PDB-Dev ID', pdb_dev_id)
+                ids.append(k)
+
+                if pdb_id is not None:
+                    k = ('PDB ID', pdb_id)
+                    ids.append(k)
+            # Else entity is a primary
+            else:
+                k = ('Entry ID', entry_id)
+                ids.append(k)
+
+                if pdb_id is not None:
+                    k = ('PDB ID', pdb_id)
+                    ids.append(k)
+
+                if pdbdev_id is not None:
+                    k = ('PDB-Dev ID', pdb_dev_id)
+                    ids.append(k)
+
+        # Compatibility mode for old ID scheme
+        else:
+            if re.match('PDBDEV_', entry_id):
+                k = ('PDB-Dev ID', entry_id)
+                ids.append(k)
+            else:
+                k = ('Entry ID', entry_id)
+                ids.append(k)
+
+        return ids
+
+
     def get_primary_citation_info(self) -> tuple:
         '''get title and authors for the primary citation'''
         title, authors = None, None

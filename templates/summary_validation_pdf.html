@@ -65,13 +65,13 @@
       </style>
    </head>
    <body>
-    {% if PDB_ID is not none %}
-      <h3 class="center">Summary of integrative structure determination of {{complex_name}} ({{PDB_ID}}) </h3>
-    {% elif PDBDEV_ID is not none %}
-      <h3 class="center">Summary of integrative structure determination of {{complex_name}} ({{PDBDEV_ID}}) </h3>
-    {% else %}
-      <h3 class="center">Summary of integrative structure determination of {{complex_name}} ({{ID_T}}) </h3>
-    {% endif %}
+    {% set comma = joiner(", ") %}
+    <h3 class="center">Summary of integrative structure determination of {{complex_name}} (
+      {%- for k, v in ranked_id_list -%}
+        {{ comma()}}{{ v }}
+      {%- endfor -%}
+      )
+    </h3>
       <div class="ex1">
          <table ID=t01>
          <tr bgcolor ='silver'>
