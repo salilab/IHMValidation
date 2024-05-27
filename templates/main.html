@@ -32,7 +32,7 @@
       <!-- end card header -->
     </div>
     <!-- end col -->
-    <div class="col-lg-8 col-md-2">
+    <div>
       <div class="card-header" style="background-color:#FFFFFF; border-color:#003366;">
         <div class="bs-example" class="text-center">
           <table class="table table-bordered" style="border-color:#003366; height: 25rem;">
@@ -43,21 +43,21 @@
               </tr>
             {% endfor %}
             <tr>
-              <td class="align-middle" class="text-center">Structure title</td>
-              <td class="align-middle" class="text-center">{{Molecule}} </td>
+              <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Structure Title</td>
+              <td style="text-align:center; vertical-align: middle;">{{ Molecule }} </td>
             </tr>
             <tr>
-              <td class="align-middle" class="text-center">Structure authors</td>
-              <td class="align-middle" class="text-center">{{Authors}}</td>
+              <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Structure Authors</td>
+              <td style="text-align:center; vertical-align: middle;">{{ Authors }}</td>
             </tr>
             {% if Citation_Title is not none %}
               <tr>
-                <td class="align-middle" class="text-center">Publication Title</td>
-                <td class="align-middle" class="text-center">{{Citation_Title}}</td>
+                <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Publication Title</td>
+                <td style="text-align:center; vertical-align: middle;">{{ Citation_Title }}</td>
               </tr>
               <tr>
-                <td class="align-middle" class="text-center">Authors</td>
-                <td class="align-middle" class="text-center">{{Citation_Authors}}</td>
+                <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Authors</td>
+                <td style="text-align:center; vertical-align: middle;">{{ Citation_Authors }}</td>
               </tr>
           {% endif %}
           </table>
