@@ -118,7 +118,7 @@ class GetInputInformation(object):
         if len(self.system.databases) > 0:
             for db in self.system.databases:
                 if db.id == 'PDB':
-                    entry_id =  db.code
+                    entry_id =  db.code.upper()
 
         return entry_id
 
@@ -128,7 +128,7 @@ class GetInputInformation(object):
         if len(self.system.databases) > 0:
             for db in self.system.databases:
                 if db.id == 'PDB-Dev':
-                    entry_id =  db.code
+                    entry_id =  db.code.upper()
 
         return entry_id
 
