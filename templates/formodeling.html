@@ -56,7 +56,7 @@
                 {% for i in range(sasdb_code_html|length) %}
                   {% for j in range(sasdb_code_fits[i]) %}
                     {% set k = j + 1 %}
-                      {{ insert_sas_plot(ID_w[0], sasdb_code_html[i], j|int ~ 'fit1') }}
+                      {{ insert_sas_plot(ID, sasdb_code_html[i], j|int ~ 'fit1') }}
                   {% endfor %}
                 {% endfor %}
               </div>

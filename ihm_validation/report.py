@@ -80,13 +80,6 @@ class WriteReport(object):
             utility.dict_to_JSlist_rows(RB, flex))
         entry_id = self.input.get_id()
         Template_Dict['ID'] = entry_id
-        Template_Dict['ID_w'] = entry_id.split()
-        Template_Dict['ID_T'] = entry_id[0:6]+'_' + \
-            entry_id[6:]
-        Template_Dict['ID_MP'] = [str(entry_id[0:6]+'_' +
-                                      entry_id[6:])]
-        Template_Dict['ID_R'] = (
-            entry_id[0:6]+'_'+entry_id[6:]).split()
         Template_Dict['PDB_ID'] = self.input.get_pdb_id()
         Template_Dict['PDBDEV_ID'] = self.input.get_pdb_dev_id()
         Template_Dict['ranked_id_list'] = self.input.get_ranked_id_list()

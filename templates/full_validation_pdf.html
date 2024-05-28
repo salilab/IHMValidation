@@ -237,7 +237,7 @@
                 
                 {% for i in range([NumModels, MAXPLOTS] | min) %}
                   <div>
-                    <img src={{ "../images/" ~ ID_w[0] ~ '_' ~ i ~ '_quality_at_glance_MQ.svg'}}>
+                    <img src={{ "../images/" ~ ID ~ '_' ~ i ~ '_quality_at_glance_MQ.svg'}}>
                   </div>
                 {% endfor %}
               {% elif disclaimer == 1 %}
@@ -255,7 +255,7 @@
                     <div class="col-lg-12">
                        <div class="card-header" style="background-color: #FFFFFF ;">
                           <div class="box text-center container-fluid no-padding" align="center">
-                            <img src={{"../images/" ~ ID_w[0] ~ "quality_at_glance_DQ.svg"}}>
+                            <img src={{"../images/" ~ ID ~ "quality_at_glance_DQ.svg"}}>
                           </div>
                        </div>
                     </div>
@@ -271,7 +271,7 @@
                   <div class="col-lg-12">
                     <div class="card-header" style="background-color: #FFFFFF ;">
                       <div class="box text-center container-fluid no-padding" align="center">
-                        <img src={{"../images/" ~ ID_w[0] ~ "quality_at_glance_FQ.svg"}}>
+                        <img src={{"../images/" ~ ID ~ "quality_at_glance_FQ.svg"}}>
                       </div>
                     </div>
                   </div>
@@ -442,12 +442,12 @@
               <div class=row>
                 <div class=col-lg-12>
                   <div class=box text-center container-fluid no-padding align=center>
-                    <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] }}intensities.svg>
+                    <img src=../images/{{ ID ~ sasdb_code_html[i] }}intensities.svg>
                   </div>
                 </div>
                 <div class=col-lg-12>
                   <div class=box text-center container-fluid no-padding align=center>
-                    <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] }}intensities_log.svg>
+                    <img src=../images/{{ ID ~ sasdb_code_html[i] }}intensities_log.svg>
                   </div>
                 </div>
               </div>
@@ -481,12 +481,12 @@
               <div class=row>
                 <div class=col-xs-6>
                   <div class=box text-center container-fluid no-padding align=center>
-                    <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] }}porod.svg>
+                    <img src=../images/{{ ID ~ sasdb_code_html[i] }}porod.svg>
                   </div>
                 </div>
                 <div class=col-xs-6>
                   <div class=box text-center container-fluid no-padding align=center style=height:60vh >
-                    <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] }}Kratky.svg>
+                    <img src=../images/{{ ID ~ sasdb_code_html[i] }}Kratky.svg>
                   </div>
                 </div>
               </div>
@@ -509,12 +509,12 @@
               <div class=row>
                 <div class=col-xs-6>
                   <div class=box text-center container-fluid no-padding align=center>
-                    <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] }}pddf.svg>
+                    <img src=../images/{{ ID ~ sasdb_code_html[i] }}pddf.svg>
                   </div>
                 </div>
                 <div class=col-xs-6>
                   <div class=box text-center container-fluid no-padding align=center>
-                    <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] }}pddf_int.svg>
+                    <img src=../images/{{ ID ~ sasdb_code_html[i] }}pddf_int.svg>
                   </div>
                 </div>
               </div>
@@ -538,7 +538,7 @@
               <div class=row>
                 <div class=col-lg-12>
                   <div class=box text-center container-fluid no-padding align=center>
-                    <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] }}guinier.svg>
+                    <img src=../images/{{ ID ~ sasdb_code_html[i] }}guinier.svg>
                   </div>
                 </div>
               </div>
@@ -602,7 +602,7 @@
                 </h5>
                 
                 {% if molp_b|length > 1 %}
-                  <i>There are {{ bond }} bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID_MP[0] }}/htmls/bond_outliers.html>here</a>.</i>
+                  <i>There are {{ bond }} bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID }}/htmls/bond_outliers.html>here</a>.</i>
                   {{ write_table(molp_b) }}
                 {% else %}
                   <i> Bond length outliers can not be evaluated for this model</i>
@@ -613,7 +613,7 @@
                   <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help1' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a></h5>
            
                 {% if molp_a|length > 1 %}
-                  <i>There are {{ angle }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID_MP[0] }}/htmls/angle_outliers.html>here</a>.</i>
+                  <i>There are {{ angle }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID }}/htmls/angle_outliers.html>here</a>.</i>
                   {{ write_table(molp_a) }}
                 {% else %}
                   <i>Bond angle outliers do not exist or can not be evaluated for this model</i>
@@ -728,7 +728,7 @@
                       <div class=row>
                         <div class=col-lg-12>
                           <div class=box text-center container-fluid no-padding align=center>
-                            <img src=../images/{{ ID_w[0] ~ sasdb_code_html[i] ~ j|int }}fit1.svg>
+                            <img src=../images/{{ ID ~ sasdb_code_html[i] ~ j|int }}fit1.svg>
                           </div>
                         </div>
                       </div>

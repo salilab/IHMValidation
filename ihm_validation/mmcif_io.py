@@ -90,27 +90,9 @@ class GetInputInformation(object):
         return dbs
 
     def get_id(self):
-        """ get id from model name, eg: PDBDEV_00XX will be PDBDEV00XX"""
-        # if self.system.id == 'model':
-        #    id = self.get_id_from_entry()
-        # else:
-        #    id = self.system.id.split('_')[0] + self.system.id.split('_')[1]
-        return self.get_id_from_entry()
-
-    def get_id_from_entry(self) -> str:
-        """ get id name from entry for cif files
-            deprecated """
-        sf = open(self.mmcif_file, 'r', encoding='latin1')
-        for ind, ln in enumerate(sf.readlines()):
-            line = ln.strip().split(' ')
-            if '_entry.id' in line[0]:
-                entry_init = line[-1]
-                try:
-                    entry = entry_init.split('_')[0] + \
-                        entry_init.split('_')[1]
-                except:
-                    entry = entry_init.strip()
-        return entry
+        """Return _entry.id; Requires compliant CIF file"""
+        entry_id = self.system.id
+        return entry_id
 
     def get_pdb_id(self) -> str:
         """Check database2 table for PDB ID"""
