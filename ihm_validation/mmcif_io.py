@@ -150,7 +150,7 @@ class GetInputInformation(object):
                     k = ('PDB ID', pdb_id)
                     ids.append(k)
 
-                if pdbdev_id is not None:
+                if pdb_dev_id is not None:
                     k = ('PDB-Dev ID', pdb_dev_id)
                     ids.append(k)
 
