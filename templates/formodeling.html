@@ -95,9 +95,6 @@
                     <table id='cx_ertypes_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
                       <thead>
                         <tr>
-                          <th align='center' class='text-center' style='vertical-align:middle'>
-                            Type #
-                          </th>
                           {% for k in cx_ertypes['columns'] %}
                           <th align='center' class='text-center' style='vertical-align:middle'>
                             {{ k }}
@@ -108,7 +105,6 @@
                       
                       {% for i in range(cx_ertypes['data']|length) %}
                         <tr>
-                          <td>{{ i }}</td>
                           {% for v in cx_ertypes['data'][i] %}
                             <td>{{ v }}</td>
                           {% endfor %}
