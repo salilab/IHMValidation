@@ -417,7 +417,7 @@ class Plots(GetInputInformation):
                 legends = [f'{i} %' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-                pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 25,
+                pf = figure(y_range=Scores, x_range=(0, 102), plot_height=100 + len(counts) * 25,
                             plot_width=700, title="Crosslink satisfaction")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
                              source=source, alpha=0.8, line_color='black')
