@@ -253,7 +253,7 @@
   
             <!-- Data quality -->
             <!-- SAS -->
-            {% if ( (sas|length > 0) and (sasdb_sascif|length > 0) ) or (cx_data_quality|length > 0) %}
+            {% if glance_plots["DQ"] and (((sas|length > 0) and (sasdb_sascif|length > 0)) or (cx_data_quality|length > 0)) %}
               <div class="card-body">
                  <div class="row">
                     <div class="col-lg-12">
@@ -269,7 +269,7 @@
   
             <!-- Fit to data -->
             <!-- SAS -->
-            {% if ( (sasdb_sascif|length > 0) and (number_of_fits|int > 0 ) ) or (cx_stats is not none) %}
+            {% if glance_plots["FQ"] and (((sasdb_sascif|length > 0) and (number_of_fits|int > 0)) or (cx_stats is not none)) %}
               <div class="card-body">
                 <div class="row">
                   <div class="col-lg-12">

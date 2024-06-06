@@ -38,7 +38,13 @@ class Plots(GetInputInformation):
         self.driver=driver
 
     def plot_quality_at_glance(self, molprobity_data: dict, exv_data: dict,
-                               sas_data: dict, sas_fit: dict, cx_data_quality: dict, cx_fit: dict) -> bokeh.plotting.figure:
+                               sas_data: dict, sas_fit: dict, cx_data_quality: dict, cx_fit: dict) -> dict:
+
+        glance_plots = {
+            'MQ': False,
+            'DQ': False,
+            'FQ': False,
+        }
 
         # create tabs list to add all the panel figures (model quality, data quality.. etc)
         output_file(self.ID+"quality_at_glance.html", mode="inline")
@@ -211,6 +217,8 @@ class Plots(GetInputInformation):
         save(fullplot, filename=self.filename+'/' +
              self.ID+"quality_at_glance_MQ.html")
 
+        glance_plots['MQ'] = True
+
         # DATA QUALITY
         # check for sas data, if exists, plot
         # this section will be updated with more data assessments, as and when it is complete
@@ -281,12 +289,20 @@ class Plots(GetInputInformation):
             # create plot
             for i, name_ in enumerate(Models):
 
+                title_txt = "Crosslinking-MS Data Quality"
+                title = Div(text=f"<p>{title_txt}</p>",
+                            style={"font-size": "1.5em", "font-weight": "bold",
+                                   "text-align": "center"}
+                            )
+
+
                 p = figure(
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(0, upper),
                     plot_height=120,
-                    plot_width=700
+                    plot_width=700,
+                    title=title_txt
                 )
 
                 rd = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
@@ -310,6 +326,7 @@ class Plots(GetInputInformation):
                 p.xaxis.axis_label_text_font_style = 'italic'
                 p.left[0].group_text_font_size = '14px'
                 p.left[0].group_label_orientation = 'horizontal'
+                p.title.text_font_size = '14pt'
                 p.title.vertical_align = 'top'
                 p.title.align = "center"
                 p.output_backend = "svg"
@@ -317,31 +334,31 @@ class Plots(GetInputInformation):
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
-                            toolbar_location='right')
+                            toolbar_location='right',
+                            )
             grid.children[1].css_classes = ['scrollable']
             grid.children[1].sizing_mode = 'fixed'
             grid.children[1].height = 450
             grid.children[1].width = 800
 
-            title = Div(text="<p>Crosslinking-MS Data Quality</p>",
-                        style={"font-size": "1.5em", "font-weight": "bold",
-                               "text-align": "center", "width": '100%'}, width=800
-                        )
 
-            fullplot = column(title, grid)
+            # fullplot = column(title, grid)
 
-            dq_plots.append(fullplot)
+            dq_plots.append(grid)
 
         if len(dq_plots) > 0:
             pd = gridplot(dq_plots, ncols=1,
                      toolbar_location="above",
                      # sizing_mode='stretch_width'
                      )
+            # pd = column(*dq_plots)
 
             export_svg(pd, filename=self.filename+'/' +
                         self.ID+"quality_at_glance_DQ.svg", webdriver=self.driver)
             save(pd, filename=self.filename+'/' +
                      self.ID+"quality_at_glance_DQ.html")
+
+            glance_plots['DQ'] = True
 
         # FIT TO DATA QUALITY
         # check for sas data, if exists, plot
@@ -396,31 +413,32 @@ class Plots(GetInputInformation):
                         Scores.append(f'Model group/Ensemble {i}')
                         counts.append(s)
 
-            legends = [f'{i} %' for i in counts]
-            source = ColumnDataSource(data=dict(
-                Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 25,
-                        plot_width=700, title="Crosslink satisfaction")
-            rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
-                         source=source, alpha=0.8, line_color='black')
-            pf.ygrid.grid_line_color = None
-            pf.title.text_font_size = '14pt'
-            pf.xaxis.axis_label = 'Satisfaction rate, %'
-            pf.xaxis.major_label_text_font_size = "12pt"
-            pf.yaxis.major_label_text_font_size = "12pt"
-            legend = Legend(items=[LegendItem(label=legends[i], renderers=[
-                            rf], index=i) for i in range(len(legends))], location="center",
-                            orientation='vertical', label_text_font_size="12px")
-            pf.add_layout(legend, 'right')
-            pf.title.vertical_align = 'top'
-            pf.title.align = "center"
-            pf.output_backend = "svg"
-            pf.legend.label_text_font_size = "12px"
-            pf.xaxis.axis_label_text_font_style = 'italic'
-            pf.yaxis.axis_label_text_font_style = 'italic'
-            pf.xaxis.axis_label_text_font_size = "14pt"
-            pf.yaxis.major_label_text_font_size = "14pt"
-            fq_plots.append(pf)
+            if len(counts) > 0:
+                legends = [f'{i} %' for i in counts]
+                source = ColumnDataSource(data=dict(
+                    Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
+                pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 25,
+                            plot_width=700, title="Crosslink satisfaction")
+                rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
+                             source=source, alpha=0.8, line_color='black')
+                pf.ygrid.grid_line_color = None
+                pf.title.text_font_size = '14pt'
+                pf.xaxis.axis_label = 'Satisfaction rate, %'
+                pf.xaxis.major_label_text_font_size = "12pt"
+                pf.yaxis.major_label_text_font_size = "12pt"
+                legend = Legend(items=[LegendItem(label=legends[i], renderers=[
+                                rf], index=i) for i in range(len(legends))], location="center",
+                                orientation='vertical', label_text_font_size="12px")
+                pf.add_layout(legend, 'right')
+                pf.title.vertical_align = 'top'
+                pf.title.align = "center"
+                pf.output_backend = "svg"
+                pf.legend.label_text_font_size = "12px"
+                pf.xaxis.axis_label_text_font_style = 'italic'
+                pf.yaxis.axis_label_text_font_style = 'italic'
+                pf.xaxis.axis_label_text_font_size = "14pt"
+                pf.yaxis.major_label_text_font_size = "14pt"
+                fq_plots.append(pf)
 
         if len(fq_plots) > 0:
             pf = gridplot(fq_plots, ncols=1,
@@ -432,3 +450,7 @@ class Plots(GetInputInformation):
                         self.ID+"quality_at_glance_FQ.svg", webdriver=self.driver)
             save(pf, filename=self.filename+'/' +
                  self.ID+"quality_at_glance_FQ.html")
+
+            glance_plots['FQ'] = True
+
+        return glance_plots

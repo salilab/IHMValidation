@@ -462,13 +462,14 @@ class WriteReport(object):
     def run_quality_glance(self, molprobity_dict: dict, exv_data: dict,
                            sas_data: dict, sas_fit: dict,
                            cx_data_quality: dict, cx_fit: dict,
-                           imageDirName: str):
+                           imageDirName: str) -> dict:
         '''
         get quality at glance image; will be updated as validation report is updated
         '''
         I_plt = get_plots.Plots(self.mmcif_file, imageDirName, driver=self.driver)
-        I_plt.plot_quality_at_glance(
+        glance_plots = I_plt.plot_quality_at_glance(
             molprobity_dict, exv_data, sas_data, sas_fit, cx_data_quality, cx_fit)
+        return glance_plots
 
     def run_supplementary_table(self,
                                 Template_Dict,

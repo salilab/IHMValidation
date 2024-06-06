@@ -315,12 +315,13 @@ if __name__ == "__main__":
         cx_data_quality = None
 
     logging.info("Quality at a glance")
-    report.run_quality_glance(
+    glance_plots = report.run_quality_glance(
         molprobity_dict, exv_data,
         sas_data, sas_fit,
         cx_data_quality, cx_fit,
         imageDirName=dirNames['images']
     )
+    template_dict['glance_plots'] = glance_plots
 
     logging.info("Write PDF")
     output_pdf = write_pdf(output_prefix, template_dict, template_pdf,
