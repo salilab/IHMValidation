@@ -95,7 +95,7 @@ class GetExcludedVolume(GetInputInformation):
         # The enumeration is done to preveserve
         # compatibility as it's a drop-in replacement
         for indx, i in enumerate(range(len(xyz) - 1), 1):
-            viols_ = 0.
+            viols_ = 0
             # Get neighours in R1+R2 radius, where
             # R1 is particle's i radius
             # and R2 is the maxium radius
@@ -109,7 +109,7 @@ class GetExcludedVolume(GetInputInformation):
                     # np.linalg.norm is slow, but convenient
                     d = np.linalg.norm(xyz[i] - xyz[j])
                     if d < (radii[i] + radii[j]):
-                        viols_ += 1.
+                        viols_ += 1
 
             viols[indx] = viols_
 
