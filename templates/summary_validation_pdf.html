@@ -68,7 +68,7 @@
     {% set comma = joiner(", ") %}
     <h3 class="center">Summary of integrative structure determination of {{complex_name}} (
       {%- for k, v in ranked_id_list -%}
-        {{ comma()}}{{ v }}
+        {{ comma()}}{{ k ~": " ~ v }}
       {%- endfor -%}
       )
     </h3>
