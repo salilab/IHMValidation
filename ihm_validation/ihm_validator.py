@@ -276,7 +276,9 @@ if __name__ == "__main__":
     report = WriteReport(args.f,
                          db=args.databases_root,
                          cache=args.cache_root,
-                         nocache=args.nocache)
+                         nocache=args.nocache,
+                         enable_sas=args.enable_sas,
+                         enable_cx=args.enable_cx)
 
     logging.info("Entry composition")
     template_dict = report.run_entry_composition(Template_Dict)
