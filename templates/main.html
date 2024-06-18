@@ -115,7 +115,7 @@
               </li>
             {% endif %}
           
-            {% if glance_plots["DQ"] and ((sas) or (cx_data_quality|length > 0)) %}
+            {% if glance_plots["DQ"] and ((sas) or (cx_data_quality is not none and cx_data_quality|length > 0)) %}
               <li>
                 <a class="nav-link" data-toggle="tab" href="#menu1">Data Quality</a>
               </li>
@@ -197,7 +197,7 @@
           <li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a> Version {{ atsas_version }}</em></li>
         {% endif %}
               
-        {% if cx_data_quality|length > 0 %}
+        {% if cx_data_quality is not none and cx_data_quality|length > 0 %}
           <li><em><a href='https://pyhmmer.readthedocs.io/en/stable/'>pyHMMER</a> Version {{pyhmmer_version }}</em></li>
         {% endif %}
         

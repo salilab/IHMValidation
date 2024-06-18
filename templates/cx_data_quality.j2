@@ -15,7 +15,7 @@
               of the experiment (i.e. only a minor fraction of in-situ or in-vivo dataset can be used for modeling).
             </em>
           </p>
-          {% if cx_data_quality|length > 0 %}
+          {% if cx_data_quality is not none and cx_data_quality|length > 0 %}
             {% for data in cx_data_quality %}
               <div name=crosslinking-ms-{{ data["pride_id"] }} {{ 'class="card-header" style="background-color: #FFF;"' if cx_data_quality|length > 1 }}>
                 <table class='table'>

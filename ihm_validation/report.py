@@ -402,6 +402,7 @@ class WriteReport(object):
         Template_Dict['cx_num_of_restraints'] = None
         Template_Dict['cx_num_of_restraint_groups'] = None
         Template_Dict['cx_stats_per_model'] = None
+        Template_Dict['cx_data_quality'] = None
         output = (Template_Dict, None, None)
 
         if self.input.check_for_cx(self.input.get_dataset_comp()):

@@ -150,7 +150,7 @@
                 <li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a> Version {{atsas_version }}</em></li>
               {% endif %}
               
-              {% if cx_data_quality|length > 0 %}
+              {% if cx_data_quality is not none and cx_data_quality|length > 0 %}
                 <li><em><a href='https://pyhmmer.readthedocs.io/en/stable/'>pyHMMER</a> Version {{pyhmmer_version }}</em></li>
               {% endif %}
               
@@ -253,7 +253,7 @@
   
             <!-- Data quality -->
             <!-- SAS -->
-            {% if glance_plots["DQ"] and (((sas|length > 0) and (sasdb_sascif|length > 0)) or (cx_data_quality|length > 0)) %}
+            {% if glance_plots["DQ"] and (((sas|length > 0) and (sasdb_sascif|length > 0)) or ((cx_data_quality is not none and cx_data_quality|length > 0))) %}
               <div class="card-body">
                  <div class="row">
                     <div class="col-lg-12">
