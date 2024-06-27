@@ -61,7 +61,7 @@ class Plots(GetInputInformation):
                     'Clashscore': molprobity_data['Clashscore'],
                     'Ramachandran outliers': molprobity_data['Ramachandran outliers'],
                     'Sidechain outliers': molprobity_data['Sidechain outliers']}
-            y = [(model, score) for model in Models for score in Scores]
+            y = [(str(model), score) for model in Models for score in Scores]
             counts = sum(zip(data['Clashscore'], data['Ramachandran outliers'],
                          data['Sidechain outliers']), ())
             source = ColumnDataSource(data=dict(y=y, counts=counts))
@@ -151,7 +151,7 @@ class Plots(GetInputInformation):
             plots = []
 
             # get ranges
-            lower, upper = utility.calc_optimal_range(counts)
+            lower, upper = 0, 102
 
             for i, name_ in enumerate(model):
                 p = figure(y_range=source.data['Scores'][i: i + 1], x_range=(lower, upper), plot_height=100,
@@ -161,7 +161,7 @@ class Plots(GetInputInformation):
 
                 r = p.hbar(y=source.data['Scores'][i:i + 1], right=source.data['counts'][i: i + 1], color=source.data['color'][i:i + 1], height=0.5,
                            alpha=0.8, line_color='black')
-                p.xaxis.axis_label = 'Number of violations'
+                p.xaxis.axis_label = 'Satisfaction rate, %'
                 legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
                     r], index=j) for j in range(len(legends[i:i + 1]))], location='center',
                     label_text_font_size='12px', orientation='vertical')
@@ -301,7 +301,7 @@ class Plots(GetInputInformation):
                 p = figure(
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
-                    x_range=(0, upper),
+                    x_range=(lower, upper),
                     plot_height=120,
                     plot_width=700,
                     title=title_txt

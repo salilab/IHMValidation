@@ -491,10 +491,12 @@ def calc_optimal_range(counts: list) -> tuple:
         oom = order_of_magnitude(upper)
         upper = upper * (1 + 10 ** (-oom))
 
-    if lower > 0:
-        oom = order_of_magnitude(lower)
-        # Do not allow the range to go below zero
-        lower = max(0, lower * (1 - 10 ** (-oom)))
+    # if lower > 0:
+    #     oom = order_of_magnitude(lower)
+    #     # Do not allow the range to go below zero
+    #     lower = max(0, lower * (1 - 10 ** (-oom)))
+
+    lower = 0
 
     assert lower >= 0 and upper > 0
 
