@@ -1153,9 +1153,10 @@ class GetMolprobityInformation(GetInputInformation):
             if ind > 0:
                 molprobity['Names'].append(model[0])
                 molprobity['Models'].append(ind)
-                if len(model[1]) > 0:
-                    molprobity['Clashscore'].append(round(float(model[1]), 2))
-                else:
+                try:
+                    value = float(model[1])
+                    molprobity['Clashscore'].append(value)
+                except (TypeError, ValueError):
                     molprobity['Clashscore'].append(0.0)
                 molprobity['Ramachandran outliers'].append(int(rama[ind][-1]))
                 molprobity['Sidechain outliers'].append(int(rota[ind][-1]))

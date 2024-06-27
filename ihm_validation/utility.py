@@ -36,7 +36,27 @@ def dict_to_JSlist(d: dict) -> list:
         for j, v in enumerate(d.values()):
             # iterate over values of every key - fill rows
             for i, el in enumerate(v, start=1):
-                el_ = str(el)
+                # Check if int or float
+                if isinstance(el, int) or isinstance(el, float):
+                    el_ = el
+
+                # If string, try casting as int or float
+                elif isinstance(el, str):
+                    try:
+                        el_ = int(el)
+                    except (TypeError, ValueError):
+                        el_ = str(el)
+
+                    if isinstance(el_, str):
+                        try:
+                            el_ = float(el)
+                        except (TypeError, ValueError):
+                            el_ = str(el)
+
+                # Otherwise cast as str
+                else:
+                    el_ = str(el)
+
                 if el_ == '?':
                     el_ = '_'
                 try:

@@ -1,5 +1,5 @@
 <!-- Define a macro for generation of table from list of lists -->
-{% macro write_table(list_to_write) %}
+{% macro write_table(list_to_write, num_digits=2) %}
   <div class='bs-example' class='text-center'>
     <table class='table table-bordered' style='border-color:#003366;'>
       <thead>
@@ -16,7 +16,15 @@
           {% for i in range(list_to_write[j]|length) %}
             <td style="text-align:center; vertical-align: middle;">
               <div>
-                {{ list_to_write[j][i] }}
+                {% if list_to_write[j][i] is number %}
+                  {% if list_to_write[j][i] is float %}
+                    {{ ('%.' ~ num_digits ~ 'f')|format(list_to_write[j][i]) }}
+                  {% else %}
+                    {{ list_to_write[j][i]|int }}
+                  {% endif %}
+                {% else %}
+                  {{ list_to_write[j][i] }}
+                {% endif %}
               </div>
             </td>
           {% endfor %}
