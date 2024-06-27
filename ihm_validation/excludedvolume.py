@@ -50,15 +50,6 @@ class GetExcludedVolume(GetInputInformation):
         number_of_combinations = self.get_nCr(models_spheres_df.shape[1], 2)
         return (1-number_of_violations/number_of_combinations)*100
 
-    def get_violation_normalized(self, models_spheres_df: pd.DataFrame, viols: dict) -> float:
-        """
-        normalize violations, not currently used.
-        """
-        number_of_violations = sum(list(viols.values()))
-        normalization_constant = models_spheres_df.shape[1]*math.log(
-            models_spheres_df.shape[1], 10)
-        return (1-number_of_violations/normalization_constant)*100
-
     def get_xyzr(self, spheres: pd.DataFrame) -> pd.DataFrame:
         """ get X,Y, Z coords from sphere objects"""
         # model_spheres={i+1:[j.x,j.y,j.z,j.radius] for i,j in enumerate(spheres)}

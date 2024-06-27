@@ -376,18 +376,6 @@ def all_same(items: list):
     return all(x == items[0] for x in items)
 
 
-def exv_readable_format(exv: dict) -> list:
-    '''
-    format exv for supplementary/summary table
-    '''
-
-    fin_string = []
-    for ind, el in enumerate(exv['Models']):
-        fin_string.append('Model-'+str(el)+': '+'Number of violations = ' +
-                          str(exv['Number of violations'][ind]) + ' ')
-    return fin_string
-
-
 def mp_readable_format(mp: dict) -> list:
     '''
     format molprobity resukts for supplementary/summary table
