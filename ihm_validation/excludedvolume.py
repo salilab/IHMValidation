@@ -14,15 +14,15 @@ import pandas as pd
 import numpy as np
 from scipy.spatial import KDTree
 import math
-import os
-import csv
-
+import pickle
+import logging
 
 class GetExcludedVolume(GetInputInformation):
+    ID = None
+
     def __init__(self, mmcif_file, cache):
         super().__init__(mmcif_file)
-        self.ID = Path(self.mmcif_file).stem
-        self.nos = self.get_number_of_models()
+        self.ID = str(self.get_id())
         self.cache = cache
 
     def get_all_spheres(self, filetemp=None):
@@ -115,80 +115,47 @@ class GetExcludedVolume(GetInputInformation):
 
         return viols
 
-    def get_exc_vol_for_models(self, model_dict: dict) -> dict:
-        excluded_volume = {
-            'Models': [], 'Excluded Volume Satisfaction (%)': [], 'Number of violations': []}
-        for indx, model in model_dict.items():
-            excluded_volume['Models'].append(indx)
-            df = self.get_xyzr(model)
-            excluded_volume['Excluded Volume Satisfaction (%)'].append(
-                round(self.get_violation_percentage(df, self.get_violation_dict(df)), 2))
-            excluded_volume['Number of violations'].append(
-                sum(self.get_violation_dict(df).values()))
-        # open(os.path.join(os.getcwd(), self.resultpath, self.ID+'exv.txt'), 'w+')
-        return excluded_volume
-
-    def get_exc_vol_for_models_normalized(self, model_dict: dict) -> dict:
-        '''
-        get normalized value, normalized to total number of pairwise distances
-        '''
-        excluded_volume = {'Models': [], 'Excluded Volume Satisfaction (%)': []}
-        for indx, model in model_dict.items():
-            excluded_volume['Models'].append(indx)
-            df = self.get_xyzr(model)
-            satisfaction = self.get_violation_percentage(
-                df, self.get_violation_dict(df))
-            excluded_volume['Excluded Volume Satisfaction (%)'].append(
-                round(satisfaction, 2))
-        return excluded_volume
-
     def get_exc_vol_given_sphere_parallel(self, sphere_list: list) -> (float, int):
         """
         get violations from cart coords
         """
+        total = self.get_nCr(len(sphere_list), 2)
         df = self.get_xyzr(sphere_list)
         violation_dict = self.get_violation_dict(df)
         satisfaction = round(
             self.get_violation_percentage(df, violation_dict), 2)
         violations = sum(violation_dict.values())
-        return (satisfaction, violations)
+        return (total, violations, satisfaction)
 
     def run_exc_vol_parallel(self, model_dict: dict) -> dict:
         """ get exc vol info in parallel """
-        # list_of_sphere_list=list(model_dict.values())
-        filename = str(Path(self.cache, self.ID + '_exv.txt'))
-        if os.path.exists(filename):
-            return self.process_exv(filename)
-
         pool = mp.Pool(processes=min(4, len(model_dict.keys())))
         complete_list = pool.map(
             self.get_exc_vol_given_sphere_parallel, list(model_dict.values()))
         excluded_volume = {'Models': list(model_dict.keys()),
-                           'Excluded Volume Satisfaction (%)': [i[0] for i in complete_list],
-                           'Number of violations': [i[1] for i in complete_list]}
-
-        with open(filename, "w+") as file:
-            write_file = csv.writer(file)
-            for key, val in excluded_volume.items():
-                write_file.writerow([key, val])
+                           'Analysed': [i[0] for i in complete_list],
+                           'Number of violations': [i[1] for i in complete_list],
+                           'Excluded Volume Satisfaction (%)': [i[2] for i in complete_list],
+                           }
 
         return excluded_volume
 
-    def process_exv(self, filename: str) -> dict:
-        '''
-        function to format exv file, if exv has already been evaluated
-        '''
-        df = pd.read_csv(filename, names=['key', 'val'], header=None)
-        df['val'] = df['val'].apply(lambda x: x.strip('][').split(','))
-        return dict(zip(df.key, df.val))
+    def get_excluded_volume(self):
+        cache_fn = Path(self.cache, f'{self.ID}_exv.pickle')
+        data = None
 
-    def exv_readable_format(self, exv: dict) -> str:
-        '''
-        function to format text
-        '''
-        fin_string = ''
-        for i in exv['Models']:
-            fin_string+'Model-' + \
-                str(i)+': '+'Number of violations-' + \
-                str(exv['Number of violations'])
-        return fin_string
+        # Check if we already requested the data
+        if Path(cache_fn).is_file():
+            logging.info(f'Found {self.ID} in cache: {cache_fn}')
+            with open(cache_fn, 'rb') as f:
+                data = pickle.load(f)
+
+        elif not Path(cache_fn).is_file():
+            spheres = self.get_all_spheres()
+            model_dict = self.get_all_spheres()
+            data = self.run_exc_vol_parallel(model_dict)
+
+            with open(cache_fn, 'wb') as f:
+                pickle.dump(data, f)
+
+        return data

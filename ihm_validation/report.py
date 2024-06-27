@@ -290,21 +290,10 @@ class WriteReport(object):
             # set the appropriate flag for assessing atomic segments
             Template_Dict['assess_atomic_segments'] = None
             # check if exv has already been evaluated
-            file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..',
-                                                'Validation', 'results', str(Template_Dict['ID'])+'exv.txt'))
-            if os.path.exists(file) and not self.nocache:
-                logging.info("Excluded volume file already exists...")
-                with open(file, 'r') as inf:
-                    line = [ln.strip().replace('[', '').replace(']', '').replace('"', '').
-                            replace(' ', '').split(',')[1:] for ln in inf.readlines()]
-                exv_data = {
-                    'Models': line[0], 'Excluded Volume Satisfaction (%)':
-                    line[1], 'Number of violations': line[2]}
-            else:
-                logging.info("Excluded volume is being calculated...")
-                I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache)
-                model_dict = I_ev.get_all_spheres()
-                exv_data = I_ev.run_exc_vol_parallel(model_dict)
+
+            logging.info("Excluded volume is being calculated...")
+            I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache)
+            exv_data = I_ev.get_excluded_volume()
 
             Template_Dict['NumModels'] = len(exv_data['Models'])
             viol_percent = np.asarray(exv_data['Excluded Volume Satisfaction (%)'], dtype=float)

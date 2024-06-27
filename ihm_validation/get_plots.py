@@ -128,16 +128,18 @@ class Plots(GetInputInformation):
             numplots = min(len(exv_data['Models']), MAXPLOTS)
 
             model = exv_data['Models'][:numplots]
-            satisfaction = exv_data['Number of violations'][:numplots]
+            # analysed = exv_data['Analysed'][:numplots]
+            # violations = exv_data['Number of violations'][:numplots]
+            # satisfaction = exv_data['Number of violations'][:numplots]
+            satisfaction = exv_data['Excluded Volume Satisfaction (%)'][:numplots]
             # make sure data is plot-able
             try:
                 counts = [float(i) for i in satisfaction]
             except (ValueError):
                 return
-            violations = exv_data['Excluded Volume Satisfaction (%)'][:numplots]
-            Scores = ['Model ' + str(i+1) for i, j in enumerate(model)]
-            legends = ['Model ' + str(i+1) + ': ' + str(int(j)) +
-                       '('+str(violations[i])+' %)' for i, j in enumerate(counts)]
+
+            Scores = [f'Model {m}' for m in model]
+            legends = [f'{s:.2f}%' for s in satisfaction]
 
             # set the size of the axis
             # n = 3 if len(model) < 3 else len(model)
