@@ -19,11 +19,13 @@ import logging
 
 class GetExcludedVolume(GetInputInformation):
     ID = None
+    nocache = False
 
-    def __init__(self, mmcif_file, cache):
+    def __init__(self, mmcif_file, cache, nocache=False):
         super().__init__(mmcif_file)
         self.ID = str(self.get_id())
         self.cache = cache
+        self.nocache = nocache
 
     def get_all_spheres(self, filetemp=None):
         """get information on all spheres for each model"""
@@ -136,12 +138,13 @@ class GetExcludedVolume(GetInputInformation):
         data = None
 
         # Check if we already requested the data
-        if Path(cache_fn).is_file():
+        if Path(cache_fn).is_file() and not self.nocache:
             logging.info(f'Found {self.ID} in cache: {cache_fn}')
             with open(cache_fn, 'rb') as f:
                 data = pickle.load(f)
 
-        elif not Path(cache_fn).is_file():
+        elif not Path(cache_fn).is_file() or self.nocache:
+            logging.info("Excluded volume is being calculated...")
             spheres = self.get_all_spheres()
             model_dict = self.get_all_spheres()
             data = self.run_exc_vol_parallel(model_dict)

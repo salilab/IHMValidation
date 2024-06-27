@@ -291,8 +291,8 @@ class WriteReport(object):
             Template_Dict['assess_atomic_segments'] = None
             # check if exv has already been evaluated
 
-            logging.info("Excluded volume is being calculated...")
-            I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache)
+            logging.info("Getting excluded volume satisfaction")
+            I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache, nocache=self.nocache)
             exv_data = I_ev.get_excluded_volume()
 
             Template_Dict['NumModels'] = len(exv_data['Models'])
