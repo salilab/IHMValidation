@@ -31,7 +31,7 @@
               </h5>
               <p class="ex2"></p>
               {% if molp_b|length > 1 %}
-                <i>There are {{ bond|int }} bond outliers in this entry ({{ "%.1f"|format(bond / total_bonds * 100) }}% of all bonds). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/bond_outliers.csv>here</a>.
+                <i>There are {{ bond|int }} bond outliers in this entry ({{ "%.2f"|format(bond / total_bonds * 100) }}% of all bonds). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/bond_outliers.csv>here</a>.
                 </i>
                 <p class="ex2"></p>
                 {{ write_table(molp_b) }}
@@ -48,7 +48,7 @@
               {% if molp_a|length > 1 %}
                 {% if total_angles|int > 1 %}
                   <i>
-                    There are {{ angle|int }} angle outliers in this entry ({{ "%.1f"|format(angle / total_angles * 100) }}% of all angles). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv>here</a>.
+                    There are {{ angle|int }} angle outliers in this entry ({{ "%.2f"|format(angle / total_angles * 100) }}% of all angles). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv>here</a>.
                   </i>
                 {% else %}
                   <i>
