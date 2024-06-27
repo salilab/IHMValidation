@@ -42,7 +42,7 @@ class GetExcludedVolume(GetInputInformation):
     def get_nCr(self, n, r):
         """get all combinations"""
         f = math.factorial
-        return (f(n)/(f(r)*f(n-r)))
+        return int(f(n)/(f(r)*f(n-r)))
 
     def get_violation_percentage(self, models_spheres_df: pd.DataFrame, viols: dict) -> float:
         """get information on all spheres for each model"""
