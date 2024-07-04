@@ -539,12 +539,17 @@ def pretty_print_representations(reprs: dict) -> list:
     pretty_reprs = []
     for reprs_ in reprs:
         out = ''
-        if reprs_['atomic'] is True:
+        if (reprs_['atomic'] and reprs_['coarse-grained']) or \
+        (reprs_['coarse-grained'] and len(reprs_['coarse-grain_levels']) > 1):
+            out += 'Multiscale: '
+
+        if reprs_['atomic']:
             out += 'Atomic'
 
-        if reprs_['coarse-grained'] is True:
+        if reprs_['coarse-grained']:
             if out != '':
-                out += '; '
+                if out[-1] != ' ':
+                    out += '; '
 
             out += 'Coarse-grained: '
             levels = reprs_['coarse-grain_levels']
