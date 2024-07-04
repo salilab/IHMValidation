@@ -101,12 +101,12 @@
             </td>
          </tr>
          <tr>
-            <td><i>Number of <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrigid">rigid bodies</a>, <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabflex">flexible units</a></i></td>
+            <td><i>Number of <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrigid">rigid</a> and <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabflex">flexible</a> segments</i></td>
             <td>{{ Rigid_Body }}, {{ Flexible_Unit }}</td>
          </tr>
          {% if Rigid_Body|int > 0 %}
            <tr>
-             <td><i> &nbsp; &nbsp; &nbsp; Rigid bodies</i></td>
+             <td><i> &nbsp; &nbsp; &nbsp; Rigid segments</i></td>
              <td>
                {{ write_bullet(RB) }}
              </td>
@@ -115,7 +115,7 @@
 
          {% if Flexible_Unit|int > 0 %}
            <tr>
-             <td><i> &nbsp; &nbsp; &nbsp; Flexible units</i></td>
+             <td><i> &nbsp; &nbsp; &nbsp; Flexible segments</i></td>
              <td>
                {{ write_bullet(flex) }}
              </td>
@@ -123,7 +123,7 @@
          {% endif %}
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabatom">Structural coverage (rigid bodies)</a></i></td>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabatom">Structural coverage (rigid segments)</a></i></td>
             <td>{{ struc }}</td>
          </tr>
          <tr bgcolor = 'silver'>

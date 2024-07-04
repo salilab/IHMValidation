@@ -313,7 +313,7 @@
               <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#summary">?</a>
             </h4>
             <p align="justify">
-              <i>This entry consists of {{ number_of_molecules }} unique models, with {{ num_chains|int }} subunits in each model. A total of {{ number_of_datasets|int }} datasets or restraints were used to build this entry. Each model is represented by {{ Rigid_Body|int }} rigid bodies and {{ Flexible_Unit|int }} flexible or non-rigid units.</i>
+              <i>This entry consists of {{ number_of_molecules }} unique models, with {{ num_chains|int }} subunits in each model. A total of {{ number_of_datasets|int }} datasets or restraints were used to build this entry. Each model is represented by {{ Rigid_Body|int }} rigid and {{ Flexible_Unit|int }} flexible segments.</i>
             </p>
           </div>
         </div>
@@ -378,7 +378,7 @@
           <div class="card-header" style="background-color: #FFF;">
             <h4 align="center"><u><a name="representation">Representation</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#representation">?</a></h4>
             <p align="justify">
-              <i>This entry has only one representation and includes {{ Rigid_Body }} rigid bodies and {{ Flexible_Unit }} flexible units</i>.
+              <i>This entry has only one representation and includes {{ Rigid_Body }} rigid and {{ Flexible_Unit }} flexible segments</i>.
             </p>
             {{ write_table(RB_list) }}
           </div>

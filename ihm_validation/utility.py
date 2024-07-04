@@ -114,10 +114,10 @@ def format_tuple(tex: list) -> str:
 
 def dict_to_JSlist_rows(dict1: dict, dict2: dict) -> list:
     '''
-    format rigid bodies and flexible elements
+    format rigid and flexible segments
     '''
     output_list = []
-    output_list.append(['Chain ID', 'Rigid bodies', 'Non-rigid segments'])
+    output_list.append(['Chain ID', 'Rigid segments', 'Flexible segments'])
     for ind, el in dict1.items():
         output_list.append(
             [ind, format_RB_text(el), format_flex_text(dict2[ind])])
