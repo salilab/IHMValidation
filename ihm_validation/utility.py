@@ -596,3 +596,34 @@ def get_hierarchy_from_model(model):
 def get_bead_size(sphere: ihm.model.Sphere) -> int:
     """Number of residues per bead"""
     return sphere.seq_id_range[1] - sphere.seq_id_range[0] + 1
+
+def pretty_print_representations(reprs: dict) -> list:
+    """Pretty print information about representation scales"""
+    pretty_reprs = []
+    for reprs_ in reprs:
+        out = ''
+        if (reprs_['atomic'] and reprs_['coarse-grained']) or \
+        (reprs_['coarse-grained'] and len(reprs_['coarse-grain_levels']) > 1):
+            out += 'Multiscale: '
+
+        if reprs_['atomic']:
+            out += 'Atomic'
+
+        if reprs_['coarse-grained']:
+            if out != '':
+                if out[-1] != ' ':
+                    out += '; '
+
+            out += 'Coarse-grained: '
+            levels = reprs_['coarse-grain_levels']
+            if len(levels) == 1:
+                out += f'{levels[0]:d}'
+            else:
+                min_level = min(levels)
+                max_level = max(levels)
+                out += f'{min_level:d} - {max_level:d}'
+            out += ' residue(s) per bead'
+
+        pretty_reprs.append(out)
+
+    return pretty_reprs
