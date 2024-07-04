@@ -7,12 +7,12 @@
 ###################################
 
 from mmcif_io import GetInputInformation
+from utility import get_hierarchy_from_model, NA
 import pandas as pd
 import logging
 import ihm
 import numpy as np
 from pathlib import Path
-from collections import defaultdict
 from bokeh.plotting import save
 from bokeh.layouts import gridplot
 from bokeh.models import Range1d
@@ -27,69 +27,6 @@ import pickle
 import pyhmmer
 
 pd.options.mode.chained_assignment = None
-NA = 'Not available'
-
-
-# asym_id, seq_id, atom_id
-def get_hierarchy_from_atoms(atoms):
-    def infinite_defaultdict(): return defaultdict(infinite_defaultdict)
-    root = infinite_defaultdict()
-
-    for a in atoms:
-        root[a.asym_unit.id][a.seq_id][a.atom_id] = a
-
-    return root
-
-
-# asym_id, seq_id, atom_id
-def get_hierarchy_from_model(model):
-    def infinite_defaultdict(): return defaultdict(infinite_defaultdict)
-    root = infinite_defaultdict()
-
-    for a in model.get_atoms():
-        root[a.asym_unit.id][a.seq_id][a.atom_id] = a
-
-    for r in model.representation:
-        if r.granularity == 'by-residue':
-            for i in range(r.asym_unit.seq_id_range[0],
-                           r.asym_unit.seq_id_range[1] + 1):
-                root[r.asym_unit.asym.id][i]['CA'] = None
-
-        elif r.granularity == 'by-feature':
-            for i in range(r.asym_unit.seq_id_range[0],
-                           r.asym_unit.seq_id_range[1] + 1):
-                root[r.asym_unit.asym.id][i]['coarse-grained'] = None
-
-    for s in model.get_spheres():
-        # Consider only by-residue spheres
-        bs = get_bead_size(s)
-        if bs == 1:
-
-            seq_id = s.seq_id_range[0]
-
-            if root[s.asym_unit.id][seq_id]['CA'] is None:
-                root[s.asym_unit.id][seq_id]['CA'] = s
-
-        else:
-
-            for seq_id in range(s.seq_id_range[0], s.seq_id_range[1] + 1):
-
-                if root[s.asym_unit.id][seq_id]['coarse-grained'] is None:
-                    root[s.asym_unit.id][seq_id]['coarse-grained'] = s
-                else:
-                    s_ = root[s.asym_unit.id][seq_id]['coarse-grained']
-                    # Select best possible resolution
-                    if get_bead_size(s) < get_bead_size(s_):
-                        root[s.asym_unit.id][seq_id]['coarse-grained'] = s
-
-
-    return root
-
-def get_bead_size(sphere: ihm.model.Sphere) -> int:
-    """Number of residues per bead"""
-    return sphere.seq_id_range[1] - sphere.seq_id_range[0] + 1
-
-
 
 
 class CxValidation(GetInputInformation):
