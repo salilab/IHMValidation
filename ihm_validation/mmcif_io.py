@@ -880,6 +880,8 @@ class GetInputInformation(object):
 
     def get_representation_details(self) -> dict:
         """Extract details about representation (atomic/coarse-grained)"""
+        # Martini-like coarse-granining (multiple beads per residue)
+        # is not supported by the dictionary
         reprs = []
         for rep in self.system.orphan_representations:
             reprs_ = {'atomic': False, 'coarse-grained': False, 'coarse-grain_levels': []}

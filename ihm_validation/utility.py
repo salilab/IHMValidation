@@ -538,8 +538,8 @@ def get_python_ihm_version() -> str:
     import ihm
     return ihm.__version__
 
-# asym_id, seq_id, atom_id
-def get_hierarchy_from_atoms(atoms):
+def get_hierarchy_from_atoms(atoms) -> dict:
+    """Construct polymer hierarchy from a list of atoms"""
     def infinite_defaultdict(): return defaultdict(infinite_defaultdict)
     root = infinite_defaultdict()
 
@@ -548,9 +548,8 @@ def get_hierarchy_from_atoms(atoms):
 
     return root
 
-
-# asym_id, seq_id, atom_id
-def get_hierarchy_from_model(model):
+def get_hierarchy_from_model(model) -> dict:
+    """Construct polymer hierarchy from atoms and beads in the model"""
     def infinite_defaultdict(): return defaultdict(infinite_defaultdict)
     root = infinite_defaultdict()
 
