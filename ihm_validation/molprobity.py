@@ -628,7 +628,17 @@ class GetMolprobityInformation(GetInputInformation):
         with open(self.filename, 'w') as f:
             f.write('<!DOCTYPE html>\n<html lang="en">\n<body>\n<p>\n')
             for line in output_list:
-                f.write(', '.join(line)+'<br>')
+                line_ = []
+                for x in line:
+                    if isinstance(x, str):
+                        line_.append(x)
+                    elif isinstance(x, int):
+                        line_.append(f'{x:d}')
+                    elif isinstance(x, float):
+                        line_.append(f'{x:.2f}')
+                    else:
+                        line_.append(str(x))
+                f.write(', '.join(line_)+'<br>')
             f.write('</p>\n</body>\n</html>')
 
     def process_bonds(self, line: list) -> (list, int):
