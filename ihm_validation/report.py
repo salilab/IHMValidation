@@ -529,7 +529,7 @@ class WriteReport(object):
             validation_input.append('Fit of model to information used to compute it has not been determined')
         Template_Dict['validation_input'] = validation_input
 
-        resolution = utility.pretty_print_representations(self.input.get_representation_details())
+        scale = utility.pretty_print_representations(self.input.get_representation_details())
 #        Template_Dict['clustering'] = clustering
-        Template_Dict['resolution'] = resolution
+        Template_Dict['scale'] = scale
         return Template_Dict
