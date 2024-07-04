@@ -880,22 +880,34 @@ class GetInputInformation(object):
 
     def get_representation_details(self) -> dict:
         """Extract details about representation (atomic/coarse-grained)"""
-        reprs = {'atomic': False, 'coarse-grained': False, 'coarse-grain_levels': []}
-        for rep in chain.from_iterable(self.system.orphan_representations):
-            if rep.granularity == 'by-atom':
-                reprs['atomic'] = True
-            elif rep.granularity == 'by-residue':
-                reprs['coarse-grained'] = True
-                reprs['coarse-grain_levels'].append(1)
-            elif rep.granularity == 'by-feature':
-                reprs['coarse-grained'] = True
-                reprs['coarse-grain_levels'].append(rep.count)
-            else:
-                raise ValueError('Wrong representation granularity')
+        reprs = []
+        for rep in self.system.orphan_representations:
+            reprs_ = {'atomic': False, 'coarse-grained': False, 'coarse-grain_levels': []}
+            for rep_ in rep:
+                if rep_.granularity == 'by-atom':
+                    reprs_['atomic'] = True
+                elif rep_.granularity == 'by-residue':
+                    reprs_['coarse-grained'] = True
+                    reprs_['coarse-grain_levels'].append(1)
+                elif rep_.granularity == 'by-feature':
+                    reprs_['coarse-grained'] = True
+                else:
+                    raise ValueError('Wrong representation granularity')
+            if reprs_['coarse-grained']:
+                for stg in self.system.state_groups:
+                    for st in stg:
+                        for mg in st:
+                            for m in mg:
+                                if m.representation == rep:
+                                    for s in m.get_spheres():
+                                        s_size = utility.get_bead_size(s)
+                                        reprs_['coarse-grain_levels'].append(s_size)
 
-        if len(reprs['coarse-grain_levels']) > 1:
-            levels = sorted(set(reprs['coarse-grain_levels']))
-            reprs['coarse-grain_levels'] = levels
+
+            if len(reprs_['coarse-grain_levels']) > 1:
+                levels = sorted(set(reprs_['coarse-grain_levels']))
+                reprs_['coarse-grain_levels'] = levels
+            reprs.append(reprs_)
 
         return reprs
 

@@ -535,18 +535,27 @@ class WriteReport(object):
         return Template_Dict
 
 
-def pretty_print_representations(reprs: dict) -> str:
-    out = ''
-    if reprs['atomic'] is True:
-        out += 'Atomic'
+def pretty_print_representations(reprs: dict) -> list:
+    pretty_reprs = []
+    for reprs_ in reprs:
+        out = ''
+        if reprs_['atomic'] is True:
+            out += 'Atomic'
 
-    if reprs['coarse-grained'] is True:
-        if out != '':
-            out += '; '
+        if reprs_['coarse-grained'] is True:
+            if out != '':
+                out += '; '
 
-        out += 'Coarse-grained: '
-        levels = [str(x) for x in reprs['coarse-grain_levels']]
-        out += ', '.join(levels)
-        out += ' residue(s) per bead'
+            out += 'Coarse-grained: '
+            levels = reprs_['coarse-grain_levels']
+            if len(levels) == 1:
+                out += f'{levels[0]:d}'
+            else:
+                min_level = min(levels)
+                max_level = max(levels)
+                out += f'{min_level:d} - {max_level:d}'
+            out += ' residue(s) per bead'
 
-    return out
+        pretty_reprs.append(out)
+
+    return pretty_reprs
