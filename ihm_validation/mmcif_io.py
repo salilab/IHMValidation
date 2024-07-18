@@ -722,7 +722,7 @@ class GetInputInformation(object):
                 elif 'PDB' in str(i.__class__.__name__):
                     acc1 = 'PDB ID: ' + acc
                     dataset_comp['Details'].append(acc1)
-                elif 'CX' in str(i.__class__.__name__):
+                elif isinstance(i, ihm.dataset.CXMSDataset):
                     acc1 = self.get_dataset_xl_info(i._id)
                     dataset_comp['Details'].append(acc1)
                 elif 'EMDB' in str(i.__class__.__name__):
