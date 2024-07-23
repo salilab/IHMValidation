@@ -31,7 +31,8 @@ MAXPLOTS = 256
 class Plots(GetInputInformation):
     def __init__(self, mmcif, imageDirName, driver):
         super().__init__(mmcif)
-        self.ID = str(GetInputInformation.get_id(self))
+        self.ID = self.get_id()
+        self.ID_f = self.get_file_id()
         self.dirname = os.path.dirname(os.path.abspath(__file__))
         self.imageDirName = imageDirName
         self.filename = os.path.join(self.imageDirName)
@@ -41,7 +42,7 @@ class Plots(GetInputInformation):
                                sas_data: dict, sas_fit: dict, cx_fit: dict) -> bokeh.plotting.figure:
 
         # create tabs list to add all the panel figures (model quality, data quality.. etc)
-        output_file(self.ID+"quality_at_glance.html", mode="inline")
+        output_file(self.ID_f+ "_" + "quality_at_glance.html", mode="inline")
 
         # MODEL QUALITY
         # check for molprobity or excluded volume data
@@ -99,7 +100,7 @@ class Plots(GetInputInformation):
                 plots.append(p)
 
                 export_svg(p, filename=self.filename+'/' +
-                            self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg", webdriver=self.driver)
+                            self.ID_f + "_" + str(i) + "_quality_at_glance_MQ.svg", webdriver=self.driver)
 
 
             grid = gridplot(plots, ncols=1,
@@ -166,7 +167,7 @@ class Plots(GetInputInformation):
                 plots.append(p)
 
                 export_svg(p, filename=self.filename+'/' +
-                            self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg", webdriver=self.driver)
+                            self.ID_f + "_" + str(i) + "_quality_at_glance_MQ.svg", webdriver=self.driver)
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
@@ -207,9 +208,9 @@ class Plots(GetInputInformation):
         # make panel figures
         # first panel is model quality
         export_svg(fullplot, filename=self.filename+'/' +
-                    self.ID+"quality_at_glance_MQ.svg", webdriver=self.driver)
+                    self.ID_f + "_" +"quality_at_glance_MQ.svg", webdriver=self.driver)
         save(fullplot, filename=self.filename+'/' +
-             self.ID+"quality_at_glance_MQ.html")
+             self.ID_f + "_" +"quality_at_glance_MQ.html")
 
         # DATA QUALITY
         # check for sas data, if exists, plot
@@ -245,9 +246,9 @@ class Plots(GetInputInformation):
             pd.title.align = "center"
             pd.output_backend = "svg"
             export_svg(pd, filename=self.filename+'/' +
-                        self.ID+"quality_at_glance_DQ.svg", webdriver=self.driver)
+                        self.ID_f + "_" +"quality_at_glance_DQ.svg", webdriver=self.driver)
             save(pd, filename=self.filename+'/' +
-                 self.ID+"quality_at_glance_DQ.html")
+                 self.ID_f + "_" +"quality_at_glance_DQ.html")
 
         # FIT TO DATA QUALITY
         # check for sas data, if exists, plot
@@ -285,6 +286,6 @@ class Plots(GetInputInformation):
             pf.title.align = "center"
             pf.output_backend = "svg"
             export_svg(pf, filename=self.filename+'/' +
-                        self.ID+"quality_at_glance_FQ.svg", webdriver=self.driver)
+                        self.ID_f + '_' +"quality_at_glance_FQ.svg", webdriver=self.driver)
             save(pf, filename=self.filename+'/' +
-                 self.ID+"quality_at_glance_FQ.html")
+                 self.ID_f + '_' +"quality_at_glance_FQ.html")

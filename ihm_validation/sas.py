@@ -36,7 +36,7 @@ class SasValidation(GetInputInformation):
     def __init__(self, mmcif_file, db='.'):
         super().__init__(mmcif_file)
         self.version = self.get_atsas_version()
-        self.ID = str(GetInputInformation.get_id(self))
+        self.ID = self.get_id()
         self.nos = GetInputInformation.get_number_of_models(self)
         self.dataset = GetInputInformation.get_dataset_comp(self)
         self.imagepath = '../static/images/'

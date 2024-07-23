@@ -68,7 +68,8 @@ def get_hierarchy_from_model(model):
 class CxValidation(GetInputInformation):
     def __init__(self, mmcif_file):
         super().__init__(mmcif_file)
-        self.ID = str(self.get_id())
+        self.ID = self.get_id()
+        self.ID_f = self.get_file_id()
         self.nos = self.get_number_of_models()
         self.dataset = self.get_dataset_comp()
         # Only atomic structures are supported so far
@@ -863,7 +864,7 @@ class CxValidation(GetInputInformation):
     def save_plots(self, plot, title, imgDirname='.'):
         imgpath = Path(
             imgDirname,
-            f'{self.ID}_{title}.html')
+            f'{self.ID_f}_{title}.html')
         save(
             plot, imgpath,
             resources=CDN,
@@ -872,7 +873,7 @@ class CxValidation(GetInputInformation):
 
         imgpath_json = Path(
             imgDirname,
-            f'{self.ID}_{title}.json')
+            f'{self.ID_f}_{title}.json')
 
         with open(imgpath_json, 'w') as f:
             json.dump(json_item(plot, title), f)

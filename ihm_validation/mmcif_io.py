@@ -91,7 +91,34 @@ class GetInputInformation(object):
 
     def get_id(self):
         """Return _entry.id; Requires compliant CIF file"""
-        entry_id = self.system.id
+        ids = self.get_ranked_id_list()
+
+        if len(ids) == 0:
+            raise(ValueError('Missing system ID'))
+
+        id_type, entry_id = ids[0]
+
+        return entry_id
+
+    def get_file_id(self):
+        """Return _entry.id; Requires compliant CIF file"""
+        ids = self.get_ranked_id_list()
+
+        if len(ids) == 0:
+            raise(ValueError('Missing system ID'))
+
+        id_type, entry_id = ids[0]
+
+        if id_type == 'PDB ID':
+            # PDB filenames have to be lowercase
+            entry_id = entry_id.lower()
+        elif id_type == 'PDB-Dev ID':
+            # PDB-Dev filenames have to be uppercase
+            entry_id = entry_id.upper()
+        else:
+            # Use entry ID as is
+            pass
+
         return entry_id
 
     def get_pdb_id(self) -> str:

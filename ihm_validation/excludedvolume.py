@@ -21,7 +21,8 @@ import csv
 class GetExcludedVolume(GetInputInformation):
     def __init__(self, mmcif_file, cache):
         super().__init__(mmcif_file)
-        self.ID = Path(self.mmcif_file).stem
+        self.ID = self.get_id()
+        self.ID_f = self.get_file_id()
         self.nos = self.get_number_of_models()
         self.cache = cache
 
@@ -156,7 +157,7 @@ class GetExcludedVolume(GetInputInformation):
     def run_exc_vol_parallel(self, model_dict: dict) -> dict:
         """ get exc vol info in parallel """
         # list_of_sphere_list=list(model_dict.values())
-        filename = str(Path(self.cache, self.ID + '_exv.txt'))
+        filename = str(Path(self.cache, self.ID_f + '_exv.txt'))
         if os.path.exists(filename):
             return self.process_exv(filename)
 

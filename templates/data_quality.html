@@ -60,9 +60,9 @@
               <!-- plots -->
               <div class=row>
                 <!-- log I(q) vs q plot -->
-                {{ insert_sas_plot(ID, sasdb_code_html[i], "intensities") }}
+                {{ insert_sas_plot(ID_f, sasdb_code_html[i], "intensities") }}
                 <!-- log I(q) vs log q plot -->
-                {{ insert_sas_plot(ID, sasdb_code_html[i], "intensities_log") }}
+                {{ insert_sas_plot(ID_f, sasdb_code_html[i], "intensities_log") }}
               </div>
             </div>
           </div>
@@ -112,9 +112,9 @@
           <!-- plots -->
           <div class=row>
             <!-- Porod-Debye plot -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "porod") }}
+            {{ insert_sas_plot(ID_f, sasdb_code_html[i], "porod") }}
             <!-- Dimensionless Kratky plot -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "Kratky") }}
+            {{ insert_sas_plot(ID_f, sasdb_code_html[i], "Kratky") }}
           </div>
         {% endfor %}
       </div>
@@ -142,9 +142,9 @@
           <!-- main plots -->
           <div class=row>
             <!-- Pair distance distribution function -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "pddf") }}
+            {{ insert_sas_plot(ID_f, sasdb_code_html[i], "pddf") }}
             <!-- P(r) extrapolated fit -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "pddf_int") }}
+            {{ insert_sas_plot(ID_f, sasdb_code_html[i], "pddf_int") }}
           </div>
         {% endfor %}
       </div>
@@ -183,7 +183,7 @@
             <!-- Guinier plot -->
             <div class=row>
               {% for i in range(sasdb_code_html|length) %}
-                {{ insert_sas_plot(ID, sasdb_code_html[i], "guinier") }}
+                {{ insert_sas_plot(ID_f, sasdb_code_html[i], "guinier") }}
               {% endfor %}
             </div>
           </div>

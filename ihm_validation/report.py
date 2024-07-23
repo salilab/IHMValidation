@@ -79,7 +79,9 @@ class WriteReport(object):
         Template_Dict['flex'] = utility.get_flex(
             utility.dict_to_JSlist_rows(RB, flex))
         entry_id = self.input.get_id()
+        file_id = self.input.get_file_id()
         Template_Dict['ID'] = entry_id
+        Template_Dict['ID_f'] = file_id
         Template_Dict['PDB_ID'] = self.input.get_pdb_id()
         Template_Dict['PDBDEV_ID'] = self.input.get_pdb_dev_id()
         Template_Dict['ranked_id_list'] = self.input.get_ranked_id_list()
