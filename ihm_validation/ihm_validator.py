@@ -87,16 +87,6 @@ parser.add_argument('--enable-sas', default=True, type=lambda x: bool(strtobool(
 parser.add_argument('--enable-cx', default=False, type=lambda x: bool(strtobool(x)),
                         help="Run crosslinking-MS validation")
 
-args = parser.parse_args()
-if args.p.upper() == 'YES':
-    physics = [
-        'Sequence connectivity',
-        'Excluded volume'
-    ]
-else:
-    physics = ['Information about physical principles was not provided']
-
-logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
 
 #############################################################################################################################
 # Input for Jinja
@@ -149,35 +139,6 @@ d = pytz.utc.localize(datetime.datetime.utcnow())
 timezone = pytz.timezone("America/Los_Angeles")
 d_format = d.astimezone(timezone)
 timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
-
-
-output_root = args.output_root
-
-output_prefix = Path(args.f).stem
-if args.output_prefix is not None:
-    output_prefix = args.output_prefix
-
-output_path = Path(output_root, output_prefix)
-
-dirNames = {
-    'root': str(output_path),
-    'root_html': str(Path(output_path, output_prefix)),
-}
-
-dirNames.update(
-    {
-        'html': str(Path(dirNames['root_html'], 'htmls')),
-    }
-)
-
-dirNames.update(
-    {
-        'images':  str(Path(dirNames['root_html'], 'images')),
-        'csv':  str(Path(dirNames['root_html'], 'csv')),
-        'pdf':  str(Path(dirNames['root_html'], 'pdf')),
-        # 'json': str(Path(output_path, 'json')),
-    }
-)
 
 # This is a temporary hack for ../templates
 template_path = Path(Path(__file__).parent.parent.resolve(), 'templates')
@@ -254,9 +215,58 @@ def write_json(mmcif_file: str, template_dict: dict, dirName: str, dirName_Outpu
 #################################################
 
 if __name__ == "__main__":
-    logging.info("Clean up and create output directories")
+    args = parser.parse_args()
+
+    if args.p.upper() == 'YES':
+        physics = [
+            'Sequence connectivity',
+            'Excluded volume'
+        ]
+    else:
+        physics = ['Information about physical principles was not provided']
+
+    logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
+
+    logging.info("Clean up temporary files")
     utility.clean_all()
 
+    report = WriteReport(args.f,
+                         db=args.databases_root,
+                         cache=args.cache_root,
+                         nocache=args.nocache)
+
+    logging.info("Entry composition")
+    template_dict = report.run_entry_composition(Template_Dict)
+
+    output_root = args.output_root
+
+    output_prefix = Path(args.f).stem
+    if args.output_prefix is not None:
+        output_prefix = args.output_prefix
+
+    output_path = Path(output_root, output_prefix)
+
+    dirNames = {
+        'root': str(output_path),
+        'root_html': str(Path(output_path, template_dict['ID_f'])),
+    }
+
+    dirNames.update(
+        {
+            'html': str(Path(dirNames['root_html'], 'htmls')),
+        }
+    )
+
+    dirNames.update(
+        {
+            'images':  str(Path(dirNames['root_html'], 'images')),
+            'csv':  str(Path(dirNames['root_html'], 'csv')),
+            'pdf':  str(Path(dirNames['root_html'], 'pdf')),
+            # 'json': str(Path(output_path, 'json')),
+        }
+    )
+
+    logging.info("Creating output directories")
     if Path(output_path).is_dir():
         if args.force:
             logging.info(f'Overwriting output directory {output_path}')
@@ -273,13 +283,6 @@ if __name__ == "__main__":
     createdirs(dirNames)
     manager = Manager()  # create only 1 mgr
     d = manager.dict()  # create only 1 dict
-    report = WriteReport(args.f,
-                         db=args.databases_root,
-                         cache=args.cache_root,
-                         nocache=args.nocache)
-
-    logging.info("Entry composition")
-    template_dict = report.run_entry_composition(Template_Dict)
 
     logging.info("Model quality")
     template_dict, molprobity_dict, exv_data = report.run_model_quality(
@@ -317,9 +320,10 @@ if __name__ == "__main__":
         molprobity_dict, exv_data, sas_data, sas_fit, cx_fit, imageDirName=dirNames['images'])
 
     logging.info("Write PDF")
-    output_pdf = write_pdf(output_prefix, template_dict, template_pdf,
+    output_pdf = write_pdf(template_dict['ID_f'], template_dict, template_pdf,
               dirNames['pdf'], dirNames['pdf'])
-    shutil.copy(output_pdf, str(output_path))
+    output_pdf_ext = Path(str(output_path), utility.get_output_file_pdf(output_prefix))
+    shutil.copy(output_pdf, str(output_pdf_ext))
 
     template_dict['validation_pdf'] = Path(output_pdf).name
 
@@ -335,8 +339,9 @@ if __name__ == "__main__":
                                                    clustering=None,
                                                    )
     output_pdf = write_supplementary_table(
-        output_prefix, template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
-    shutil.copy(output_pdf, str(output_path))
+        template_dict['ID_f'], template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
+    output_pdf_ext = Path(str(output_path), utility.get_supp_file_pdf(output_prefix))
+    shutil.copy(output_pdf, str(output_pdf_ext))
 
     template_dict['supplementary_pdf'] = Path(output_pdf).name
 
@@ -346,19 +351,19 @@ if __name__ == "__main__":
     logging.info("Write HTML")
     # set html mode
     template_dict['html_mode'] = args.html_mode
-    write_html(output_prefix, template_dict, template_flask, dirNames['html'])
+    write_html(template_dict['ID_f'], template_dict, template_flask, dirNames['html'])
     if args.html_mode == 'local':
         shutil.copytree(
             args.html_resources,
             str(Path(dirNames['html'], Path(args.html_resources).stem))
         )
     # Compress html output to one file
+    logging.info('Compressing html archive')
     shutil.make_archive(
         root_dir=output_path,
-        base_dir=output_prefix,
-        base_name=f'{dirNames["root_html"]}_html',
+        base_dir=template_dict['ID_f'],
+        base_name=str(Path(output_path, f'{output_prefix}_html')),
         format='gztar')
-
 
     # Keep uncompressed html output for convience
     # otherwise delete
