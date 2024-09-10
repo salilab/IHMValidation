@@ -750,8 +750,24 @@ class GetInputInformation(object):
                     acc1 = 'PDB ID: ' + acc
                     dataset_comp['Details'].append(acc1)
                 elif isinstance(i, ihm.dataset.CXMSDataset):
-                    acc1 = self.get_dataset_xl_info(i._id)
-                    dataset_comp['Details'].append(acc1)
+                    details_ = ''
+
+                    if acc != utility.NA:
+                        details_ += f'ID: {acc}; '
+
+                    try:
+                        acc1 = self.get_dataset_xl_info(i._id)
+                    except (ValueError, IndexError):
+                        acc1 = utility.NA
+
+                    if acc1 != utility.NA:
+                        details_ += acc1
+
+                    if acc == acc1 == utility.NA:
+                        details_ = utility.NA
+
+                    dataset_comp['Details'].append(details_)
+
                 elif 'EMDB' in str(i.__class__.__name__):
                     acc1 = 'EMDB ID: ' + acc
                     dataset_comp['Details'].append(acc1)
