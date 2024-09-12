@@ -888,7 +888,7 @@ class CxValidation(GetInputInformation):
 
         if not r.ok:
             # Wait until cold request completes and go to DB cache
-            logging.info('Retrying pulling data from PRIDE')
+            logging.info(f'Retrying pulling {url} from PRIDE')
             time.sleep(60)
             r = requests.get(url)
 
