@@ -25,6 +25,7 @@ from bokeh.io import export_svgs
 import requests
 import pickle
 import pyhmmer
+import time
 
 pd.options.mode.chained_assignment = None
 
