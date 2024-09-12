@@ -902,13 +902,13 @@ class CxValidation(GetInputInformation):
 
     def get_sequences_pride(self, pid: str) -> dict:
         '''get sequences from PRIDE entry'''
-        url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/pdbdev/projects/{pid}/sequences"
+        url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v2/pdbdev/projects/{pid}/sequences"
         result = self.request_pride(url)['data']
         return result
 
     def get_residue_pairs_pride(self, pid: str, page_size: int = 99) -> dict:
         '''get sequences from PRIDE entry'''
-        url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/pdbdev/projects/{pid}/residue-pairs/based-on-reported-psm-level/passing"
+        url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v2/pdbdev/projects/{pid}/residue-pairs/based-on-reported-psm-level/passing"
         page = 1
         url_ = f"{url}?page={page}&page_size={page_size}"
         result = self.request_pride(url_)
