@@ -257,7 +257,7 @@ class GetMolprobityInformation(GetInputInformation):
                  # "disable_uc_volume_vs_n_atoms_check=True",
                  # This is a legacy option and causes extremely
                  # large memory consumption with recent
-                 # molprobity versions on PDB-Dev entries
+                 # molprobity versions on PDB-IHM entries
                  "coot=False"],
                 stdout=f,
                 cwd=self.cache)

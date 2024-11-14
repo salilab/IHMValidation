@@ -48,8 +48,8 @@ parser.add_argument('--output-root', type=str, default=str(Path(Path(__file__).p
                     help="Path to a directory where the output will be written")
 parser.add_argument('--output-prefix', type=str, default=None,
                     help="Prefix of the output directory. Default is a stem of the mmCIF file")
-parser.add_argument('--html-mode', type=str, default='pdb-dev',
-                    choices=['local', 'pdb-dev'],
+parser.add_argument('--html-mode', type=str, default='pdb-ihm',
+                    choices=['local', 'pdb-ihm'],
                     help="HTML mode affects paths to various statis resources")
 parser.add_argument('--html-resources',
                     type=str,

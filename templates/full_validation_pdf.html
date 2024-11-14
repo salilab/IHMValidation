@@ -6,7 +6,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>PDB-Dev Validation Report Landing Page</title>
+    <title>PDB-IHM Validation Report Landing Page</title>
     <!-- add bootstrap css file -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -135,7 +135,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="card-header" style="background-color: #E4E4E4; height: 17rem;">
-            <h1 align="center">Integrative Structure Validation Report <a class='help1' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#overview">?</a></h1>
+            <h1 align="center">Integrative Structure Validation Report <a class='help1' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#overview">?</a></h1>
             <h2 align="center">{{ date }}</h2>
             <p><b> The following software was used in the production of this report:</b></p>
             <ul style="list-style-type:none;">
@@ -188,21 +188,21 @@
       </div>
     </div>
     
-    <!-- RED PDB-Dev IM banner -->
+    <!-- RED PDB-IHM IM banner -->
     <div class="card-body border-success" style="border-color: solid black;">
       <div class="row">
         <div class="col-lg-8 col-md-2">
           <div class="card-header" style="background-color: #FF7F7F;">
             <div class="bs-example" class="text-center">
-              <p align="center"><em>This is a PDB-Dev IM Structure Validation Report for a publicly released PDB-Dev entry.</em></p>
+              <p align="center"><em>This is a PDB-IHM IM Structure Validation Report for a publicly released PDB-IHM entry.</em></p>
               <p align="text-center" class="align-middle">
-              <em>We welcome your comments at  <a href=mailto:pdb-dev@mail.wwpdb.org>pdb-dev@mail.wwpdb.org</a></em>
+              <em>We welcome your comments at  <a href=mailto:helpdesk@pdb-ihm.org>helpdesk@pdb-ihm.org</a></em>
               </p>
               <p align="text-center" class="align-middle">
-              <em>A user guide is available at  <a href=https://pdb-dev.wwpdb.org/validation_help.html>https://pdb-dev.wwpdb.org/validation_help.html</a> with specific help available everywhere you see the </em> <a class='help2' style='background-color:#228B22;color:#000000;text-decoration:none font-size=14px'>?</a> symbol.
+              <em>A user guide is available at  <a href=https://pdb-ihm.org/validation_help.html>https://pdb-ihm.org/validation_help.html</a> with specific help available everywhere you see the </em> <a class='help2' style='background-color:#228B22;color:#000000;text-decoration:none font-size=14px'>?</a> symbol.
               </p>
               <p align="text-center" class="align-middle">
-                <em>List of references used to build this report is available  <a href='https://pdb-dev.wwpdb.org/validation_help.html#references1'>here</a>.</em>
+                <em>List of references used to build this report is available  <a href='https://pdb-ihm.org/validation_help.html#references1'>here</a>.</em>
               </p>
             </div>
           </div>
@@ -216,7 +216,7 @@
         <div class="col-lg-12">
           <div class="card-header" style="background-color: #FFFFFF ;">
             <h3 align="center">
-              <a name='qual'><u>Overall quality</u></a> <a class='help1' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#overview">?</a>
+              <a name='qual'><u>Overall quality</u></a> <a class='help1' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#overview">?</a>
             </h3>
             <p align="justify">
             <em>This validation report contains model quality assessments for all structures, data quality assessment for SAS datasets and fit to model assessments for SAS datasets. Data quality and fit to model assessments for other datasets and model uncertainty are under development. Number of plots is limited to {{MAXPLOTS}}.</em>
@@ -291,7 +291,7 @@
           <div class="card-header" style="background-color: #FFF;">
             <h4 align="center">
               <a name="ensemble"><u>Ensemble information</u></a>
-              <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#ensemble">?</a>
+              <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#ensemble">?</a>
             </h4>
             <p><i>This entry consists of {{ num_ensembles|int }} distinct ensemble(s).</i></p>
           </div>
@@ -306,7 +306,7 @@
           <div class="card-header" style="background-color: #FFF;">
             <h4 align="center">
               <u><a name=summary>Summary</a></u>
-              <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#summary">?</a>
+              <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#summary">?</a>
             </h4>
             <p align="justify">
               <i>This entry consists of {{ number_of_molecules }} unique models, with {{ num_chains|int }} subunits in each model. A total of {{ number_of_datasets|int }} datasets or restraints were used to build this entry. Each model is represented by {{ Rigid_Body|int }} rigid bodies and {{ Flexible_Unit|int }} flexible or non-rigid units.</i>
@@ -322,7 +322,7 @@
         <div class="col-lg-12">
           <div class="card-header" style="background-color: #FFF;">
             <h4 align="center">
-              <u><a name='entry'>Entry composition</a></u><a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#entry">?</a>
+              <u><a name='entry'>Entry composition</a></u><a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#entry">?</a>
             </h4>
             <p>
               {% if number_of_molecules|int < 2 %}
@@ -349,7 +349,7 @@
         <div class="col-lg-12">
           <div class="card-header" style="background-color: #FFF;">
             <h4 align="center">
-              <u><a name='data'>Datasets used for modeling</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#datasets">?</a>
+              <u><a name='data'>Datasets used for modeling</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#datasets">?</a>
             </h4>
             
             <p>
@@ -372,7 +372,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="card-header" style="background-color: #FFF;">
-            <h4 align="center"><u><a name="representation">Representation</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#representation">?</a></h4>
+            <h4 align="center"><u><a name="representation">Representation</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#representation">?</a></h4>
             <p align="justify">
               <i>This entry has only one representation and includes {{ Rigid_Body }} rigid bodies and {{ Flexible_Unit }} flexible units</i>.
             </p>
@@ -388,7 +388,7 @@
         <div class="col-lg-12">
           <div class="card-header" style="background-color: #FFF;">
             <h4 align="center">
-              <u><a name="methods">Methodology and software</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#software">?</a>
+              <u><a name="methods">Methodology and software</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#software">?</a>
             </h4>
             <p>
               <i>This entry is a result of {{ Protocols_number|int }} distinct protocol(s).</i>
@@ -418,14 +418,14 @@
       <div class="row">
         <div class="col-lg-12">
           <h4 align="center">
-             <u><a name='first'>Data quality</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#dataquality">?</a>
+             <u><a name='first'>Data quality</a></u> <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#dataquality">?</a>
           </h4>
           
           <!-- SAS -->
           {% if ( sas|length > 0 ) and ( sasdb_sascif|length > 0 ) %}
             <!-- Scattering profiles -->
             <h5 align=center>
-               <u> <a name=firstI>Scattering profile</a> </u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#scattering'>?</a>
+               <u> <a name=firstI>Scattering profile</a> </u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#scattering'>?</a>
             </h5>
             
             <p align=justify>
@@ -455,7 +455,7 @@
            
             <!-- Key experimental estimates -->
             <h5 align=center>
-              <u><a name=firstE>Key experimental estimates</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#expt'>?</a>
+              <u><a name=firstE>Key experimental estimates</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#expt'>?</a>
             </h5>
             <p align='justify'>
               <u>Molecular weight (MW) estimates from experiments and analysis</u>:
@@ -472,7 +472,7 @@
             
             <!-- Flexibility analysis -->
             <h5 align=center>
-              <u><a name=firstF>Flexibility analysis</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#flexibility'>?</a>
+              <u><a name=firstF>Flexibility analysis</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#flexibility'>?</a>
             </h5>
             {% for i in range ( sasdb_code_html|length ) %}
               <p align=justify>
@@ -494,7 +494,7 @@
             
             <!-- Pair-distance distribution analysis -->
             <h5 align=center>
-              <u><a name=firstP>Pair-distance distribution analysis</a></u>   <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#pofr'>?</a>
+              <u><a name=firstP>Pair-distance distribution analysis</a></u>   <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#pofr'>?</a>
             </h5>
             <p align='justify'>
               <u>P(r) analysis:</u> P(r) represents the distribution of distances between all pairs of atoms within the particle weighted by the respective electron densities. P(r) is the Fourier transform of I(s) (and vice versa). R<sub>g</sub> can be estimated from integrating the P(r) function. Agreement between the P(r) and Guinier-determined R<sub>g</sub> (table below) is a good measure of the self-consistency of the SAS profile. R<sub>g</sub> is a measure for the overall size of a macromolecule; e.g. a protein with a smaller R<sub>g</sub> is more compact than a protein with a larger R<sub>g</sub>, provided both have the same molecular weight (MW). The point where P(r) is decaying to zero is called D<sub>max</sub> and represents the maximum size of the particle.
@@ -522,7 +522,7 @@
             
             <!-- Guinier analysis -->
             <h5 align= center>
-              <u><a name=firstG>Guinier analysis </a></u>   <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#guinier'>?</a>
+              <u><a name=firstG>Guinier analysis </a></u>   <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#guinier'>?</a>
             </h5>
             
             <p align='justify'>
@@ -574,7 +574,7 @@
         <div class="col-lg-12">
           <div class="card-header" style="background-color: #FFF;">
             <h4 align="center">
-              <u>Model quality</u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#modelquality'>?</a>
+              <u>Model quality</u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#modelquality'>?</a>
             </h4>
             <p> For models with atomic structures, molprobity analysis is performed. For models with coarse-grained or multi-scale structures, excluded volume analysis is performed.</p>
 
@@ -587,7 +587,7 @@
             {% else %}
               <!-- Excluded volume -->
               {% if sphere|int > 0 %}
-                <h5 align= left>Excluded volume satisfaction <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#exv'>?</a>
+                <h5 align= left>Excluded volume satisfaction <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#exv'>?</a>
                 </h5>
                 <i> Excluded volume satisfaction for the models in the entry are listed below. </i>
                 <p></p>
@@ -598,11 +598,11 @@
               
                 <!-- Bond outliers -->
                 <h5 align=center>
-                  <u><a name='geometry'>Standard geometry: bond outliers</a></u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                  <u><a name='geometry'>Standard geometry: bond outliers</a></u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='https://pdb-ihm.org/validation_help.html#molprobity'>?</a>
                 </h5>
                 
                 {% if molp_b|length > 1 %}
-                  <i>There are {{ bond }} bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID }}/htmls/bond_outliers.html>here</a>.</i>
+                  <i>There are {{ bond }} bond outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-ihm.org/Validation/{{ ID }}/htmls/bond_outliers.html>here</a>.</i>
                   {{ write_table(molp_b) }}
                 {% else %}
                   <i> Bond length outliers can not be evaluated for this model</i>
@@ -610,10 +610,10 @@
                     
                 <!-- Angle outliers -->
                 <h5 align=center>
-                  <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help1' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a></h5>
+                  <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help1' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=12px' href='https://pdb-ihm.org/validation_help.html#molprobity'>?</a></h5>
            
                 {% if molp_a|length > 1 %}
-                  <i>There are {{ angle }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-dev.wwpdb.org/Validation/{{ ID }}/htmls/angle_outliers.html>here</a>.</i>
+                  <i>There are {{ angle }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=https://pdb-ihm.org/Validation/{{ ID }}/htmls/angle_outliers.html>here</a>.</i>
                   {{ write_table(molp_a) }}
                 {% else %}
                   <i>Bond angle outliers do not exist or can not be evaluated for this model</i>
@@ -621,7 +621,7 @@
                     
                 <!-- Clashes -->
                 <h5 align=center>
-                  <u><a name='contacts'>Too-close contacts</a></u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                  <u><a name='contacts'>Too-close contacts</a></u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#molprobity'>?</a>
                 </h5>
                 <p align='justify'>
                   <i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i>
@@ -643,7 +643,7 @@
            
                 <!-- Ramachandran -->
                 <h5 align=center>
-                  <u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                  <u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#molprobity'>?</a>
                 </h5>
 
                 <p align='justify'>
@@ -664,7 +664,7 @@
 
                 <!-- Protein sidechains -->
                 <h5 align=center>
-                  <u><a name='outliers'>Torsion angles: Protein sidechains</a></u>     <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#molprobity'>?</a>
+                  <u><a name='outliers'>Torsion angles: Protein sidechains</a></u>     <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#molprobity'>?</a>
                 </h5>
                 <i>In the following table, sidechain outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed.</i>
                 
@@ -697,7 +697,7 @@
         <div class="row">
           <div class="col-lg-12">
             <h4 align="center">
-              <u><a name='first'>Fit of model to data used for modeling</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#fittodata'>?</a>
+              <u><a name='first'>Fit of model to data used for modeling</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#fittodata'>?</a>
             </h4>
 
             {% if sas|length > 0 %}
@@ -707,7 +707,7 @@
                 </h5>
                 
                 <h5 align=center>
-                  <u>χ² goodness of fit and cormap analysis</u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#goodness'>?</a>
+                  <u>χ² goodness of fit and cormap analysis</u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#goodness'>?</a>
                 </h5>
                 
                 {% if number_of_fits  > 0 %}
@@ -772,7 +772,7 @@
         <div class="row">
           <div class="col-lg-12">
             <h4 align="center">
-              <u><a name='first'>Fit of model to data used for validation</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-dev.wwpdb.org/validation_help.html#fittoval'>?</a>
+              <u><a name='first'>Fit of model to data used for validation</a></u> <a class='help1' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://pdb-ihm.org/validation_help.html#fittoval'>?</a>
             </h4>
             <p align=justify>
               Validation for this section is under development.
@@ -791,7 +791,7 @@
           <p align="justify"> <em>Acknowledgements</em> </p>
           <ul style="list-style-type:none;">
             <li>
-              <p align="justify"><em>Development of integrative model validation metrics, implementation of a model validation pipeline, and creation of a validation report for integrative structures, are funded by NSF ABI awards (DBI-1756248, DBI-2112966, DBI-2112967, DBI-2112968, and DBI-1756250). The <a href='https://pdb-dev.wwpdb.org/about.html'>PDB-Dev team</a> and members of <a href='https://www.salilab.org/'>Sali lab</a>contributed model validation metrics and software packages.</em></p>
+              <p align="justify"><em>Development of integrative model validation metrics, implementation of a model validation pipeline, and creation of a validation report for integrative structures, are funded by NSF ABI awards (DBI-1756248, DBI-2112966, DBI-2112967, DBI-2112968, and DBI-1756250). The <a href='https://pdb-ihm.org/about.html'>PDB-IHM team</a> and members of <a href='https://www.salilab.org/'>Sali lab</a>contributed model validation metrics and software packages.</em></p>
             </li>
             <li>
               <p align="justify"><em>Implementation of validation methods for SAS data and SAS-based models are funded by <a href='https://www.rcsb.org/'>RCSB PDB</a> (grant number DBI-1832184). Dr. Stephen Burley, Dr. John Westbrook, and Dr. Jasmine Young from <a href='https://www.rcsb.org/'>RCSB PDB</a>,  Dr. Jill Trewhella, Dr. Dina Schneidman, and members of the <a href='https://www.sasbdb.org/'>SASBDB</a> repository are acknowledged for their advice and support in implementing SAS validation methods.</em></p>

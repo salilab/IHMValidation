@@ -24,7 +24,7 @@ from collections import Counter
 import numpy as np
 from selenium import webdriver
 
-REPORT_VERSION = '1.2'
+REPORT_VERSION = '1.2.1'
 
 class WriteReport(object):
     def __init__(self, mmcif_file, db, cache, nocache=False):
