@@ -1,150 +1,228 @@
-{% extends "layout.html" %}
-
+{% extends "validation_report_layout.html" %}
+{% from "macro.html" import write_table, insert_sas_plot %}
 {% block body %}
-
 <!-- Template for writing fit to information webpage -->
 <!-- ganesans - Salilab - UCSF -->
 <!-- ganesans@salilab.org -->
-
-                                                        <!-- scripts -->
-                                                        <script>
-                                                            function Write_Table(list_to_write) {
-                                                                var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
-                                                                for (var i = 0; i < list_to_write[0].length; i++) {
-                                                                    mytable += "<th align='center' class='text-center' style='vertical-align:middle'>" + list_to_write[0][i] + "</th>";
-                                                                }
-                                                                mytable += "</tr></thead><tr>";
-
-                                                                for (var j = 1; j < list_to_write.length; j++) {
-                                                                    for (var i = 0; i < list_to_write[j].length; i++) {
-                                                                        mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
-                                                                    }
-                                                                    mytable += "</tr><tr>";
-
-                                                                }
-                                                                mytable += "</tr></table></div>";
-                                                                document.write(mytable);
-                                                            }
-                                                        </script>
-                                                        <!-- scripts -->
-                                                        <div class="card-body border-success" style="border-color: solid black;">
-                                                            <!-- start overall card body for front page -->
-                                                            <div class="card-header" style="background-color: #FFF; height=18rem">
-                                                                <div class="row">
-                                                                    <div class="col-lg-12">
-                                                                        <h4 class="ex2" align="center"> <u><a name='first'>Fit of model to data used for modeling</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#fittodata'>?</a></h4>
-                                                                        <script>
-                                                                            if ({{sas}}.length > 0) {
-                                                                                var ex = "<h5 class= ex2 align= center><u> Fit of model(s) to SAS data</u></h5>";
-                                                                                document.write(ex)
-                                                                            } 
-                                                                            if ({{sasdb_sascif}}.length < 1) {
-                                                                             var ex2 = '<p align=justify> SAS data used in this integrative model could not be validated as the sascif file is currently unavailable. </p>';
-                                                                             document.write(ex2);
-                                                                         }
-                                                                     </script>
-
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-
-                                                     <!-- start overall card body for front page -->
-                                                     <div class="card-body border-success" style="border-color: solid black;">
-                                                        <!-- start overall card body for front page -->
-                                                        <div class="card-header" style="background-color: #FFF; height=18rem">
-                                                            <div class="row">
-                                                                <div class="col-lg-12">
-                                                                    <script>
-                                                                        if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-                                                                            if ({{number_of_fits}} > 0) {
-                                                                                var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#goodness'>?</a></h5>";
-                                                                                ex2 += "<p class =ex2><i>Model and fits displayed below were obtained from SASBDB. \u03C7\u00b2 values are a measure of fit of the model to data. A perfect fit has a \u03C7\u00b2 value of zero.</i>";
-                                                                                document.write(ex2)
-                                                                                var input_list = {{chi_table}};
-                                                                                Write_Table(list_to_write = input_list)
-                                                                            } else {
-                                                                                var ex2 = "<h5 class= ex2 align= center><u> \u03C7\u00b2 goodness of fit analysis </u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#goodness'>?</a></h5>";
-                                                                                ex2 += "<i>Model(s) and/or fit for this entry has not been deposited.  </i>";
-                                                                                document.write(ex2);
-                                                                            }
-                                                                        }
-                                                                    </script>
-                                                                </div>
-                                                            </div>
-
-                                                            <script>
-                                                                if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-                                                                    var sasdb_code_html={{sasdb_code_html}}  
-                                                                    var sasdb_code_fits={{sasdb_code_fits}}   
-                                                                    for (var i = 0; i < sasdb_code_html.length; i++) {
-                                                                        for (var j=0; j<sasdb_code_fits[i]; j++) {
-                                                                            var k=j+1
-                                                                            var ex3 ='<p align=justify align=center> <u> Model fit for '+ sasdb_code_html[i]+' (fit/model number '+String(k) +'):</u> The experimental scattering curve (in blue) can be compared with the theoretical curve calculated from a model (in red). </p>'; 
-                                                                            document.write(ex3)
-
-                                                                            var ex4 ='<div class=row> <div class=col-lg-12> <div class=box text-center container-fluid no-padding style=height:60vh align=center>';
-                                                                            ex4 +='<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+String(j)+'fit1.html frameborder=0 scrolling=yes aligh=center width=50% height=550vh  style=position:relative align=center></iframe>'
-                                                                            document.write(ex4)
-                                                                            var ex6 ='</div></div> </div>';
-                                                                            ex6 +='<p style=margin-bottom:3cm;> </p>';
-                                                                            document.write(ex6)
-                                                                        }
-                                                                    }
-                                                                }
-                                                            </script>
-                                                            <p style="margin-bottom:3cm;"> </p>
-
-                                                            <script>
-                                                                if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-                                                                    var sasdb_code_html={{sasdb_code_html}}  
-                                                                    var sasdb_code_fits={{sasdb_code_fits}}   
-                                                                    for (var i = 0; i < sasdb_code_html.length; i++) {
-                                                                        for (var j=0; j<sasdb_code_fits[i]; j++) {
-                                                                            var k=j+1
-                                                                            var ex3 ='<p align=justify align=center> <u> Residuals and error weighted residuals for \u03C7\u00b2 goodness of fit analysis for '+ sasdb_code_html[i]+'</u>: Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis. </p>'; 
-                                                                            document.write(ex3)
-
-                                                                            var ex4 ='<div class=row> <div class=col-lg-6> <div class=box text-center container-fluid no-padding style=height:60vh>';
-                                                                            ex4 +='<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+String(j)+'residuals.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative></iframe>'
-                                                                            document.write(ex4)
-
-                                                                            var ex5 ='</div></div> <div class=col-lg-6><div class=box text-center container-fluid no-padding style=height:60vh >';
-                                                                            ex5 += '<iframe src=../images/' + {{ID_w}} + sasdb_code_html[i]+ String (j)+'residuals_wt.html frameborder=0 scrolling=yes width=100% height=550vh  style=position:relative></iframe>';
-                                                                            document.write(ex5)
-                                                                            var ex6 ='</div></div> </div>';
-                                                                            ex6 +='<p style=margin-bottom:3cm;> </p>';
-                                                                            document.write(ex6)
-                                                                        }
-                                                                    }
-                                                                }
-                                                            </script>
-                                                            <p style="margin-bottom:3cm;"> </p>
-
-                                                            <div class="row">
-                                                                <div class="col-lg-12">
-                                                                    <script>
-                                                                        if ({{sas}}.length > 0 && {{sasdb_sascif}}.length > 0) {
-                                                                            if ({{number_of_fits}} > 0) {
-                                                                                var ex2 = "<h5 class= ex2 align= center><u><a name='second'>Cormap p-value analysis of fits </a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#cormap'>?</a></h5>";
-                                                                                ex2 += "<p class =ex2><i>ATSAS datcmp was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis. </i>";
-                                                                                document.write(ex2)
-                                                                                var input_list = {{p_val}};
-                                                                                Write_Table(list_to_write = input_list)
-                                                                            } else {
-                                                                                var ex2 = "<h5 class= ex2 align= center><u> Cormap p-value analysis of fits </u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#cormap'>?</a></h5>";
-                                                                                ex2 += "<i>Model(s) and/or fit for this entry has not been deposited.  </i>";
-                                                                                document.write(ex2);
-                                                                            }
-                                                                        }
-                                                                    </script>
-
-
-                                                                </div> <!-- end card body-->
-                                                            </div>
-                                                        </div>                                
-                                                    </div>
-                                                    <!-- start overall card body for front page -->
-
-                                                    <!-- start overall card body for front page -->
+<!-- header -->
+  <div class="card-body border-success" style="border-color: solid black;">
+    <div class="card-header" style="background-color: #FFF; height=18rem">
+      <div class="row">
+        <div class="col-lg-12">
+          <h4 class="ex2" align="center">
+            <u><a name='first'>Fit of model to data used for modeling</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#fittodata'>?</a>
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- SAS header -->
+  {% if sas|length > 0 %}
+  	<div class="card-body border-success" style="border-color: solid black;">
+      <!-- start overall card body for front page -->
+      <div class="card-header" style="background-color: #FFF; height=18rem">
+        <div class="row">
+          <div class="col-lg-12">
+            <h5 class= ex2 align= center><u> Fit of model(s) to SAS data</u></h5>
+            {% if sasdb_sascif|length < 1 %}
+              <p align=justify>
+                SAS data used in this integrative model could not be validated as the sascif file is currently unavailable.
+              </p>
+            {% endif %}
+          </div>
+        </div>
+        {% if sasdb_sascif|length > 0 %}
+          <div class="row">
+            <div class="col-lg-6">
+              <h5 class= ex2 align= center>
+                <u><a name='second'>Cormap p-value analysis of fits </a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#cormap'>?</a>
+              </h5>
+              {% if number_of_fits > 0 %}
+                <p class =ex2>
+                  <i>ATSAS datcmp was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis.</i>
+                </p>
+                {{ write_table(p_val) }}
+              {% else %}
+                <p class =ex2>
+                  <i>Model(s) and/or fit for this entry has not been deposited.</i>
+                </p>
+              {% endif %}
+            </div>
+            <div class="col-lg-6">
+              <p align=justify align=center>
+                <i>The experimental scattering curve (in blue) can be compared with the theoretical curve calculated from a model (in red). Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis.</i>
+              </p>
+              <div class=row>
+                {% for i in range(sasdb_code_html|length) %}
+                  {% for j in range(sasdb_code_fits[i]) %}
+                    {% set k = j + 1 %}
+                      {{ insert_sas_plot(ID_f, sasdb_code_html[i], j|int ~ 'fit1') }}
+                  {% endfor %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+  	</div>
+  {% endif %}
+  <!-- start overall card body for front page -->
+  {% if cx  %}
+    <div class="card-body border-success" style="border-color: solid black;">
+      <!-- start overall card body for front page -->
+      <div class="card-header" style="background-color: #FFF; height=18rem">
+        <div class="row">
+          <div class='col-lg-12'>
+            <h4 align=center id="cxms"><u> Fit of model(s) to CX-MS data</u></h4>
+            <h5 align=center id="cxms_ertypes"><u>Restraint types</u></h5>
+            {% if cx_ertypes is none %}
+              <p>Restraint types in this entry are not supported at the moment.</p>
+            {% else %}
+              <div class="row">
+                <div class='col-lg-6'>
+                  <p>There are {{ cx_num_of_restraints }} crosslinking restraints 
+                  combined in {{ cx_num_of_restraint_groups }} restraint groups. 
+                  Restraint types are summarized in the table below. 
+                  Only atomic or per-residue restraints are supported at the moment.
+                  </p>
+                  <div class='table-responsive text-center' style="max-height: 75vh; overflow: auto;">
+                    <table id='cx_ertypes_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
+                      <thead>
+                        <tr>
+                          <th align='center' class='text-center' style='vertical-align:middle'>
+                            Type #
+                          </th>
+                          {% for k in cx_ertypes['columns'] %}
+                          <th align='center' class='text-center' style='vertical-align:middle'>
+                            {{ k }}
+                          </th>
+                          {% endfor %}
+                        </tr>
+                      </thead>
+                      
+                      {% for i in range(cx_ertypes['data']|length) %}
+                        <tr>
+                          <td>{{ i }}</td>
+                          {% for v in cx_ertypes['data'][i] %}
+                            <td>{{ v }}</td>
+                          {% endfor %}
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
+                </div>
+                <div class=col-lg-6>
+                  <div text-center container-fluid no-padding align=center>
+                    <div>
+                      <p><u>Distograms of individual restraints</u></p>
+                    </div>
+                    {% if cx_stats is none %}
+                      <p>Distograms for this entry are unavailable the moment.</p>
+                    {% else %}
+                      <p style='text-align: left'><i>Restraints with identical thresholds are grouped into one plot. Only best distance per restraint per model group/ensemble is plotted. Intra- and intermolecular self-link restraints are also grouped into one plot.</i></p>
+                      <div class='bk-root' id='cx_distograms_plot' style="max-height: 75vh; overflow: auto;">
+                      </div>
+                      <script type="text/javascript">
+                        item = JSON.parse('{{ cx_distograms_plot_json }}');
+                        Bokeh.embed.embed_item(item, "cx_distograms_plot");
+                      </script>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            <!-- end of cx_ertypes --> 
+            <h5 align=center id="cxms_satisfaction"><u>Satisfaction of restraints</u></h5>
+            {% if cx_stats is none %}
+              <p>Satisfaction rates for this entry are unavailable at the moment.</p>
+            {% else %}
+              <div class=row>
+                <div class=col-lg-6>
+                  <p>
+                    <i>
+                      Satisfaction of restraints is calculated on a restraint 
+                      group level. Satisfaction of a restraint group depends on 
+                      satisfaction of individual restraints in the group and the 
+                      conditionality (all/any). Restraint group is considered 
+                      satisfied, if condition was met in at least one model of 
+                      the model group/ensemble. Only deposited models are used 
+                      for validation right now.
+                    </i>
+                  </p>
+                
+                  <div class='table-responsive text-center'>
+                    <table id='cx_satisfaction_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
+                      <thead>
+                        <tr>
+                          <th style='vertical-align:middle'>
+                            State group
+                          </th>
+                          <th style='vertical-align:middle'>
+                            State
+                          </th>
+                          <th style='vertical-align:middle'>
+                            Model group
+                          </th>
+                          <th style='vertical-align:middle'>
+                            # of Deposited models/Total
+                          </th>
+                          <th style='vertical-align:middle'>
+                            Restraint group type
+                          </th>
+                          <th  style='vertical-align:middle'>
+                            Satisfied (%)
+                          </th>
+                          <th style='vertical-align:middle'>
+                            Violated (%)
+                          </th>
+                          <th style='vertical-align:middle'>
+                            Count
+                          </th>
+                        </tr>
+                      </thead>
+                      {% for sg, sgv in cx_stats.items() %}
+                        {% set state_group_loop = loop %}
+                        {% for st, stv in sgv.items() %}
+                          {% for mg, mgv in stv.items() %}
+                            {% for k, v in mgv["cx_stats"].items() %}
+                            {% set rowspan = mgv["cx_stats"]|length %}
+                              <tr>
+                                {% if loop.index == 1 %}
+                                  <td rowspan={{ rowspan }}>{{ sg }}</td>
+                                  <td rowspan={{ rowspan }}>{{ st }}</td>
+                                  <td rowspan={{ rowspan }}>{{ mg }}</td>
+                                  <td rowspan={{ rowspan }}>{{ mgv["ens_stats"]["num_models_deposited"] ~ "/" ~ mgv["ens_stats"]["num_models"]}}</td>
+                                {% endif %}
+                                <td>{{ k | replace("/", "/<br>")}}</td>
+                                <td>{{ v["Satisfied"] }}</td>
+                                <td>{{ v["Violated"] }}</td>
+                                <td style='horizontal-align:right'>{{ v["Count"] }}</td>
+                              </tr>
+                            {% endfor %}
+                          {% endfor %}
+                        {% endfor %}
+                      {% endfor %}
+                    </table>
+                  </div>
+                </div>
+                <div class=col-lg-6>
+                  <div text-center container-fluid no-padding align=center>
+                    <p><u>Per-model satisfaction rates in model groups/ensembles</u></p>
+                    <p style="text-align: left"><i>Every point represents one model in a model group/ensemble. Where possible, boxplots with quartile marks are also plotted.</i></p>
+                    <div class='bk-root' id='cx_satisfaction_plot'>
+                    </div>
+                    <script type="text/javascript">
+                      item = JSON.parse('{{ cx_satisfaction_plot_json }}');
+                      Bokeh.embed.embed_item(item, "cx_satisfaction_plot");
+                    </script>
+                  </div>
+                </div>
+              {% endif %}
+              <!-- end of cx_stats --> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

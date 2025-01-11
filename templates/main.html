@@ -1,201 +1,208 @@
-{% extends "layout.html" %}
-
+{% extends "validation_report_layout.html" %}
 {% block body %}
-                                                                    <!-- start overall card body for front page -->
-                                                                    <div class="card-body border-success" style="border-color: solid black;">
-                                                                        <!-- start overall card body for front page -->
-                                                                        <div class="row">
-                                                                            <div class="col-lg-4">
-                                                                                <div class="card-header" style="background-color: #FFFFFF; border-color:#003366; height: 29rem;">
-                                                                                    <script>
-                                                                                        var section = '<h3 align=center><a href=https://pdb-dev.wwpdb.org/entry.html?' + {{ID_R}} + '>' + {{ID_R}} + '</a></h3>';
-                                                                                        document.write(section);
-                                                                                        var id = '{{ID_T}}';
-                                                                                    </script>
-                                                                                    <div class="box text-center no-padding float-left" style="text-align: center" ><a href="../pdf/{{ID_T}}.cif.pdf"><button style="background-color: #669966; margin-top: 10px;margin-bottom:10px; margin-right:0px;color: #FFF;height: 85px; width: 10em; border-radius: 10px;cursor: pointer; font-size:0.8em;"><h5 align="center" style="text-align: center";>Download Validation Report</h5></button></a></div>
+<!-- start overall card body for front page -->
+<div class="card-body border-success" style="border-color: solid black;">
+  <!-- start overall card body for front page -->
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card-header" style="background-color: #FFFFFF; border-color:#003366; height: 29rem;">
+        <h3 align=center>
+          <a href=/entry.html?{{ ID }}>
+            {{ ID }}
+          </a>
+        </h3>
+        <div class="box text-center no-padding float-left" style="text-align: center" >
+          <a href="../pdf/{{validation_pdf}}">
+            <button style="background-color: #669966; margin-top: 10px;margin-bottom:10px; margin-right:0px;color: #FFF;height: 85px; width: 10em; border-radius: 10px;cursor: pointer; font-size:0.8em;">
+              <h5 align="center" style="text-align: center";>Download Validation Report</h5>
+            </button>
+          </a>
+        </div>
+        <div class="box text-center no-padding float-right" style="text-align: center" >
+          <a href="../pdf/{{supplementary_pdf}}">
+            <button style="background-color: #669966; margin-top: 10px;margin-bottom:10px; margin-right:0px;color: #FFF;height: 85px; width: 10em; border-radius: 10px;cursor: pointer; font-size:0.8em;">
+              <h5 align="center" style="text-align: center";>Download Summary Table</h5>
+            </button>
+          </a>
+        </div>
+        <div class="box text-center container-fluid no-padding">
+          <img src=/images/{{ ID_f }}_resize_1.png class=image-fluid alt=Model Image style=width:300px align=center>
+        </div>
+      </div>
+      <!-- end card header -->
+    </div>
+    <!-- end col -->
+    <div class="col-lg-8 col-md-2">
+      <div class="card-header" style="background-color:#FFFFFF; border-color:#003366;">
+        <div class="bs-example" class="text-center">
+          <table class="table table-bordered" style="border-color:#003366; height: 25rem;">
+            {% for k, v in ranked_id_list %}
+              <tr>
+                <td style="text-align:center; vertical-align: middle; white-space:nowrap;">{{ k }}</td>
+                <td style="text-align:center; vertical-align: middle;">{{ v }}</td>
+              </tr>
+            {% endfor %}
+            <tr>
+              <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Structure Title</td>
+              <td style="text-align:center; vertical-align: middle;">{{ Molecule }} </td>
+            </tr>
+            <tr>
+              <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Structure Authors</td>
+              <td style="text-align:center; vertical-align: middle;">{{ Authors }}</td>
+            </tr>
+            {% if Citation_Title is not none %}
+              <tr>
+                <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Publication Title</td>
+                <td style="text-align:center; vertical-align: middle;">{{ Citation_Title }}</td>
+              </tr>
+              <tr>
+                <td style="text-align:center; vertical-align: middle; white-space:nowrap;">Authors</td>
+                <td style="text-align:center; vertical-align: middle;">{{ Citation_Authors }}</td>
+              </tr>
+          {% endif %}
+          </table>
+        </div>
+      </div>
+      <!-- end card-header -->
+    </div>
+    <!--end column-->
+  </div>
+  <!--end row-->
+</div>
+<!-- end card bods-->
+<!-- start card body2 -->
+<div class="card-body">
+  <!-- start overall card body for front page -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
+        <h3 align="center">
+          <a name='qual'>Overall quality</a>
+          <a class='help' title='help' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="/validation_help.html#overview">?</a>
+        </h3>
+        <p align="justify">
+          <em>This validation report contains model quality assessments for all structures. For more detail for each assessment, use the dropdown menus at the top of this page. Number of plots is limited to {{MAXPLOTS}}.
+          </em>
+        </p>
+        {% if 'SAS DATA' in Data and sasdb_sascif|length > 0 %}
+          <p align="justify">
+            <em>Data quality assessment for SAS datasets and fit to model assessments for SAS datasets is also included in this assessment. Data quality and fit to model assessments for other datasets and model uncertainty are under development.
+            </em> 
+          </p>   
+        {% else %}
+          <p align="justify">
+            <em>Data quality and fit to model assessments for other datasets and model uncertainty are under development.
+            </em>
+          </p>
+        {% endif %}
+            
+        {% if disclaimer %}
+          <p align="justify">
+            <em>MolProbity assessments and/or excluded volume assessments can not be evaluated for this current model.
+            </em>
+          </p>
+        {% endif %}
+  
+        <div class="container">
+          <ul class="nav nav-tabs">
+            {% if disclaimer %}
+              <li>
+                <a class="nav-link disabled " data-toggle="tab" href="#home">Model Quality</a>
+              </li>
+            {% else %}
+              <li>
+                <a class="nav-link " data-toggle="tab" href="#home">Model Quality</a>
+              </li>
+            {% endif %}
+          
+            {%- if sas %}
+              <li>
+                <a class="nav-link" data-toggle="tab" href="#menu1">Data Quality</a>
+              </li>
+            {%- else %}
+              <li>
+                <a class="nav-link disabled" data-toggle="tab" href="#menu1" title="No input data were found in public databases">Data Quality</a>
+              </li>
+            {%- endif %}
+          
+            {% if ('SAS DATA' in Data) and (number_of_fits > 0) and (sasdb_sascif|length > 0) %}
+              <li>
+                <a class="nav-link " data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a>
+              </li>
+            {% else %}
+              <li>
+                <a class="nav-link disabled" data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a>
+              </li>
+            {% endif %}  
+            
+            <li>
+              <a class="nav-link disabled " data-toggle="tab" href="#menu3" class="tab-display">Fit to Data Used for Validation</a>
+            </li>
+          </ul>
+        
+          <div class="tab-content">
+            <div id="home" class="tab-pane active">
+              <div class="box text-center container-fluid no-padding" align='center'>
+                {% if not disclaimer %}
+                  <iframe src=../images/{{ ID_f }}_quality_at_glance_MQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;">
+                  </iframe>
+                {% endif %}
+              </div>
+            </div>
+            <div id="menu1" class="tab-pane fade">
+              <div class="box text-center container-fluid no-padding" align='center'>
+                <iframe src=../images/{{ ID_f }}_quality_at_glance_DQ.html frameborder=0 scrolling=yes width=90% height=500vh align=center text-align: center style=position:relative>
+                </iframe>
+              </div>
+            </div>
+            <div id="menu2" class="tab-pane fade">
+              <div class="box text-center container-fluid no-padding" align='center'>
+                <iframe src=../images/{{ ID_f }}_quality_at_glance_FQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;">
+                </iframe>
+              </div>
+            </div>
+            <div id="menu3" class="tab-pane fade">
+              <h3></h3>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end card-header -->
+      <div class="mt-2" />
+      </div>
+      <p align="justify"> <em>Acknowledgements</em> </p>
+      <ul style="list-style-type:none;">
+        <li>
+          <p align="justify"><em>Development of integrative model validation metrics, implementation of a model validation pipeline, and creation of a validation report for integrative structures, are funded by NSF ABI awards (DBI-1756248, DBI-2112966, DBI-2112967, DBI-2112968, and DBI-1756250). The <a href='/about.html'>PDB-IHM team</a> and members of <a href='https://www.salilab.org/'>Sali lab </a>contributed model validation metrics and software packages. </em></p>
+        </li>
+        <li>
+          <p align="justify"><em>Implementation of validation methods for SAS data and SAS-based models are funded by <a href='https://www.rcsb.org/'>RCSB PDB </a> (grant number DBI-1832184). Dr. Stephen Burley, Dr. John Westbrook, and Dr. Jasmine Young from <a href='https://www.rcsb.org/'>RCSB PDB</a>,  Dr. Jill Trewhella, Dr. Helen M. Berman, Dr. Dina Schneidman, and members of <a href='https://www.sasbdb.org/'>SASBDB </a> repository are acknowledged for their advice and support in implementing SAS validation methods. </em></p>
+        </li>
+        <li>
+          <p align="justify"><em>Members of the <a href='https://www.wwpdb.org/task/hybrid'>wwPDB Integrative/Hybrid Methods Task Force</a> provided recommendations and community support for the project. </em> </p>
+        </li>
+      </ul>
+      <p style=margin-bottom:1cm;> </p>
+      <p align="justify">The following software was used in the production of this report.</p>
+      <ul style="list-style-type:none;">
+        
+        <li><em><a href='https://github.com/ihmwg/python-ihm'>Python-IHM</a> Version {{ python_ihm_version }}</em></li>
+        
+        {% if molprobity_version is not none %}
+          <li><em><a href='http://molprobity.biochem.duke.edu/'>MolProbity</a> Version {{ molprobity_version }}</em></li>
+        {% endif %}
 
-                                                                                    <div class="box text-center no-padding float-right" style="text-align: center" ><a href="../supplementary/Supplementary_{{ID_T}}.cif.pdf"><button style="background-color: #669966; margin-top: 10px;margin-bottom:10px; margin-right:0px;color: #FFF;height: 85px; width: 10em; border-radius: 10px;cursor: pointer; font-size:0.8em;"><h5 align="center" style="text-align: center";>Download Summary Table</h5></button></a></div>
-
-                                                                                    <div class="box text-center container-fluid no-padding">
-                                                                                        <script>
-                                                                                            var section = '<img src=../../../images/' + {{ID_R}} + '_resize_1.png class=image-fluid alt=Model Image style=width:300px align=center>';
-                                                                                            document.write(section)
-                                                                                        </script>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <!-- end card header -->
-                                                                            </div>
-                                                                            <!-- end col -->
-                                                                            <div class="col-lg-8 col-md-2">
-                                                                                <div class="card-header" style="background-color:#FFFFFF; border-color:#003366;">
-                                                                                    <div class="bs-example" class="text-center">
-                                                                                        <table class="table table-bordered" style="border-color:#003366; height: 25rem;">
-                                                                                            <thead>
-                                                                                                <tr>
-                                                                                                    <th align="center" class="text-center">PDB ID</th>
-                                                                                                    <th align="center" class="text-center">{{ID_T}}</th>
-                                                                                                </tr>
-                                                                                            </thead>
-                                                                                            <tr>
-                                                                                                <td class="align-middle" class="text-center">Structure Name</td>
-                                                                                                <td class="align-middle" class="text-center">{{Molecule}} </td>
-                                                                                            </tr>
-                                                                                            <tr>
-                                                                                                <td class="align-middle" class="text-center">Publication Title</td>
-                                                                                                <td class="align-middle" class="text-center">{{Title}}</td>
-                                                                                            </tr>
-                                                                                            <tr>
-                                                                                                <td class="align-middle" class="text-center">Authors</td>
-                                                                                                <td class="align-middle" class="text-center">{{Authors}}</td>
-                                                                                            </tr>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <!-- end card-header -->
-                                                                            </div>
-                                                                            <!--end column-->
-                                                                        </div>
-                                                                        <!--end row-->
-                                                                    </div>
-                                                                    <!-- end card bods-->
-                                                                    <!-- start card body2 -->
-                                                                    <div class="card-body">
-                                                                        <!-- start overall card body for front page -->
-                                                                        <div class="row">
-                                                                            <div class="col-lg-12">
-                                                                                <script type="text/javascript">
-                                                                                    var tex='<div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">'
-                                                                                    document.write(tex);
-                                                                                </script>
-
-
-                                                                                <h3 align="center"><a name='qual'>Overall quality</a><a class='help' title='help' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="../../../validation_help.html#overview">?</a></h3>
-                                                                                <p align="justify"> <em>This validation report contains model quality assessments for all structures. For more detail for each assessment, use the dropdown menus at the top of this page.</em></p>
-                                                                                <script type="text/javascript">
-                                                                                    if ({{Data}}.includes('SAS DATA') >= 1 && {{sasdb_sascif}}.length > 0  ) {
-                                                                                        var ex ='<p align="justify"> <em> Data quality assessment for SAS datasets and fit to model assessments for SAS datasets is also included in this assessment. Data quality and fit to model assessments for other datasets and model uncertainty are under development.</em> </p>'
-                                                                                        document.write(ex)
-                                                                                    }
-                                                                                    else {
-                                                                                        var ex ='<p align="justify"> <em> Data quality and fit to model assessments for other datasets and model uncertainty are under development.</em> </p>'
-                                                                                        document.write(ex)
-
-                                                                                    }
-
-                                                                                </script>
-                                                                                <script>
-                                                                                    if ({{disclaimer}}==1) {
-                                                                                        var docx='<p align="justify"><em>Molprobity assessments and/or excluded volume assessments can not be evaluated for this current model.</em></p>'
-                                                                                        document.write(docx)
-                                                                                    }
-
-                                                                                </script>
-
-                                                                                <div class="container">
-                                                                                    <ul class="nav nav-tabs">
-
-                                                                                        <script>
-                                                                                            if ({{disclaimer}}==0) {
-
-                                                                                                var ex='<li><a class="nav-link " data-toggle="tab" href="#home">Model Quality</a></li>'
-                                                                                                document.write(ex);
-                                                                                            }
-
-                                                                                            else{
-                                                                                               var ex='<li><a class="nav-link disabled " data-toggle="tab" href="#home">Model Quality</a></li>'
-                                                                                               document.write(ex);    
-
-                                                                                           }
-
-                                                                                       </script>
-{%- if sas %}
-<li><a class="nav-link" data-toggle="tab" href="#menu1">Data Quality</a></li>
-{%- else %}
-<li><a class="nav-link disabled" data-toggle="tab" href="#menu1" title="No input data were found in public databases">Data Quality</a></li>
-{%- endif %}
-                                                                                        <li>
-
-                                                                                            <script type="text/javascript">
-                                                                                                if ({{Data}}.includes('SAS DATA') >= 1) {
-                                                                                                    if({{number_of_fits}} > 0 && {{sasdb_sascif}}.length >0){
-                                                                                                        var ex='<a class="nav-link " data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a></li>'
-                                                                                                        document.write(ex);}
-                                                                                                        else{
-                                                                                                            var ex='<a class="nav-link disabled" data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a></li>'
-                                                                                                            document.write(ex);
-                                                                                                        }
-
-                                                                                                    }
-                                                                                                    else{
-                                                                                                        var ex='<a class="nav-link disabled" data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a></li>'
-                                                                                                        document.write(ex);
-                                                                                                    }
-                                                                                                </script>
-                                                                                                <li><a class="nav-link disabled " data-toggle="tab" href="#menu3" class="tab-display">Fit to Data Used for Validation</a></li>
-                                                                                            </ul>
-                                                                                            <div class="tab-content">
-                                                                                                <div id="home" class="tab-pane active">
-                                                                                                    <div class="box text-center container-fluid no-padding" align='center'>
-                                                                                                        <script type="text/javascript">
-
-                                                                                                        if ({{disclaimer}}==0){
-                                                                                                            var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_MQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;"></iframe>'
-                                                                                                            document.write(section); }
-
-                                                                                                        </script>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div id="menu1" class="tab-pane fade">
-                                                                                                    <div class="box text-center container-fluid no-padding" align='center'>
-                                                                                                        <script>
-                                                                                                            var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_DQ.html frameborder=0 scrolling=yes width=90% height=500vh align=center text-align: center style=position:relative></iframe>'
-                                                                                                            document.write(section);
-                                                                                                        </script>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div id="menu2" class="tab-pane fade">
-                                                                                                    <div class="box text-center container-fluid no-padding" align='center'>
-                                                                                                        <script>
-                                                                                                            var section = '<iframe src=../images/' + {{ID_w}} + 'quality_at_glance_FQ.html frameborder=0 scrolling=yes width=90% align=center text-align: center style="position:relative; min-height:470px; max-height:2048px;"></iframe>'
-                                                                                                            document.write(section);
-                                                                                                        </script>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div id="menu3" class="tab-pane fade">
-                                                                                                    <h3></h3>
-                                                                                                    <p></p>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <!-- end card-header -->
-                                                                                    <div class="mt-2" />
-                                                                                </div>
-
-                                                                                <p align="justify"> <em>Acknowledgements</em> </p>
-                                                                                <ul style="list-style-type:none;">
-                                                                                    <li><p align="justify"><em>Development of integrative model validation metrics, implementation of a model validation pipeline, and creation of a validation report for integrative structures, are funded by NSF ABI awards (DBI-1756248, DBI-2112966, DBI-2112967, DBI-2112968, and DBI-1756250). The <a href='https://pdb-dev.wwpdb.org/about.html'>PDB-Dev team</a> and members of <a href='https://www.salilab.org/'>Sali lab </a>contributed model validation metrics and software packages. </em></p></li>
-                                                                                    <li><p align="justify"><em>Implementation of validation methods for SAS data and SAS-based models are funded by <a href='https://www.rcsb.org/'>RCSB PDB </a> (grant number DBI-1832184). Dr. Stephen Burley, Dr. John Westbrook, and Dr. Jasmine Young from <a href='https://www.rcsb.org/'>RCSB PDB</a>,  Dr. Jill Trewhella, Dr. Helen M. Berman, Dr. Dina Schneidman, and members of <a href='https://www.sasbdb.org/'>SASBDB </a> repository are acknowledged for their advice and support in implementing SAS validation methods. </em></p></li>
-                                                                                    <li><p align="justify"><em>Members of the <a href='http://www.wwpdb.org/task/hybrid'>wwPDB Integrative/Hybrid Methods Task Force</a> provided recommendations and community support for the project. </em> </p></li>
-                                                                                </ul>
-                                                                                <p style=margin-bottom:1cm;> </p>
-                                                                                <p align="justify">The following software was used in the production of this report.</p>
-                                                                                <ul style="list-style-type:none;">
-                                                                                    <li><em><a href='http://molprobity.biochem.duke.edu/'>Molprobity</a> Version 4.4</em></li>
-                                                                                        
-																					{% if sas|length > 0 and sasdb_sascif|length > 0 %}
-                                                                                   	  <li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a>  Version 3.0.3</em></li>
-																					{% endif %}
-
-                                                                                    <li><em><a href='https://github.com/salilab/IHMValidation'>Integrative Modeling Validation</a>  Version 1.0</em></li>
-                                                                                    <li><em><a href='https://integrativemodeling.org/'>Integrative Modeling Platform</a> Version 2.15.0</em></li>
-
-
-                                                                                </ul>
-                                                                            </div>
-                                                                            <!-- end column -->
-                                                                        </div>
-                                                                        <!--end row-->
-                                                                    </div>
-                                                                    <!--end card body-->
+        {% if sas|length > 0 and sasdb_sascif|length > 0 %}
+          <li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a> Version {{ atsas_version }}</em></li>
+        {% endif %}
+        
+        <li><em><a href='https://github.com/salilab/IHMValidation'>Integrative Modeling Validation</a> Version {{ report_version }}</em></li>
+      </ul>
+    </div>
+    <!-- end column -->
+  </div>
+  <!--end row-->
+</div>
+<!--end card body-->
 {% endblock %}

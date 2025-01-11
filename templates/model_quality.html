@@ -1,163 +1,128 @@
-{% extends "layout.html" %}
-
+{% extends "validation_report_layout.html" %}
+{% from "macro.html" import write_table %}
 {% block body %}
-
 <!-- Template for writing model quality webpage -->
 <!-- ganesans - Salilab - UCSF -->
 <!-- ganesans@salilab.org -->
-
-                                            <!-- start overall card body for front page -->
-                                            <!-- scripts -->
-                                            <script>
-                                                function Write_Table(list_to_write) {
-                                                    var mytable = "<div class='bs-example' class='text-center'> <table class='table table-bordered' style='border-color':#003366;> <thead> <tr>";
-                                                    for (var i = 0; i < list_to_write[0].length; i++) {
-                                                        mytable += "<th align='center' class='text-center' style='vertical-align:middle'>" + list_to_write[0][i] + "</th>";
-                                                    }
-                                                    mytable += "</tr></thead><tr>";
-
-                                                    for (var j = 1; j < list_to_write.length; j++) {
-                                                        for (var i = 0; i < list_to_write[j].length; i++) {
-                                                            mytable += "<td><div>" + list_to_write[j][i] + "</div></td>";
-                                                        }
-                                                        mytable += "</tr><tr>";
-
-                                                    }
-                                                    mytable += "</tr></table></div>";
-                                                    document.write(mytable);
-                                                }
-                                            </script>
-                                            <!-- scripts -->
-                                            <div class="card-body border-success" style="border-color: solid black;">
-                                                <!-- start overall card body for front page -->
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="card-header" style="background-color: #FFF;">
-                                                            <h4 align="center"><u>Model quality</u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#modelquality'>?</a></h4>
-                                                            <p class="ex2"> For models with atomic structures, molprobity analysis is performed. For models with coarse-grained or multi-scale structures, excluded volume analysis is performed.</p>
-                                                            <script>
-                                                                var sphere = {{sphere}}
-                                                                var disclaimer= {{disclaimer}}
-                                                                if (sphere > 0) {
-                                                                    var ex = "<h5 class= ex2 align= left>Excluded volume satisfaction<a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#exv'>?</a></h5>";
-                                                                    ex += "<i> Excluded volume satisfaction for the models in the entry are listed below. </i>";
-                                                                    document.write(ex);
-                                                                    var space = '<p class="ex2"> </p>';
-                                                                    document.write(space);
-                                                                    Write_Table(list_to_write = {{excluded_volume}})
-                                                                    document.write(space);
-                                                                }
-                                                                if (disclaimer > 0) {
-                                                                    var space = '<p class="ex2"> </p>';
-                                                                    document.write(space);
-                                                                    var ex2 = "<i> NOTE: Based on existing standards, there are no model quality assessments for this entry.</i>";
-                                                                    document.write(ex2);
-                                                                    var space = '<p class="ex2"> </p>';
-                                                                    document.write(space); }
-
-
-                                                                </script>
-                                                                <script>
-                                                                    if ({{sphere}}< 1) {
-                                                                        var intro = "<h5 class= ex2 align= center><u><a name='geometry1'>Standard geometry: bond outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
-                                                                        document.write(intro);
-                                                                        var space = '<p class="ex2"> </p>';
-                                                                        document.write(space);
-                                                                        if ({{molp_b}}.length > 1) {
-                                                                            var intro = "<i> There are " + {{bond}} + " bond outliers in this entry ({{ "%.1f"|format(bond / total_bonds * 100) }}% of all bonds). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/bond_outliers.csv> here. </a> </i>";
-                                                                            document.write(intro);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{molp_b}})
-                                                                            document.write(space);
-                                                                        }
-
-                                                                        else {
-                                                                            var intro = "<i> Bond length outliers can not be evaluated for this model</i>";
-                                                                            document.write(intro);
-                                                                            document.write(space);
-                                                                        }
-
-                                                                        var intro = "<h5 class= ex2 align= center><u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
-                                                                        document.write(intro);
-                                                                        var space = '<p class="ex2"> </p>';
-                                                                        document.write(space);
-
-                                                                        if ({{molp_a}}.length > 1) {
-                                                                            var intro2 = "<i> There are " + {{angle}} + " angle outliers in this entry ({{ "%.1f"|format(angle / total_angles * 100) }}% of all angles). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv> here. </a> </i>";
-                                                                            document.write(intro2);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{molp_a}})
-                                                                            document.write(space);
-                                                                        }
-                                                                        else {
-                                                                            var intro2 = "<i> Bond angle outliers do not exist or can not be evaluated for this model </i>";
-                                                                            document.write(intro2);
-                                                                            document.write(space);
-                                                                        }
-
-                                                                        if ({{clashscore_list}}.length > 1) {
-                                                                            var docx = "<h5 class= ex2 align= center><u><a name='contacts'>Too-close contacts</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
-                                                                            docx += "<p align='justify'><i> The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry. </i></p>";
-                                                                            document.write(docx);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{clashscore_list}})
-                                                                            document.write(space);
-                                                                        }
-
-
-                                                                        if ({{clashlist}}.length > 1) {
-                                                                            var docx = "<p align='justify'><i> The table below contains the detailed list of all clashes based on a MolProbity analysis. Bad clashes are >= 0.4 Angstrom. </i></p>";
-                                                                            document.write(docx);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{clashlist}})
-                                                                            document.write(space);
-                                                                        }
-
-                                                                        if ({{ramascore}}.length > 1) {
-                                                                            var text2 = "<h5 class=ex2 align= center><u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
-                                                                            text2 += "<p align='justify'><i> In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed. </i></p>"
-                                                                            document.write(text2);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{ramascore}})
-                                                                            document.write(space);
-                                                                        }
-
-
-                                                                        if ({{ramalist}}.length > 1) {
-                                                                            var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
-                                                                            document.write(text4);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{ramalist}})
-                                                                            document.write(space);
-                                                                        }
-
-
-                                                                        if ({{rotascore}}.length > 1) {
-                                                                            var text3 = "<h5 class=ex2 align=center><u><a name='outliers'>Torsion angles : Protein sidechains</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='../../../validation_help.html#molprobity'>?</a></h5>";
-                                                                            text3 += "<i> In the following table, sidechain rotameric outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed. </i>"
-                                                                            document.write(text3);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{rotascore}})
-                                                                            document.write(space);
-                                                                        }
-
-
-                                                                        if ({{rotalist}}.length > 1 ) {
-                                                                            var text4 = "<i> Detailed list of outliers are tabulated below. </i>";
-                                                                            document.write(text4);
-                                                                            document.write(space);
-                                                                            Write_Table(list_to_write = {{rotalist}})
-                                                                            document.write(space);
-                                                                        }
-
-
-                                                                    }
-                                                                </script>
-                                                            </div>
-                                                        </div>
-                                                        <!-- end col -->
-                                                    </div>
-                                                </div>
-                                                <!-- end card body-->
-                                                <!-- start overall card body for front page -->
+  <div class="card-body border-success" style="border-color: solid black;">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card-header" style="background-color: #FFF;">
+          <h4 align="center"><u>Model quality</u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#modelquality'>?</a></h4>
+          <p class="ex2"> For models with atomic structures, molprobity analysis is performed. For models with coarse-grained or multi-scale structures, excluded volume analysis is performed.</p>
+          <!-- Bad systems without proper metrics -->
+          {% if disclaimer > 0 %}
+            <p class="ex2"></p>
+            <i>NOTE: Based on existing standards, there are no model quality assessments for this entry.</i>
+            <p class="ex2"></p>
+          {% else %}
+            <!-- Excluded volume for systems with coarse grain beads -->
+            {% if sphere|int > 0 %}
+              <h5 class= ex2 align= left>Excluded volume satisfaction<a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#exv'>?</a>
+              </h5>
+              <i>Excluded volume satisfaction for the models in the entry are listed below.</i>
+              <p class="ex2"></p>
+              {{ write_table(excluded_volume) }}
+              <p class="ex2"></p>
+            <!-- Atomic systems (molprobity) -->
+            {% else %}
+              <h5 class= ex2 align= center>
+                <u><a name='geometry1'>Standard geometry: bond outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
+              </h5>
+              <p class="ex2"></p>
+              {% if molp_b|length > 1 %}
+                <i>There are {{ bond|int }} bond outliers in this entry ({{ "%.1f"|format(bond / total_bonds * 100) }}% of all bonds). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/bond_outliers.csv>here</a>.
+                </i>
+                <p class="ex2"></p>
+                {{ write_table(molp_b) }}
+                <p class="ex2"></p>
+              {% else %}
+                <i> Bond length outliers can not be evaluated for this model</i>
+                <p class="ex2"></p>
+              {% endif %}
+  
+              <h5 class= ex2 align= center>
+                <u><a name='geometry2'>Standard geometry: angle outliers</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
+              </h5>
+              <p class="ex2"></p>
+              {% if molp_a|length > 1 %}
+                {% if total_angles|int > 1 %}
+                  <i>
+                    There are {{ angle|int }} angle outliers in this entry ({{ "%.1f"|format(angle / total_angles * 100) }}% of all angles). A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv>here</a>.
+                  </i>
+                {% else %}
+                  <i>
+                    There are {{ angle|int }} angle outliers in this entry. A summary is provided below, and a detailed list of outliers can be found <a href=../csv/angle_outliers.csv>here</a>.
+                  </i>
+                {% endif %}
+                <p class="ex2"></p>
+                {{ write_table(molp_a) }}
+                <p class="ex2"></p>
+              {% else %}
+                <i>Bond angle outliers do not exist or can not be evaluated for this model</i>
+                <p class="ex2"></p>
+              {% endif %}
+  
+              {% if clashscore_list|length > 1 %}
+                <h5 class= ex2 align= center>
+                  <u><a name='contacts'>Too-close contacts</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
+                </h5>
+                <p align='justify'>
+                  <i>The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all the models in this entry.</i>
+                </p>
+                <p class="ex2"></p>
+                {{ write_table(clashscore_list) }}
+                <p class="ex2"></p>
+              {% endif %}
+  
+              {% if clashlist|length > 1 %}
+                <p align='justify'>
+                  <i>The table below contains the detailed list of all clashes based on a MolProbity analysis. Bad clashes are >= 0.4 Angstrom.</i>
+                </p>
+                <p class="ex2"></p>
+                {{ write_table(clashlist) }}
+                <p class="ex2"></p>
+              {% endif %}
+  
+              {% if ramascore|length > 1 %}
+                <h5 class=ex2 align= center>
+                  <u><a name='torsion'>Torsion angles: Protein backbone</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
+                </h5>
+                <p align='justify'>
+                  <i>In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed.</i>
+                 </p>
+                <p class="ex2"></p>
+                {{ write_table(ramascore) }}
+                <p class="ex2"></p>
+              {% endif %}
+  
+              {% if ramalist|length > 1 %}
+                <i>Detailed list of outliers are tabulated below.</i>
+                <p class="ex2"></p>
+                {{ write_table(ramalist) }}
+                <p class="ex2"></p>
+              {% endif %}
+  
+              {% if rotascore|length > 1 %}
+                <h5 class=ex2 align=center>
+                  <u><a name='outliers'>Torsion angles : Protein sidechains</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#molprobity'>?</a>
+                </h5>
+                <i>In the following table, sidechain rotameric outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed.</i>
+                <p class="ex2"></p>
+                {{ write_table(rotascore) }}
+                <p class="ex2"></p>
+              {% endif %}
+  
+              {% if rotalist|length > 1 %}
+                <i>Detailed list of outliers are tabulated below.</i>
+                <p class="ex2"></p>
+                {{ write_table(rotalist) }}
+                <p class="ex2"></p>
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

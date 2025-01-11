@@ -1,0 +1,63 @@
+Bootstrap: docker
+From: ubuntu:22.04
+Stage: spython-base
+
+%files
+
+    {{ ATSAS }} /ATSAS.deb
+
+%labels
+
+    MAINTAINER Arthur Zalevsky <aozalevsky@gmail.com>
+
+%post
+
+    TZ={{ TZ }}
+    DEBIAN_FRONTEND=noninteractive
+
+    # Install common dependencies
+    apt-get update -y && apt-get install -y wget curl git subversion build-essential
+
+    # Set up basic conda environment using conda-forge packages
+    curl -L https://github.com/conda-forge/miniforge/releases/download/23.3.1-1/Mambaforge-23.3.1-1-Linux-x86_64.sh -o miniforge.sh && echo "dbe92c011a1315b9626e2f93a165892f4b89177145bc350b3859a483a3642a24 miniforge.sh" sha256sum -c --status && bash ./miniforge.sh -b -p /opt/conda && rm -f miniforge.sh && /opt/conda/bin/conda init -q bash
+
+    # Ensure that we always use a shell with conda
+    PATH=/opt/conda/bin:${PATH}
+    echo "conda activate" >> ~/.bashrc
+
+    # Build molprobity from source code and put the binaries we need in /usr/bin/
+    mkdir /opt/molprobity && cd /opt/molprobity && curl -O https://raw.githubusercontent.com/rlabduke/MolProbity/master/install_via_bootstrap.sh && bash ./install_via_bootstrap.sh 4
+    PATH=${PATH}:/opt/molprobity/build/bin
+
+    # Install SAS tools: ATSAS and SASCIFTOOLS
+    apt-get update -y && apt-get install -y /ATSAS.deb && rm -f /ATSAS.deb
+    pip install git+https://git.embl.de/grp-svergun/sasciftools3.git@master#egg=sasciftools
+
+    # Install additional certificate for SASBDB
+    curl https://cacerts.digicert.com/ThawteEVRSACAG2.crt.pem -o ThawteEVRSACAG2.crt --output-dir /usr/local/share/ca-certificates/ && update-ca-certificates
+    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+    # Install Python packages and other dependencies needed by IHMValidation
+    apt-get update -y && apt-get install -y xvfb libasound2 libdbus-glib-1-2 libgtk-3-0 && mamba install -y pip requests numpy pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 && pip install -U iqplot pdfkit ihm && curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+
+    # Hardcode selenium path
+    SE_MANAGER_PATH=/opt/conda/bin/selenium-manager
+
+    # Get IHMValidation
+    git clone --depth 1 https://github.com/salilab/IHMValidation.git /opt/IHMValidation
+
+    # Create input and output dirs
+    mkdir -p /ihmv/input /ihmv/output /ihmv/cache /ihmv/databases
+
+%environment
+
+    export TZ=${TZ}
+    export DEBIAN_FRONTEND=noninteractive
+    export PATH=/opt/conda/bin:${PATH}
+    export PATH=${PATH}:/opt/molprobity/build/bin
+    export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    export SE_MANAGER_PATH=/opt/conda/bin/selenium-manager
+
+%runscript
+
+    exec /bin/bash "$@"
