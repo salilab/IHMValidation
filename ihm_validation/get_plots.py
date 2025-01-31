@@ -8,6 +8,7 @@
 # ganesans@salilab.org
 ###################################
 import os
+from pathlib import Path
 import utility
 from mmcif_io import GetInputInformation
 import bokeh
@@ -26,15 +27,17 @@ from bokeh.layouts import gridplot, column
 silence(MISSING_RENDERERS, True)
 silence(EMPTY_LAYOUT, True)
 
+import json
+from bokeh.embed import json_item
+
 MAXPLOTS = 256
 
 class Plots(GetInputInformation):
     def __init__(self, mmcif, imageDirName, driver):
         super().__init__(mmcif)
-        self.ID = str(GetInputInformation.get_id(self))
-        self.dirname = os.path.dirname(os.path.abspath(__file__))
+        # self.dirname = os.path.dirname(os.path.abspath(__file__))
         self.imageDirName = imageDirName
-        self.filename = os.path.join(self.imageDirName)
+        self.filename = imageDirName
         self.driver=driver
 
     def plot_quality_at_glance(self, molprobity_data: dict, exv_data: dict,
@@ -46,24 +49,33 @@ class Plots(GetInputInformation):
             'FQ': False,
         }
 
-        # create tabs list to add all the panel figures (model quality, data quality.. etc)
-        output_file(self.ID+"quality_at_glance.html", mode="inline")
-
         # MODEL QUALITY
-        # check for molprobity or excluded volume data
-        if molprobity_data:
-            # if molprobity data, plot that
+        mq_plots = []
+
+        # check for MolProbity or excluded volume data
+        if molprobity_data is not None:
+            # if MolProbity data, plot that
             # every model has clashscore, rama outliers, and rota outliers
-            Models = molprobity_data['Names']
-            Scores = ['Clashscore', 'Ramachandran outliers',
-                      'Sidechain outliers']
-            data = {'models': Models,
-                    'Clashscore': molprobity_data['Clashscore'],
-                    'Ramachandran outliers': molprobity_data['Ramachandran outliers'],
-                    'Sidechain outliers': molprobity_data['Sidechain outliers']}
-            y = [(str(model), score) for model in Models for score in Scores]
-            counts = sum(zip(data['Clashscore'], data['Ramachandran outliers'],
-                         data['Sidechain outliers']), ())
+            Models = list(molprobity_data.keys())
+            Scores = [
+                'Sidechain outliers',
+                'Ramachandran outliers',
+                'Clashscore',
+            ]
+            data = {'models': Models}
+
+            for s in Scores:
+                data[s] = [x[s] for x in molprobity_data.values()]
+
+            y = [(f"Model {model}", score) for model in Models for score in Scores]
+            counts = sum(
+                zip(
+                    data['Sidechain outliers'],
+                    data['Ramachandran outliers'],
+                    data['Clashscore'],
+                ),
+                ()
+            )
             source = ColumnDataSource(data=dict(y=y, counts=counts))
 
             # if there are more than 7 models, we will increase the size of the plots
@@ -75,7 +87,7 @@ class Plots(GetInputInformation):
             lower, upper = utility.calc_optimal_range(counts)
 
             # create plot
-            for i, name_ in enumerate(molprobity_data['Names']):
+            for i, name_ in enumerate(Models):
 
                 p = figure(
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
@@ -85,28 +97,32 @@ class Plots(GetInputInformation):
                     plot_width=700
                 )
 
-                p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
+                p_ = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
                        right=source.data['counts'][i * 3: (i + 1) * 3],
-                       width=0.9, line_color="white",
+                       line_color="white",
                        fill_color=factor_cmap('y', palette=viridis(len(Scores)),
                                               factors=Scores,
                                               start=1, end=2)
                        )
+
                 # set labels and fonts
                 p.xaxis.major_label_text_font_size = "12pt"
                 p.yaxis.major_label_text_font_size = "12pt"
                 p.xaxis.axis_label = 'Outliers'
                 p.xaxis.axis_label_text_font_style = 'italic'
                 p.left[0].group_text_font_size = '14px'
+                p.left[0].group_text_color = p.left[0].major_label_text_color
+                p.left[0].group_text_font_style = p.left[0].major_label_text_font_style
+                p.left[0].group_text_font_size = p.left[0].major_label_text_font_size
                 p.left[0].group_label_orientation = 'horizontal'
                 p.title.vertical_align = 'top'
                 p.title.align = "center"
                 p.output_backend = "svg"
+
+                fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
+                export_svg(p, filename=fname, webdriver=self.driver)
+
                 plots.append(p)
-
-                export_svg(p, filename=self.filename+'/' +
-                            self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg", webdriver=self.driver)
-
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
@@ -122,12 +138,13 @@ class Plots(GetInputInformation):
                         )
 
             fullplot = column(title, grid)
+            mq_plots.append(fullplot)
 
-        # if there isn't molprobity data, we plot exc vol data
-        elif exv_data:
+        # If excluded volume data is available
+        if exv_data:
             numplots = min(len(exv_data['Models']), MAXPLOTS)
 
-            model = exv_data['Models'][:numplots]
+            Models = exv_data['Models'][:numplots]
             # analysed = exv_data['Analysed'][:numplots]
             # violations = exv_data['Number of violations'][:numplots]
             # satisfaction = exv_data['Number of violations'][:numplots]
@@ -138,7 +155,7 @@ class Plots(GetInputInformation):
             except (ValueError):
                 return
 
-            Scores = [f'Model {m}' for m in model]
+            Scores = [f'Model {m}' for m in Models]
             legends = [f'{s:.2f}%' for s in satisfaction]
 
             # set the size of the axis
@@ -153,28 +170,32 @@ class Plots(GetInputInformation):
             # get ranges
             lower, upper = 0, 102
 
-            for i, name_ in enumerate(model):
-                p = figure(y_range=source.data['Scores'][i: i + 1], x_range=(lower, upper), plot_height=100,
+            for i, name_ in enumerate(Models):
+                p = figure(y_range=FactorRange(factors=source.data['Scores'][i: i + 1]), x_range=(lower, upper), plot_height=90,
                            plot_width=700)  # , title='Model Quality: Excluded Volume Analysis')
                 # p.xaxis.formatter = BasicTickFormatter(use_scientific=True, power_limit_high=3)
                 p.xaxis.ticker.desired_num_ticks = 3
 
-                r = p.hbar(y=source.data['Scores'][i:i + 1], right=source.data['counts'][i: i + 1], color=source.data['color'][i:i + 1], height=0.5,
-                           alpha=0.8, line_color='black')
+                p_ = p.hbar(y=source.data['Scores'][i:i + 1], right=source.data['counts'][i: i + 1], color=source.data['color'][i:i + 1], height=1.0,
+                           alpha=0.8, line_color='white')
+
                 p.xaxis.axis_label = 'Satisfaction rate, %'
                 legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
-                    r], index=j) for j in range(len(legends[i:i + 1]))], location='center',
+                    p_], index=j) for j in range(len(legends[i:i + 1]))], location='center',
                     label_text_font_size='12px', orientation='vertical')
                 p.add_layout(legend, 'right')
+                p.legend.border_line_width = 0
                 p.xaxis.major_label_text_font_size = "12pt"
                 p.yaxis.major_label_text_font_size = "12pt"
                 p.title.vertical_align = 'top'
                 p.title.align = "center"
                 p.output_backend = "svg"
-                plots.append(p)
+                p.min_border_top = 20
 
-                export_svg(p, filename=self.filename+'/' +
-                            self.ID+'_' + str(i) + "_quality_at_glance_MQ.svg", webdriver=self.driver)
+                fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
+                export_svg(p, filename=fname, webdriver=self.driver)
+
+                plots.append(p)
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
@@ -190,36 +211,48 @@ class Plots(GetInputInformation):
                         )
 
             fullplot = column(title, grid)
+            mq_plots.append(fullplot)
 
         # if neither exc vol nor molp data exists, we create a blank plot
         # pdb-dev visuals keep changing, so this plot might or might not make sense
         # we are keeping it, just in case the visuals change again
-        else:
-            Scores = ['']
-            counts = ['']
-            legends = ['']
-            source = ColumnDataSource(
-                data=dict(Scores=Scores, counts=counts, legends=legends))
-            p = figure(y_range=Scores, x_range=(0, 1),
-                       plot_height=300, plot_width=800)
-
-            p.ygrid.grid_line_color = None
-            p.xaxis.axis_label_text_font_size = "14pt"
-            p.yaxis.axis_label_text_font_size = "14pt"
-            p.title.text_font_size = '14pt'
-            p.title.align = "center"
-
-            p.output_backend = "svg"
-            p.title.vertical_align = 'top'
-            fullplot = p
+        # else:
+        #    Scores = ['']
+        #    counts = ['']
+        #    legends = ['']
+        #    source = ColumnDataSource(
+        #        data=dict(Scores=Scores, counts=counts, legends=legends))
+        #    p = figure(y_range=Scores, x_range=(0, 1),
+        #               plot_height=300, plot_width=800)
+        #
+        #    p.ygrid.grid_line_color = None
+        #    p.xaxis.axis_label_text_font_size = "14pt"
+        #    p.yaxis.axis_label_text_font_size = "14pt"
+        #    p.title.text_font_size = '14pt'
+        #    p.title.align = "center"
+        #
+        #    p.output_backend = "svg"
+        #    p.title.vertical_align = 'top'
+        #    fullplot = p
+        #
+        #    mq_plots.append(fullplot)
         # make panel figures
         # first panel is model quality
-        export_svg(fullplot, filename=self.filename+'/' +
-                    self.ID+"quality_at_glance_MQ.svg", webdriver=self.driver)
-        save(fullplot, filename=self.filename+'/' +
-             self.ID+"quality_at_glance_MQ.html")
+#        export_svg(fullplot, filename=self.filename+'/' +
+#                    self.ID_f + "_quality_at_glance_MQ.svg", webdriver=self.driver)
+#        save(fullplot, filename=self.filename+'/' +
+#             self.ID_f +"_quality_at_glance_MQ.html")
 
-        glance_plots['MQ'] = True
+        if len(mq_plots) > 0:
+            pd = gridplot(mq_plots, ncols=1,
+                merge_tools=True,
+                     toolbar_location="above",
+                     # sizing_mode='stretch_width'
+                     )
+            # pd = column(*dq_plots)
+
+            plots = self.save_plots(pd, 'quality_at_glance_MQ')
+            glance_plots['MQ'] = True
 
         # DATA QUALITY
         # check for sas data, if exists, plot
@@ -236,9 +269,9 @@ class Plots(GetInputInformation):
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
             pd = figure(y_range=Scores, x_range=(0, max(
-                counts)+1), plot_height=450, plot_width=800, title="Data Quality for SAS: Rg Analysis",)
-            rd = pd.hbar(y='Scores', right='counts', color='color', height=0.5,
-                         source=source, alpha=0.8, line_color='black')
+                counts)+1), plot_height=90 + len(counts) * 20, plot_width=800, title="Data Quality for SAS: Rg Analysis",)
+            rd = pd.hbar(y='Scores', right='counts', color='color', height=1.0,
+                         source=source, alpha=0.8, line_color='white')
             pd.ygrid.grid_line_color = None
             pd.xaxis.axis_label = 'Distance (nm)'
             pd.xaxis.major_label_text_font_size = "12pt"
@@ -248,6 +281,8 @@ class Plots(GetInputInformation):
                             rd], index=i) for i in range(len(legends))], location='center',
                             orientation='vertical', label_text_font_size="12px")
             pd.add_layout(legend, 'right')
+            pd.legend.items.reverse()
+            pd.legend.border_line_width = 0
             pd.legend.label_text_font_size = "12px"
             pd.xaxis.axis_label_text_font_style = 'italic'
             pd.yaxis.axis_label_text_font_style = 'italic'
@@ -259,9 +294,8 @@ class Plots(GetInputInformation):
 
             dq_plots.append(pd)
 
+        # If crosslinking-MS data is available
         if cx_data_quality is not None and len(cx_data_quality) > 0:
-            # if molprobity data, plot that
-            # every model has clashscore, rama outliers, and rota outliers
             Models = [data["pride_id"] for data in cx_data_quality]
             Scores = ['Total', 'Mapped to matching entities', 'Matched']
             legends = []
@@ -302,14 +336,15 @@ class Plots(GetInputInformation):
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(lower, upper),
-                    plot_height=120,
+                    plot_height=95 + 3 * 20,
                     plot_width=700,
                     title=title_txt
                 )
+                p.xaxis.ticker.desired_num_ticks = 3
 
                 rd = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
                        right=source.data['counts'][i * 3: (i + 1) * 3],
-                       width=0.9, line_color="white",
+                       line_color="white",
                        fill_color=factor_cmap('y', palette=viridis(len(Scores)),
                                               factors=Scores,
                                               start=1, end=2)
@@ -320,6 +355,7 @@ class Plots(GetInputInformation):
                             orientation='vertical', label_text_font_size="12px")
                 legend.items = legend.items[::-1]
                 p.add_layout(legend, 'right')
+                p.legend.border_line_width = 0
                 # set labels and fonts
                 p.xaxis.major_label_text_font_size = "12pt"
                 p.yaxis.major_label_text_font_size = "12pt"
@@ -336,12 +372,12 @@ class Plots(GetInputInformation):
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
-                            toolbar_location='right',
+                            toolbar_location=None,
                             )
-            grid.children[1].css_classes = ['scrollable']
-            grid.children[1].sizing_mode = 'fixed'
-            grid.children[1].height = 450
-            grid.children[1].width = 800
+#            grid.children[1].css_classes = ['scrollable']
+#            grid.children[1].sizing_mode = 'fixed'
+#            grid.children[1].height = 450
+#            grid.children[1].width = 800
 
 
             # fullplot = column(title, grid)
@@ -350,16 +386,13 @@ class Plots(GetInputInformation):
 
         if len(dq_plots) > 0:
             pd = gridplot(dq_plots, ncols=1,
+                merge_tools=True,
                      toolbar_location="above",
                      # sizing_mode='stretch_width'
                      )
             # pd = column(*dq_plots)
 
-            export_svg(pd, filename=self.filename+'/' +
-                        self.ID+"quality_at_glance_DQ.svg", webdriver=self.driver)
-            save(pd, filename=self.filename+'/' +
-                     self.ID+"quality_at_glance_DQ.html")
-
+            plots = self.save_plots(pd, 'quality_at_glance_DQ')
             glance_plots['DQ'] = True
 
         # FIT TO DATA QUALITY
@@ -374,10 +407,10 @@ class Plots(GetInputInformation):
             legends = [str(i) for i in counts]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=450,
+            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 20,
                         plot_width=800, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
-            rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
-                         source=source, alpha=0.8, line_color='black')
+            rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
+                         source=source, alpha=0.8, line_color='white')
             pf.ygrid.grid_line_color = None
             pf.title.text_font_size = '14pt'
             pf.xaxis.axis_label = 'Fit value'
@@ -387,6 +420,8 @@ class Plots(GetInputInformation):
                             rf], index=i) for i in range(len(legends))], location="center",
                             orientation='vertical', label_text_font_size="12px")
             pf.add_layout(legend, 'right')
+            pf.legend.items.reverse()
+            pf.legend.border_line_width = 0
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
@@ -419,10 +454,10 @@ class Plots(GetInputInformation):
                 legends = [f'{i} %' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=viridis(len(legends))))
-                pf = figure(y_range=Scores, x_range=(0, 102), plot_height=100 + len(counts) * 25,
-                            plot_width=700, title="Crosslink satisfaction")
-                rf = pf.hbar(y='Scores', right='counts', color='color', height=0.5,
-                             source=source, alpha=0.8, line_color='black')
+                pf = figure(y_range=Scores, x_range=(0, 102), plot_height=95 + len(counts) * 20,
+                            plot_width=800, title="Crosslink satisfaction")
+                rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
+                             source=source, alpha=0.8, line_color='white')
                 pf.ygrid.grid_line_color = None
                 pf.title.text_font_size = '14pt'
                 pf.xaxis.axis_label = 'Satisfaction rate, %'
@@ -432,6 +467,7 @@ class Plots(GetInputInformation):
                                 rf], index=i) for i in range(len(legends))], location="center",
                                 orientation='vertical', label_text_font_size="12px")
                 pf.add_layout(legend, 'right')
+                pf.legend.border_line_width = 0
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
@@ -443,16 +479,26 @@ class Plots(GetInputInformation):
                 fq_plots.append(pf)
 
         if len(fq_plots) > 0:
-            pf = gridplot(fq_plots, ncols=1,
+            pd = gridplot(fq_plots, ncols=1,
                      toolbar_location="above",
                      # sizing_mode='stretch_width'
                      )
 
-            export_svg(pf, filename=self.filename+'/' +
-                        self.ID+"quality_at_glance_FQ.svg", webdriver=self.driver)
-            save(pf, filename=self.filename+'/' +
-                 self.ID+"quality_at_glance_FQ.html")
-
+            plots = self.save_plots(pd, 'quality_at_glance_FQ')
             glance_plots['FQ'] = True
 
         return glance_plots
+
+    def save_plots(self, p, plot_name: str) -> dict:
+        """Save html and svg plots"""
+        fname_html = Path(self.imageDirName, f"{self.ID_f}_{plot_name}.html")
+        fname_svg = fname_html.with_suffix('.svg')
+        fname_json = fname_html.with_suffix('.json')
+        # output_file(filename=fname_html, mode='inline')
+        # save(p)
+        export_svg(p, filename=fname_svg, webdriver=self.driver)
+
+        with open(fname_json, 'w') as f:
+            json.dump(json_item(p), f)
+
+        return {'html': fname_html, 'svg': fname_svg, 'json': fname_json}

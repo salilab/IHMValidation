@@ -11,20 +11,12 @@
           {% endfor %}
         </tr>
       </thead>
-      {% for j in range(1, list_to_write|length) %}
+      {% for i in range(1, list_to_write|length) %}
         <tr>
-          {% for i in range(list_to_write[j]|length) %}
+          {% for j in range(list_to_write[i]|length) %}
             <td style="text-align:center; vertical-align: middle;">
               <div>
-                {% if list_to_write[j][i] is number %}
-                  {% if list_to_write[j][i] is float %}
-                    {{ ('%.' ~ num_digits ~ 'f')|format(list_to_write[j][i]) }}
-                  {% else %}
-                    {{ list_to_write[j][i]|int }}
-                  {% endif %}
-                {% else %}
-                  {{ list_to_write[j][i] }}
-                {% endif %}
+                {{ format_value(list_to_write[i][j], num_digits=num_digits) }}
               </div>
             </td>
           {% endfor %}
@@ -53,9 +45,44 @@
 {% macro insert_sas_plot(id, sasdb_id, plot_name) %}
   <div class=col-lg-6>
     <div class=box text-center container-fluid no-padding style=height:60vh>
-      <iframe src=../images/{{id}}{{sasdb_id}}{{plot_name}}.html frameborder=0 scrolling=yes width=100% height=600vh  style=position:relative>
+      <iframe src=../images/{{id}}_{{sasdb_id}}_{{plot_name}}.html frameborder=0 scrolling=yes width=100% height=600vh  style=position:relative>
       </iframe>
     </div>
   </div>
 {% endmacro %}
 <!-- end of macro definition -->
+{% macro format_value(value, num_digits=2) %}
+  {% if value is number %}
+     {% if value is float %}
+       {{ ('%.' ~ num_digits ~ 'f')|format(value) }}
+     {% else %}
+       {{ value }}
+     {% endif %}
+  {% elif value is iterable and (value is not string and value is not mapping) %}
+    {% if value|length > 0 %}
+      {{ value|join(", ") }}
+    {% else %}
+      -
+    {% endif %}
+  {% else %}
+    {{ value }}
+  {% endif %}
+{% endmacro %}
+
+<!-- Define a macro for the html/pdf formatting of help links -->
+{% macro format_help(mode, topic) %}
+  {% if mode == 'html' %}
+    <a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#{{ topic }}'>?</a>
+  {% else %}
+    <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-dev.wwpdb.org/validation_help.html#{{ topic }}">?</a>
+  {% endif %}
+{% endmacro %}
+
+{% macro insert_json_plot(plot_name) %}
+  <div class='bk-root' id='{{ plot_name }}' style="max-height: 75vh; overflow: auto; padding-bottom: 1em">
+  </div>
+  <script type="text/javascript">
+    item = JSON.parse('{{ (HTMLDIR ~ "/../images/" ~ ID_f ~ "_" ~ plot_name ~ ".json") | load_json_plot }}');
+    Bokeh.embed.embed_item(item, "{{ plot_name }}");
+  </script>
+{% endmacro %}

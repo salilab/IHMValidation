@@ -10,18 +10,17 @@
 # ganesans@salilab.org
 ###################################
 
-import ihm
-import ihm.reader
-import os
+import logging
+import os, sys
 import re
+from pathlib import Path
+from enum import Enum
+from typing import Final
 from collections import defaultdict
 from itertools import chain
-import utility
 
-import logging
-from typing import Final
-from enum import Enum
-from pathlib import Path
+import ihm
+import utility
 
 #########################
 # Setup operational mode
@@ -67,22 +66,27 @@ MAX_NUM_MODELS: Final = __max_num_models  # Set constant for maximum number of m
 #########################
 
 class GetInputInformation(object):
-    def __init__(self, mmcif_file):
+    nocache = False
+    def __init__(self, mmcif_file, cache='.', nocache=False):
         self.mmcif_file = mmcif_file
-        self.encoding = None
         self.datasets = {}
         self.entities = {}
-        self.model = ihm.model.Model
-        encoding = 'utf8'
-        try:
-            with open(self.mmcif_file, encoding=encoding) as fh:
-                self.system, = ihm.reader.read(fh, model_class=self.model)
-        except UnicodeDecodeError:
-            encoding = 'ascii'
-            with open(self.mmcif_file, encoding=encoding, errors='ignore') as fh:
-                self.system, = ihm.reader.read(fh, model_class=self.model)
 
-        self.encoding = encoding
+        if not Path(cache).is_dir():
+            try:
+                os.makedirs(cache)
+                logging.info(f"Created cache directory {cache}")
+            except OSError:
+                logging.error(f"Couldn't create cache directory {cache}")
+                sys.exit(1)
+
+        self.cache = cache
+        self.nocache = nocache
+
+        self.system, self.encoding = utility.parse_ihm_cif(mmcif_file)
+        self.stem = Path(self.mmcif_file).stem
+        self.ID = self.get_id()
+        self.ID_f = self.get_file_id()
 
     def get_databases(self):
         """ get all datasets from the mmcif file"""
@@ -91,7 +95,34 @@ class GetInputInformation(object):
 
     def get_id(self):
         """Return _entry.id; Requires compliant CIF file"""
-        entry_id = self.system.id
+        ids = self.get_ranked_id_list()
+
+        if len(ids) == 0:
+            raise(ValueError('Missing system ID'))
+
+        id_type, entry_id = ids[0]
+
+        return entry_id
+
+    def get_file_id(self):
+        """Return _entry.id; Requires compliant CIF file"""
+        ids = self.get_ranked_id_list()
+
+        if len(ids) == 0:
+            raise(ValueError('Missing system ID'))
+
+        id_type, entry_id = ids[0]
+
+        if id_type == 'PDB ID':
+            # PDB filenames have to be lowercase
+            entry_id = entry_id.lower()
+        elif id_type == 'PDB-Dev ID':
+            # PDB-Dev filenames have to be uppercase
+            entry_id = entry_id.upper()
+        else:
+            # Use entry ID as is
+            pass
+
         return entry_id
 
     def get_pdb_id(self) -> str:
@@ -370,19 +401,11 @@ class GetInputInformation(object):
         for rep in self.system.orphan_representations:
             for el in rep:
                 all_nos.append(el.asym_unit.seq_id_range)
-                if el.rigid and el.starting_model:
-                    RB_nos.append(el.asym_unit.seq_id_range)
-                    RB[el.starting_model.asym_unit._id].append(
-                      [utility.format_tuple(el.asym_unit.seq_id_range)]
-                    #,
-                    #   utility.get_val_from_key(self.get_dataset_dict(),
-                    #                            el.starting_model.dataset._id)]
-                    )
-                elif el.rigid and not el.starting_model:
+                if el.rigid:
                     RB_nos.append(el.asym_unit.seq_id_range)
                     RB[el.asym_unit._id].append(
-                        [utility.format_tuple(el.asym_unit.seq_id_range),
-                         'None'])
+                      [utility.format_tuple(el.asym_unit.seq_id_range)]
+                    )
                 else:
                     flex[el.asym_unit._id].append(
                         [utility.format_tuple(el.asym_unit.seq_id_range)])
@@ -539,7 +562,12 @@ class GetInputInformation(object):
                     str(ensm.clustering_method))
                 ensemble_comp['Clustering feature'].append(
                     str(ensm.clustering_feature))
-                ensemble_comp['Cluster precision'].append(str(ensm.precision))
+
+                try:
+                    p = float(ensm.precision)
+                except (ValueError, TypeError):
+                    p = None
+                ensemble_comp['Cluster precision'].append(p)
             return ensemble_comp
         else:
             return None
@@ -561,7 +589,7 @@ class GetInputInformation(object):
                 try:
                     acc = _.location.access_code
                 except AttributeError:
-                    acc = str('None')
+                    acc = utility.NA
                 dataset_dict[_._id] = str(_.data_type)+'/'+str(acc)
         return dataset_dict
 
@@ -579,25 +607,69 @@ class GetInputInformation(object):
         lists = self.system.orphan_datasets
         if len(lists) > 0:
             for _ in lists:
-                try:
-                    loc = _.location.db_name
-                except AttributeError:
-                    if isinstance(_.location, ihm.location.InputFileLocation) \
-                            or isinstance(_.location, ihm.location.FileLocation):
-                        loc = 'File'
-                    else:
+                if isinstance(_.location, ihm.location.DatabaseLocation):
+                    try:
+                        loc = _.location.db_name
+                    except AttributeError:
                         loc = utility.NA
-                try:
-                    acc = _.location.access_code
-                except AttributeError:
-                    if isinstance(_.location, ihm.location.InputFileLocation) \
-                            or isinstance(_.location, ihm.location.FileLocation):
-                        try:
-                            acc = _.location.repo.doi
-                        except AttributeError:
-                            acc = utility.NA
-                    else:
+
+                    try:
+                        acc = _.location.access_code
+                    except AttributeError:
                         acc = utility.NA
+
+                    if isinstance(_.location, ihm.location.PDBDevLocation) and acc != utility.NA:
+                        acc = f"<a href=https://pdb-dev.wwpdb.org/entry.html?{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.PDBLocation) and acc != utility.NA:
+                        acc = f"<a href=https://www.rcsb.org/structure/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.ModelArchiveLocation) and acc != utility.NA:
+                        acc = f"<a href=https://doi.org/10.5452/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.AlphaFoldDBLocation) and acc != utility.NA:
+                        acc = f"<a href=https://alphafold.ebi.ac.uk/entry/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.EMPIARLocation) and acc != utility.NA:
+                        acc = f"<a href=https://www.ebi.ac.uk/empiar/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.EMDBLocation) and acc != utility.NA:
+                        acc = f"<a href=https://emdb-empiar.org/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.SASBDBLocation) and acc != utility.NA:
+                        acc = f"<a href=https://www.sasbdb.org/data/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.PRIDELocation) and acc != utility.NA:
+                        acc = f"<a href=https://www.ebi.ac.uk/pride/archive/projects/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.MassIVELocation) and acc != utility.NA:
+                        acc = f"<a href=https://www.omicsdi.org/dataset/massive/{acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.ProteomeXchangeLocation) and acc != utility.NA:
+                        acc = f"<a href=https://proteomecentral.proteomexchange.org/cgi/GetDataset?ID={acc}>{acc}</a>"
+
+                elif isinstance(_.location, ihm.location.FileLocation):
+                    try:
+                        loc = _.location.repo.reference_provider
+                        if loc is None:
+                            loc = utility.NA
+                        doi = _.location.repo.doi
+                        acc = f"<a href=https://doi.org/{doi}>{doi}</a>"
+                    except AttributeError as e:
+                        loc = 'File'
+                        acc = utility.NA
+                    except TypeError as e:
+                        loc = utility.NA
+                        acc = utility.NA
+                        logging.warning('Missing repository data')
+                        logging.warning(e)
+                    except Exception as e:
+                        logging.error(f'Unexepcted dataset error')
+                        logging.error(e)
+
+                else:
+                    loc = utility.NA
+                    acc = utility.NA
                 dataset_comp['ID'].append(_._id)
                 # if i.data_type=='unspecified' and 'None' not in i.details:
                 #    dataset_comp['Dataset type'].append(i.details)
@@ -605,6 +677,7 @@ class GetInputInformation(object):
                 dataset_comp['Dataset type'].append(_.data_type)
                 dataset_comp['Database name'].append(str(loc))
                 dataset_comp['Data access code'].append(acc)
+
         return dataset_comp
 
     def dataset_id_type_dic(self) -> dict:
@@ -618,7 +691,7 @@ class GetInputInformation(object):
                     try:
                         dataset_dic[str(i._id)] = str(i.data_type)
                     except TypeError:
-                        dataset_dic[str(i._id)] = 'None'
+                        dataset_dic[str(i._id)] = utility.NA
         return dataset_dic
 
     def get_restraints(self) -> dict:
@@ -632,7 +705,7 @@ class GetInputInformation(object):
             try:
                 restraints_comp['Dataset ID'].append(str(i.dataset._id))
             except AttributeError:
-                restraints_comp['Dataset ID'].append('None')
+                restraints_comp['Dataset ID'].append(utility.NA)
             if isinstance(i, ihm.restraint.CrossLinkRestraint):
                 restraints_comp['Restraint info'].append(
                     str(i.linker.auth_name) + ', ' +
@@ -674,7 +747,7 @@ class GetInputInformation(object):
                 try:
                     ID = str(i.dataset._id)
                 except AttributeError:
-                    ID = 'None'
+                    ID = utility.NA
                 # restraints_comp['Restraint info'].append(dic[ID])
                 if isinstance(i.distance, ihm.restraint.UpperBoundDistanceRestraint):
                     restraints_comp['Restraint info'].append(
@@ -765,22 +838,6 @@ class GetInputInformation(object):
             else:
                 percentage = '100%'
         return percentage
-
-    def check_for_sas(self, dataset: dict) -> bool:
-        """check if sas is in the dataset"""
-        dataset = self.get_dataset_comp()
-        data_type = dataset['Dataset type']
-        database = dataset['Database name']
-        return 'SAS' in str(data_type) and 'SAS' in str(database)
-
-    def check_for_cx(self, dataset: dict) -> bool:
-        """check if CX-XL is in the dataset"""
-        dataset = self.get_dataset_comp()
-        data_type = dataset['Dataset type']
-        if 'CX' in str(data_type):
-            return True
-        else:
-            return False
 
     def check_for_em(self, dataset: dict) -> bool:
         """check if em is in the dataset"""
@@ -913,32 +970,299 @@ class GetInputInformation(object):
 
         return reprs
 
-    def get_auth_label_map(self, system=None) -> dict:
-        """get map between auth_seq_id and label_seq_id"""
+    def get_representation_scale(self, rep, chid=None) -> dict:
+        """Extract details about representation (atomic/coarse-grained)"""
+        # Martini-like coarse-granining (multiple beads per residue)
+        # is not supported by the dictionary
+        reprs_ = {'atomic': False, 'coarse-grained': False, 'coarse-grain_levels': []}
+        for rep_ in rep:
+            if chid:
+                x = rep_.asym_unit
 
-        logging.info('Building auth <-> label map')
-        if system is None:
-            system = self.system
+                if isinstance(x, ihm.AsymUnitRange):
+                    x = x.asym
 
-        emap = {}
-        for st in system.state_groups:
-            for s in st:
-                for mg in s:
-                    for m in mg:
-                        for a in m.get_atoms():
-                            label_asym_id = a.asym_unit.id
-                            auth_asym_id = a.asym_unit.strand_id
+                aid = x.id
+                sid = x.strand_id
 
-                            label_seq_id = str(a.seq_id)
-                            auth_seq_id = str(a.asym_unit.residue(a.seq_id).auth_seq_id)
+                chid_ = (aid, sid)
 
-                            key = (auth_asym_id, auth_seq_id)
-                            val = (label_asym_id, label_seq_id)
+                if chid_ != chid:
+                    continue
 
-                            if key not in emap:
-                                emap[key] = val
-                            else:
-                                if emap[key] != val:
-                                    logging.warning(f"Conflicting residue ids. auth, label1, label2 {key}, {emap[key]}, {val}. Keeping first {key} -> {emap[key]}")
+            if rep_.granularity == 'by-atom':
+                reprs_['atomic'] = True
+            elif rep_.granularity == 'by-residue':
+                reprs_['coarse-grained'] = True
+                reprs_['coarse-grain_levels'].append(1)
+            elif rep_.granularity == 'by-feature':
+                reprs_['coarse-grained'] = True
+            else:
+                raise ValueError('Wrong representation granularity')
 
-        return emap
+        if reprs_['coarse-grained']:
+            for stg in self.system.state_groups:
+                for st in stg:
+                    for mg in st:
+                        for m in mg:
+                            if m.representation == rep:
+                                for s in m.get_spheres():
+                                    if chid:
+                                        x = s.asym_unit
+
+                                        if isinstance(x, ihm.AsymUnitRange):
+                                            x = x.asym
+
+                                        aid = x.id
+                                        sid = x.strand_id
+
+                                        chid_ = (aid, sid)
+
+                                        if chid_ != chid:
+                                            continue
+
+                                    s_size = utility.get_bead_size(s)
+                                    reprs_['coarse-grain_levels'].append(s_size)
+
+
+        if len(reprs_['coarse-grain_levels']) > 1:
+            levels = sorted(set(reprs_['coarse-grain_levels']))
+            reprs_['coarse-grain_levels'] = levels
+
+        return reprs_
+
+    def pretty_print_scale(scale, reprs_: dict) -> list:
+        """Pretty print information about representation scales"""
+
+        out = ''
+        if ((reprs_['atomic'] and reprs_['coarse-grained']) or
+            (reprs_['coarse-grained'] and len(reprs_['coarse-grain_levels']) > 1)):
+            out += 'Multiscale: '
+
+        if reprs_['atomic']:
+            out += 'Atomic'
+
+        if reprs_['coarse-grained']:
+            if out != '':
+                if out[-1] != ' ':
+                    out += '; '
+
+            out += 'Coarse-grained: '
+            levels = reprs_['coarse-grain_levels']
+            if len(levels) == 1:
+                out += f'{levels[0]:d}'
+            else:
+                min_level = min(levels)
+                max_level = max(levels)
+                out += f'{min_level:d} - {max_level:d}'
+            out += ' residue(s) per bead'
+
+        return out
+
+    def get_representation_info(self):
+        output = []
+
+        for i, rep in enumerate(self.system.orphan_representations, 1):
+            rep_ = {'ID': i, 'Models':[], 'Chains': {}}
+
+            models_ = []
+
+            for stg in self.system.state_groups:
+                for st in stg:
+                    for mg in st:
+                        for m in mg:
+                            if m.representation == rep:
+                                models_.append(int(m._id))
+
+            models__ = []
+
+            for x in utility.ranges(models_):
+                if x[0] == x[1]:
+                    models__.append(x[0])
+                else:
+                    models__.append(utility.format_tuple(x))
+
+            rep_['Models'] = models__
+
+            chain_ids_raw_ = []
+            for s in rep:
+                x = s.asym_unit
+
+                if isinstance(x, ihm.AsymUnitRange):
+                    x = x.asym
+
+                aid = x.id
+                sid = x.strand_id
+
+                chid = (aid, sid)
+
+                chain_ids_raw_.append(chid)
+
+            chain_ids_ = sorted(set(chain_ids_raw_), key=lambda x: f'{len(x[0])}{x[0]}')
+            chains_ = {x: {
+                # 'Subunit ID': None,
+                'Entity ID': None,
+                'Molecule name': None,
+                'Chains': None,
+                'Total residues': None,
+                'Rigid segments': [],
+                'Flexible segments': [],
+                'Identical subunits': [],
+                'Model coverage': None,
+                'Starting model segments': [],
+                'Starting model coverage': None,
+                } for x in chain_ids_}
+
+            for k in chains_.keys():
+                aid, sid = k
+                if aid == sid:
+                    chid = aid
+                else:
+                    chid = f'{aid} [{sid}]'
+                chains_[k]['Chains'] = chid
+
+            for s in rep:
+                x = s.asym_unit
+
+                if isinstance(x, ihm.AsymUnitRange):
+                    x = x.asym
+
+                aid = x.id
+                sid = x.strand_id
+
+                chid = (aid, sid)
+
+                if x.entity.is_polymeric():
+                    tr_ = x.seq_id_range
+                    tr = int(tr_[1] - tr_[0] + 1)
+                else:
+                    tr = 'Non-polymeric'
+
+                attributes = {
+                    # 'Subunit ID':
+                    'Entity ID': s.asym_unit.entity._id,
+                    'Molecule name': s.asym_unit.entity.description,
+                    'Total residues': tr,
+                }
+
+                for k, v in attributes.items():
+                    if chains_[chid][k] is None:
+                        chains_[chid][k] = v
+                    else:
+                        assert chains_[chid][k] == v
+
+                if x.entity.is_polymeric():
+                    seq_range_ = s.asym_unit.seq_id_range
+
+                    if s.rigid:
+                        chains_[chid]['Rigid segments'].append(seq_range_)
+                    else:
+                        chains_[chid]['Flexible segments'].append(seq_range_)
+
+                    if s.starting_model:
+                        chains_[chid]['Starting model segments'].append(seq_range_)
+
+            subkeys = ['Rigid segments', 'Flexible segments', 'Starting model segments']
+
+            for ci, ki in enumerate(chain_ids_):
+                for cj, kj in enumerate(chain_ids_[ci + 1:]):
+                    if chains_[ki]['Entity ID'] == chains_[kj]['Entity ID']:
+                        sub_ki = {k: chains_[ki][k] for k in subkeys}
+                        sub_kj = {k: chains_[kj][k] for k in subkeys}
+                        # print(sub_ki, sub_kj)
+                        if sub_ki == sub_kj:
+                            chains_[ki]['Identical subunits'].append(kj)
+
+            duplicates = []
+
+            for k in chain_ids_:
+                if k in duplicates:
+                    try:
+                        del chains_[k]
+                    except KeyError:
+                        pass
+                else:
+                    chains_dup_ = sorted(set(chains_[k].pop('Identical subunits')), key=lambda x: f'{len(x[0])}{x[0]}')
+                    chains_dup__ = [chains_[x]['Chains'] for x in chains_dup_]
+                    chains_[k]['Chains'] = [chains_[k]['Chains']] + chains_dup__
+
+                    duplicates.extend(chains_dup_)
+                    duplicates = list(set(duplicates))
+
+            for k, chain_ in chains_.items():
+                tr = chain_['Total residues']
+
+                modeled = []
+
+                for sgn in ['Rigid segments', 'Flexible segments']:
+                    segs = chain_[sgn]
+                    segs_ = []
+                    modeled_ = []
+
+                    for s_ in sorted(segs):
+                        if s_[0] == s_[1]:
+                            modeled_.append(s_[0])
+                            segs_.append(f'{s_[0]:d}')
+                        else:
+                            modeled_.extend(list(range(s_[0], s_[1] + 1)))
+                            segs_.append(utility.format_tuple(s_))
+
+                    chains_[k][sgn] = segs_
+                    modeled.extend(modeled_)
+
+                modeled_ = []
+                for s_ in chains_[k].pop('Starting model segments'):
+                    if s_[0] == s_[1]:
+                        modeled_.append(s_[0])
+                    else:
+                        modeled_.extend(list(range(s_[0], s_[1] + 1)))
+
+                modeled_count = len(set(sorted(modeled)))
+
+                if isinstance(tr, (int, float)):
+                    coverage = modeled_count / tr * 100.0
+                    starting_model_coverage = len(set(sorted(modeled_))) / modeled_count * 100
+                else:
+                    coverage = utility.NA
+                    starting_model_coverage = utility.NA
+                chains_[k]['Model coverage'] = coverage
+                chains_[k]['Starting model coverage'] = starting_model_coverage
+
+                scale = self.get_representation_scale(rep, k)
+                pretty_scale = self.pretty_print_scale(scale)
+                chains_[k]['Scale'] = pretty_scale
+
+            rep_['Chains'] = chains_
+
+            output.append(rep_)
+
+        return output
+
+    @property
+    def num_models(self):
+        return sum(1 for group, model in self.system._all_models())
+
+    @property
+    def cg(self):
+        return utility.is_cg(self.system)
+
+    @property
+    def atomic(self):
+        return utility.is_atomic(self.system)
+
+    def _has_dataset_type(self, dataset_type):
+        flag = False
+        for i, d in enumerate(self.system.orphan_datasets):
+            if isinstance(d, dataset_type):
+                flag = True
+                break
+
+        return flag
+
+    @property
+    def has_crosslinking_ms_dataset(self):
+        return self._has_dataset_type(ihm.dataset.CXMSDataset)
+
+    @property
+    def has_sas_dataset(self):
+        return self._has_dataset_type(ihm.dataset.SASDataset)

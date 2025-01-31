@@ -1,0 +1,22 @@
+{% if prism_plots|length > 0  %}
+  <h5 class= ex2 align=center>
+    <u><a name='prism'>PrISM precision analysis</a></u>
+    {{ format_help(current_task, "prism") }} 
+  </h5>
+  <div><i>
+    Regions of <b>low</b> {% include "prism_palette.j2" %} <b>high</b> precision annotated and visualized using PrISM. 
+    The per-bead or per-residue precision is computed from the deposited ensemble of superposed integrative models. 
+    High- and low-precision regions are then determined by clustering beads of similar precision based on their proximity in the structure.
+    Only coarse-grained beads and CA atoms of deposited models are used for asessement and visualization, and three projections for each representative model are generated.
+  </i></div>
+  {% for k, v in prism_plots.items() %}
+    <p class="ex2">PrISM analysis for Ensemble {{ k }} (models deposited/total: {{ v['deposited'] }}/{{ v['total'] }}).</p>
+    <div align=center class="row">            
+      <!-- span hack to avoid opacity in wkhtmltopdf dut to semi-transparent border  -->
+      <span style="color: #FFFFFF">.</span>            
+      {% for plot in v['plots'] %}
+            <img src=../images/{{ plot }} width="30%">
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% endif %}

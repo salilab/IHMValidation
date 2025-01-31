@@ -37,16 +37,15 @@
           <div class="dropdown-menu">
             <a class="dropdown-item colorclass" href="model_composition.html#ensemble">Ensemble information</a>
             <a class="dropdown-item colorclass" href="model_composition.html#summary">Summary</a>
-            <a class="dropdown-item colorclass" href="model_composition.html#entry">Entry composition</a>
-            <a class="dropdown-item colorclass" href="model_composition.html#data">Datasets used</a>
             <a class="dropdown-item colorclass" href="model_composition.html#representation">Representation</a>
+            <a class="dropdown-item colorclass" href="model_composition.html#data">Datasets used</a>
             <a class="dropdown-item colorclass" href="model_composition.html#methods">Methods and software</a>
           </div>
         </li>
         
         <!-- Model details -->
         <li class="nav-item mr-4 dropdown">
-          {% if (('SAS DATA' in Data) and enable_sas ) or (('CX-MS DATA' in Data) and enable_cx) %}
+          {% if (('SAS DATA' in Data) and enable_sas ) or (enable_cx and cx_data_quality) %}
             <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location="data_quality.html";>Data <br> Quality </button></a>
                 
           {% elif (('SAS DATA' not in Data) or not enable_sas) and Unique_dataset|length > 0 %}
@@ -84,17 +83,15 @@
               <a class="dropdown-item colorclass" dropdown-toggle type=button href=data_quality.html#first>SAS</a>
             {% endif %}
             
-            {% if ('CX-MS DATA' in Data) and enable_cx %}
+            {% if (enable_cx and cx_data_quality) %}
                 <a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#crosslinking-ms>Crosslinking-MS</a>
-                {% if cx_data_quality|length > 0 %}
-                  <ul class=dropdown-submenu>                  
-                    {% for data in cx_data_quality %}
-                      <li>
-                        <a class=dropdown-item2 href=data_quality.html#{{ data["pride_id"] }}>{{ data["pride_id"] }}</a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
+                <ul class=dropdown-submenu>                  
+                  {% for data in cx_data_quality %}
+                    <li>
+                      <a class=dropdown-item2 href=data_quality.html#{{ data["pride_id"] }}>{{ data["pride_id"] }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
             {% endif %}
               
             {% for item in Unique_dataset %}
@@ -107,21 +104,25 @@
         <li class="nav-item mr-4 dropdown">
           <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location='model_quality.html';>Model <br> Quality </button></a>
           <div class="dropdown-menu">
-            {% if sphere > 0 %}
+            {% if cg %}
               <a class="dropdown-item colorclass" href=model_quality.html#ex>Excluded volume</a>
-            {% elif sphere < 1 %}
+            {% endif %}
+            {% if atomic and molprobity_data is not none %}
               <a class="dropdown-item colorclass" href=model_quality.html#geometry1>Standard geometry:<br>bond outliers</a>
               <a class="dropdown-item colorclass" href=model_quality.html#geometry2>Standard geometry:<br> angle outliers</a>
               <a class="dropdown-item colorclass" href=model_quality.html#contacts>Close contacts</a>
               <a class="dropdown-item colorclass" href=model_quality.html#torsion>Torsion angles: protein <br>backbone </a>
               <a class="dropdown-item colorclass" href=model_quality.html#outliers>Torsion angles: protein <br>sidechain </a>
             {% endif %}
+            {% if prism_plots|length > 0  %}
+              <a class="dropdown-item colorclass" href=model_quality.html#prism>Precision analysis</a>
+            {% endif %}
           </div>
         </li>
         
         <!-- Fit to data used for modeling -->
         <li class="nav-item mr-4 dropdown">
-          {% if (('SAS DATA' in Data) and enable_sas) or (('CX-MS DATA' in Data) and enable_cx) %}
+          {% if (('SAS DATA' in Data) and enable_sas) or (enable_cx and cx_stats) %}
             <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location="formodeling.html";>Fit to Data <br> Used for Modeling </button></a>
                 
           {% elif Unique_dataset|length > 0 %}
@@ -146,7 +147,7 @@
               <a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>
             {% endif %}
             
-						{% if ('CX-MS DATA' in Data) and enable_cx %}
+						{% if (enable_cx and cx_stats) %}
               <a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html#crosslinking-ms>
                 Crosslinking-MS
               </a>

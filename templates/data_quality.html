@@ -1,5 +1,5 @@
 {% extends "validation_report_layout.html" %}
-{% from "macro.html" import write_table, insert_sas_plot %}
+{% from "macro.html" import insert_json_plot, write_table with context %}
 <!-- Template for writing data quality webpage -->
 <!-- ganesans - Salilab - UCSF -->
 <!-- ganesans@salilab.org -->
@@ -16,7 +16,7 @@
     </div>
   </div>
   <!-- SAS: Scattering profile-->
-  {% if sas|length > 0 and sasdb_sascif|length < 1 %}
+  {% if sas and sasdb_sascif|length < 1 %}
     <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
       <div class="card-header" style="background-color: #FFF;">
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-  {% elif sas|length > 0 and sasdb_sascif|length > 0 %}
+  {% elif sas and sasdb_sascif|length > 0 %}
     <!-- SAS: Scattering profile-->
     <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
@@ -46,27 +46,32 @@
               <u><a name=firstI>SAS:Scattering profile</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#scattering'>?</a>
             </h5>
             <p align=justify>
-              SAS data used in this integrative model was obtained from {{sasdb_code_html|length|int}} deposited SASBDB entry (entries).
+              SAS data used in this integrative model was obtained from {{sasdb_code_html|length|int}} deposited SASBDB entry (entries). 
+              Scattering profile data from solutions of biological macromolecules are presented as both log I(q) vs q and log I(q) vs log (q) based on <a href=https://salilab.org/pdf/Trewhella_ActaCrystD_2017.pdf>SAS validation task force (SASvtf) recommendations.</a> I(q) is the intensity (in arbitrary units) and q is the modulus of the scattering vector.
             </p>
           </div>
         </div>
-        {% for i in range(sasdb_code_html|length) %}
-          <div class=row>
-            <div class=cl-lg-12>
-              <!-- description -->
-              <p align=justify>
-                <u>Scattering profile for <a href=https://www.sasbdb.org/data/{{sasdb_code_html[i]}}/>{{sasdb_code_html[i]}}</a>:</u> data from solutions of biological macromolecules are presented as both log I(q) vs q and log I(q) vs log (q) based on <a href=https://salilab.org/pdf/Trewhella_ActaCrystD_2017.pdf>SAS validation task force (SASvtf) recommendations.</a> I(q) is the intensity (in arbitrary units) and q is the modulus of the scattering vector.
-              </p>
-              <!-- plots -->
+        <div class=row>
+          {% for i in range(sasdb_code_html|length) %}
+            <div class=col-6>
               <div class=row>
+                <!-- description -->
+                <p align=justify>
+                  <u>Scattering profile for <a href=https://www.sasbdb.org/data/{{sasdb_code_html[i]}}/>{{sasdb_code_html[i]}}</a></u>.
+                </p>
+              </div>
+              <!-- plots -->
+              <div class=row align=center>
                 <!-- log I(q) vs q plot -->
-                {{ insert_sas_plot(ID, sasdb_code_html[i], "intensities") }}
+                {% set plot_name = sasdb_code_html[i] ~ "_" ~ "intensities" %}
+                {{ insert_json_plot(plot_name) }}
                 <!-- log I(q) vs log q plot -->
-                {{ insert_sas_plot(ID, sasdb_code_html[i], "intensities_log") }}
+                {% set plot_name = sasdb_code_html[i] ~ "_" ~ "intensities_log" %}
+                {{ insert_json_plot(plot_name) }}
               </div>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
     <!-- SAS: Key experimental estimates -->
@@ -97,26 +102,37 @@
         <div class="row">
           <!-- header -->
           <div class="col-lg-12">
-            {% if sas|length > 0 and sasdb_sascif|length > 0 %}
+            {% if sas and sasdb_sascif|length > 0 %}
               <h5 class= ex2 align= center>
                 <u><a name=firstF>Flexibility analysis</a> </u><a class='help'  title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#flexibility'>?</a>
               </h5>
+              <p align=justify>
+                In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domains, whereas, fully unfolded domains are devoid of any discernable plateau. For details, refer to Figure 5 in <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer, 2011</a>. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domains and a hyperbolic shape is observed for fully unfolded domains.
+              </p>
             {% endif %}
           </div>
         </div>
-        {% for i in range(sasdb_code_html|length) %}
-          <!-- description -->
-          <p align=justify>
-            <u>Flexibility analysis for {{sasdb_code_html[i]}}</u>: In a Porod-Debye plot, a clear plateau is observed for globular (partial or fully folded) domains, whereas, fully unfolded domains are devoid of any discernable plateau. For details, refer to Figure 5 in <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3103662/>Rambo and Tainer, 2011</a>. In a Kratky plot, a parabolic shape is observed for globular (partial or fully folded) domains and a hyperbolic shape is observed for fully unfolded domains.
-          </p>
-          <!-- plots -->
-          <div class=row>
-            <!-- Porod-Debye plot -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "porod") }}
-            <!-- Dimensionless Kratky plot -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "Kratky") }}
-          </div>
-        {% endfor %}
+        <div class=row>
+          {% for i in range(sasdb_code_html|length) %}
+            <div class="col-6">
+              <div class=row>
+                <!-- description -->
+                <p align=justify>
+                  <u>Flexibility analysis for {{sasdb_code_html[i]}}</u>.
+                </p>
+              </div>
+              <!-- plots -->
+              <div class=row>
+                <!-- Porod-Debye plot -->
+                {% set plot_name = sasdb_code_html[i] ~ "_" ~ "porod" %}
+                {{ insert_json_plot(plot_name) }}
+                <!-- Dimensionless Kratky plot -->
+                {% set plot_name = sasdb_code_html[i] ~ "_" ~ "kratky" %}
+                {{ insert_json_plot(plot_name) }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
     <!-- SAS: Pair-distance distribution -->
@@ -135,18 +151,27 @@
             {{ write_table(pddf_info) }}
           </div>
         </div>
-        {% for i in range(sasdb_code_html|length) %}
-          <p align=justify>
-            <u>P(r) for {{sasdb_code_html[i]}}:</u> The value of P(r) should be zero beyond r=D<sub>max</sub>.
-          </p>
-          <!-- main plots -->
-          <div class=row>
-            <!-- Pair distance distribution function -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "pddf") }}
-            <!-- P(r) extrapolated fit -->
-            {{ insert_sas_plot(ID, sasdb_code_html[i], "pddf_int") }}
-          </div>
-        {% endfor %}
+        
+        <div class="row">
+          {% for i in range(sasdb_code_html|length) %}
+            <div class="col-6">
+              <div class=row>
+                <p align=justify>
+                  <u>P(r) for {{sasdb_code_html[i]}}:</u> The value of P(r) should be zero beyond r=D<sub>max</sub>.
+                </p>
+              </div>
+              <!-- main plots -->
+              <div class=row>
+                <!-- Pair distance distribution function -->
+                {% set plot_name = sasdb_code_html[i] ~ "_" ~ "pddf" %}
+                {{ insert_json_plot(plot_name) }}
+                <!-- P(r) extrapolated fit -->
+                {% set plot_name = sasdb_code_html[i] ~ "_" ~ "pddf_int" %}
+                {{ insert_json_plot(plot_name) }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
     <!-- SAS: Guinier analysis -->
@@ -183,7 +208,8 @@
             <!-- Guinier plot -->
             <div class=row>
               {% for i in range(sasdb_code_html|length) %}
-                {{ insert_sas_plot(ID, sasdb_code_html[i], "guinier") }}
+                {% set plot_name = sasdb_code_html[i] ~ "_" ~ "guinier" %}
+                {{ insert_json_plot(plot_name) }}
               {% endfor %}
             </div>
           </div>

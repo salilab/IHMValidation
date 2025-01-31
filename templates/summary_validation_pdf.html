@@ -38,10 +38,11 @@
          margin-right: auto;
          }
          body {
-         height: 297mm;
+         /* height: 297mm;
          width: 210mm;
          margin-left: auto;
-         margin-right: auto;
+         margin-right: auto; */
+         overflow-x: visible !important;
          }
          .center {
          text-align: center
@@ -53,10 +54,10 @@
          margin-top: 30px;
          }
          hr {
-         width: 120%;
+/*         width: 120%; */
          height: 2px;
-         margin-left: auto;
-         margin-right: auto;
+/*         margin-left: auto;
+         margin-right: auto; */
          background-color:#666;
          border: 0 none;
          margin-top: 10px;
@@ -81,13 +82,15 @@
          <tr>
             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtab">Entry composition</a></i></td>
             <td>
-              {{ write_bullet(Subunits) }}
+              {{ write_bullet(summary_entities) }}
             </td>
          </tr>
          <tr>
             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabdata">Datasets used for modeling</a></i></td>
             <td>
-              {{ write_bullet(datasets) }}
+              {% for dataset_ in Datasets_list[1:] %}
+              - {{ dataset_[1] }}, {{ dataset_[2] }}: {{ dataset_[3] }}<br>
+              {% endfor %} 
             </td>
          </tr>
          <tr bgcolor = 'silver'>
@@ -95,37 +98,27 @@
             <td></td>
          </tr>
          <tr>
+            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#numrepr">Number of representations</a></i></td>
+            <td>
+               {{ rep_info|length }}
+            </td>
+         </tr>
+         <tr>
             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabscale">Scale</a></i></td>
             <td>
-               {{ write_bullet(scale) }}
+               {{ write_bullet(summary_scale) }}
             </td>
          </tr>
          <tr>
             <td><i>Number of <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrigid">rigid</a> and <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabflex">flexible</a> segments</i></td>
-            <td>{{ Rigid_Body }}, {{ Flexible_Unit }}</td>
+            <td>{{ write_bullet(summary_segments) }}</td>
          </tr>
-         {% if Rigid_Body|int > 0 %}
-           <tr>
-             <td><i> &nbsp; &nbsp; &nbsp; Rigid segments</i></td>
-             <td>
-               {{ write_bullet(RB) }}
-             </td>
-           </tr>
-         {% endif %}
-
-         {% if Flexible_Unit|int > 0 %}
-           <tr>
-             <td><i> &nbsp; &nbsp; &nbsp; Flexible segments</i></td>
-             <td>
-               {{ write_bullet(flex) }}
-             </td>
-           </tr>
-         {% endif %}
-         </tr>
+<!--
          <tr>
             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabatom">Structural coverage (rigid segments)</a></i></td>
             <td>{{ struc }}</td>
          </tr>
+-->
          <tr bgcolor = 'silver'>
             <td><b><i>3. Restraints </i></b></td>
             <td></td>
@@ -181,7 +174,7 @@
 	       </tr>
          <tr>
             <td><i> <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabprec">Model precision (uncertainty of models)</a></i></td>
-            <td>{{ model_precision }}</td>
+            <td>{{ write_bullet(model_precision) }}</td>
          </tr>
          <tr>
             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrvaldata">Data quality</a></i></td>
@@ -189,14 +182,6 @@
               {{ write_bullet(Data_quality) }}
             </td>
          </tr>
-         {% if assess_atomic_segments %}
-           <tr>
-             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalatom">Model quality: assessment of atomic segments</a></i></td>
-             <td>
-               {{ write_bullet(assess_atomic_segments) }}
-             </td>
-           </tr>
-         {% endif %}
          {% if disclaimer > 0 %}
            <tr>
              <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html">Model quality</a></i></td>
@@ -204,14 +189,24 @@
                Based on existing standards, there are no model quality assessments for this entry.
              </td>
            </tr>
-         {% elif (disclaimer < 1 ) and (assess_excluded_volume is not none) %}
-           <tr>
-             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalexv">Model quality: assessment of excluded volume</a></i></td>
-             <td>
-               {{ assess_excluded_volume }}
-             </td>
-           </tr>
-        {% endif %}
+         {% else %}
+           {% if assess_atomic_segments is not none %}
+             <tr>
+               <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalatom">Model quality: assessment of atomic segments</a></i></td>
+               <td>
+                 {{ write_bullet(assess_atomic_segments) }}
+               </td>
+             </tr>
+           {% endif %}
+           {% if assess_excluded_volume is not none %}
+             <tr>
+               <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalexv">Model quality: assessment of excluded volume</a></i></td>
+               <td>
+                 {{ assess_excluded_volume }}
+               </td>
+             </tr>
+            {% endif %}
+         {% endif %}
          <tr>
             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabfit1">Fit to data used for modeling</a></i></td>
             <td>

@@ -1,0 +1,165 @@
+{% from "macro.html" import write_table, format_value, format_help %}
+
+<!-- Template for writing model quality webpage -->
+<!-- ganesans - Salilab - UCSF -->
+<!-- ganesans@salilab.org -->
+<div class="card-body border-success" style="border-color: solid black;">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card-header" style="background-color: #FFF;">
+        <h4 align="center">
+          <u>Model quality</u>
+          {{ format_help(current_task, 'modelquality') }}
+        </h4>
+        <p class="ex2"> For models with atomic structures, MolProbity analysis is performed. For models with coarse-grained or multi-scale structures, excluded volume analysis is performed.</p>
+        <!-- Bad systems without proper metrics -->
+        {% if disclaimer > 0 %}
+          <p class="ex2"></p>
+          <i>NOTE: Based on existing standards, there are no model quality assessments for this entry.</i>
+          <p class="ex2"></p>
+        {% else %}
+          <!-- Excluded volume for systems with coarse grain beads -->
+          {% if cg  %}
+            <h5 class= ex2 align=center>
+              Excluded volume satisfaction
+              {{ format_help(current_task, "exv") }}
+            </h5>
+            <i>Excluded volume satisfaction for the models in the entry are listed below.</i>
+            <p class="ex2"></p>
+            {{ write_table(excluded_volume) }}
+            <p class="ex2"></p>
+          {% endif %}
+          <!-- Atomic systems (molprobity) -->
+          {% if atomic and molprobity_data is not none %}
+            
+            <h5 class= ex2 align= center>
+              <u><a name='geometry1'>Standard geometry: bond outliers</a></u>
+              {{ format_help(current_task, "molprobity") }}
+            </h5>
+            <p class="ex2"></p>
+            
+            {% if molprobity_data['bonds']['total']|int > 0 %}
+            
+              {% if molprobity_data['bonds']['outliers']|int > 0 %}
+                <i>There are {{ molprobity_data['bonds']['outliers']|int }} bond length outliers in this entry ({{ "%.2f"|format(  molprobity_data['bonds']['outliers']|int /  molprobity_data['bonds']['total']|int  * 100) }}% of {{ molprobity_data['bonds']['total'] }} assessed bonds). A summary is provided below.
+                {% if molprobity_data['bonds']['outliers_list']|length > 101 %}
+                  The output is limited to 100 rows.
+                {% endif %}
+                </i>
+                <p class="ex2"></p>
+                {{ write_table(molprobity_data['bonds']['outliers_list'][:101]) }}
+                <p class="ex2"></p>
+              {% else %}
+                <i>There are no bond length outliers.</i>
+              {% endif %}
+            {% else %}
+              <i> Bond length outliers can not be evaluated for this model</i>
+              <p class="ex2"></p>
+            {% endif %}
+
+            <h5 class= ex2 align= center>
+              <u><a name='geometry2'>Standard geometry: angle outliers</a></u>
+              {{ format_help(current_task, "molprobity") }} 
+            </h5>
+            <p class="ex2"></p>
+            
+            {% if molprobity_data['angles']['total']|int > 0 %}
+              {% if molprobity_data['angles']['outliers']|int > 0 %}
+                <i>There are {{ molprobity_data['angles']['outliers']|int }} bond angle outliers in this entry ({{ "%.2f"|format(  molprobity_data['angles']['outliers'] /  molprobity_data['angles']['total']  * 100) }}% of {{ molprobity_data['angles']['total'] }} assessed bonds). A summary is provided below.
+                {% if molprobity_data['angles']['outliers_list']|length > 101 %}
+                  The output is limited to 100 rows.
+                {% endif %}
+                </i>
+                <p class="ex2"></p>
+                {{ write_table(molprobity_data['angles']['outliers_list'][:101]) }}
+                <p class="ex2"></p>
+              {% else %}
+                <i>There are no bond angle outliers.</i>
+              {% endif %}
+            {% else %}
+              <i> Bond angle outliers can not be evaluated for this model</i>
+              <p class="ex2"></p>
+            {% endif %}
+            
+            <h5 class= ex2 align= center>
+              <u><a name='contacts'>Too-close contacts</a></u>
+              {{ format_help(current_task, "molprobity") }} 
+            </h5>
+           
+            {% if molprobity_data['clashes']['clashscores']|length > 1 %} 
+              <p align='justify'>
+                <i>The following all-atom clashscore is based on a MolProbity analysis. All-atom clashscore is defined as the number of clashes found per 1000 atoms (including hydrogen atoms). The table below contains clashscores for all atomic models in this entry.</i>
+              </p>
+              <p class="ex2"></p>
+              {{ write_table(molprobity_data['clashes']['clashscores']) }}
+              <p class="ex2"></p>
+            {% endif %}
+            
+            {% if molprobity_data['clashes']['outliers']|int > 0 %}
+              <p align='justify'>
+                <i>There are {{ molprobity_data['clashes']['outliers']|int }} clashes. The table below contains the detailed list of all clashes based on a MolProbity analysis. Bad clashes are >= 0.4 Angstrom.
+                  {% if molprobity_data['clashes']['outliers_list']|length > 101 %}
+                    The output is limited to 100 rows.
+                  {% endif %}
+                </i>
+              </p>
+              <p class="ex2"></p>
+              {{ write_table(molprobity_data['clashes']['outliers_list'][:101]) }}
+              <p class="ex2"></p>
+            {% else %}
+                <i>There are no too-close contacts.</i>
+            {% endif %}
+
+            {% if molprobity_data['rama']['scores']|length > 1 %}
+              <h5 class=ex2 align= center>
+                <u><a name='torsion'>Torsion angles: Protein backbone</a></u>
+                {{ format_help(current_task, "molprobity") }} 
+              </h5>
+              <p align='justify'>
+                <i>In the following table, Ramachandran outliers are listed. The Analysed column shows the number of residues for which the backbone conformation was analysed.</i>
+               </p>
+              <p class="ex2"></p>
+              {{ write_table(molprobity_data['rama']['scores']) }}
+              <p class="ex2"></p>
+            {% endif %}
+
+            {% if molprobity_data['rama']['outliers_list']|length > 1 %}
+              <i>There are {{ molprobity_data['rama']['outliers_list']|length - 1}} unique backbone outliers. Detailed list of outliers are tabulated below.
+                {% if molprobity_data['rama']['outliers_list']|length > 101 %}
+                  The output is limited to 100 rows.
+                {% endif %}
+              </i>
+                <p class="ex2"></p>
+              {{ write_table(molprobity_data['rama']['outliers_list'][:101]) }}
+              <p class="ex2"></p>
+            {% endif %}
+
+            {% if molprobity_data['rota']['scores']|length > 1 %}  
+              <h5 class=ex2 align=center>
+                <u><a name='outliers'>Torsion angles : Protein sidechains</a></u>
+                {{ format_help(current_task, "molprobity") }} 
+              </h5>
+              <i>In the following table, sidechain rotameric outliers are listed. The Analysed column shows the number of residues for which the sidechain conformation was analysed.</i>
+              <p class="ex2"></p>
+              {{ write_table(molprobity_data['rota']['scores']) }}
+              <p class="ex2"></p>
+            {% endif %}
+            
+            {% if molprobity_data['rota']['outliers_list']|length > 1 %}
+              <i>There are {{ molprobity_data['rota']['outliers_list']|length - 1}} unique sidechain outliers. Detailed list of outliers are tabulated below.
+              {% if molprobity_data['rota']['outliers_list']|length > 101 %}
+                The output is limited to 100 rows.
+              {% endif %} 
+              </i>
+              <p class="ex2"></p>
+              {{ write_table(molprobity_data['rota']['outliers_list'][:101]) }}
+              <p class="ex2"></p>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+        
+        {% include "prism.j2" %}
+      </div>
+    </div>
+  </div>
+</div>

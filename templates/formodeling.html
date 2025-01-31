@@ -1,5 +1,5 @@
 {% extends "validation_report_layout.html" %}
-{% from "macro.html" import write_table, insert_sas_plot %}
+{% from "macro.html" import insert_json_plot, write_table with context %}
 {% block body %}
 <!-- Template for writing fit to information webpage -->
 <!-- ganesans - Salilab - UCSF -->
@@ -17,7 +17,7 @@
     </div>
   </div>
   <!-- SAS header -->
-  {% if sas|length > 0 %}
+  {% if sas %}
   	<div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
       <div class="card-header" style="background-color: #FFF; height=18rem">
@@ -39,7 +39,7 @@
               </h5>
               {% if number_of_fits > 0 %}
                 <p class =ex2>
-                  <i>ATSAS datcmp was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis.</i>
+                  <i>ATSAS DATCMP was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis.</i>
                 </p>
                 {{ write_table(p_val) }}
               {% else %}
@@ -52,11 +52,11 @@
               <p align=justify align=center>
                 <i>The experimental scattering curve (in blue) can be compared with the theoretical curve calculated from a model (in red). Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis.</i>
               </p>
-              <div class=row>
+              <div class=row align=center>
                 {% for i in range(sasdb_code_html|length) %}
                   {% for j in range(sasdb_code_fits[i]) %}
-                    {% set k = j + 1 %}
-                      {{ insert_sas_plot(ID, sasdb_code_html[i], j|int ~ 'fit1') }}
+                    {% set plot_name = sasdb_code_html[i] ~ "_" ~ j|int ~ "_fit1" %}
+                    {{ insert_json_plot(plot_name) }}
                   {% endfor %}
                 {% endfor %}
               </div>
@@ -92,7 +92,7 @@
                     combined in {{ cx_num_of_restraint_groups }} restraint groups. 
                   </p>
                   <div class='table-responsive text-center' style="max-height: 75vh; overflow: auto;">
-                    <table id='cx_ertypes_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
+                    <table id='cx_ertypes_table' class='table table-sm table-bordered' style='border-color':#003366;>
                       <thead>
                         <tr>
                           {% for k in cx_ertypes['columns'] %}
@@ -155,13 +155,15 @@
                       satisfaction of individual restraints in the group and the 
                       conditionality (all/any). A restraint group is considered 
                       satisfied, if the condition was met in at least one model of 
-                      the model group/ensemble. Only deposited models are used 
-                      for validation right now.
+                      the model group/ensemble. The number of measured restraints 
+                      can be smaller than the total number of restraint groups if 
+                      crosslinks involve non-modeled residues. 
+                      Only deposited models are used for validation right now.
                     </i>
                   </p>
                 
                   <div class='table-responsive text-center'>
-                    <table id='cx_satisfaction_table' class='table table-sm table-striped table-bordered' style='border-color':#003366;>
+                    <table id='cx_satisfaction_table' class='table table-sm table-bordered' style='border-color':#003366;>
                       <thead>
                         <tr>
                           <th style='vertical-align:middle'>
@@ -186,7 +188,7 @@
                             Violated (%)
                           </th>
                           <th style='vertical-align:middle'>
-                            Count
+                            Count (Total={{ cx_num_of_restraint_groups }})
                           </th>
                         </tr>
                       </thead>

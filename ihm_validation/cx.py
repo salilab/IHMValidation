@@ -26,6 +26,8 @@ import requests
 import pickle
 import pyhmmer
 import time
+import utility
+import xml.etree.ElementTree as ET
 
 pd.options.mode.chained_assignment = None
 
@@ -36,7 +38,6 @@ class CxValidation(GetInputInformation):
 
     def __init__(self, mmcif_file, cache):
         super().__init__(mmcif_file)
-        self.ID = str(self.get_id())
         self.cache = cache
         self.nos = self.get_number_of_models()
         self.dataset = self.get_dataset_comp()
@@ -90,8 +91,13 @@ class CxValidation(GetInputInformation):
                 exl = xl.experimental_cross_link
 
                 # Extract residue names from atoms
-                r1n = exl.residue1.comp.id
-                r2n = exl.residue2.comp.id
+                try:
+                    r1n = exl.residue1.comp.id
+                    r2n = exl.residue2.comp.id
+                except IndexError as e:
+                    logging.error('Missing residue')
+                    logging.error(e)
+                    continue
 
                 # Select atoms
                 if xl.granularity == 'by-atom':
@@ -110,8 +116,13 @@ class CxValidation(GetInputInformation):
                     logging.debug(Exception('Unsupported xl granularity'))
                     continue
 
-                r1 = xl.asym1.residue(exl.residue1.seq_id)
-                r2 = xl.asym2.residue(exl.residue2.seq_id)
+                try:
+                    r1 = xl.asym1.residue(exl.residue1.seq_id)
+                    r2 = xl.asym2.residue(exl.residue2.seq_id)
+                except IndexError as e:
+                    logging.error('Missing residue')
+                    logging.error(e)
+                    continue
 
                 intra_chain = False
                 if xl.asym1.id == xl.asym2.id:
@@ -258,6 +269,7 @@ class CxValidation(GetInputInformation):
                     for im, m in enumerate(mg):
                         gim += 1
                         m_ = self.models[gim]
+                        logging.info(f'Assessing crosslinking-MS for MODEL {gim}')
                         for index, row in self.raw_restraints.iterrows():
                             d = self.measure_restraint(m_, row)
 
@@ -281,16 +293,18 @@ class CxValidation(GetInputInformation):
     def measure_restraint(self, model, row):
         allowed_particle_types = (ihm.model.Atom, ihm.model.Sphere)
         # Check that we have all necessary atoms
+        rid = row['restraint_id']
+        gid = row['group_id']
         chid = row['chain1']
         rid = row['resnum1']
         an = row['name1']
 
         a1 = model[chid][rid][an]
 
-        if type(a1) not in allowed_particle_types:
+        if not isinstance(a1, allowed_particle_types):
             a1 = None
         if a1 is None:
-            logging.debug(f'Atom {chid} {rid} {an} is empty')
+            logging.warning(f'Restraint {rid}: Atom {chid} {rid} {an} is empty')
 
         chid = row['chain2']
         rid = row['resnum2']
@@ -298,10 +312,10 @@ class CxValidation(GetInputInformation):
 
         a2 = model[chid][rid][an]
 
-        if type(a2) not in allowed_particle_types:
+        if not isinstance(a2, allowed_particle_types):
             a2 = None
         if a2 is None:
-            logging.debug(f'Atom {chid} {rid} {an} is empty')
+            logging.warning(f'Restraint {rid}: Atom {chid} {rid} {an} is empty')
 
         if a1 is None or a2 is None:
             d = None
@@ -519,9 +533,17 @@ class CxValidation(GetInputInformation):
                 cmp = (ed - threshold) >= 0
             # Check with Ben
             elif rtype == 'harmonic':
+                atol = 1e-08
+
+                tol_keys = ['sigma1', 'sigma2']
+
+                for k in tol_keys:
+                    if row[k] is not None:
+                        atol += row[k]
+
                 cmp = np.isclose(
                     ed, threshold,
-                    rtol=row['psi'] + row['sigma1'] + row['sigma2']
+                    atol=atol
                 )
 
             satisfied_restraints[i] = cmp
@@ -766,7 +788,7 @@ class CxValidation(GetInputInformation):
                     out_stats = pd.DataFrame(out_stats_)
 
                     p = scatter_plot(out_stats)
-                    title = f'Satisfaction rates in model group {gimg}'
+                    title = f'Satisfaction rates in Model Group {gimg}'
                     p.title.text = title
 
                     p.title.text_font_size = "12pt"
@@ -774,12 +796,16 @@ class CxValidation(GetInputInformation):
                     p.yaxis.axis_label_text_font_size = "14pt"
                     p.xaxis.major_label_text_font_size = "14pt"
                     p.yaxis.major_label_text_font_size = "14pt"
+                    p.yaxis.major_label_text_align = 'right'
+                    p.yaxis.group_text_align = 'right'
+                    p.yaxis.subgroup_text_align = 'right'
+                    p.min_border_bottom = 75
 
                     col = gridplot(
                         [p], ncols=1, toolbar_location='right',
                         # sizing_mode='scale_width'
                     )
-                    tab = Panel(child=col, title=f'Model group {gimg}')
+                    tab = Panel(child=col, title=f'Model Group {gimg}')
                     tabs_.append(tab)
 
         tabs = Tabs(tabs=tabs_)
@@ -815,16 +841,18 @@ class CxValidation(GetInputInformation):
                     frame_width=500, frame_height=100,
                     # sizing_mode='scale_width',
                 )
+                p.yaxis.ticker.desired_num_ticks = 3
 
                 p.output_backend = "svg"
 
-                title = f"Model group {gimg}; {lt}: {rt}, {d:.1f} Å"
+                title = f"Model Group {gimg}; {lt}: {rt}, {d:.1f} Å"
 
                 p.title.text_font_size = "12pt"
                 p.xaxis.axis_label_text_font_size = "14pt"
                 p.yaxis.axis_label_text_font_size = "14pt"
                 p.xaxis.major_label_text_font_size = "14pt"
                 p.yaxis.major_label_text_font_size = "14pt"
+                p.yaxis.major_label_text_align = 'right'
 
                 p.ray(
                     x=d, y=0,
@@ -834,6 +862,7 @@ class CxValidation(GetInputInformation):
                 p.xaxis.axis_label = 'Euclidean distance, Å'
                 p.yaxis.axis_label = 'Count'
                 p.title.text = title
+                p.min_border_bottom = 75
                 plots.append(p)
 
             col = gridplot(
@@ -841,7 +870,7 @@ class CxValidation(GetInputInformation):
                 # sizing_mode='scale_width'
             )
             tab = Panel(
-                child=col, title=f'Model group {gimg}',)
+                child=col, title=f'Model Group {gimg}',)
             tabs_.append(tab)
 
         tabs = Tabs(tabs=tabs_,
@@ -852,7 +881,7 @@ class CxValidation(GetInputInformation):
         return self.save_plots(tabs, title, imgDirname)
 
     def save_plots(self, plot, title, imgDirname='.'):
-        stem = f'{self.ID}_{title}'
+        stem = f'{self.ID_f}_{title}'
 
         imgpath = Path(
             imgDirname,
@@ -860,7 +889,7 @@ class CxValidation(GetInputInformation):
         save(
             plot, imgpath,
             resources=CDN,
-            title='Satisfaction rates per ensemble',
+            title=title,
         )
 
         imgpath_json = Path(
@@ -875,7 +904,7 @@ class CxValidation(GetInputInformation):
             f'{stem}.svg')
 
         svgs = export_svgs(plot, filename=imgpath_svg,
-                   webdriver=self.driver)
+                   webdriver=self.driver, timeout=15)
 
         svgs = [Path(x).name for x in svgs]
 
@@ -933,7 +962,7 @@ class CxValidation(GetInputInformation):
         '''
         get data from PRIDE
         '''
-        cache_fn = Path(self.cache, f'{code}.pickle')
+        cache_fn = Path(self.cache, f'{code}.pkl')
         data = None
 
         # Check if we already requested the data
@@ -962,11 +991,23 @@ class CxValidation(GetInputInformation):
         '''
         ids = []
         for i, d in enumerate(self.system.orphan_datasets):
-            if isinstance(d, ihm.dataset.MassSpecDataset) or isinstance(d, ihm.dataset.CXMSDataset):
-                if isinstance(d.location, ihm.location.PRIDELocation):
+            if isinstance(d, ihm.dataset.CXMSDataset):
+                if isinstance(d.location, ihm.location.PRIDELocation) or \
+                        isinstance(d.location, ihm.location.ProteomeXchangeLocation):
                     try:
                         pid = d.location.access_code
                         ids.append(pid)
+                    except AttributeError:
+                        pass
+                # Try to automatically convert jPOST ids to PRIDE ids
+                if isinstance(d.location, ihm.location.JPOSTLocation):
+                    try:
+                        pid_ = d.location.access_code
+                        r = requests.get(f'https://repository.jpostdb.org/xml/{pid_}.0.xml')
+                        xml = ET.fromstring(r.content)
+                        pid = xml.find('Project').attrib['pxid']
+                        ids.append(pid)
+
                     except AttributeError:
                         pass
 
@@ -1005,9 +1046,15 @@ class CxValidation(GetInputInformation):
         matches_seqs_ids = {}
         matches_residue_pairs = {}
         for k, v in mmcif_seqs.items():
-            best_hit = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0][0]
-            matches_seqs[k] = best_hit
-            matches_seqs_ids[k] = best_hit.best_domain.hit.name.decode("utf-8")
+            matches_ = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0]
+            if len(matches_) > 0:
+                best_hit = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0][0]
+                matches_seqs[k] = best_hit
+                matches_seqs_ids[k] = best_hit.best_domain.hit.name.decode("utf-8")
+            else:
+                logging.warning(f"Couldn't match mmCIF entity {k} to any entities in {pid}")
+                matches_seqs[k] = None
+                matches_seqs_ids[k] = None
 
         matched_ms_seqs = list(matches_seqs_ids.values())
         matched_mmcif_entities = list(matches_seqs_ids.keys())
@@ -1045,13 +1092,13 @@ class CxValidation(GetInputInformation):
             for xl in restr_.cross_links:
                 eid1 = xl.experimental_cross_link.residue1.entity._id
                 rid1 = xl.experimental_cross_link.residue1.seq_id
-                eid2 = xl.experimental_cross_link.residue1.entity._id
+                eid2 = xl.experimental_cross_link.residue2.entity._id
                 rid2 = xl.experimental_cross_link.residue2.seq_id
+
                 exl = tuple(sorted(((eid1, rid1), (eid2, rid2))))
                 exls.append(exl)
 
         exls = list(set(exls))
-
 
         mmcif_rps_ms_entities = 0
 
@@ -1061,6 +1108,10 @@ class CxValidation(GetInputInformation):
                 mmcif_rps_ms_entities += 1
                 eid1_ = matches_seqs_ids[eid1]
                 eid2_ = matches_seqs_ids[eid2]
+
+                if eid1_ is None or eid2_ is None:
+                    continue
+
                 exl = tuple(sorted(((eid1_, rid1), (eid2_, rid2))))
                 emxls.append(exl)
 
@@ -1072,14 +1123,7 @@ class CxValidation(GetInputInformation):
             'pride_id': pid,
             'entities_ms': len(ms_seqs),
             'entities': len(mmcif_seqs),
-            'matches': [
-                {
-                    'entity': k,
-                    'entity_ms': v.best_domain.hit.name.decode("utf-8"),
-                    'e-value': v.best_domain.c_evalue,
-                    'exact_match': v.best_domain.alignment.target_sequence == v.best_domain.alignment.hmm_sequence.upper()
-                } for k, v in matches_seqs.items()
-            ],
+            'matches': [],
             'stats': {
                 'entry': {
                     'total': mmcif_rps,
@@ -1097,6 +1141,27 @@ class CxValidation(GetInputInformation):
                 }
             }
         }
+
+        for k, v in matches_seqs.items():
+            if v is not None:
+
+                match_ =  {
+                    'entity': k,
+                    'entity_ms': v.best_domain.hit.name.decode("utf-8"),
+                    'e-value': v.best_domain.c_evalue,
+                    'exact_match': v.best_domain.alignment.target_sequence == v.best_domain.alignment.hmm_sequence.upper()
+                }
+
+            else:
+                match_ =  {
+                    'entity': k,
+                    'entity_ms': utility.NA,
+                    'e-value': utility.NA,
+                    'exact_match': utility.NA,
+                }
+
+
+            out['matches'].append(match_)
 
         return out
 

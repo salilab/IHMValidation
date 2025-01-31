@@ -14,7 +14,10 @@ from collections import Counter, defaultdict
 from multiprocessing import Process
 import numpy as np
 import logging
-import ihm.model
+import ihm, ihm.reader, ihm.model
+import itertools
+import time
+import signal
 
 NA = 'Not available'
 
@@ -189,7 +192,7 @@ def get_unique_datasets(name: dict) -> list:
     '''
     all_data = set(name['Dataset type'])
     sub_data = {'Integrative model', 'Other', 'Comparative model',
-                'Experimental model', 'De Novo model', 'SAS data', 'CX-MS data'}
+                'Experimental model', 'De Novo model', 'SAS data', 'Crosslinking-MS data'}
     fin_data = list(all_data.difference(sub_data))
     output = list()
     for i in fin_data:
@@ -399,7 +402,7 @@ def all_same(items: list):
 
 def mp_readable_format(mp: dict) -> list:
     '''
-    format molprobity resukts for supplementary/summary table
+    Format MolProbity results for supplementary/summary table
     '''
     fin_string = []
     for ind, el in enumerate(mp['Models']):
@@ -456,16 +459,16 @@ def clean_all(report=None):
     '''
 
     # dirname_ed = os.getcwd()
-    os.listdir('.')
-    for item in os.listdir('.'):
-        if item.endswith('.txt'):
-            os.remove(item)
-        if item.endswith('.csv'):
-            os.remove(item)
-        if item.endswith('.json'):
-            os.remove(item)
-        if item.endswith('.sascif'):
-            os.remove(item)
+    # os.listdir('.')
+    # for item in os.listdir('.'):
+    #     if item.endswith('.txt'):
+    #        os.remove(item)
+    #    if item.endswith('.csv'):
+    #        os.remove(item)
+    #    if item.endswith('.json'):
+    #        os.remove(item)
+    #    if item.endswith('.sascif'):
+    #        os.remove(item)
 
     if report:
         report.clean()
@@ -561,6 +564,7 @@ def get_hierarchy_from_model(model) -> dict:
             for i in range(r.asym_unit.seq_id_range[0],
                            r.asym_unit.seq_id_range[1] + 1):
                 root[r.asym_unit.asym.id][i]['CA'] = None
+                root[r.asym_unit.asym.id][i]['coarse-grained'] = None
 
         elif r.granularity == 'by-feature':
             for i in range(r.asym_unit.seq_id_range[0],
@@ -576,6 +580,8 @@ def get_hierarchy_from_model(model) -> dict:
 
             if root[s.asym_unit.id][seq_id]['CA'] is None:
                 root[s.asym_unit.id][seq_id]['CA'] = s
+            if root[s.asym_unit.id][seq_id]['coarse-grained'] is None:
+                root[s.asym_unit.id][seq_id]['coarse-grained'] = s
 
         else:
 
@@ -626,3 +632,126 @@ def pretty_print_representations(reprs: dict) -> list:
         pretty_reprs.append(out)
 
     return pretty_reprs
+
+def ranges(i):
+    for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+        b = list(b)
+        yield b[0][1], b[-1][1]
+
+def check_for_dataset_type(dataset_list: list=None, dataset_type=None) -> bool:
+    """check if the specific dataset type is present in the dataset list"""
+    flag = False
+
+    for dataset in dataset_list:
+        if isinstance(dataset, dataset_type):
+            flag = True
+
+    return flag
+
+
+def summarize_entities(rep_info: dict) -> list:
+    sum_entities = []
+
+    for rep_ in rep_info:
+        for k, v in rep_['Chains'].items():
+            if isinstance(v['Total residues'], int):
+                tr = f'{v["Total residues"]} residues'
+            else:
+                tr = None
+            data_ = (v['Molecule name'], ', '.join(v['Chains']), tr)
+            sum_entities.append(data_)
+
+    sum_entities = sorted(set(sum_entities), key=lambda x: x[1])
+
+    output = []
+
+    for e in sum_entities:
+        if e[2] is None:
+            l = f"{e[0]}: chain(s) {e[1]}"
+        else:
+            l = f"{e[0]}: chain(s) {e[1]} ({e[2]})"
+
+        output.append(l)
+
+    return output
+
+def summarize_segments(rep_info: dict) -> list:
+    output = []
+
+    for rep_ in rep_info:
+        rigid, flexible = 0, 0
+        for k, v in rep_['Chains'].items():
+            rigid_ = len(v['Rigid segments']) * len(v['Chains'])
+            flexible_ = len(v['Flexible segments']) * len(v['Chains'])
+
+            rigid += rigid_
+            flexible += flexible_
+
+        output.append((f'{rigid}, {flexible}'))
+
+    return output
+
+def parse_ihm_cif(fname, encoding='utf8') -> tuple:
+    try:
+        with open(fname, encoding=encoding) as fh:
+            system, = ihm.reader.read(fh)
+    except UnicodeDecodeError:
+        encoding = 'ascii'
+        with open(fname, encoding=encoding, errors='ignore') as fh:
+            system, = ihm.reader.read(fh)
+
+    return(system, encoding)
+
+def is_atomic(data: ihm.System|ihm.model.Model):
+    flag = False
+
+    if isinstance(data, ihm.System):
+        for group, model in data._all_models():
+            flag = is_atomic(model)
+            if flag:
+                break
+
+    elif isinstance(data, ihm.model.Model):
+        if len(data._atoms) > 0:
+            flag = True
+
+    return flag
+
+def is_cg(data: ihm.System|ihm.model.Model):
+    flag = False
+
+    if isinstance(data, ihm.System):
+        for group, model in data._all_models():
+            flag = is_cg(model)
+            if flag:
+                break
+
+    elif isinstance(data, ihm.model.Model):
+        if len(data._spheres) > 0:
+            flag = True
+
+    return flag
+
+# https://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish
+class timeout:
+    def __init__(self, seconds=1, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+    def handle_timeout(self, signum, frame):
+        raise TimeoutError(self.error_message)
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)
+
+def format_range(data, format=".2f"):
+    if len(data) > 1:
+        min_ = np.nanmin(data)
+        max_ = np.nanmax(data)
+        r_ = f'{min_:{format}}-{max_:{format}}'
+    else:
+        min_ = np.nanmin(data)
+        r_ = f'{min_:{format}}'
+
+    return r_
