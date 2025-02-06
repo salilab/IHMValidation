@@ -214,7 +214,7 @@ class Plots(GetInputInformation):
             mq_plots.append(fullplot)
 
         # if neither exc vol nor molp data exists, we create a blank plot
-        # pdb-dev visuals keep changing, so this plot might or might not make sense
+        # pdb-ihm visuals keep changing, so this plot might or might not make sense
         # we are keeping it, just in case the visuals change again
         # else:
         #    Scores = ['']

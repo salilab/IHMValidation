@@ -619,7 +619,7 @@ class GetInputInformation(object):
                         acc = utility.NA
 
                     if isinstance(_.location, ihm.location.PDBDevLocation) and acc != utility.NA:
-                        acc = f"<a href=https://pdb-dev.wwpdb.org/entry.html?{acc}>{acc}</a>"
+                        acc = f"<a href=https://pdb-ihm.org/entry.html?{acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.PDBLocation) and acc != utility.NA:
                         acc = f"<a href=https://www.rcsb.org/structure/{acc}>{acc}</a>"

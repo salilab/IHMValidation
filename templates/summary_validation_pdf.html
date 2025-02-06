@@ -80,13 +80,13 @@
             <td></td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtab">Entry composition</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtab">Entry composition</a></i></td>
             <td>
               {{ write_bullet(summary_entities) }}
             </td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabdata">Datasets used for modeling</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabdata">Datasets used for modeling</a></i></td>
             <td>
               {% for dataset_ in Datasets_list[1:] %}
               - {{ dataset_[1] }}, {{ dataset_[2] }}: {{ dataset_[3] }}<br>
@@ -98,24 +98,24 @@
             <td></td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#numrepr">Number of representations</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#numrepr">Number of representations</a></i></td>
             <td>
                {{ rep_info|length }}
             </td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabscale">Scale</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabscale">Scale</a></i></td>
             <td>
                {{ write_bullet(summary_scale) }}
             </td>
          </tr>
          <tr>
-            <td><i>Number of <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrigid">rigid</a> and <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabflex">flexible</a> segments</i></td>
+            <td><i>Number of <a href="https://pdb-ihm.org/validation_help.html#sumtabrigid">rigid</a> and <a href="https://pdb-ihm.org/validation_help.html#sumtabflex">flexible</a> segments</i></td>
             <td>{{ write_bullet(summary_segments) }}</td>
          </tr>
 <!--
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabatom">Structural coverage (rigid segments)</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabatom">Structural coverage (rigid segments)</a></i></td>
             <td>{{ struc }}</td>
          </tr>
 -->
@@ -124,14 +124,14 @@
             <td></td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabresphys">Physical principles</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabresphys">Physical principles</a></i></td>
             <td>
               {{ write_bullet(physics) }} 
             </td>
          </tr>
          <tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabresexp">Experimental data</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabresexp">Experimental data</a></i></td>
             <td>
               {% for i in range(restraint_info|length) %}
                 - {{ restraint_info[i][0] }} <br>
@@ -145,7 +145,7 @@
          </tr>
          {% if sampling_validation is not none %}
            <tr>
-             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabval">Sampling validation</a></i></td>
+             <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabval">Sampling validation</a></i></td>
              <td>
                {{ write_bullet(sampling_validation) }}
              </td>
@@ -154,37 +154,37 @@
 <!--
           {% if clustering is not none %}
             <tr>
-	            <td><i> <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabclus1">Clustering algorithm</a> ,<a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabclus2">clustering feature</a></i></td>
+	            <td><i> <a href="https://pdb-ihm.org/validation_help.html#sumtabclus1">Clustering algorithm</a> ,<a href="https://pdb-ihm.org/validation_help.html#sumtabclus2">clustering feature</a></i></td>
 	            <td>{{clustering}}, {{feature}}</td>
             </tr>
           {% endif %}
 -->
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabnum1">Number of ensembles</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum1">Number of ensembles</a></i></td>
             <td>{{ num_ensembles }}</td>
          </tr>
 
          <tr>
-           <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabnum2">Number of models in ensembles</a></i></td>
+           <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum2">Number of models in ensembles</a></i></td>
            <td>{{ models }}</td>
 	       </tr>
          <tr>
-           <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabnum2">Number of deposited models</a></i></td>
+           <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum2">Number of deposited models</a></i></td>
            <td>{{ number_of_models }}</td>
 	       </tr>
          <tr>
-            <td><i> <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabprec">Model precision (uncertainty of models)</a></i></td>
+            <td><i> <a href="https://pdb-ihm.org/validation_help.html#sumtabprec">Model precision (uncertainty of models)</a></i></td>
             <td>{{ write_bullet(model_precision) }}</td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabrvaldata">Data quality</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabrvaldata">Data quality</a></i></td>
             <td>
               {{ write_bullet(Data_quality) }}
             </td>
          </tr>
          {% if disclaimer > 0 %}
            <tr>
-             <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html">Model quality</a></i></td>
+             <td><i><a href="https://pdb-ihm.org/validation_help.html">Model quality</a></i></td>
              <td>
                Based on existing standards, there are no model quality assessments for this entry.
              </td>
@@ -192,7 +192,7 @@
          {% else %}
            {% if assess_atomic_segments is not none %}
              <tr>
-               <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalatom">Model quality: assessment of atomic segments</a></i></td>
+               <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabvalatom">Model quality: assessment of atomic segments</a></i></td>
                <td>
                  {{ write_bullet(assess_atomic_segments) }}
                </td>
@@ -200,7 +200,7 @@
            {% endif %}
            {% if assess_excluded_volume is not none %}
              <tr>
-               <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabvalexv">Model quality: assessment of excluded volume</a></i></td>
+               <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabvalexv">Model quality: assessment of excluded volume</a></i></td>
                <td>
                  {{ assess_excluded_volume }}
                </td>
@@ -208,13 +208,13 @@
             {% endif %}
          {% endif %}
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabfit1">Fit to data used for modeling</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabfit1">Fit to data used for modeling</a></i></td>
             <td>
               {{ write_bullet(validation_input) }}
             </td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabfit2">Fit to data used for validation</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabfit2">Fit to data used for validation</a></i></td>
             <td>
               {{ write_bullet(cross_validation) }}
             </td>
@@ -226,18 +226,18 @@
          </tr>
          {% for i in range(method_info['Step number']|length) %} 
            <tr>
-             <td><i>{{ i + 1 }}. <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabmet">Method</a></i></td>
+             <td><i>{{ i + 1 }}. <a href="https://pdb-ihm.org/validation_help.html#sumtabmet">Method</a></i></td>
              <td>{{ method_info['Method type'][i] }}</td>
            </tr>
            <tr>
-             <td><i> &nbsp; &nbsp; &nbsp; <a href="hhttps://pdb-dev.wwpdb.org/validation_help.html#sumtabmet1">Name</a></i></td>
+             <td><i> &nbsp; &nbsp; &nbsp; <a href="hhttps://pdb-ihm.org/validation_help.html#sumtabmet1">Name</a></i></td>
              <td>
                {{ method_info['Method name'][i] }}
              </td>
            </tr>
            {% if method_info['Method description'][i] is not none %}
              <tr>
-               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabmet2">Description</a></i></td>
+               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmet2">Description</a></i></td>
                <td>
                  {{ method_info['Method description'][i] }}
                </td>
@@ -245,7 +245,7 @@
             {% endif %}
             {% if method_info['Number of computed models'][i] is not none %}
               <tr>
-               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabmet2">Number of computed models</a></i></td>
+               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmet2">Number of computed models</a></i></td>
                <td>
                  {{ method_info['Number of computed models'][i] }}
                </td>
@@ -253,7 +253,7 @@
             {% endif %}
          {% endfor %}
          <tr>
-            <td><i><a href="https://pdb-dev.wwpdb.org/validation_help.html#sumtabsoft">Software</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabsoft">Software</a></i></td>
             <td>
               {{ write_bullet(software) }}
             </td>

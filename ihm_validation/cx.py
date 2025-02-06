@@ -912,7 +912,7 @@ class CxValidation(GetInputInformation):
 
     @staticmethod
     def request_pride(url: str) -> dict:
-        ''' pull data from PRIDE using crosslinking PDB-DEV API '''
+        ''' pull data from PRIDE using crosslinking PDB-IHM API '''
         result = None
         r = requests.get(url)
 
