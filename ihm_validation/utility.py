@@ -10,10 +10,14 @@
 import os
 import glob
 from pathlib import Path
-from collections import Counter
+from collections import Counter, defaultdict
 from multiprocessing import Process
 import numpy as np
 import logging
+import ihm, ihm.reader, ihm.model
+import itertools
+import time
+import signal
 
 NA = 'Not available'
 
@@ -36,7 +40,27 @@ def dict_to_JSlist(d: dict) -> list:
         for j, v in enumerate(d.values()):
             # iterate over values of every key - fill rows
             for i, el in enumerate(v, start=1):
-                el_ = str(el)
+                # Check if int or float
+                if isinstance(el, int) or isinstance(el, float):
+                    el_ = el
+
+                # If string, try casting as int or float
+                elif isinstance(el, str):
+                    try:
+                        el_ = int(el)
+                    except (TypeError, ValueError):
+                        el_ = str(el)
+
+                    if isinstance(el_, str):
+                        try:
+                            el_ = float(el)
+                        except (TypeError, ValueError):
+                            el_ = str(el)
+
+                # Otherwise cast as str
+                else:
+                    el_ = str(el)
+
                 if el_ == '?':
                     el_ = '_'
                 try:
@@ -93,10 +117,10 @@ def format_tuple(tex: list) -> str:
 
 def dict_to_JSlist_rows(dict1: dict, dict2: dict) -> list:
     '''
-    format rigid bodies and flexible elements
+    format rigid and flexible segments
     '''
     output_list = []
-    output_list.append(['Chain ID', 'Rigid bodies', 'Non-rigid segments'])
+    output_list.append(['Chain ID', 'Rigid segments', 'Flexible segments'])
     for ind, el in dict1.items():
         output_list.append(
             [ind, format_RB_text(el), format_flex_text(dict2[ind])])
@@ -168,7 +192,7 @@ def get_unique_datasets(name: dict) -> list:
     '''
     all_data = set(name['Dataset type'])
     sub_data = {'Integrative model', 'Other', 'Comparative model',
-                'Experimental model', 'De Novo model', 'SAS data', 'CX-MS data'}
+                'Experimental model', 'De Novo model', 'SAS data', 'Crosslinking-MS data'}
     fin_data = list(all_data.difference(sub_data))
     output = list()
     for i in fin_data:
@@ -376,21 +400,9 @@ def all_same(items: list):
     return all(x == items[0] for x in items)
 
 
-def exv_readable_format(exv: dict) -> list:
-    '''
-    format exv for supplementary/summary table
-    '''
-
-    fin_string = []
-    for ind, el in enumerate(exv['Models']):
-        fin_string.append('Model-'+str(el)+': '+'Number of violations = ' +
-                          str(exv['Number of violations'][ind]) + ' ')
-    return fin_string
-
-
 def mp_readable_format(mp: dict) -> list:
     '''
-    format molprobity resukts for supplementary/summary table
+    Format MolProbity results for supplementary/summary table
     '''
     fin_string = []
     for ind, el in enumerate(mp['Models']):
@@ -447,16 +459,16 @@ def clean_all(report=None):
     '''
 
     # dirname_ed = os.getcwd()
-    os.listdir('.')
-    for item in os.listdir('.'):
-        if item.endswith('.txt'):
-            os.remove(item)
-        if item.endswith('.csv'):
-            os.remove(item)
-        if item.endswith('.json'):
-            os.remove(item)
-        if item.endswith('.sascif'):
-            os.remove(item)
+    # os.listdir('.')
+    # for item in os.listdir('.'):
+    #     if item.endswith('.txt'):
+    #        os.remove(item)
+    #    if item.endswith('.csv'):
+    #        os.remove(item)
+    #    if item.endswith('.json'):
+    #        os.remove(item)
+    #    if item.endswith('.sascif'):
+    #        os.remove(item)
 
     if report:
         report.clean()
@@ -503,10 +515,12 @@ def calc_optimal_range(counts: list) -> tuple:
         oom = order_of_magnitude(upper)
         upper = upper * (1 + 10 ** (-oom))
 
-    if lower > 0:
-        oom = order_of_magnitude(lower)
-        # Do not allow the range to go below zero
-        lower = max(0, lower * (1 - 10 ** (-oom)))
+    # if lower > 0:
+    #     oom = order_of_magnitude(lower)
+    #     # Do not allow the range to go below zero
+    #     lower = max(0, lower * (1 - 10 ** (-oom)))
+
+    lower = 0
 
     assert lower >= 0 and upper > 0
 
@@ -526,3 +540,218 @@ def get_python_ihm_version() -> str:
     """returns Python-IHM version"""
     import ihm
     return ihm.__version__
+
+def get_hierarchy_from_atoms(atoms) -> dict:
+    """Construct polymer hierarchy from a list of atoms"""
+    def infinite_defaultdict(): return defaultdict(infinite_defaultdict)
+    root = infinite_defaultdict()
+
+    for a in atoms:
+        root[a.asym_unit.id][a.seq_id][a.atom_id] = a
+
+    return root
+
+def get_hierarchy_from_model(model) -> dict:
+    """Construct polymer hierarchy from atoms and beads in the model"""
+    def infinite_defaultdict(): return defaultdict(infinite_defaultdict)
+    root = infinite_defaultdict()
+
+    for a in model.get_atoms():
+        root[a.asym_unit.id][a.seq_id][a.atom_id] = a
+
+    for r in model.representation:
+        if r.granularity == 'by-residue':
+            for i in range(r.asym_unit.seq_id_range[0],
+                           r.asym_unit.seq_id_range[1] + 1):
+                root[r.asym_unit.asym.id][i]['CA'] = None
+                root[r.asym_unit.asym.id][i]['coarse-grained'] = None
+
+        elif r.granularity == 'by-feature':
+            for i in range(r.asym_unit.seq_id_range[0],
+                           r.asym_unit.seq_id_range[1] + 1):
+                root[r.asym_unit.asym.id][i]['coarse-grained'] = None
+
+    for s in model.get_spheres():
+        # Consider only by-residue spheres
+        bs = get_bead_size(s)
+        if bs == 1:
+
+            seq_id = s.seq_id_range[0]
+
+            if root[s.asym_unit.id][seq_id]['CA'] is None:
+                root[s.asym_unit.id][seq_id]['CA'] = s
+            if root[s.asym_unit.id][seq_id]['coarse-grained'] is None:
+                root[s.asym_unit.id][seq_id]['coarse-grained'] = s
+
+        else:
+
+            for seq_id in range(s.seq_id_range[0], s.seq_id_range[1] + 1):
+
+                if root[s.asym_unit.id][seq_id]['coarse-grained'] is None:
+                    root[s.asym_unit.id][seq_id]['coarse-grained'] = s
+                else:
+                    s_ = root[s.asym_unit.id][seq_id]['coarse-grained']
+                    # Select best possible resolution
+                    if get_bead_size(s) < get_bead_size(s_):
+                        root[s.asym_unit.id][seq_id]['coarse-grained'] = s
+
+
+    return root
+
+def get_bead_size(sphere: ihm.model.Sphere) -> int:
+    """Number of residues per bead"""
+    return sphere.seq_id_range[1] - sphere.seq_id_range[0] + 1
+
+def pretty_print_representations(reprs: dict) -> list:
+    """Pretty print information about representation scales"""
+    pretty_reprs = []
+    for reprs_ in reprs:
+        out = ''
+        if (reprs_['atomic'] and reprs_['coarse-grained']) or \
+        (reprs_['coarse-grained'] and len(reprs_['coarse-grain_levels']) > 1):
+            out += 'Multiscale: '
+
+        if reprs_['atomic']:
+            out += 'Atomic'
+
+        if reprs_['coarse-grained']:
+            if out != '':
+                if out[-1] != ' ':
+                    out += '; '
+
+            out += 'Coarse-grained: '
+            levels = reprs_['coarse-grain_levels']
+            if len(levels) == 1:
+                out += f'{levels[0]:d}'
+            else:
+                min_level = min(levels)
+                max_level = max(levels)
+                out += f'{min_level:d} - {max_level:d}'
+            out += ' residue(s) per bead'
+
+        pretty_reprs.append(out)
+
+    return pretty_reprs
+
+def ranges(i):
+    for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+        b = list(b)
+        yield b[0][1], b[-1][1]
+
+def check_for_dataset_type(dataset_list: list=None, dataset_type=None) -> bool:
+    """check if the specific dataset type is present in the dataset list"""
+    flag = False
+
+    for dataset in dataset_list:
+        if isinstance(dataset, dataset_type):
+            flag = True
+
+    return flag
+
+
+def summarize_entities(rep_info: dict) -> list:
+    sum_entities = []
+
+    for rep_ in rep_info:
+        for k, v in rep_['Chains'].items():
+            if isinstance(v['Total residues'], int):
+                tr = f'{v["Total residues"]} residues'
+            else:
+                tr = None
+            data_ = (v['Molecule name'], ', '.join(v['Chains']), tr)
+            sum_entities.append(data_)
+
+    sum_entities = sorted(set(sum_entities), key=lambda x: x[1])
+
+    output = []
+
+    for e in sum_entities:
+        if e[2] is None:
+            l = f"{e[0]}: chain(s) {e[1]}"
+        else:
+            l = f"{e[0]}: chain(s) {e[1]} ({e[2]})"
+
+        output.append(l)
+
+    return output
+
+def summarize_segments(rep_info: dict) -> list:
+    output = []
+
+    for rep_ in rep_info:
+        rigid, flexible = 0, 0
+        for k, v in rep_['Chains'].items():
+            rigid_ = len(v['Rigid segments']) * len(v['Chains'])
+            flexible_ = len(v['Flexible segments']) * len(v['Chains'])
+
+            rigid += rigid_
+            flexible += flexible_
+
+        output.append((f'{rigid}, {flexible}'))
+
+    return output
+
+def parse_ihm_cif(fname, encoding='utf8') -> tuple:
+    try:
+        with open(fname, encoding=encoding) as fh:
+            system, = ihm.reader.read(fh)
+    except UnicodeDecodeError:
+        encoding = 'ascii'
+        with open(fname, encoding=encoding, errors='ignore') as fh:
+            system, = ihm.reader.read(fh)
+
+    return(system, encoding)
+
+def is_atomic(data: ihm.System|ihm.model.Model):
+    flag = False
+
+    if isinstance(data, ihm.System):
+        for group, model in data._all_models():
+            flag = is_atomic(model)
+            if flag:
+                break
+
+    elif isinstance(data, ihm.model.Model):
+        if len(data._atoms) > 0:
+            flag = True
+
+    return flag
+
+def is_cg(data: ihm.System|ihm.model.Model):
+    flag = False
+
+    if isinstance(data, ihm.System):
+        for group, model in data._all_models():
+            flag = is_cg(model)
+            if flag:
+                break
+
+    elif isinstance(data, ihm.model.Model):
+        if len(data._spheres) > 0:
+            flag = True
+
+    return flag
+
+# https://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish
+class timeout:
+    def __init__(self, seconds=1, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+    def handle_timeout(self, signum, frame):
+        raise TimeoutError(self.error_message)
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)
+
+def format_range(data, format=".2f"):
+    if len(data) > 1:
+        min_ = np.nanmin(data)
+        max_ = np.nanmax(data)
+        r_ = f'{min_:{format}}-{max_:{format}}'
+    else:
+        min_ = np.nanmin(data)
+        r_ = f'{min_:{format}}'
+
+    return r_

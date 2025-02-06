@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ###################################
 # Script :
 # 1) Contains class to
@@ -11,49 +12,44 @@ import pickle
 import os
 from pathlib import Path
 import subprocess
-from subprocess import run
+from subprocess import run, check_call, CalledProcessError
 from mmcif_io import GetInputInformation, MAX_NUM_MODELS
-import ihm
-import ihm.reader
+import ihm, ihm.reader, ihm.dumper
 import collections
 import pandas as pd
 import csv
 import re
 import string
+import utility
+from typing import Literal
+import argparse
+import itertools
 
 class GetMolprobityInformation(GetInputInformation):
     _tempfiles = []
+    data = {}
+    convert = Path(__file__).with_name('molprobity_convert.py')
 
-    def __init__(self, mmcif_file, cache):
-        super().__init__(mmcif_file)
+    def __init__(self, mmcif_file, cache=".", nocache=False):
+        super().__init__(mmcif_file, cache, nocache)
         self.verify_molprobity_installation()
-        self.version = self.get_version()
-        self.ID = Path(mmcif_file).stem
-        self.nos = min(self.get_number_of_models(), MAX_NUM_MODELS)
-        if not Path(cache).is_dir():
-            os.makedirs(cache)
-            logging.info(f'Created cache directory {cache}')
 
-        self.cache = cache
-
-        self._tempcif = str(Path(self.cache, 'temp.cif'))
-        if Path(self._tempcif).is_file():
-            os.remove(self._tempcif)
-        self.rewrite_mmcif(self._tempcif)
+        self._tempcif = str(Path(self.cache, f'{self.stem}_temp.cif'))
+        # if Path(self._tempcif).is_file():
+        #     os.remove(self._tempcif)
+        # self.rewrite_mmcif(self._tempcif)
         self._tempfiles.append(self._tempcif)
-
 
     def verify_molprobity_installation(self):
         """ Stub for a validation function """
         pass
 
-
-    def get_version(self, tool: str = 'molprobity.clashscore') -> str:
+    @property
+    def molprobity_version(self, tool: str = 'molprobity.clashscore') -> str:
         """
-        Get molprobity version.
+        Get MolProbity version.
         We assume that all tools belong to the same release.
         """
-
         version = None
         try:
             # Try to get "internal version" 4.x.x
@@ -66,7 +62,6 @@ class GetMolprobityInformation(GetInputInformation):
                 stderr=subprocess.STDOUT).strip()
 
         return version
-
 
     def get_internal_version(self, tool: str = 'molprobity.clashscore') -> str:
         """
@@ -101,1070 +96,550 @@ class GetMolprobityInformation(GetInputInformation):
         else:
             raise OSError('Molprobity core.php module is missing')
 
-    def check_for_molprobity(self, fname: str) -> bool:
-        """ Check the biso and occupancy columns for mmcif files"""
-        out = False
-        if fname is not None:
+    def run_molprobity(self, fname) -> dict|None:
+        """ Run MolProbity"""
+        mp_stem = Path(fname).with_suffix('.mp.tmp')
+        data = None
+        # self._tempfiles.append(f_name)
 
-            encoding = 'utf8'
-            try:
-                with open(fname, 'r', encoding=encoding) as fh:
-                    system, = ihm.reader.read(fh)
-            except UnicodeDecodeError:
-                encoding = 'ascii'
-                with open(fname, 'r', encoding=encoding, errors='ignore') as fh:
-                    system, = ihm.reader.read(fh)
-
-            models = [
-                b for i in system.state_groups for j in i for a in j for b in a]
-        else:
-            """check if file is in the right format for molprobity analysis """
-            models = [
-                b for i in self.system.state_groups for j in i for a in j for b in a]
-
-        if models[0]._atoms[0].biso is None or models[0]._atoms[0].occupancy is None:
-            logging.info("File is not in the appropriate format for molprobity")
-            logging.info("Trying to rescue the file")
-            out = False
-        else:
-            out = True
-
-        return out
-
-    def rewrite_mmcif(self, outfn='temp.cif'):
-        '''Workaround to generate molprobity-compliant mmCIF'''
-        fn = self.mmcif_file
-        if Path(outfn).is_file():
-            os.remove(outfn)
-        encoding = 'utf-8'
+        # Molprobity writes output
+        # to prefix.out and prefix.pkl
         try:
-            with open(fn, 'r', encoding=encoding) as f:
-                raw = f.readlines()
-        except:
-            encoding = 'latin-1'
-            with open(fn, 'r', encoding=encoding) as f:
-                raw = f.readlines()
-
-        loop_lines = []
-        loop = False
-        out = []
-        skip_loop = False
-        for line in raw:
-            loop_break = False
-            if re.match('loop_', line):
-                if loop and not skip_loop:
-                       out.extend(loop_lines)
-
-                loop = True
-                skip_loop = False
-                loop_lines = [line]
-
-            elif loop:
-                loop_lines.append(line)
-
-                if re.match('_flr', line):
-                    skip_loop = True
-            else:
-                out.append(line)
-
-        if loop and not skip_loop:
-                out.extend(loop_lines)
-
-        # Filter non-ascii characters for molprobity
-        printable = set(string.printable)
-        out = [''.join(filter(lambda x: x in printable, s)) for s in out]
-
-        # Hack to avoid . for B-factors and other values
-        if not self.check_for_molprobity(fn):
-            atomsite = False
-            atomsite_start = None
-            atomsite_header_end = None
-            atomsite_occupancy = False
-
-            for i, line in enumerate(out):
-                if atomsite and re.match('(ATOM|HETATM)', line):
-                    # 20 symbols to skip _atom_site.alt_id
-                    out[i] = line[:20] + re.sub(' \. ', ' 0 ', line[20:])
-
-                elif re.match('^loop_', line):
-                    if re.match('^_atom_site', out[i + 1]):
-                        atomsite = True
-                        atomsite_start = i + 1
-
-                        j = atomsite_start
-                        line_ = out[j]
-
-                        while re.match('^_atom_site', line_):
-                            if re.match('^_atom_site.occupancy$', line):
-                                atomsite_occupancy = True
-                            j += 1
-                            line_ = out[j]
-                        atomsite_header_end = j
-
-                    else:
-                        atomsite = False
-
-            # Add missing occupancy
-            if not atomsite_occupancy:
-                out.insert(atomsite_header_end, '_atom_site.occupancy\n')
-
-                for i, line in enumerate(out[atomsite_header_end:], atomsite_header_end):
-                    if re.match('(ATOM|HETATM)', line):
-                        if re.match('(ATOM|HETATM)', out[i - 1]) or re.match('(ATOM|HETATM)', out[i + 1]):
-                            out[i] = f'{out[i].strip()} 0.0\n'
-                        elif re.match('(ATOM|HETATM)', out[i - 2]) or re.match('(ATOM|HETATM)', out[i + 2]):
-                            out[i + 1] = f'{out[i + 1].strip()} 0.0\n'
-
-        with open(outfn, 'w', encoding='utf-8') as f:
-            f.write(''.join(out))
+            check_call(
+                ["molprobity.molprobity",
+             "disable_uc_volume_vs_n_atoms_check=True",
+             "coot=False",
+             "probe=False",
+             f"prefix={mp_stem}",
+             "pickle=True",
+             fname,
+             ]
+            )
+        except CalledProcessError as e:
+            logging.error("Couldn't complete MolProbity call")
+            logging.error(e)
 
 
+        else:
+            fname_out = f"{mp_stem}.out"
+            fname_pkl = f"{mp_stem}.pkl"
+            fname_pkl_convert = f"{mp_stem}_convert.pkl"
 
-    def check_molprobity_processing(self, output_dict: dict) -> bool:
-        """check if molprobity output tables have the same number of lines """
-        values = set([len(val) for key, val in output_dict.items()])
-        if len(values) == 1:
-            return True
-        return False
+            run(["mmtbx.python", self.convert, '-i', fname_pkl, '-o', fname_pkl_convert])
 
-    def run_ramalyze(self, d: dict):
-        """run ramalyze to get outliers """
-        f_name = str(Path(self.cache, self.ID+'_temp_rama.txt'))
-        self._tempfiles.append(f_name)
+            with open(fname_pkl_convert, 'rb') as f:
+                data = pickle.load(f)
 
-        with open(f_name, 'w+') as f:
-            run(['molprobity.ramalyze', self._tempcif],
-                stdout=f,
-                cwd=self.cache)
+            os.remove(fname_pkl)
+            os.remove(fname_pkl_convert)
+            os.remove(fname_out)
 
-        with open(f_name, 'r') as f:
-            line = [_.strip() for _ in f.readlines()]
+        return data
 
-        d['rama'] = line
-        f_name = str(Path(self.cache, self.ID + '_temp_rama.pickle'))
+    def get_mp_data(self):
 
-        with open(f_name, 'wb') as f:
-            pickle.dump(d['rama'], f)
+        cache_fn = Path(self.cache, self.stem + '.mp.pkl')
 
-    def run_molprobity(self, d: dict):
-        """run molprobity"""
-        f_name = str(Path(
-            self.cache, self.ID + '_temp_mp.txt'))
-        self._tempfiles.append(f_name)
+        if cache_fn.is_file() and not self.nocache:
+            logging.info(f'Found MolProbity data {cache_fn} in cache')
+            with open(cache_fn, 'rb') as f:
+                data = pickle.load(f)
 
-        with open(f_name, 'w+') as f:
-            run(['molprobity.molprobity', self._tempcif,
-                 # "disable_uc_volume_vs_n_atoms_check=True",
-                 # This is a legacy option and causes extremely
-                 # large memory consumption with recent
-                 # molprobity versions on PDB-Dev entries
-                 "coot=False"],
-                stdout=f,
-                cwd=self.cache)
+        else:
+
+            logging.info(f'Running MolProbity from scratch')
+            fn = self.mmcif_file
+            outfn = self._tempcif
+
+            system, encoding = utility.parse_ihm_cif(fn)
+
+            # Reassign label_asym_id as auth_asym_id
+            # for MolProbity
+            for asym in system.asym_units:
+                asym.auth_seq_id_map = 0
+                asym._strand_id = asym.id
+
+            system._check_after_write = _stub
+
+            data = {}
+
+            for group, model in system._all_models():
+
+                mid = int(model._id)
+
+                with open(outfn, 'w', encoding=encoding) as f:
+                    ihm.dumper.write(f, [system], variant=AtomSiteVariant(mid))
+                data_ = self.run_molprobity(outfn)
+                if data_ is not None:
+                    data[mid] = data_
+
+            os.remove(outfn)
+
+            with open(cache_fn, 'wb') as f:
+                pickle.dump(data, f)
+
+        if len(data) == 0:
+            logging.warning('Empty MolProbity data')
+
+        self.data = data
+
+        return data
+
+    def summarize_bonds(self):
+        data = self.data
+
+        total = 0
+        outliers = 0
+
+        duplicates = {}
+        for k, v in data.items():
+            total += v['bonds']['total']
+            outliers += v['bonds']['outliers']
+
+            for r in v['bonds']['outliers_list']:
+                a1, a2, observed, ideal, score = r
+                key = (a1, a2)
+                if key not in duplicates:
+                    duplicates[key] = []
+                duplicates[key].append((k, r))
+
+        header = (
+            'Chain', 'Res', 'Type', 'Atoms',
+            '|Z|', 'Observed (Å)', 'Ideal (Å)',
+            'Worst', 'Total'
+        )
+
+        duplicates_stats = []
+
+        for k, v in duplicates.items():
+            # v is a list of (model_id, data) records
+            # data[0:2] - atoms
+            assert len(set([x[1][3] for x in v])) == 1
+            v_ = sorted(v, key=lambda x: abs(x[1][-1]))
+
+            worst_model_, data_ = v_[-1]
+
+            a1 = data_[0]
+            a2 = data_[1]
+
+            chid = a1[0]
+            resid = a1[1]
+            resname = a1[2]
+            name1 = a1[3]
+            name2 = a2[3]
+
+            observed_ = data_[2]
+            ideal_ = data_[3]
+            score_ = data_[4]
+
+            total_ = len(v_)
+
+            r_ = (chid, resid, resname, f"{name1}-{name2}", score_, observed_, ideal_, worst_model_, total_)
+            duplicates_stats.append(r_)
+
+        duplicates_stats = sorted(duplicates_stats, key=lambda x: x[4], reverse=True)
+        duplicates_stats.insert(0, header)
+
+        return(total, outliers, duplicates_stats)
+
+    def summarize_angles(self):
+        data = self.data
+
+        total = 0
+        outliers = 0
+
+        duplicates = {}
+        for k, v in data.items():
+            total += v['angles']['total']
+            outliers += v['angles']['outliers']
+
+            for r in v['angles']['outliers_list']:
+                a1, a2, a3, observed, ideal, score = r
+                key = (a1, a2, a3)
+                if key not in duplicates:
+                    duplicates[key] = []
+                duplicates[key].append((k, r))
+
+        header = (
+            'Chain', 'Res', 'Type', 'Atoms',
+            '|Z|', 'Observed (Å)', 'Ideal (Å)',
+            'Worst', 'Total'
+        )
+
+        duplicates_stats = []
+
+        for k, v in duplicates.items():
+            # v is a list of (model_id, data) records
+            # data[0:3] - atoms
             try:
-                os.remove(str(Path(self.cache, 'molprobity.out')))
-            except OSError:
-                logging.error("Couldn't delete molprobity.out")
-
-        with open(f_name, 'r') as f:
-            line = [_.strip() for _ in f.readlines()]
-
-        d['molprobity'] = line
-        f_name = str(Path(self.cache, self.ID + '_temp_mp.pickle'))
-
-        with open(f_name, 'wb') as f:
-            pickle.dump(d['molprobity'], f)
-
-    def run_clashscore(self, d: dict):
-        """run clashscore to get information on steric clashes"""
-        f_name = str(Path(
-            self.cache, self.ID + '_temp_clash.txt'))
-        self._tempfiles.append(f_name)
-
-        with open(f_name, 'w+') as f:
-            run(['molprobity.clashscore', self._tempcif],
-                stdout=f,
-                cwd=self.cache)
-
-        with open(f_name, 'r') as f:
-            line = [_.strip() for _ in f.readlines()]
-
-        d['clash'] = line
-
-        f_name = str(Path(
-            self.cache, self.ID + '_temp_clash.pickle'))
-
-        with open(f_name, 'wb') as f:
-            pickle.dump(d['clash'], f)
-
-    def run_rotalyze(self, d: dict):
-        """run rotalyZe to get rotameric outliers"""
-        f_name = str(self.ID)+'_temp_rota.txt'
-        self._tempfiles.append(f_name)
-
-        with open(f_name, 'w+') as f:
-            run(['molprobity.rotalyze', self._tempcif],
-                stdout=f,
-                cwd=self.cache)
-
-        with open(f_name, 'r') as f:
-            line = [_.strip() for _ in f.readlines()]
-
-        d['rota'] = line
-        f_name = str(Path(self.cache, self.ID+'_temp_rota.pickle'))
-
-        with open(f_name, 'wb') as f:
-            pickle.dump(d['rota'], f)
-
-    def write_all_lines(self, file_handle) -> list:
-        """print all lines from file to list """
-        with open(file_handle.name, 'r') as f:
-            line = [_.strip() for _ in f.readlines()]
-        return line
-
-    def process_rama(self, line: list) -> dict:
-        """ reading and processing molprobity output from rama outliers.
-        Outputs information specific to models """
-        line_new = line[1:-3]
-        count = 1
-        models = {_: [] for _ in range(1, self.nos+1)}
-        cutoff = len(line_new)/self.nos
-        for ind, el in enumerate(line_new):
-            if self.nos > 1 and ind < len(line_new)-1:
-                if ind < count*cutoff:
-                    models[count].append(el)
-                else:
-                    count = count+1
-                    models[count].append(el)
-            else:
-                models[count].append(el)
-        return models
-
-    def process_molprobity(self, line: list) -> (list, list):
-        """ process molprobity files to extract relevant information """
-        bond_index = angle_index = None
-        for ind, el in enumerate(line):
-            if 'Bond outliers' in el:
-                bond_index = ind
-            if 'Angle outliers' in el:
-                angle_index = ind
-            if 'Molprobity validation' in el:
-                end = ind
-        if angle_index is None and bond_index is not None:
-            bond_outliers = line[bond_index+2:end-1]
-            return (bond_outliers, [])
-        elif bond_index is None and angle_index is not None:
-            angle_outliers = line[angle_index+2:end-1]
-            return ([], angle_outliers)
-        elif bond_index is None and angle_index is None:
-            return ([], [])
-        else:
-            bond_outliers = line[bond_index+2:angle_index-1]
-            angle_outliers = line[angle_index+2:end-1]
-            return (bond_outliers, angle_outliers)
-
-    def process_angles(self, line: list) -> (list, int):
-        """ process molprobity files to extract relevant information """
-        total_angles = 0
-        angle_index_beg = None
-        angle_index_end = None
-        ind_end = len(line)
-
-        def find_end_line(ind_beg, ind_end, match_word):
-            for ind in range(ind_beg, ind_end):
-                if match_word in line[ind]:
-                    return ind-1
-
-        for ind, el in enumerate(line):
-            if el.startswith('Bond angle restraints:'):
-                total_angles = int(el.split(':', 1)[1])
-            if 'Bond angles' in el:
-                angle_index_beg = ind+3
-                break
-        if angle_index_beg:
-            angle_index_end = find_end_line(
-                angle_index_beg, ind_end, match_word='Min. delta:')
-            angle_outliers = line[angle_index_beg:angle_index_end]
-            return angle_outliers, total_angles
-        else:
-            return [], total_angles
-
-    def process_angles_list(self, line: list, chains: list, chains_map: dict) -> (dict, int):
-        """ process molprobity list to dict/table for output """
-        angle_outliers, total_angles = self.process_angles(line)
-        angle = []
-
-        angledict = {'Number': [], 'Chain': [], 'Residue ID': [],
-                     'Residue type': [], 'Angle': [], 'Observed angle (&#176)': [],
-                     'Ideal angle (&#176)': [], 'key': [], 'Frequency': []}
-
-        list_for_counter = []
-
-        for ind, outlier in enumerate(angle_outliers):
-            sub_line = outlier.split()
-            if len(sub_line) == 4 or len(sub_line) == 3:
-                angle.append(sub_line[-1])
-
-            elif len(sub_line) == 10:
-                val1 = sub_line[0]
-                val2 = sub_line[1]
-                try:
-                    chid, resid = chains_map[(val1, val2)]
-                except KeyError:
-                    logging.warning(f'Skipping line: {outlier}')
-                    continue
-                angle.append(sub_line[3])
-                angledict['Angle'].append('-'.join(angle))
-                angledict['Chain'].append(chid)
-                angledict['Residue ID'].append(resid)
-                angledict['Residue type'].append(sub_line[2])
-                angledict['Observed angle (&#176)'].append(sub_line[4])
-                angledict['Ideal angle (&#176)'].append(sub_line[5])
-                angledict['key'].append('-'.join(sub_line[:4]))
-                angle = []
-                list_for_counter.append('-'.join(sub_line[:4]))
-
-            elif len(sub_line) == 9:
-                if sub_line[0] in chains:
-                    val1 = sub_line[0]
-                    val2 = sub_line[1]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {outlier}')
-                        continue
-                    angledict['Chain'].append(chid)
-                    angledict['Residue ID'].append(resid)
-                    angledict['Residue type'].append(sub_line[2])
-
-                elif len(sub_line[0]) > 1 and sub_line[0][:1] in chains:
-                    val1 = sub_line[0][:1]
-                    val2 = sub_line[1][1:]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {outlier}')
-                        continue
-                    angledict['Chain'].append(chid)
-                    angledict['Residue ID'].append(resid)
-                    angledict['Residue type'].append(sub_line[1])
-
-                elif len(sub_line[0]) > 1 and sub_line[0][:2] in chains:
-                    val1 = sub_line[0][:2]
-                    val2 = sub_line[1][2:]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {outlier}')
-                        continue
-                    angledict['Chain'].append(chid)
-                    angledict['Residue ID'].append(resid)
-                    angledict['Residue type'].append(sub_line[1])
-
-                angle.append(sub_line[2])
-                angledict['Angle'].append('-'.join(angle))
-                angledict['Observed angle (&#176)'].append(sub_line[4])
-                angledict['Ideal angle (&#176)'].append(sub_line[5])
-                angledict['key'].append('-'.join(sub_line[:4]))
-                angle = []
-                list_for_counter.append('-'.join(sub_line[:4]))
-
-        freq_dict = collections.Counter(list_for_counter)
-
-        for ind, el in enumerate(angledict['key']):
-            angledict['Frequency'].append(freq_dict[el])
-            angledict['Number'].append(ind+1)
-
-        del angledict['key']
-
-        if self.check_molprobity_processing(angledict):
-            return angledict, total_angles
-        else:
-            return "Your molprobity processing is incorrect, please check the code", 0
-
-    def add_angles_outliers(self, line: list, angledict: dict, chains: list, chains_map: dict) -> dict:
-        """ add to angle outlier dict/table as molprobity outputs angle outliers in multiple formats """
-        list_for_counter = []
-        existing_number = len(angledict['Number'])
-        angledict['key'] = []
-        for ind, outlier in enumerate(line):
-            sub_line = outlier.split()
-
-            if sub_line[0] in chains or len(sub_line[0]) == 1:
-                val1 = sub_line[0]
-                val2 = sub_line[1]
-                try:
-                    chid, resid = chains_map[(val1, val2)]
-                except KeyError:
-                    logging.warning(f'Skipping line: {outlier}')
-                    continue
-                angledict['Chain'].append(chid)
-                angledict['Residue ID'].append(resid)
-                angledict['Residue type'].append(sub_line[2])
-
-            else:
-                temp = sub_line[0]
-
-                if temp[:1] in chains:
-                    val1 = temp[:1]
-                    val2 = temp[1:]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {outlier}')
-                        continue
-                    angledict['Chain'].append(chid)
-                    angledict['Residue ID'].append(resid)
-                    angledict['Residue type'].append(sub_line[1])
-
-                elif temp[:2] in chains:
-                    val1 = temp[:2]
-                    val2 = temp[2:]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {outlier}')
-                        continue
-                    angledict['Chain'].append(chid)
-                    angledict['Residue ID'].append(resid)
-                    angledict['Residue type'].append(sub_line[1])
-
-            angledict['key'].append('-'.join(sub_line[:4]))
-
-            if sub_line[3] == 'Angle':
-                angledict['Angle'].append(sub_line[4][:-1])
-                angledict['Observed angle (&#176)'].append(sub_line[6][:-1])
-                ideal = round(float(sub_line[6][:-1])+float(sub_line[-1]), 2)
-                angledict['Ideal angle (&#176)'].append(ideal)
-
-            elif sub_line[4] == 'Angle':
-                angledict['Angle'].append(sub_line[5][:-1])
-                angledict['Observed angle (&#176)'].append(sub_line[7][:-1])
-                ideal = round(float(sub_line[7][:-1])+float(sub_line[-1]), 2)
-                angledict['Ideal angle (&#176)'].append(ideal)
-
-            elif sub_line[5] == 'Angle':
-                angledict['Angle'].append(sub_line[6][:-1])
-                angledict['Observed angle (&#176)'].append(sub_line[8][:-1])
-                ideal = round(float(sub_line[8][:-1])+float(sub_line[-1]), 2)
-                angledict['Ideal angle (&#176)'].append(ideal)
-
-            list_for_counter.append('-'.join(sub_line[:4]))
-
-        freq_dict = collections.Counter(list_for_counter)
-
-        for ind, el in enumerate(angledict['key']):
-            angledict['Frequency'].append(freq_dict[el])
-            angledict['Number'].append(ind+1+existing_number)
-
-        del angledict['key']
-
-        if self.check_molprobity_processing(angledict):
-            return angledict
-        else:
-            return "Your molprobity processing is incorrect, please check the code"
-
-    def angle_summary_table(self, outlier_list: dict) -> dict:
-        '''
-        converts full detailed list to summary table
-        '''
-        summary_dict = {'Angle type': [], 'Observed angle (&#176)': [], 'Ideal angle (&#176)': [
-        ], 'Number of outliers': []}
-        list_for_counter = []
-
-        for ind, val in enumerate(outlier_list[1:]):
-            temp = '{0:s}:{1:.2f}:{2:.2f}'.format(
-                val[4], float(val[5]), float(val[6]))
-            list_for_counter.append(temp)
-
-        freq_dict = collections.Counter(list_for_counter)
-
-        for key, val in freq_dict.items():
-            summary_dict['Number of outliers'].append(val)
-            summary_dict['Angle type'].append(key.split(':')[0])
-            summary_dict['Observed angle (&#176)'].append(key.split(':')[1])
-            summary_dict['Ideal angle (&#176)'].append(key.split(':')[2])
-        return summary_dict
-
-    def bond_summary_table(self, outlier_list: dict) -> dict:
-        '''
-        converts full detailed list to summary table
-        '''
-        summary_dict = {'Bond type': [], 'Observed distance (&#8491)': [
-        ], 'Ideal distance (&#8491)': [], 'Number of outliers': []}
-        list_for_counter = []
-
-        for ind, val in enumerate(outlier_list[1:]):
-            temp = '{0:s}:{1:.2f}:{2:.2f}'.format(
-                val[4], float(val[5]), float(val[6]))
-
-            list_for_counter.append(temp)
-
-        freq_dict = collections.Counter(list_for_counter)
-
-        for key, val in freq_dict.items():
-            summary_dict['Number of outliers'].append(val)
-            summary_dict['Bond type'].append(key.split(':')[0])
-            summary_dict['Observed distance (&#8491)'].append(
-                key.split(':')[1])
-            summary_dict['Ideal distance (&#8491)'].append(key.split(':')[2])
-        return summary_dict
-
-    def write_table_csv(self, output_list: list, csvDirName: str, table_filename: str):
-        '''
-        convert outlier list to csv
-        '''
-        self.filename = str(Path(csvDirName, table_filename))
-        with open(self.filename, 'w') as f:
-            write = csv.writer(f)
-            for row in output_list:
-                write.writerow(row)
-
-    def write_table_html(self, output_list: list, htmlDirName: str, table_filename: str):
-        '''
-        convert outlier list to html
-        '''
-        self.filename = str(Path(htmlDirName, table_filename))
-        with open(self.filename, 'w') as f:
-            f.write('<!DOCTYPE html>\n<html lang="en">\n<body>\n<p>\n')
-            for line in output_list:
-                f.write(', '.join(line)+'<br>')
-            f.write('</p>\n</body>\n</html>')
-
-    def process_bonds(self, line: list) -> (list, int):
-        """ process molprobity files to extract relevant information """
-        total_bonds = 0
-        bond_index_beg = None
-        bond_index_end = None
-        ind_end = len(line)
-
-        def find_end_line(ind_beg, ind_end, match_word):
-            for ind in range(ind_beg, ind_end):
-                if match_word in line[ind]:
-                    return ind-1
-
-        for ind, el in enumerate(line):
-            if el.startswith('Bond restraints:'):
-                total_bonds = int(el.split(':', 1)[1])
-            if 'Bond outliers' in el:
-                bond_index_beg = ind+2
-                break
-        bond_index_end1 = find_end_line(
-            bond_index_beg, ind_end, match_word='Molprobity')
-        bond_index_end2 = find_end_line(
-            bond_index_beg, ind_end, match_word='Angle')
-        bond_index_end = min(bond_index_end1, bond_index_end2)
-        bond_outliers = line[bond_index_beg:bond_index_end]
-        return bond_outliers, total_bonds
-
-    def process_bonds_list(self, line: list, chains: list, chains_map: dict) -> (dict, int):
-        """ process molprobity files to extract relevant information """
-
-        bond_outliers, total_bonds = self.process_bonds(line)
-        bonddict = {'Number': [], 'Chain': [], 'Residue ID': [],
-                    'Residue type': [], 'Bond': [], 'Observed distance (&#8491)': [],
-                    'Ideal distance (&#8491)': [], 'key': [], 'Frequency': []}
-
-        list_for_counter = []
-
-        for ind, outlier in enumerate(bond_outliers):
-            sub_line = outlier.split()
-
-            found_residue = False
-
-            if sub_line[0] in chains or len(sub_line[0]) == 1:
-                val1 = sub_line[0]
-                val2 = sub_line[1]
-                try:
-                    chid, resid = chains_map[(val1, val2)]
-                except KeyError:
-                    logging.warning(f'Skipping line: {outlier}')
-                    continue
-
-                bonddict['Chain'].append(chid)
-                bonddict['Residue ID'].append(resid)
-                bonddict['Residue type'].append(sub_line[2])
-
-                found_residue = True
-
-            else:
-                temp = sub_line[0]
-
-                if temp[:1] in chains:
-                    val1 = temp[:1]
-                    val2 = temp[1:]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {outlier}')
-                        continue
-                    bonddict['Chain'].append(chid)
-                    bonddict['Residue ID'].append(resid)
-                    bonddict['Residue type'].append(sub_line[1])
-
-                    found_residue = True
-
-                elif temp[:2] in chains:
-                    val1 = temp[:2]
-                    val2 = temp[2:]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {outlier}')
-                        continue
-                    bonddict['Chain'].append(chid)
-                    bonddict['Residue ID'].append(resid)
-                    bonddict['Residue type'].append(sub_line[1])
-
-                    found_residue = True
-
-            if not found_residue:
-                logging.warning(f'Skipping line: {outlier}')
+                assert len(set([x[1][4] for x in v])) == 1
+            except AssertionError as e:
+                logging.error('Mixed angle defitions')
+                logging.error(e)
+                logging.error(v)
                 continue
 
-            bonddict['key'].append('-'.join(sub_line[:4]))
-            bonddict['Number'].append(ind+1)
+            v_ = sorted(v, key=lambda x: abs(x[1][-1]))
+            worst_model_, data_ = v_[-1]
 
-            if sub_line[3] == 'Bond':
-                bonddict['Bond'].append(sub_line[4][:-1])
-                bonddict['Observed distance (&#8491)'].append(sub_line[6][:-1])
-                ideal = round(float(sub_line[6][:-1])+float(sub_line[-1]), 2)
-                bonddict['Ideal distance (&#8491)'].append(ideal)
+            a1 = data_[0]
+            a2 = data_[1]
+            a3 = data_[2]
 
-            elif sub_line[4] == 'Bond':
-                bonddict['Bond'].append(sub_line[5][:-1])
-                bonddict['Observed distance (&#8491)'].append(sub_line[7][:-1])
-                ideal = round(float(sub_line[7][:-1])+float(sub_line[-1]), 2)
-                bonddict['Ideal distance (&#8491)'].append(ideal)
+            chid = a1[0]
+            resid = a1[1]
+            resname = a1[2]
+            name1 = a1[3]
+            name2 = a2[3]
+            name3 = a3[3]
 
-            elif sub_line[5] == 'Bond':
-                bonddict['Bond'].append(sub_line[6][:-1])
-                bonddict['Observed distance (&#8491)'].append(sub_line[8][:-1])
-                ideal = round(float(sub_line[8][:-1])+float(sub_line[-1]), 2)
-                bonddict['Ideal distance (&#8491)'].append(ideal)
+            observed_ = data_[3]
+            ideal_ = data_[4]
+            score_ = data_[5]
 
-            list_for_counter.append('-'.join(sub_line[:4]))
+            total_ = len(v_)
 
-        freq_dict = collections.Counter(list_for_counter)
-
-        for el in bonddict['key']:
-            bonddict['Frequency'].append(freq_dict[el])
-
-        del bonddict['key']
-
-        if self.check_molprobity_processing(bonddict):
-            return bonddict, total_bonds
-        else:
-            return "Your molprobity processing is incorrect, please check the code", 0
-
-    @staticmethod
-    def get_model_id_str(line: str) -> str:
-        """ extract MODEL X substring """
-        m = re.search('MODEL\s*(?P<model_id>\d+)', line, re.IGNORECASE)
-
-        mid = None
-
-        if m:
-            g = m.groupdict()
-            mid = g['model_id']
-
-        return mid
-
-
-    def process_clash(self, line: list) -> dict:
-        """ process clash files to extract relevant information """
-        count = [i for i, j in enumerate(line) if 'Bad Clashes' in j]
-        if self.nos > 1:
-            clashes = {f'Model {self.get_model_id_str(j)}':[]
-                    for i, j in enumerate(line) if 'Bad Clashes' in j}
-        else:
-            clashes = {'Model 1': []}
-        count.append(self.find_clashscore_records(line))
-
-        for ind in range(0, len(clashes.keys())):
-            output_line = [j for k, j in enumerate(line) if k > int(
-                count[ind]) and k < int(count[ind+1])]
-            clashes[list(clashes.keys())[ind]].append(output_line)
-
-        return clashes
-
-    @staticmethod
-    def find_clashscore_records(line: list) -> int:
-        """ look for the beginning of clashscore records in clash data.
-        searches for strings like 'MODEL 1 clashscore = 42.58'
-        """
-        found = False
-        q = re.compile('clashscore')
-        for i, line_ in enumerate(line):
-            if q.search(line_):
-                found = True
-                break
-
-        if not found:
-            logging.warning('Could not find clashscore records')
-
-        if found:
-            out = i
-        else:
-            out = None
-
-        return out
-
-    def process_rota(self, line: list) -> dict:
-        """ process rota files to extract relevant information """
-        line_new = line[1:-1]
-        count = 1
-        models = {_: [] for _ in range(1, self.nos+1)}
-        cutoff = len(line_new)/self.nos
-        for ind, el in enumerate(line_new):
-            if self.nos > 1 and ind < len(line_new)-1:
-                if ind < count*cutoff:
-                    models[count].append(el)
-                else:
-                    count = count+1
-                    models[count].append(el)
-            else:
-                models[count].append(el)
-        return models
-
-    def rama_summary_table(self, models: dict) -> dict:
-        """ write out summary table from rama, clash and other tables"""
-        f_rama = open(str(Path(self.cache, self.ID+'_rama_summary.txt')), 'w+')
-        dict1 = {'Model ID': [], 'Analyzed': [],
-                 'Favored': [], 'Allowed': [], 'Outliers': []}
-        for ind, el in models.items():
-            dict1['Model ID'].append(ind)
-            F = []
-            A = []
-            U = []
-            for line in el:
-                if line.strip().split()[-2] == 'or':
-                    subline = ':'.join(line.strip().split()[-3:])
-                else:
-                    subline = line.strip().split()[-1]
-                if subline.split(':')[4] == 'Favored':
-                    F.append(subline.split(':')[4])
-                elif subline.split(':')[4] == 'Allowed':
-                    A.append(subline.split(':')[4])
-                else:
-                    U.append(subline.split(':')[4])
-            dict1['Analyzed'].append(len(F)+len(A)+len(U))
-            dict1['Favored'].append(len(F))
-            dict1['Allowed'].append(len(A))
-            dict1['Outliers'].append(len(U))
-        print(dict1['Model ID'], file=f_rama)
-        print(dict1['Analyzed'], file=f_rama)
-        print(dict1['Favored'], file=f_rama)
-        print(dict1['Allowed'], file=f_rama)
-        print(dict1['Outliers'], file=f_rama)
-        return dict1
-
-    def clash_summary_table(self, line: list) -> (dict, int):
-        """ format clash data to print to file """
-        def get_clash_score(line: str) -> str:
-            """ parse clash line """
-            m = re.search(
-                'clashscore\s+=\s+(?P<clashscore>\d+\.\d+)',
-                line,
-                re.IGNORECASE
+            r_ = (
+                chid, resid, resname, f"{name1}-{name2}-{name3}",
+                score_, observed_, ideal_, worst_model_, total_
             )
 
-            g = m.groupdict()
+            duplicates_stats.append(r_)
 
-            return g['clashscore']
+        duplicates_stats = sorted(duplicates_stats, key=lambda x: x[4], reverse=True)
+        duplicates_stats.insert(0, header)
 
-        with open(
-            str(Path(self.cache,  self.ID+'_clash_summary.txt')), 'w+') as f_clash:
+        return(total, outliers, duplicates_stats)
 
-            dict1 = {'Model ID': [], 'Clash score': [], 'Number of clashes': []}
-            clashes = self.process_clash(line)
+    def summarize_clashscores(self):
+        data = self.data
 
-            # Find the beginning of clashscore records
-            cs_start = self.find_clashscore_records(line)
+        header = ('Model ID', 'Clash score', 'Number of clashes')
+        stats = []
 
-            if cs_start is not None:
-                # Extract only X models
-                if self.nos == 1:
-                    clashscore_list = ['Model 1 ' + (line[len(line)-self.nos:])[0]]
-                else:
-                    clashscore_list = line[cs_start:cs_start + self.nos]
+        for k, v in data.items():
+            score_ = v['clash']['clashscore']
+            clashes_ = len(v['clash']['clashes_list'])
 
-                for clashval in clashscore_list:
-                    mid = self.get_model_id_str(clashval)
-                    clashscore = get_clash_score(clashval)
-                    dict1['Model ID'].append(mid)
-                    dict1['Clash score'].append(clashscore)
+            r_ = (k, score_, clashes_)
 
-            else:
-                # Hack if clashes are empty
-                for mid in range(1, self.nos + 1):
-                    dict1['Model ID'].append(mid)
-                    dict1['Clash score'].append(0.0)
+            stats.append(r_)
 
+        stats.insert(0, header)
 
-            for model_id in dict1['Model ID']:
-                dict1['Number of clashes'].append(len(clashes[f'Model {model_id}'][0]))
-            clash_total = (sum(dict1['Number of clashes']))
-            dict1 = self.orderclashdict(dict1)
-            print(dict1['Model ID'], file=f_clash)
-            print(dict1['Clash score'], file=f_clash)
-            print(dict1['Number of clashes'], file=f_clash)
+        return(stats)
 
-        return dict1, clash_total
+    def summarize_clashes(self):
+        data = self.data
 
-    def orderclashdict(self, modeldict: dict) -> dict:
-        """molprobity returns output in lexicographic order
-        this is to change it to number order
-         """
-        df = pd.DataFrame(modeldict)
-        df['ID'] = df['Model ID'].apply(lambda x: int(x))
-        df = df.sort_values(by='ID')
-        df = df.drop(['ID'], axis=1)
-        df_dict = df.to_dict()
-        ordered_dict = {key: list(val.values())
-                        for key, val in df_dict.items()}
-        return ordered_dict
+        total = None
+        outliers = 0
 
-    def rota_summary_table(self, models: dict) -> dict:
-        """ format rota data to print to file """
-        dict1 = {'Model ID': [], 'Analyzed': [],
-                 'Favored': [], 'Allowed': [], 'Outliers': []}
-        f_rota = open(str(Path(self.cache, self.ID+'_rota_summary.txt')), 'w+')
-        for ind, el in models.items():
-            dict1['Model ID'].append(ind)
-            F = []
-            A = []
-            U = []
-            for line in el:
-                if line.strip().split()[-1].split(':')[-2] == 'Favored':
-                    F.append(line.strip().split()[-1].split(':')[-2])
-                elif line.strip().split()[-1].split(':')[-2] == 'Allowed':
-                    A.append(line.strip().split()[-1].split(':')[-2])
-                else:
-                    U.append(line.strip().split()[-1].split(':')[-2])
-            dict1['Analyzed'].append(len(F)+len(A)+len(U))
-            dict1['Favored'].append(len(F))
-            dict1['Allowed'].append(len(A))
-            dict1['Outliers'].append(len(U))
-        print(dict1['Model ID'], file=f_rota)
-        print(dict1['Analyzed'], file=f_rota)
-        print(dict1['Favored'], file=f_rota)
-        print(dict1['Allowed'], file=f_rota)
-        print(dict1['Outliers'], file=f_rota)
-        return dict1
+        duplicates = {}
+        for k, v in data.items():
+            outliers += len(v['clash']['clashes_list'])
 
-    def rama_detailed_table(self, models: dict, chains: list, chains_map: dict) -> dict:
-        """ format rama information to print to file"""
-        dict1 = {'Model ID': [], 'Chain': [],
-                 'Residue ID': [], 'Residue type': []}
-        f_rama_D = open(str(Path(self.cache, self.ID+'_rama_detail.txt')), 'w+')
-        for ind, el in models.items():
-            for line in el:
-                if line.strip().split()[-2] == 'or':
-                    subline = ':'.join(line.strip().split()[-3:])
-                else:
-                    subline = line.strip().split()[-1]
+            for r in v['clash']['clashes_list']:
+                a1, a2, score = r
+                key = (a1, a2)
+                if key not in duplicates:
+                    duplicates[key] = []
+                duplicates[key].append((k, r))
 
-                if re.search('OUTLINE', line):
-                    dict1['Model ID'].append(ind)
-                    dict1['Residue type'].append(subline.split(':')[0])
-                    temp = line.strip().split()[0]
-                    if len(temp) > 2:
-                        if temp[:1] in chains:
-                            val1 = temp[:1]
-                            val2 = temp[1:]
-                            try:
-                                chid, resid = chains_map[(val1, val2)]
-                            except KeyError:
-                                logging.warning(f'Skipping line: {line}')
-                                continue
+        header = (
+                'Atom 1', 'Atom 2',
+                'Clash(Å)',
+                'Worst', 'Total'
+            )
+        duplicates_stats = []
 
-                            dict1['Chain'].append(chid)
-                            dict1['Residue ID'].append(resid)
-                        elif temp[:2] in chains:
-                            val1 = temp[:2]
-                            val2 = temp[2:]
-                            try:
-                                chid, resid = chains_map[(val1, val2)]
-                            except KeyError:
-                                logging.warning(f'Skipping line: {line}')
-                                continue
-                            dict1['Chain'].append(chid)
-                            dict1['Residue ID'].append(resid)
-                        elif temp[:3] in chains:
-                            val1 = temp[:3]
-                            val2 = temp[3:]
-                            try:
-                                chid, resid = chains_map[(val1, val2)]
-                            except KeyError:
-                                logging.warning(f'Skipping line: {line}')
-                                continue
-                            dict1['Chain'].append(chid)
-                            dict1['Residue ID'].append(resid)
+        for k, v in duplicates.items():
+            # v is a list of (model_id, data) records
+            # data[0:3] - atoms
+            v_ = sorted(v, key=lambda x: abs(x[1][-1]))
+            worst_model_, data_ = v_[-1]
+
+            a1 = data_[0]
+            a2 = data_[1]
+
+            score_ = data_[2]
+
+            total_ = len(v_)
+
+            r_ = (
+                ':'.join(a1), ':'.join(a2), score_,
+                worst_model_, total_
+            )
+
+            duplicates_stats.append(r_)
+
+        duplicates_stats = sorted(duplicates_stats, key=lambda x: x[2], reverse=True)
+        duplicates_stats.insert(0, header)
+
+        return(total, outliers, duplicates_stats)
+
+    def summarize_rama_rota_stats(self, mode: Literal["rama", "rota"]):
+        data = self.data
+
+        header = ('Model ID', 'Analysed', 'Favored', 'Allowed', 'Outliers')
+        stats = []
+
+        for k, v in data.items():
+            total_ = v[mode]['total']
+            favored_ = v[mode]['favored']
+            allowed_ = v[mode]['allowed']
+            outliers_ = v[mode]['outliers']
+
+            r_ = (k, total_, favored_, allowed_, outliers_)
+            stats.append(r_)
+
+        stats.insert(0, header)
+
+        return(stats)
+
+    def summarize_rama_rota(self, mode: Literal["rama", "rota"]):
+        data = self.data
+
+        duplicates = {}
+        for k, v in data.items():
+            for r in v[mode]['outliers_list']:
+                chid, resid, resname, score_ = r
+                key = (chid, resid, resname)
+                if key not in duplicates:
+                    duplicates[key] = []
+                duplicates[key].append((k, r))
+
+        header = (
+            'Chain', 'Res', 'Type',
+            'Total'
+        )
+
+        duplicates_stats = []
+
+        for k, v in duplicates.items():
+            model_id_, data_ = v[0]
+
+            chid = data_[0]
+            resid = data_[1]
+            resname = data_[2]
+            total_ = len(v)
+
+            r_ = (chid, resid, resname, total_)
+            duplicates_stats.append(r_)
+
+        duplicates_stats = sorted(duplicates_stats, key=lambda x: (-x[3], x[0], int(x[1])))
+        duplicates_stats.insert(0, header)
+
+        return duplicates_stats
+
+    def get_mq_plot_data(self):
+        data = self.data
+
+        stats = None
+
+        if len(data) > 0:
+
+            stats = {}
+
+            for k, v in data.items():
+                clashscore_ = v['clash']['clashscore']
+                rama_ = v['rama']['outliers']
+                rota_ = v['rota']['outliers']
+                r_ = {
+                    'Clashscore': clashscore_,
+                    'Ramachandran outliers': rama_,
+                    'Sidechain outliers': rota_
+                }
+                stats[k] = r_
+
+        return stats
+
+    def get_summary_table_stats(self):
+        data = self.data
+
+        def get_mp_formatted_range(data, k1, k2, format=".2f"):
+            data_ = [x[k1][k2] for x in data.values()]
+            r_ = utility.format_range(data_)
+
+            return r_
+
+        stats = None
+
+        if len(data) > 0:
+
+            stats = [
+                f'Clashscore: {get_mp_formatted_range(data, "clash", "clashscore", format=".2f")}',
+                f'Ramachandran outliers: {get_mp_formatted_range(data, "rama", "outliers", format="d")}',
+                f'Sidechain outliers: {get_mp_formatted_range(data, "rota", "outliers", format="d")}',
+            ]
+
+        return stats
+
+    def summarize_mp_data(self):
+        mp_data = None
+
+        if len(self.data) > 0:
+            mp_data = {}
+
+            total, outliers, outliers_list = self.summarize_bonds()
+            mp_data['bonds'] = {}
+            mp_data['bonds']['total'] = total
+            mp_data['bonds']['outliers'] = outliers
+            mp_data['bonds']['outliers_list'] = outliers_list
+
+            total, outliers, outliers_list = self.summarize_angles()
+            mp_data['angles'] = {}
+            mp_data['angles']['total'] = total
+            mp_data['angles']['outliers'] = outliers
+            mp_data['angles']['outliers_list'] = outliers_list
+
+            stats = self.summarize_clashscores()
+            mp_data['clashes'] = {}
+            mp_data['clashes']['clashscores'] = stats
+
+            total, outliers, outliers_list = self.summarize_clashes()
+            mp_data['clashes']['total'] = total
+            mp_data['clashes']['outliers'] = outliers
+            mp_data['clashes']['outliers_list'] = outliers_list
+
+            stats = self.summarize_rama_rota_stats('rama')
+            mp_data['rama'] = {}
+            mp_data['rama']['scores'] = stats
+            stats = self.summarize_rama_rota('rama')
+            mp_data['rama']['outliers_list'] = stats
+
+            stats = self.summarize_rama_rota_stats('rota')
+            mp_data['rota'] = {}
+            mp_data['rota']['scores'] = stats
+            stats = self.summarize_rama_rota('rota')
+            mp_data['rota']['outliers_list'] = stats
+
+        return mp_data
+
+    @property
+    def models(self) -> list:
+        data = self.data
+        return list(data.keys())
+
+class MyModelDumper(ihm.dumper._ModelDumper):
+    _check = False
+    model_id = None
+
+    def __init__(self, model_id: int|None=None):
+        self.model_id = model_id
+
+    def dump(self, system, writer):
+        seen_types = self.dump_atoms(system, writer)
+        self.dump_atom_type(seen_types, system, writer)
+
+    def dump_atoms(self, system, writer, add_ihm=True):
+
+        seen_types = {}
+        ordinal = itertools.count(1)
+        it = ["group_PDB", "id", "type_symbol", "label_atom_id",
+              "label_alt_id", "label_comp_id", "label_seq_id", "auth_seq_id",
+              "pdbx_PDB_ins_code", "label_asym_id", "Cartn_x", "Cartn_y",
+              "Cartn_z", "occupancy", "label_entity_id", "auth_asym_id",
+              "auth_comp_id", "B_iso_or_equiv", "pdbx_PDB_model_num"]
+        if add_ihm:
+            it.append("ihm_model_id")
+        with writer.loop("_atom_site", it) as lp:
+            for group, model in system._all_models():
+                if self.model_id is not None:
+                    if self.model_id != int(model._id):
+                        continue
+                # rngcheck = _RangeChecker(model, self._check)
+                seen_atoms  =  {}
+
+                for atom in model.get_atoms():
+                    # rngcheck(atom)
+                    seq_id = 1 if atom.seq_id is None else atom.seq_id
+                    label_seq_id = atom.seq_id
+                    if not atom.asym_unit.entity.is_polymeric():
+                        label_seq_id = None
+                    comp = atom.asym_unit.sequence[seq_id - 1]
+                    seen_types[atom.type_symbol] = None
+                    auth_seq_id, ins = \
+                        atom.asym_unit._get_auth_seq_id_ins_code(seq_id)
+
+                    # Fix for MolProbity
+                    if atom.biso is None:
+                        atom.biso = 0.0
+
+                    # Fix for MolProbity
+                    if atom.occupancy is None:
+                        atom.occupancy = 0.0
+
+                    # Don't write duplicated atoms
+                    key = (atom.asym_unit.id, atom.seq_id, atom.atom_id)
+
+                    if key in seen_atoms:
+                        logging.warning(f'Skipping duplicated atom {key}')
+                        continue
                     else:
-                        val1 = line.strip().split()[0]
-                        val2 = line.strip().split()[1]
-                        try:
-                            chid, resid = chains_map[(val1, val2)]
-                        except KeyError:
-                            logging.warning(f'Skipping line: {line}')
-                            continue
-                        dict1['Chain'].append(chid)
-                        dict1['Residue ID'].append(resid)
+                        seen_atoms[key] = None
 
-        print(dict1['Model ID'], file=f_rama_D)
-        print(dict1['Chain'], file=f_rama_D)
-        print(dict1['Residue ID'], file=f_rama_D)
-        print(dict1['Residue type'], file=f_rama_D)
-        return dict1
+                    lp.write(id=next(ordinal),
+                             type_symbol=atom.type_symbol,
+                             group_PDB='HETATM' if atom.het else 'ATOM',
+                             label_atom_id=atom.atom_id,
+                             label_alt_id=atom.alt_id,
+                             label_comp_id=comp.id,
+                             label_asym_id=atom.asym_unit._id,
+                             label_entity_id=atom.asym_unit.entity._id,
+                             label_seq_id=label_seq_id,
+                             auth_seq_id=auth_seq_id, auth_comp_id=comp.id,
+                             pdbx_PDB_ins_code=ins or ihm.unknown,
+                             auth_asym_id=atom.asym_unit.strand_id,
+                             Cartn_x=atom.x, Cartn_y=atom.y, Cartn_z=atom.z,
+                             B_iso_or_equiv=atom.biso,
+                             occupancy=atom.occupancy,
+                             pdbx_PDB_model_num=model._id,
+                             ihm_model_id=model._id)
+        return seen_types
 
-    def clash_detailed_table(self, line: list, chains_map: dict) -> dict:
-        """process molprobity clash information and format to table"""
-        f_clash_D = open(str(Path(self.cache, self.ID+'_clash_detailed.txt')), 'w+')
-        dict1 = {'Model ID': [], 'Atom-1': [],
-                 'Atom-2': [], 'Clash overlap (&#8491)': []}
-        clashes = self.process_clash(line)
-        for ind, el in clashes.items():
-            for line in el[0]:
-                subline = [_ for _ in line.split(' ') if _ not in '']
-                if len(subline) < 9 and len(subline[0]) > 2:
-                    val1 = subline[0]
-                    val2 = subline[1]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {line}')
-                        continue
-                    out = f'{chid}:{resid}:{subline[2]}'
-                    dict1['Atom-1'].append(out)
-                else:
-                    val1 = subline[0]
-                    val2 = subline[1]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {line}')
-                        continue
-                    out = f'{chid}:{resid}:{subline[2]}:{subline[3]}'
-                    dict1['Atom-1'].append(out)
-                if len(subline) < 9 and len(subline[3]) > 4:
-                    val1 = subline[3]
-                    val2 = subline[4]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {line}')
-                        continue
-                    out = f'{chid}:{resid}:' + ':'.join(subline[5:-1])
-                    dict1['Atom-2'].append(out)
-                else:
-                    val1 = subline[4]
-                    val2 = subline[5]
-                    try:
-                        chid, resid = chains_map[(val1, val2)]
-                    except KeyError:
-                        logging.warning(f'Skipping line: {line}')
-                        continue
-                    out = f'{chid}:{resid}:' + ':'.join(subline[6:-1])
-                    dict1['Atom-2'].append(out)
 
-                dict1['Model ID'].append(self.get_model_id_str(ind))
-                dict1['Clash overlap (&#8491)'].append(
-                    subline[-1].replace(':', ''))
+class AtomSiteVariant(ihm.dumper.Variant):
+    """Used to select typical PDBx/IHM file output. See :func:`write`."""
 
-        print(dict1['Model ID'], file=f_clash_D)
-        print(dict1['Atom-1'], file=f_clash_D)
-        print(dict1['Atom-2'], file=f_clash_D)
-        print(dict1['Clash overlap (&#8491)'], file=f_clash_D)
-        return dict1
+    def __init__(self, model_id: int|None=None):
+        self.__dumpers = [
+            ihm.dumper._EntryDumper()]
 
-    def rota_detailed_table(self, models: dict, chains: list, chains_map: dict) -> dict:
-        """process molprobity rotamers information and format to table"""
-        f_rota_D = open(str(Path(self.cache,
-                                     self.ID+'_rota_detailed.txt')), 'w+')
-        dict1 = {'Model ID': [], 'Chain': [],
-                 'Residue ID': [], 'Residue type': []}
-        for ind, el in models.items():
-            for line in el:
-                if re.search('OUTLIER', line):
-                    temp = line.strip().split()[0]
-                    if len(temp) > 2:
-                        if temp[:1] in chains:
-                            val1 = temp[:1]
-                            val2 = temp[1:]
-                            try:
-                                chid, resid = chains_map[(val1, val2)]
-                            except KeyError:
-                                logging.warning(f'Skipping line: {line}')
-                                continue
+        if model_id is not None:
+            self.__dumpers.append(MyModelDumper(model_id))
+        else:
+            self.__dumpers.append(MyModelDumper())
 
-                            dict1['Chain'].append(chid)
-                            dict1['Residue ID'].append(resid)
+    def get_dumpers(self):
+        return self.__dumpers
 
-                        elif temp[:2] in chains:
-                            val1 = temp[:2]
-                            val2 = temp[2:]
-                            try:
-                                chid, resid = chains_map[(val1, val2)]
-                            except KeyError:
-                                logging.warning(f'Skipping line: {line}')
-                                continue
+def _stub():
+    pass
 
-                            dict1['Chain'].append(chid)
-                            dict1['Residue ID'].append(resid)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="MolProbity validation",
+        description="Assess quality of atomic models")
 
-                        elif temp[:3] in chains:
-                            val1 = temp[:3]
-                            val2 = temp[3:]
-                            try:
-                                chid, resid = chains_map[(val1, val2)]
-                            except KeyError:
-                                logging.warning(f'Skipping line: {line}')
-                                continue
-                            dict1['Chain'].append(chid)
-                            dict1['Residue ID'].append(resid)
+    parser.add_argument('-i', '--input',
+                       help='mmCIF file',
+                       type=str,
+                       required=True)
 
-                    else:
-                        val1 = line.strip().split()[0]
-                        val2 = line.strip().split()[1]
-                        try:
-                            chid, resid = chains_map[(val1, val2)]
-                        except KeyError:
-                            logging.warning(f'Skipping line: {line}')
-                            continue
-                        dict1['Chain'].append(chid)
-                        dict1['Residue ID'].append(resid)
+    parser.add_argument('--cache',
+                       help='Cache directory',
+                       type=str,
+                       default='.')
 
-                    dict1['Model ID'].append(ind)
-                    dict1['Residue type'].append(
-                        line.strip().split()[-1].split(':')[0])
+    parser.add_argument('--nocache',
+                       help='Disable cache',
+                       action='store_true',
+                       default=False)
 
-        print(dict1['Model ID'], file=f_rota_D)
-        print(dict1['Chain'], file=f_rota_D)
-        print(dict1['Residue ID'], file=f_rota_D)
-        print(dict1['Residue type'], file=f_rota_D)
-        return dict1
+    args = parser.parse_args()
 
-    def get_data_for_quality_at_glance(self, clash: list, rota: list, rama: list) -> dict:
-        """format mean information of models for quality at glance plots, read from temp_mp file"""
-        molprobity = {'Names': [], 'Models': [], 'Clashscore': [],
-                      'Ramachandran outliers': [], 'Sidechain outliers': []}
-        for ind, model in enumerate(clash):
-            if ind > 0:
-                molprobity['Names'].append(model[0])
-                molprobity['Models'].append(ind)
-                if len(model[1]) > 0:
-                    molprobity['Clashscore'].append(round(float(model[1]), 2))
-                else:
-                    molprobity['Clashscore'].append(0.0)
-                molprobity['Ramachandran outliers'].append(int(rama[ind][-1]))
-                molprobity['Sidechain outliers'].append(int(rota[ind][-1]))
-        return molprobity
-
-    def cleanup(self):
-        for f_name in self._tempfiles:
-            if Path(f_name).is_file():
-                try:
-                    os.remove(f_name)
-                except OSError:
-                    logging.error(f"Coldn't delete temp file: {f_name}")
+    I_mp = GetMolprobityInformation(args.input,
+                                    cache=args.cache,
+                                    nocache=args.nocache)
+    d_mp = I_mp.get_mp_data()

@@ -43,13 +43,13 @@ parser.add_argument('--cache-root', type=str,
                     required=False,
                     help="Path to a local copy of SASBDB and EMDB databases")
 parser.add_argument('--nocache', action='store_true', default=False,
-                    help="Ignore cached assessment results")
+                    help="Ignore cached assesment results")
 parser.add_argument('--output-root', type=str, default=str(Path(Path(__file__).parent.resolve(), 'Validation')),
                     help="Path to a directory where the output will be written")
 parser.add_argument('--output-prefix', type=str, default=None,
                     help="Prefix of the output directory. Default is a stem of the mmCIF file")
-parser.add_argument('--html-mode', type=str, default='pdb-dev',
-                    choices=['local', 'pdb-dev'],
+parser.add_argument('--html-mode', type=str, default='pdb-ihm',
+                    choices=['local', 'pdb-ihm'],
                     help="HTML mode affects paths to various statis resources")
 parser.add_argument('--html-resources',
                     type=str,
@@ -84,19 +84,11 @@ parser.add_argument('-res', type=list, default=['Rigid bodies: 1 residue per bea
 
 parser.add_argument('--enable-sas', default=True, type=lambda x: bool(strtobool(x)),
                         help="Run SAS validation")
-parser.add_argument('--enable-cx', default=False, type=lambda x: bool(strtobool(x)),
+parser.add_argument('--enable-cx', default=True, type=lambda x: bool(strtobool(x)),
                         help="Run crosslinking-MS validation")
+parser.add_argument('--enable-prism', default=True, type=lambda x: bool(strtobool(x)),
+                        help="Run PrISM precision analysis")
 
-args = parser.parse_args()
-if args.p.upper() == 'YES':
-    physics = [
-        'Sequence connectivity',
-        'Excluded volume'
-    ]
-else:
-    physics = ['Information about physical principles was not provided']
-
-logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
 
 #############################################################################################################################
 # Input for Jinja
@@ -143,41 +135,12 @@ template_flask = [
 #    "validation_help.html",
 ]
 
-# Get the UTC time from ruser
-d = pytz.utc.localize(datetime.datetime.utcnow())
+# Get the UTC time from user
+d = datetime.datetime.now(datetime.timezone.utc)
 # Set UCSF's timezone
 timezone = pytz.timezone("America/Los_Angeles")
 d_format = d.astimezone(timezone)
 timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
-
-
-output_root = args.output_root
-
-output_prefix = Path(args.f).stem
-if args.output_prefix is not None:
-    output_prefix = args.output_prefix
-
-output_path = Path(output_root, output_prefix)
-
-dirNames = {
-    'root': str(output_path),
-    'root_html': str(Path(output_path, output_prefix)),
-}
-
-dirNames.update(
-    {
-        'html': str(Path(dirNames['root_html'], 'htmls')),
-    }
-)
-
-dirNames.update(
-    {
-        'images':  str(Path(dirNames['root_html'], 'images')),
-        'csv':  str(Path(dirNames['root_html'], 'csv')),
-        'pdf':  str(Path(dirNames['root_html'], 'pdf')),
-        # 'json': str(Path(output_path, 'json')),
-    }
-)
 
 # This is a temporary hack for ../templates
 template_path = Path(Path(__file__).parent.parent.resolve(), 'templates')
@@ -191,6 +154,12 @@ Template_Dict['date'] = timestamp
 # Jinja scripts
 #############################################################################################################################
 
+def load_json_plot(fname):
+    with open(fname, 'r') as f:
+        plot = json.dumps(json.load(f, strict=False))
+    return plot
+
+templateEnv.filters['load_json_plot'] = load_json_plot
 
 def createdirs(dirNames: dict):
     for name in list(dirNames.values()):
@@ -204,7 +173,7 @@ def createdirs(dirNames: dict):
 def write_html(prefix: str, template_dict: dict, template_list: list, dirName: str):
     for template_file in template_list:
         template = templateEnv.get_template(template_file)
-        outputText = template.render(template_dict)
+        outputText = template.render(template_dict, HTMLDIR=dirName)
 
         with open(os.path.join(os.path.join(dirName, template_file)), "w") as fh:
                 fh.write(outputText)
@@ -254,9 +223,58 @@ def write_json(mmcif_file: str, template_dict: dict, dirName: str, dirName_Outpu
 #################################################
 
 if __name__ == "__main__":
-    logging.info("Clean up and create output directories")
+    args = parser.parse_args()
+
+    if args.p.upper() == 'YES':
+        physics = [
+            'Sequence connectivity',
+            'Excluded volume'
+        ]
+    else:
+        physics = ['Information about physical principles was not provided']
+
+    logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
+
+    logging.info("Clean up temporary files")
     utility.clean_all()
 
+    report = WriteReport(args.f,
+                         db=args.databases_root,
+                         cache=args.cache_root,
+                         nocache=args.nocache)
+
+    logging.info("Entry composition")
+    template_dict = report.run_entry_composition(Template_Dict)
+
+    output_root = args.output_root
+
+    output_prefix = Path(args.f).stem
+    if args.output_prefix is not None:
+        output_prefix = args.output_prefix
+
+    output_path = Path(output_root, output_prefix)
+
+    dirNames = {
+        'root': str(output_path),
+        'root_html': str(Path(output_path, template_dict['ID_f'])),
+    }
+
+    dirNames.update(
+        {
+            'html': str(Path(dirNames['root_html'], 'htmls')),
+        }
+    )
+
+    dirNames.update(
+        {
+            'images':  str(Path(dirNames['root_html'], 'images')),
+            # 'csv':  str(Path(dirNames['root_html'], 'csv')),
+            'pdf':  str(Path(dirNames['root_html'], 'pdf')),
+            # 'json': str(Path(output_path, 'json')),
+        }
+    )
+
+    logging.info("Creating output directories")
     if Path(output_path).is_dir():
         if args.force:
             logging.info(f'Overwriting output directory {output_path}')
@@ -273,19 +291,10 @@ if __name__ == "__main__":
     createdirs(dirNames)
     manager = Manager()  # create only 1 mgr
     d = manager.dict()  # create only 1 dict
-    report = WriteReport(args.f,
-                         db=args.databases_root,
-                         cache=args.cache_root,
-                         nocache=args.nocache,
-                         enable_sas=args.enable_sas,
-                         enable_cx=args.enable_cx)
-
-    logging.info("Entry composition")
-    template_dict = report.run_entry_composition(Template_Dict)
 
     logging.info("Model quality")
     template_dict, molprobity_dict, exv_data = report.run_model_quality(
-        template_dict, csvDirName=dirNames['csv'], htmlDirName=dirNames['html'])
+        template_dict, csvDirName=None, htmlDirName=dirNames['html'])
 
     template_dict['enable_sas'] = args.enable_sas
     if args.enable_sas:
@@ -316,6 +325,11 @@ if __name__ == "__main__":
         cx_fit = None
         cx_data_quality = None
 
+    if args.enable_prism:
+        logging.info('PrISM precision analysis')
+        template_dict['enable_prism'] = args.enable_prism
+        report.run_prism(template_dict, imageDirName=dirNames['images'])
+
     logging.info("Quality at a glance")
     glance_plots = report.run_quality_glance(
         molprobity_dict, exv_data,
@@ -325,49 +339,56 @@ if __name__ == "__main__":
     )
     template_dict['glance_plots'] = glance_plots
 
+    template_dict['current_task'] = 'pdf'
+
     logging.info("Write PDF")
-    output_pdf = write_pdf(output_prefix, template_dict, template_pdf,
+    output_pdf = write_pdf(template_dict['ID_f'], template_dict, template_pdf,
               dirNames['pdf'], dirNames['pdf'])
-    shutil.copy(output_pdf, str(output_path))
+    output_pdf_ext = Path(str(output_path), utility.get_output_file_pdf(output_prefix))
+    shutil.copy(output_pdf, str(output_pdf_ext))
 
     template_dict['validation_pdf'] = Path(output_pdf).name
 
     logging.info("Supplementary table")
     template_dict = report.run_supplementary_table(template_dict,
-                                                   location=args.ls,
-                                                   physics=physics,
-                                                   method_details=args.m,
-                                                   sampling_validation=None,
-                                                   validation_input=args.v1,
-                                                   cross_validation=args.v2,
-                                                   Data_quality=args.dv,
-                                                   clustering=None,
-                                                   )
+                                                  location=args.ls,
+                                                  physics=physics,
+                                                  method_details=args.m,
+                                                  sampling_validation=None,
+                                                  validation_input=args.v1,
+                                                  cross_validation=args.v2,
+                                                  Data_quality=args.dv,
+                                                  clustering=None,
+                                                  )
     output_pdf = write_supplementary_table(
-        output_prefix, template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
-    shutil.copy(output_pdf, str(output_path))
+        template_dict['ID_f'], template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
+    output_pdf_ext = Path(str(output_path), utility.get_supp_file_pdf(output_prefix))
+    shutil.copy(output_pdf, str(output_pdf_ext))
 
     template_dict['supplementary_pdf'] = Path(output_pdf).name
 
     # logging.info("Write JSON")
     # write_json(args.f, template_dict, dirNames['json'], dirNames['json'])
 
+
+    template_dict['current_task'] = 'html'
+
     logging.info("Write HTML")
     # set html mode
     template_dict['html_mode'] = args.html_mode
-    write_html(output_prefix, template_dict, template_flask, dirNames['html'])
+    write_html(template_dict['ID_f'], template_dict, template_flask, dirNames['html'])
     if args.html_mode == 'local':
         shutil.copytree(
             args.html_resources,
             str(Path(dirNames['html'], Path(args.html_resources).stem))
         )
     # Compress html output to one file
+    logging.info('Compressing html archive')
     shutil.make_archive(
         root_dir=output_path,
-        base_dir=output_prefix,
-        base_name=f'{dirNames["root_html"]}_html',
+        base_dir=template_dict['ID_f'],
+        base_name=str(Path(output_path, f'{output_prefix}_html')),
         format='gztar')
-
 
     # Keep uncompressed html output for convience
     # otherwise delete

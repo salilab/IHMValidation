@@ -33,37 +33,14 @@
           </h4>
             
           <p align="justify">
-            <i>This entry consists of {{number_of_molecules|int}} unique models, with {{num_chains|int}} subunits in each model. A total of {{number_of_datasets|int}} datasets or restraints was used to build this entry. Each model is represented by {{Rigid_Body|int}} rigid bodies and {{Flexible_Unit|int}} flexible or non-rigid units.</i>
+            <i>This entry consists of {{ number_of_models }} model(s). A total of {{ number_of_datasets|int }} datasets were used to build this entry.</i>
           </p>
         </div>
       </div>
     </div>
   </div>
   
-  <!-- Entry summary -->
-  <div class="card-body border-success" style="border-color: solid black;">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card-header" style="background-color: #FFF;">
-          <h4 class="ex2" align="center"><u><a name='entry'>Entry composition</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#entry">?</a>
-          </h4>
-          {% if number_of_molecules < 2 %}
-            <i>There is {{number_of_molecules|int}} unique type of model in this entry.</i>
-          {% else %}
-            <i>There are {{number_of_molecules|int}} unique types of models in this entry.</i>
-          {% endif %}   
-  
-          {% if model_names|length < 2 %}
-            <i>This model is titled {{model_names[0]}} respectively.</i>
-          {% else %}
-            <i>These models are titled {{model_names|join(', ')}} respectively.</i>
-          {% endif %}
-  
-          {{ write_table(Entry_list) }}
-        </div>
-      </div>
-    </div>
-  </div>
+  {% include 'representation.j2' %} 
   
   <!-- Datasets summary -->
   <div class="card-body border-success" style="border-color: solid black;">
@@ -78,20 +55,6 @@
           {% endif %}
   
           {{ write_table(Datasets_list) }}
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Representations summary -->
-  <div class="card-body border-success" style="border-color: solid black;">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card-header" style="background-color: #FFF;">
-          <h4 class="ex2" align="center"><u><a name="representation">Representation </a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#representation">?</a> </h4>
-          <p class="ex2" align="justify"><i>This entry has only one representation and includes {{Rigid_Body|int}} rigid bodies and {{Flexible_Unit|int}} flexible units.</i></p>
-  
-          {{ write_table(RB_list) }}
         </div>
       </div>
     </div>
@@ -128,4 +91,6 @@
       </div>
     </div>
   </div>
+
+
 {% endblock %}

@@ -22,8 +22,9 @@ from multiprocessing import Manager
 from collections import Counter
 import numpy as np
 from selenium import webdriver
+import precision
 
-REPORT_VERSION = '2.0-dev'
+REPORT_VERSION = '2.0'
 
 class WriteReport(object):
     def __init__(self, mmcif_file, db, cache, nocache=False,
@@ -82,18 +83,21 @@ class WriteReport(object):
         Template_Dict['flex'] = utility.get_flex(
             utility.dict_to_JSlist_rows(RB, flex))
         entry_id = self.input.get_id()
+        file_id = self.input.get_file_id()
         Template_Dict['ID'] = entry_id
+        Template_Dict['ID_f'] = file_id
         Template_Dict['PDB_ID'] = self.input.get_pdb_id()
         Template_Dict['PDBDEV_ID'] = self.input.get_pdb_dev_id()
         Template_Dict['ranked_id_list'] = self.input.get_ranked_id_list()
         Template_Dict['Molecule'] = self.input.get_struc_title()
         Template_Dict['Authors'] = self.input.get_authors()
         title, authors = self.input.get_primary_citation_info()
-        Template_Dict['Citation_Title'] = title
-        Template_Dict['Citation_Authors'] = authors
+        Template_Dict['deposition_date'] = self.input.deposition_date
+        # Template_Dict['Citation_Title'] = title
+        # Template_Dict['Citation_Authors'] = authors
         Template_Dict['Entry_list'] = utility.dict_to_JSlist(
             self.input.get_composition())
-        Template_Dict['number_of_molecules'] = self.input.get_number_of_models()
+        # Template_Dict['number_of_molecules'] = self.input.get_number_of_models()
         Template_Dict['number_of_models'] = self.input.get_number_of_models()
         Template_Dict['model_names'] = self.input.get_model_names()
         Template_Dict['number_of_software'] = self.input.get_software_length()
@@ -102,6 +106,8 @@ class WriteReport(object):
         Template_Dict['references'] = list(self.input.ref_cit.values())
         Template_Dict['references'].sort()
         Template_Dict['number_of_datasets'] = self.input.get_dataset_length()
+        Template_Dict['cx_present'] = self.input.has_crosslinking_ms_dataset
+        Template_Dict['sas_present'] = self.input.has_sas_dataset
         Template_Dict['Data'] = [i.upper() for i in list(set(self.input.get_dataset_comp(
         )['Dataset type']).difference({'Experimental model', 'Comparative model'}))]
         Template_Dict['Datasets_list'] = utility.dict_to_JSlist(
@@ -114,218 +120,68 @@ class WriteReport(object):
         Template_Dict['num_chains'] = int(len(self.input.get_composition(
         )['Chain ID']))/int(len(list(Counter(self.input.get_composition()['Model ID']).keys())))
         Template_Dict['ChainL'] = self.input.get_composition()['Chain ID [auth]']
-        Template_Dict['ChainLMap'] = self.input.get_auth_label_map()
         Template_Dict['number_of_fits'] = 0
         Template_Dict['MAXPLOTS'] = get_plots.MAXPLOTS
-        return Template_Dict
-
-    def check_mmcif(self, Template_Dict: dict) -> None:
-        '''
-        test function to check rewrite_mmcif function without any hassle.
-        not useful for processing, useful only for testing.
-        '''
-        if self.input.check_sphere() < 1:
-            self.input.rewrite_mmcif()
-            # I_mp = molprobity.GetMolprobityInformation('test.cif')
-            logging.info("File rewritten...")
-            logging.info("Molprobity analysis is being calculated...")
-
-    def check_disclaimer_warning(self, exv_data: dict, Template_Dict: dict) -> dict:
-        '''
-        set a disclaimer if model quality can not be determined
-        this func is not used anymore, needs to be deleted
-        '''
-        # we set the disclaimer as false
-        Template_Dict['disclaimer'] = False
-        if exv_data:
-            # check for exc vol exceptions
-            satisfaction = set(exv_data['Excluded Volume Satisfaction'])
-            violation = set(exv_data['Number of violations'])
-            if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
-                Template_Dict['disclaimer'] = True
+        Template_Dict['rep_info'] = self.input.get_representation_info()
         return Template_Dict
 
     def run_model_quality(self, Template_Dict: dict, csvDirName: str, htmlDirName: str) -> (dict, dict, dict, dict, dict):
         '''
         get excluded volume for multiscale models
-        get molprobity info for atomic models
+        get MolProbity info for atomic models
         exception: models with DNA--we need a way to assess models with DNA
         '''
-        Template_Dict['molprobity_version'] = None
 
-        if self.input.check_sphere() < 1:
+        Template_Dict['disclaimer'] = 0
+        Template_Dict['NumModels'] = self.input.num_models
+        Template_Dict['atomic'] = False
+        Template_Dict['molprobity_version'] = None
+        Template_Dict['assess_atomic_segments'] = None
+        molprobity_dict = None
+        Template_Dict['cg'] = False
+        Template_Dict['assess_excluded_volume'] = None
+        exv_data = None
+
+        if self.input.atomic:
+            Template_Dict['atomic'] = True
             # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
             # global clashscore; global rama; global sidechain;
-            exv_data = None
             I_mp = molprobity.GetMolprobityInformation(self.mmcif_file,
-                                                       cache = self.cache)
-            Template_Dict['molprobity_version'] = I_mp.get_version()
-            key = Path(self.mmcif_file).stem
-            filename = str(Path(
-                self.cache, key + '_temp_mp.pickle'))
-            # check if molprobity for this entry has already been detetmined
-            if os.path.exists(filename) and not self.nocache:
-                d_mp = {}
-                logging.info("Molprobity analysis file already exists...\n...assuming clashscores, \
-                        Ramachandran and rotamer outliers have already been calculated")
-                with open(filename, 'rb') as fp:
-                    d_mp['molprobity'] = pickle.load(fp)
+                                                       cache=self.cache,
+                                                       nocache=self.nocache)
+            molprobity_raw_data = I_mp.get_mp_data()
+            Template_Dict['molprobity_models'] = I_mp.models
+            Template_Dict['molprobity_data'] = I_mp.summarize_mp_data()
+            Template_Dict['assess_atomic_segments'] = I_mp.get_summary_table_stats()
+            molprobity_dict = I_mp.get_mq_plot_data()
+            Template_Dict['molprobity_version'] = I_mp.molprobity_version
 
-                f_rota = str(Path(
-                    self.cache, key + '_temp_rota.pickle'))
-                with open(f_rota, 'rb') as fp:
-                    d_mp['rota'] = pickle.load(fp)
-
-                f_rama = str(Path(
-                    self.cache, key + '_temp_rama.pickle'))
-                with open(f_rama, 'rb') as fp:
-                    d_mp['rama'] = pickle.load(fp)
-
-                f_clash = str(Path(
-                    self.cache, key + '_temp_clash.pickle'))
-                with open(f_clash, 'rb') as fp:
-                    d_mp['clash'] = pickle.load(fp)
-
-            else:
-                # if molprobity for these entries have not yet been determined, go ahead and set them up to run
-                # we rewrite all files into a format that is suitable for molprobity
-                logging.info("Molprobity analysis is being calculated...")
-                try:
-                    manager = Manager()
-                    d_mp = manager.dict()
-                    # utility.runInParallel(
-                    I_mp.run_clashscore(d_mp)
-                    I_mp.run_ramalyze(d_mp)
-                    I_mp.run_rotalyze(d_mp)
-                    I_mp.run_molprobity(d_mp)
-                    # Cleanup
-                    I_mp.cleanup()
-
-                # if by any chance the rewrite doens't help, and we are unable to run molprobity,
-                # step out and print an error
-                except (TypeError, KeyError, ValueError):
-                    logging.error("Molprobity cannot be calculated...")
-
-            # at this stage, we should have all our dictionary terms
-            if d_mp:
-                # get total number of bond and angle outliers (this is an approx number)
-                bond_nos, angle_nos = I_mp.process_molprobity(
-                    d_mp['molprobity'])
-
-                # if we do have bond outliers, print all the ones, we will write this into a csv file
-                if bond_nos:
-                    bonddict, total_bonds = I_mp.process_bonds_list(
-                        d_mp['molprobity'], Template_Dict['ChainL'], Template_Dict['ChainLMap'])
-                    Template_Dict['total_bonds'] = total_bonds
-                    Template_Dict['molp_b_csv'] = utility.dict_to_JSlist(
-                        bonddict)
-                else:
-                    Template_Dict['total_bonds'] = 1
-
-                # if we have angle outliers, print all the ones
-                # angle outliers are a little tricky as molprobity outputs angle outliers multiple times
-                # in different parts of the file
-                angledict, total_angles = I_mp.process_angles_list(
-                    d_mp['molprobity'], Template_Dict['ChainL'], Template_Dict['ChainLMap'])
-                Template_Dict['total_angles'] = total_angles
-                if angle_nos:
-                    Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
-                        I_mp.add_angles_outliers(angle_nos, angledict, Template_Dict['ChainL'], Template_Dict['ChainLMap']))
-                else:
-                    Template_Dict['total_angles'] = 1
-                    Template_Dict['molp_a_csv'] = utility.dict_to_JSlist(
-                        angledict)
-
-                # we compute total number of bond and angle outliers
-                try:
-                    Template_Dict['angle'] = len(Template_Dict['molp_a_csv'])-1
-                except KeyError:
-                    Template_Dict['angle'] = 0
-                    Template_Dict['molp_a_csv'] = [[]]
-                try:
-                    Template_Dict['bond'] = len(Template_Dict['molp_b_csv'])-1
-                except KeyError:
-                    Template_Dict['bond'] = 0
-                    Template_Dict['molp_b_csv'] = [[]]
-
-                # we write summary tables for bonds and angles to be printed to HTML and PDF reports
-                Template_Dict['molp_b'] = utility.dict_to_JSlist(
-                    I_mp.bond_summary_table(Template_Dict['molp_b_csv']))
-                Template_Dict['molp_a'] = utility.dict_to_JSlist(
-                    I_mp.angle_summary_table(Template_Dict['molp_a_csv']))
-
-                # we write all the tables to csv and html files
-                I_mp.write_table_csv(
-                    Template_Dict['molp_a_csv'], csvDirName, table_filename='angle_outliers.csv')
-                I_mp.write_table_csv(
-                    Template_Dict['molp_b_csv'], csvDirName, table_filename='bond_outliers.csv')
-                I_mp.write_table_html(
-                    Template_Dict['molp_a_csv'], htmlDirName, table_filename='angle_outliers.html')
-                I_mp.write_table_html(
-                    Template_Dict['molp_b_csv'], htmlDirName, table_filename='bond_outliers.html')
-
-                # after anle and bond outliers, we move onto processing rotamers, ramachandran outliers, and clashlists
-                Template_Dict['rotascore'] = utility.dict_to_JSlist(
-                    I_mp.rota_summary_table(I_mp.process_rota(d_mp['rota'])))
-                Template_Dict['rotalist'] = utility.dict_to_JSlist(
-                    I_mp.rota_detailed_table(I_mp.process_rota(d_mp['rota']), Template_Dict['ChainL'], Template_Dict['ChainLMap']))
-                Template_Dict['ramascore'] = utility.dict_to_JSlist(
-                    I_mp.rama_summary_table(I_mp.process_rama(d_mp['rama'])))
-                Template_Dict['ramalist'] = utility.dict_to_JSlist(
-                    I_mp.rama_detailed_table(I_mp.process_rama(d_mp['rama']), Template_Dict['ChainL'], Template_Dict['ChainLMap']))
-                clashscores, Template_Dict['tot'] = I_mp.clash_summary_table(
-                    d_mp['clash'])
-                Template_Dict['clashscore_list'] = utility.dict_to_JSlist(
-                    clashscores)
-                Template_Dict['clashlist'] = utility.dict_to_JSlist(I_mp.clash_detailed_table(
-                    d_mp['clash'], Template_Dict['ChainLMap']))
-                Template_Dict['assess_excluded_volume'] = 'Not applicable'
-                molprobity_dict = I_mp.get_data_for_quality_at_glance(Template_Dict['clashscore_list'],
-                                                                      Template_Dict['rotascore'], Template_Dict['ramascore'])
-                Template_Dict['assess_atomic_segments'] = utility.mp_readable_format(
-                    molprobity_dict)
-                Template_Dict['NumModels'] = len(molprobity_dict['Names'])
-
-        else:
-            Template_Dict['bond'] = Template_Dict['angle'] = 0
-            Template_Dict['total_bonds'] = Template_Dict['total_angles'] = 1
-            # if there are spheres, wed have coarse grained beadas, so we go ahead and calculate excluded volume
-            # set the appropriate flag for assessing atomic segments
-            Template_Dict['assess_atomic_segments'] = None
-            # check if exv has already been evaluated
-            file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..',
-                                                'Validation', 'results', str(Template_Dict['ID'])+'exv.txt'))
-            if os.path.exists(file) and not self.nocache:
-                logging.info("Excluded volume file already exists...")
-                with open(file, 'r') as inf:
-                    line = [ln.strip().replace('[', '').replace(']', '').replace('"', '').
-                            replace(' ', '').split(',')[1:] for ln in inf.readlines()]
-                exv_data = {
-                    'Models': line[0], 'Excluded Volume Satisfaction (%)':
-                    line[1], 'Number of violations': line[2]}
-            else:
-                logging.info("Excluded volume is being calculated...")
-                I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache)
-                model_dict = I_ev.get_all_spheres()
-                exv_data = I_ev.run_exc_vol_parallel(model_dict)
-
-            Template_Dict['NumModels'] = len(exv_data['Models'])
+        # Run excluded volume for CG models or as a fall-back
+        if self.input.cg or (Template_Dict['atomic'] and Template_Dict['molprobity_data'] is None):
+            Template_Dict['cg'] = True
+            # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
+            logging.info("Getting excluded volume satisfaction")
+            I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache, nocache=self.nocache)
+            exv_data = I_ev.get_excluded_volume()
             viol_percent = np.asarray(exv_data['Excluded Volume Satisfaction (%)'], dtype=float)
-            min_viol_percent = min(viol_percent)
-            max_viol_percent = max(viol_percent)
 
             # let's update template dict with appropriate terms
+            Template_Dict['excluded_volume_models'] = exv_data['Models']
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
-            Template_Dict['assess_excluded_volume'] = f'Satisfaction: {min_viol_percent:.2f}-{max_viol_percent:.2f}%'
-            molprobity_dict = None
+            r_ = utility.format_range(viol_percent)
+            Template_Dict['assess_excluded_volume'] = f'Satisfaction: {r_}%'
 
-        # we now set the disclaimer tag to see if there are issues while calculating exc vol
-        Template_Dict['disclaimer'] = 0
-        if exv_data:
-            satisfaction = set(exv_data['Excluded Volume Satisfaction (%)'])
-            violation = set(exv_data['Number of violations'])
-            if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
-                Template_Dict['disclaimer'] = 1
+        # # we now set the disclaimer tag to see if there are issues while calculating exc vol
+        # Template_Dict['disclaimer'] = 0
+        # if exv_data:
+        #     satisfaction = set(exv_data['Excluded Volume Satisfaction (%)'])
+        #     violation = set(exv_data['Number of violations'])
+        #     if len(satisfaction) == 1 and len(violation) == 1 and satisfaction == {'0.0'} and violation == {'0.0'}:
+        #         Template_Dict['disclaimer'] = 1
+
+        # Model has to be either one or both
+        assert Template_Dict['atomic'] or Template_Dict['cg']
+
         return Template_Dict, molprobity_dict, exv_data
 
     def run_sas_validation(self, Template_Dict: dict) -> (dict, dict, dict):
@@ -333,9 +189,12 @@ class WriteReport(object):
         get sas validation information from SASCIF or JSON files
         '''
         # we start by checking if sas dataset was used to build model
-        if self.input.check_for_sas(self.input.get_dataset_comp()):
-            Template_Dict['sas'] = ["True"]
-            I_sas = sas.SasValidation(self.mmcif_file, self.db)
+        Template_Dict['sas'] = False
+        Template_Dict['atsas_version'] = None
+
+        if self.input.has_sas_dataset:
+            Template_Dict['sas'] = True
+            I_sas = sas.SasValidation(self.mmcif_file, db=self.cache)
             Template_Dict['atsas_version'] = I_sas.get_atsas_version()
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
             Template_Dict['sasdb_code'] = I_sas.get_sas_ids()
@@ -374,13 +233,13 @@ class WriteReport(object):
         get sas validation information from SASCIF or JSON files
         '''
         # again, we start by checking for sas datasets
-        if self.input.check_for_sas(self.input.get_dataset_comp()):
+        if self.input.has_sas_dataset:
             Template_Dict['sas'] = ["True"]
             # I_sas = sas.SasValidation(self.mmcif_file)
             # create all relevant plots
             # try:
             I_sas_plt = sas_plots.SasValidationPlots(
-                self.mmcif_file, imageDirName, self.driver)
+                self.mmcif_file, imageDirName, self.driver, self.cache)
             I_sas_plt.plot_multiple()
             # I_sas.get_pofr_errors()
             I_sas_plt.plot_pf()
@@ -405,9 +264,12 @@ class WriteReport(object):
         Template_Dict['cx_num_of_restraints'] = None
         Template_Dict['cx_num_of_restraint_groups'] = None
         Template_Dict['cx_stats_per_model'] = None
+        Template_Dict['cx_data_quality'] = None
+        Template_Dict['pyhmmer_version'] = None
         output = (Template_Dict, None, None)
 
-        if self.input.check_for_cx(self.input.get_dataset_comp()):
+
+        if self.input.has_crosslinking_ms_dataset:
             Template_Dict['cx'] = True
             I_cx = cx.CxValidation(self.mmcif_file, cache=self.cache)
             self.I_cx = I_cx
@@ -432,8 +294,10 @@ class WriteReport(object):
             Template_Dict['cx_stats'] = stats
             Template_Dict['cx_stats_per_model'] = I_cx.get_per_model_satifaction_rates()
 
-            Template_Dict['cx_data_quality'] = I_cx.validate_all_pride_data()
-            Template_Dict['pyhmmer_version'] = I_cx.get_pyhmmer_version()
+            cx_data_quality = I_cx.validate_all_pride_data()
+            Template_Dict['cx_data_quality'] = cx_data_quality
+            if len(cx_data_quality) > 0:
+                Template_Dict['pyhmmer_version'] = I_cx.get_pyhmmer_version()
 
             output = (Template_Dict, raw_data, raw_ertypes)
 
@@ -521,9 +385,18 @@ class WriteReport(object):
         Template_Dict['feature'] = self.input.get_ensembles(
         )['Clustering feature'][0] if self.input.get_ensembles() is not None else 'Not applicable'
         Template_Dict['cross_validation'] = cross_validation
-        Template_Dict['model_precision'] = ', '.join([f'{i}, Å' for i in self.input.get_ensembles(
-        )['Cluster precision']]) if self.input.get_ensembles() is not None else \
-            'Model precision can not be calculated with one structure'
+        model_precision = []
+
+        edata = self.input.get_ensembles()
+        if edata is not None:
+            for p in edata['Cluster precision']:
+                if p is None:
+                    l = utility.NA
+                else:
+                    l = f'{p:.2f}, Å'
+                model_precision.append(l)
+        Template_Dict['model_precision'] = model_precision
+
         Template_Dict['restraint_info'] = utility.get_restraints_info(self.input.get_restraints(
         )) if self.input.get_restraints() is not None else 'Not provided or used'
         if 'Data_quality' not in list(Template_Dict.keys()):
@@ -534,32 +407,28 @@ class WriteReport(object):
         validation_input = []
         if 'cx_stats_per_model' in Template_Dict:
             if Template_Dict['cx_stats_per_model']:
-                min_cx = min(Template_Dict['cx_stats_per_model'])
-                max_cx = max(Template_Dict['cx_stats_per_model'])
-                validation_input.append(f'Satisfaction of crosslinks: {min_cx:.2f}-{max_cx:.2f}%')
+                r_ = utility.format_range(Template_Dict['cx_stats_per_model'])
+                validation_input.append(f'Satisfaction of crosslinks: {r_}%')
 
         if len(validation_input) == 0:
             validation_input.append('Fit of model to information used to compute it has not been determined')
         Template_Dict['validation_input'] = validation_input
 
-        resolution = pretty_print_representations(self.input.get_representation_details())
+        scale = utility.pretty_print_representations(self.input.get_representation_details())
 #        Template_Dict['clustering'] = clustering
-        Template_Dict['resolution'] = resolution
+        Template_Dict['summary_scale'] = scale
+        Template_Dict['summary_entities'] = utility.summarize_entities(Template_Dict['rep_info'])
+        Template_Dict['summary_segments'] = utility.summarize_segments(Template_Dict['rep_info'])
+
         return Template_Dict
 
 
-def pretty_print_representations(reprs: dict) -> str:
-    out = ''
-    if reprs['atomic'] is True:
-        out += 'Atomic'
+    def run_prism(self, Template_Dict: dict, imageDirName: str) -> dict:
+        I_p = precision.PRISM(self.mmcif_file, cache=self.cache, nocache=self.nocache)
+        Template_Dict['prism_data'] = I_p.get_data()
+        Template_Dict['prism_plots'] = I_p.get_plots(imageDirName)
 
-    if reprs['coarse-grained'] is True:
-        if out != '':
-            out += '; '
 
-        out += 'Coarse-grained: '
-        levels = [str(x) for x in reprs['coarse-grain_levels']]
-        out += ', '.join(levels)
-        out += ' residue(s) per bead'
-
-    return out
+        Template_Dict['pymol_version'] = None
+        if len(Template_Dict['prism_plots']) > 0:
+            Template_Dict['pymol_version'] = I_p.pymol_version

@@ -25,8 +25,8 @@ parser.add_argument('--validation-help', dest='validation_help', action='store_t
                     help="Generate validation help page")
 parser.add_argument('--output-root', type=str, default=str(Path(Path(__file__).parent.resolve(), 'Validation')),
                     help="Path to a directory where the output will be written")
-# parser.add_argument('--html-mode', type=str, default='pdb-dev',
-#                     choices=['local', 'pdb-dev'],
+# parser.add_argument('--html-mode', type=str, default='pdb-ihm',
+#                     choices=['local', 'pdb-ihm'],
 #                     help="HTML mode affects paths to various statis resources")
 # parser.add_argument('--html-resources',
 #                     type=str,
@@ -66,7 +66,7 @@ templateLoader = jinja2.FileSystemLoader(searchpath=template_path)
 templateEnv = jinja2.Environment(loader=templateLoader)
 Template_Dict = {}
 Template_Dict['version'] = REPORT_VERSION
-Template_Dict['html_mode'] = 'pdb-dev'
+Template_Dict['html_mode'] = 'pdb-ihm'
 
 #############################################################################################################################
 # Jinja scripts

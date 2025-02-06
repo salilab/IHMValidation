@@ -1,4 +1,5 @@
-{% if enable_cx %}
+{% from "macro.html" import format_value %}
+{% if enable_cx and cx_present %}
   <div class="card-body border-success" style="border-color: solid black;">
     <!-- start overall card body for front page -->
     <div class="card-header" style="background-color: #FFF;">
@@ -15,7 +16,7 @@
               of the experiment (i.e. only a minor fraction of in-situ or in-vivo dataset can be used for modeling).
             </em>
           </p>
-          {% if cx_data_quality|length > 0 %}
+          {% if cx_data_quality is not none and cx_data_quality|length > 0 %}
             {% for data in cx_data_quality %}
               <div name=crosslinking-ms-{{ data["pride_id"] }} {{ 'class="card-header" style="background-color: #FFF;"' if cx_data_quality|length > 1 }}>
                 <table class='table'>
@@ -48,7 +49,7 @@
                             <tr>
                               <td>{{ match['entity'] }}</td>
                               <td>{{ match['entity_ms'] }}</td>
-                              <td>{{ "%.2e"|format(match['e-value']) }}</td>
+                              <td>{{ format_value(match['e-value']) }}</td>
                               <td>{{ match['exact_match'] }}</td>
                             </tr>
                           {% endfor %}
@@ -89,7 +90,7 @@
               </div>
             {% endfor %}
           {% else %}
-            <p>Crosslinking-MS dataset is not available in the <a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE Crosslinking</a> database.</p>
+            <p>Crosslinking-MS dataset is not available in the  <a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE Crosslinking</a> database.</p>
           {% endif %}
         </div>
       </div>

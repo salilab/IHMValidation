@@ -29,20 +29,18 @@ saspath = pkgutil.get_loader('sasciftools').path
 saspath = str(Path(saspath).parent)
 sys.path.insert(0, saspath)
 from mmCif import mmcifIO
+import utility
+import ihm
 
 class SasValidation(GetInputInformation):
-    db_name = 'SASBDB'
-
     def __init__(self, mmcif_file, db='.'):
         super().__init__(mmcif_file)
         self.version = self.get_atsas_version()
-        self.ID = str(GetInputInformation.get_id(self))
-        self.nos = GetInputInformation.get_number_of_models(self)
         self.dataset = GetInputInformation.get_dataset_comp(self)
         self.imagepath = '../static/images/'
         self.saslink = 'https://sasbdb.org/media/sascif/sascif_files/'
-        self.sasentry = 'https://sasbdb.org/rest-api/entry/summary/'
-        self.db = str(Path(db, self.db_name))
+        # self.sasentry = 'https://sasbdb.org/rest-api/entry/summary/'
+        self.db = db
         self.sasbdb_ids = self.get_sasbdb_ids()
         self.sascif_dicts = self.get_sascif_dicts()
         self.intensities = self.get_intensities()
@@ -80,9 +78,15 @@ class SasValidation(GetInputInformation):
         returns a list of SASBDB codes
         '''
         sasbdb_ids = []
-        for code in self.get_sas_ids():
-            if code != 'None':
-                sasbdb_ids.append(code)
+        for dataset in self.system.orphan_datasets:
+            if isinstance(dataset.location, ihm.location.SASBDBLocation):
+                try:
+                    code = dataset.location.access_code
+                except AttributeError as e:
+                    logging.error('Missing SASBDB accession code')
+                    logging.error(e)
+                else:
+                    sasbdb_ids.append(code)
 
         return sasbdb_ids
 
@@ -91,7 +95,7 @@ class SasValidation(GetInputInformation):
         sasCIFIn = mmcifIO.CifFileReader()
 
         for code in self.sasbdb_ids:
-            sascif_fn = self.get_sascif_file(code)
+            sascif_fn = self.get_sascif_file(code, self.db)
             if sascif_fn is not None:
                 sascif_dicts[code] = sasCIFIn.read(sascif_fn)
 
@@ -107,12 +111,10 @@ class SasValidation(GetInputInformation):
 
         url = f'{self.saslink}{code}.sascif'
         fn = Path(output_dir, f'{code}.sascif')
-        cache_fn = Path(self.db, f'{code}.sascif')
 
         # Check if we already requested the data
-        if os.path.isfile(cache_fn):
-            logging.info('Found in cache!')
-            fn = cache_fn
+        if os.path.isfile(fn):
+            logging.info(f'Found {fn} in cache!')
         elif not os.path.isfile(fn):
             response = requests.get(url)
             response.encoding = 'ascii'
@@ -228,8 +230,8 @@ class SasValidation(GetInputInformation):
         '''
         get rg information from multiple SASCIF files
         '''
-        rg_table = {'SASDB ID': [], 'Rg': [],
-                    'Rg error': [], 'MW': [], 'MW error': []}
+        rg_table = {'SASDB ID': [], 'R<sub>g</sub>': [],
+                    'R<sub>g</sub> error': [], 'MW': [], 'MW error': []}
         for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
@@ -240,25 +242,25 @@ class SasValidation(GetInputInformation):
             try:
                 val = f'{float(data["Rg_from_Guinier"]):.2f} nm'
             except ValueError:
-                val = 'N/A'
-            rg_table['Rg'].append(val)
+                val = utility.NA
+            rg_table['R<sub>g</sub>'].append(val)
 
             try:
                 val = f'{float(data["Rg_from_Guinier_error"]):.2f} nm'
             except ValueError:
-                val = 'N/A'
-            rg_table['Rg error'].append(val)
+                val = utility.NA
+            rg_table['R<sub>g</sub> error'].append(val)
 
             try:
                 val = f'{float(data["MW_standard"]):.1f} kDa'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             rg_table['MW'].append(val)
 
             try:
                 val = f'{float(data["MW_standard_error"]):.1f} kDa'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             rg_table['MW error'].append(val)
 
         return rg_table
@@ -312,7 +314,11 @@ class SasValidation(GetInputInformation):
         num_of_fits = self.get_number_of_fits()
         pval_table = {'SASDB ID': [], 'Model': [], 'χ²': [], 'p-value': []}
 
+
         for code in self.sascif_dicts.keys():
+            f1fn = f'{code}_fit1.dat'
+            f2fn = f'{code}_fit2.dat'
+            f3fn = f'{code}_pval.dat'
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]
@@ -347,25 +353,26 @@ class SasValidation(GetInputInformation):
                         'Ib': fitY
                     })
 
-                    fit_1.to_csv('fit1.csv', header=False, index=False)
-                    fit_2.to_csv('fit2.csv', header=False, index=False)
-                    f1 = open('pval.txt', 'w+')
-                    with f1 as outfile:
-                       run(['datcmp', 'fit1.csv',
-                            'fit2.csv'], stdout=outfile, shell=False)
-                    f2 = open('pval.txt', 'r')
-                    all_lines = [j.strip().split()
-                                 for i, j in enumerate(f2.readlines())]
+                    fit_1.to_csv(f1fn, header=False, index=False)
+                    fit_2.to_csv(f2fn, header=False, index=False)
+                    with open(f3fn, 'w+') as f:
+                       run(['datcmp', f1fn, f2fn], stdout=f)
+                    with open(f3fn, 'r') as f:
+                      all_lines = [j.strip().split()
+                                 for i, j in enumerate(f.readlines())]
                     p_val = [all_lines[i+1][4]
                              for i, j in enumerate(all_lines) if 'adj' in j][0]
+
+                    for fn in [f1fn, f2fn, f3fn]:
+                        os.remove(fn)
 
                     pval_table['p-value'].append('%.2E' % Decimal(p_val))
                     pval_table['χ²'].append('%.2f' % chisq)
 
             if c == 0:
                 pval_table['SASDB ID'].append(code)
-                pval_table['Model'].append('N/A')
-                pval_table['p-value'].append('N/A')
+                pval_table['Model'].append(utility.NA)
+                pval_table['p-value'].append(utility.NA)
         return pval_table
 
     def get_pofr_ext(self) -> dict:
@@ -488,19 +495,19 @@ class SasValidation(GetInputInformation):
             try:
                 val = f'{float(data["specimen_concentration"]):.2f}  mg/mL'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Sample Concentration'].append(val)
 
             try:
                 val = f'{float(data["contrast"]):.2f}'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Sample Contrast'].append(val)
 
             try:
                 val = f'{float(data["specific_vol"]):.2f} nm\u00b3'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Specific Volume'].append(val)
 
             data = sascif[main]['_sas_result']
@@ -508,13 +515,13 @@ class SasValidation(GetInputInformation):
             try:
                 val = f'{float(data["Porod_volume"]):.2f} nm\u00b3'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Porod Volume'].append(val)
 
             try:
                 val = f'{float(data["estimated_volume"]):.2f} nm\u00b3'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Estimated Volume'].append(val)
 
         return parameter_table
@@ -537,13 +544,13 @@ class SasValidation(GetInputInformation):
             try:
                 val = f'{float(data["experimental_MW"]):.1f} kDa'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Chemical composition MW'].append(val)
 
             try:
                 val = f'{float(data["MW_standard"]):.1f} kDa'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Standard MW'].append(val)
 
             try:
@@ -551,7 +558,7 @@ class SasValidation(GetInputInformation):
                 Porod_V = round(float(data['Porod_volume']), 2)
                 val = f'{(Porod_V / Porod_MW):.2f} nm\u00b3/kDa'
             except ValueError:
-                val = 'N/A'
+                val = utility.NA
             parameter_table['Porod Volume/MW'].append(val)
 
         return parameter_table
@@ -577,7 +584,7 @@ class SasValidation(GetInputInformation):
         get p(r) related info from JSON
         '''
         pddf_info = {'SASDB ID': [], 'Software used': [],
-                     'Dmax': [], 'Dmax error': [], 'Rg': [], 'Rg error': []}
+                     'D<sub>max</sub>': [], 'D<sub>max</sub> error': [], 'R<sub>g</sub>': [], 'R<sub>g</sub> error': []}
 
         for code in self.sascif_dicts.keys():
             sascif = self.sascif_dicts[code]
@@ -591,26 +598,26 @@ class SasValidation(GetInputInformation):
             try:
                 val = f'{float(data["D_max"]):.3f} nm'
             except ValueError:
-                val = 'N/A'
-            pddf_info['Dmax'].append(val)
+                val = utility.NA
+            pddf_info['D<sub>max</sub>'].append(val)
 
             try:
                 val = f'{float(data["Rg_from_PR"]):.3f} nm'
             except ValueError:
-                val = 'N/A'
-            pddf_info['Rg'].append(val)
+                val = utility.NA
+            pddf_info['R<sub>g</sub>'].append(val)
 
             try:
                 val = f'{float(data["Dmax_error"]):.3f} nm'
             except ValueError:
-                val = 'N/A'
-            pddf_info['Dmax error'].append(val)
+                val = utility.NA
+            pddf_info['D<sub>max</sub> error'].append(val)
 
             try:
                 val = f'{float(data["Rg_from_PR_error"]):.3f} nm'
             except ValueError:
-                val = 'N/A'
-            pddf_info['Rg error'].append(val)
+                val = utility.NA
+            pddf_info['R<sub>g</sub> error'].append(val)
 
             pddf_info['SASDB ID'].append(code)
         return pddf_info
