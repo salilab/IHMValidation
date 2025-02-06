@@ -1266,3 +1266,14 @@ class GetInputInformation(object):
     @property
     def has_sas_dataset(self):
         return self._has_dataset_type(ihm.dataset.SASDataset)
+
+    @property
+    def deposition_date(self):
+        """Return initial deposition date"""
+        date = utility.NA
+        try:
+            date = self.system._database_status['recvd_initial_deposition_date']
+        except KeyError:
+            logging.error('Deposition date is missing')
+
+        return date

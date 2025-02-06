@@ -89,6 +89,7 @@ class WriteReport(object):
         Template_Dict['Molecule'] = self.input.get_struc_title()
         Template_Dict['Authors'] = self.input.get_authors()
         title, authors = self.input.get_primary_citation_info()
+        Template_Dict['deposition_date'] = self.input.deposition_date
         # Template_Dict['Citation_Title'] = title
         # Template_Dict['Citation_Authors'] = authors
         Template_Dict['Entry_list'] = utility.dict_to_JSlist(
