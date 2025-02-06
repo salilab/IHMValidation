@@ -16,7 +16,10 @@ Stage: spython-base
     DEBIAN_FRONTEND=noninteractive
 
     # Install common dependencies
-    apt-get update -y && apt-get install -y wget curl git subversion build-essential
+    apt-get update -y && apt-get install -y wget curl git subversion build-essential time
+    # workaround for git cloning errors
+    git config --global http.lowSpeedLimit 0
+    git config --global http.lowSpeedTime 300
 
     # Set up basic conda environment using conda-forge packages
     curl -L https://github.com/conda-forge/miniforge/releases/download/23.3.1-1/Mambaforge-23.3.1-1-Linux-x86_64.sh -o miniforge.sh && echo "dbe92c011a1315b9626e2f93a165892f4b89177145bc350b3859a483a3642a24 miniforge.sh" sha256sum -c --status && bash ./miniforge.sh -b -p /opt/conda && rm -f miniforge.sh && /opt/conda/bin/conda init -q bash
@@ -38,7 +41,10 @@ Stage: spython-base
     REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
     # Install Python packages and other dependencies needed by IHMValidation
-    apt-get update -y && apt-get install -y xvfb libasound2 libdbus-glib-1-2 libgtk-3-0 && mamba install -y pip requests numpy pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 && pip install -U iqplot pdfkit ihm && curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+    apt-get update -y && apt-get install -y xvfb libasound2 libdbus-glib-1-2 libgtk-3-0 pymol && mamba install -y pip requests numpy=1.26.2 pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd -c salilab && pip install -U iqplot pdfkit "ihm==1.8" pyhmmer mendeleev && curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+
+    # PRISM dependencies 
+    pip install "numpy==1.26.2" "matplotlib>=3.4.0" "scipy>=1.6.1" "networkx>=2.6.2" wget jenkspy pandas biopython
 
     # Hardcode selenium path
     SE_MANAGER_PATH=/opt/conda/bin/selenium-manager
@@ -48,6 +54,9 @@ Stage: spython-base
 
     # Create input and output dirs
     mkdir -p /ihmv/input /ihmv/output /ihmv/cache /ihmv/databases
+
+    # get PrISM
+    git clone -b ihm https://github.com/aozalevsky/prism /opt/prism
 
 %environment
 
