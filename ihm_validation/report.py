@@ -25,7 +25,7 @@ import numpy as np
 from selenium import webdriver
 import precision
 
-REPORT_VERSION = '2.0-dev'
+REPORT_VERSION = '2.0'
 
 class WriteReport(object):
     def __init__(self, mmcif_file, db, cache, nocache=False):
