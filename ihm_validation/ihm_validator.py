@@ -189,7 +189,7 @@ def write_pdf(prefix: str, template_dict: dict, template_file: str, dirName: str
         fh.write(outputText)
 
     pdfkit.from_file(temp_html, output_pdf, options=options)
-    # os.remove(temp_html)
+    os.remove(temp_html)
 
     return output_pdf
 
