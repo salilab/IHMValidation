@@ -22,13 +22,17 @@ from multiprocessing import Manager
 from collections import Counter
 import numpy as np
 from selenium import webdriver
+import cx
 import precision
 
 REPORT_VERSION = '2.0'
 
 class WriteReport(object):
     def __init__(self, mmcif_file, db, cache, nocache=False,
-                 enable_sas=True, enable_cx=False):
+                 enable_sas=False,
+                 enable_cx=False,
+                 enable_prism=False,
+                 ):
         self.mmcif_file = mmcif_file
         self.db = db
         self.input = GetInputInformation(self.mmcif_file)
@@ -37,9 +41,6 @@ class WriteReport(object):
         self.cache = cache
         self.nocache = nocache
         self.report_version = REPORT_VERSION
-
-        if enable_cx:
-            import cx
 
     def create_webdriver(self) -> webdriver.Firefox:
         '''instantiate webdriver for rendering plots'''
