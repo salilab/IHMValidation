@@ -932,8 +932,11 @@ class CxValidation(GetInputInformation):
 
     def get_sequences_pride(self, pid: str) -> dict:
         '''get sequences from PRIDE entry'''
+        result = None
         url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v2/pdbdev/projects/{pid}/sequences"
-        result = self.request_pride(url)['data']
+        req = self.request_pride(url)
+        if req is not None and 'data' in req:
+            result = req['data']
         return result
 
     def get_residue_pairs_pride(self, pid: str, page_size: int = 99) -> dict:
@@ -974,14 +977,18 @@ class CxValidation(GetInputInformation):
             ms_seqs = self.get_sequences_pride(code)
             ms_res_pairs = self.get_residue_pairs_pride(code)
 
-            data = {
-                'pride_id': code,
-                'sequences': ms_seqs,
-                'residue_pairs': ms_res_pairs
-            }
+            if ms_seqs is not None and len(ms_res_pairs) > 0:
+                data = {
+                    'pride_id': code,
+                    'sequences': ms_seqs,
+                    'residue_pairs': ms_res_pairs
+                }
 
-            with open(cache_fn, 'wb') as f:
-                pickle.dump(data, f)
+                with open(cache_fn, 'wb') as f:
+                    pickle.dump(data, f)
+
+            else:
+                logging.info(f'PRIDE data for {code} is incomplete')
 
         return data
 
@@ -1172,9 +1179,10 @@ class CxValidation(GetInputInformation):
         outs = []
         for code in codes:
             data = self.get_pride_data(code)
-            out = self.validate_pride_data(data)
-            if out is not None:
-                outs.append(out)
+            if data is not None:
+                out = self.validate_pride_data(data)
+                if out is not None:
+                    outs.append(out)
 
         return outs
 
