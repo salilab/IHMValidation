@@ -1020,9 +1020,9 @@ class CxValidation(GetInputInformation):
 
         return ids
 
-    def validate_pride_data(self, data: dict) -> dict:
+    def validate_pride_data(self, data: dict) -> tuple :
         """Match sequences, residues pairs and return stats"""
-        out = None
+        out = (None, None, None)
 
         # Unpack pride data
         pid = data['pride_id']
