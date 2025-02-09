@@ -73,16 +73,16 @@
                             <th>Total matched</th>
                           </tr>
                           <tr>
-                            <td>{{ data["pride_id"] }}</td>
-                            <td>{{ data['stats']['ms']['total'] }}</td>
-                            <td>{{ data['stats']['ms']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['ms']['mapped_entities_pct']) }}%)</td>
-                            <td>{{ data['stats']['ms']['matched'] }} ({{ "%.2f"|format(data['stats']['ms']['matched_pct']) }}% )</td>
-                          </tr>
-                          <tr>
                             <td>{{ ID }}</td>
                             <td>{{ data['stats']['entry']['total'] }}</td>
                             <td>{{ data['stats']['entry']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['entry']['mapped_entities_pct']) }}%)</td>
                             <td>{{ data['stats']['entry']['matched'] }} ({{ "%.2f"|format(data['stats']['entry']['matched_pct']) }}%)</td>
+                          </tr>
+                          <tr>
+                            <td>{{ data["pride_id"] }}</td>
+                            <td>{{ data['stats']['ms']['total'] }}</td>
+                            <td>{{ data['stats']['ms']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['ms']['mapped_entities_pct']) }}%)</td>
+                            <td>{{ data['stats']['ms']['matched'] }} ({{ "%.2f"|format(data['stats']['ms']['matched_pct']) }}% )</td>
                           </tr>
                         </table>
                       </div>
