@@ -40,11 +40,11 @@
                       <div>
                         <table class='table table-bordered text-center' style='border-color:#003366;'>
                           <tr>
-                            <td>Entity ID</td>
-                            <td>Molecule name</td>
-                            <td>Crosslinking-MS Entity ID</td>
-                            <td>E-value</td>
-                            <td>Exact match</td>
+                            <th>Entity ID</th>
+                            <th>Molecule name</th>
+                            <th>Crosslinking-MS Entity ID</th>
+                            <th>E-value</th>
+                            <th>Exact match</th>
                           </tr>
                           {% for match in data['matches'] %}
                             <tr>
@@ -67,10 +67,10 @@
                       <div>
                         <table class='table table-bordered text-center' style='border-color:#003366;'>
                           <tr>
-                            <td>Source</td>
-                            <td>Total</td>
-                            <td>In matched entities</td>
-                            <td>Total matched</td>
+                            <th>Source</th>
+                            <th>Total</th>
+                            <th>In matched entities</th>
+                            <th>Total matched</th>
                           </tr>
                           <tr>
                             <td>{{ data["pride_id"] }}</td>
