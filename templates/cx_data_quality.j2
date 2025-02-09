@@ -41,6 +41,7 @@
                         <table class='table table-bordered text-center' style='border-color:#003366;'>
                           <tr>
                             <td>Entity ID</td>
+                            <td>Molecule name</td>
                             <td>Crosslinking-MS Entity ID</td>
                             <td>E-value</td>
                             <td>Exact match</td>
@@ -48,6 +49,7 @@
                           {% for match in data['matches'] %}
                             <tr>
                               <td>{{ match['entity'] }}</td>
+                              <td>{{ match['entity_desc'] }}</td>
                               <td>{{ match['entity_ms'] }}</td>
                               <td>{{ format_value(match['e-value']) }}</td>
                               <td>{{ match['exact_match'] }}</td>
