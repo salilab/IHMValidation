@@ -40,14 +40,16 @@
                       <div>
                         <table class='table table-bordered text-center' style='border-color:#003366;'>
                           <tr>
-                            <td>Entity ID</td>
-                            <td>Crosslinking-MS Entity ID</td>
-                            <td>E-value</td>
-                            <td>Exact match</td>
+                            <th>Entity ID</th>
+                            <th>Molecule name</th>
+                            <th>Crosslinking-MS Entity ID</th>
+                            <th>E-value</th>
+                            <th>Exact match</th>
                           </tr>
                           {% for match in data['matches'] %}
                             <tr>
                               <td>{{ match['entity'] }}</td>
+                              <td>{{ match['entity_desc'] }}</td>
                               <td>{{ match['entity_ms'] }}</td>
                               <td>{{ format_value(match['e-value']) }}</td>
                               <td>{{ match['exact_match'] }}</td>
@@ -65,22 +67,22 @@
                       <div>
                         <table class='table table-bordered text-center' style='border-color:#003366;'>
                           <tr>
-                            <td>Source</td>
-                            <td>Total</td>
-                            <td>In matched entities</td>
-                            <td>Total matched</td>
-                          </tr>
-                          <tr>
-                            <td>{{ data["pride_id"] }}</td>
-                            <td>{{ data['stats']['ms']['total'] }}</td>
-                            <td>{{ data['stats']['ms']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['ms']['mapped_entities_pct']) }}%)</td>
-                            <td>{{ data['stats']['ms']['matched'] }} ({{ "%.2f"|format(data['stats']['ms']['matched_pct']) }}% )</td>
+                            <th>Source</th>
+                            <th>Total</th>
+                            <th>In matched entities</th>
+                            <th>Total matched</th>
                           </tr>
                           <tr>
                             <td>{{ ID }}</td>
                             <td>{{ data['stats']['entry']['total'] }}</td>
                             <td>{{ data['stats']['entry']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['entry']['mapped_entities_pct']) }}%)</td>
                             <td>{{ data['stats']['entry']['matched'] }} ({{ "%.2f"|format(data['stats']['entry']['matched_pct']) }}%)</td>
+                          </tr>
+                          <tr>
+                            <td>{{ data["pride_id"] }}</td>
+                            <td>{{ data['stats']['ms']['total'] }}</td>
+                            <td>{{ data['stats']['ms']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['ms']['mapped_entities_pct']) }}%)</td>
+                            <td>{{ data['stats']['ms']['matched'] }} ({{ "%.2f"|format(data['stats']['ms']['matched_pct']) }}% )</td>
                           </tr>
                         </table>
                       </div>

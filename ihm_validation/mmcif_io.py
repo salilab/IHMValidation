@@ -1277,3 +1277,14 @@ class GetInputInformation(object):
             logging.error('Deposition date is missing')
 
         return date
+
+    @property
+    def sequences(self) -> dict:
+        """Return dictionary with sequences of polymeric entities from mmcif entry"""
+        mmcif_seqs = {}
+        for e in self.system.entities:
+            if e.is_polymeric:
+                seq = ''.join([x.code_canonical for x in e.sequence])
+                mmcif_seqs[e._id] = seq
+
+        return mmcif_seqs

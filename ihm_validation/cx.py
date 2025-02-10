@@ -1014,15 +1014,17 @@ class CxValidation(GetInputInformation):
                         xml = ET.fromstring(r.content)
                         pid = xml.find('Project').attrib['pxid']
                         ids.append(pid)
-
-                    except AttributeError:
+                        logging.info(f'Found PRIDE ID {pid} for JPOST ID {pid_}')
+                    # blanket catch because there are too many
+                    # potential network exceptions
+                    except:
                         pass
 
         return ids
 
-    def validate_pride_data(self, data: dict) -> dict:
-
-        out = None
+    def validate_pride_data(self, data: dict) -> tuple :
+        """Match sequences, residues pairs and return stats"""
+        out = (None, None, None)
 
         # Unpack pride data
         pid = data['pride_id']
@@ -1034,11 +1036,20 @@ class CxValidation(GetInputInformation):
 
         # Get sequences from mmcif entry
         mmcif_seqs = {}
+        mmcif_seqs_descriptions = {}
+
         for e in self.system.entities:
             if e.is_polymeric:
                 seq = ''.join([x.code_canonical for x in e.sequence])
-                seq = pyhmmer.easel.TextSequence(sequence=seq, name=e._id.encode('utf-8'), description=e.description.encode('utf-8')).digitize(pyhmmer.easel.Alphabet.amino())
-                mmcif_seqs[e._id] = seq
+                desc = e.description
+                seq_ = pyhmmer.easel.TextSequence(
+                            sequence=seq,
+                            name=e._id.encode('utf-8'),
+                            description=desc.encode('utf-8')
+                            ).digitize(pyhmmer.easel.Alphabet.amino())
+
+                mmcif_seqs[e._id] = seq_
+                mmcif_seqs_descriptions[e._id] = desc
 
         # Get sequences from crosslinking-MS data
         ms_seqs = [
@@ -1049,23 +1060,29 @@ class CxValidation(GetInputInformation):
             ).digitize(pyhmmer.easel.Alphabet.amino()) for x in ms_seqs_
         ]
 
-        matches_seqs = {}
-        matches_seqs_ids = {}
-        matches_residue_pairs = {}
+        # Match sequences using pyHMMER
+        # select only 1st best match
+        matched_seqs = {}
+        matched_seqs_mapping = {}
+        matched_seqs_ids = {}
+
         for k, v in mmcif_seqs.items():
             matches_ = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0]
             if len(matches_) > 0:
                 best_hit = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0][0]
-                matches_seqs[k] = best_hit
-                matches_seqs_ids[k] = best_hit.best_domain.hit.name.decode("utf-8")
+                matched_seqs[k] = best_hit
+                mapping_, _ = self.pyhmmer_alignment_to_map(best_hit)
+                matched_seqs_mapping[k] = mapping_
+                matched_seqs_ids[k] = best_hit.best_domain.hit.name.decode("utf-8")
             else:
                 logging.warning(f"Couldn't match mmCIF entity {k} to any entities in {pid}")
-                matches_seqs[k] = None
-                matches_seqs_ids[k] = None
+                matched_seqs[k] = None
+                matched_seqs_ids[k] = None
 
-        matched_ms_seqs = list(matches_seqs_ids.values())
-        matched_mmcif_entities = list(matches_seqs_ids.keys())
+        matched_mmcif_entities = list(matched_seqs_ids.keys())
+        matched_ms_seqs = list(matched_seqs_ids.values())
 
+        # Filter residue pairs from MS data
         ms_rps_filtered = []
         for r in ms_res_pairs:
             eid1 = r['prot1']
@@ -1077,6 +1094,7 @@ class CxValidation(GetInputInformation):
 
         ms_rps_filtered = set(ms_rps_filtered)
 
+        # Select MS residue pairs from matched sequences
         ms_rps_mmcif_entities = 0
         sxls = []
         for r in ms_rps_filtered:
@@ -1088,6 +1106,7 @@ class CxValidation(GetInputInformation):
         sxls = set(sxls)
         ms_rps_mmcif_entities = len(sxls)
 
+        # Select residue pairs from the entry
         exls = []
 
         for restr_ in self.system.restraints:
@@ -1107,24 +1126,57 @@ class CxValidation(GetInputInformation):
 
         exls = list(set(exls))
 
+        # Find corresponding entry - MS data crosslinks
         mmcif_rps_ms_entities = 0
 
+        rps_mapping = []
         emxls = []
-        for (eid1, rid1), (eid2, rid2) in exls:
+        for rps in exls:
+            (eid1, rid1), (eid2, rid2) = rps
+
             if eid1 in matched_mmcif_entities and eid2 in matched_mmcif_entities:
                 mmcif_rps_ms_entities += 1
-                eid1_ = matches_seqs_ids[eid1]
-                eid2_ = matches_seqs_ids[eid2]
+                eid1_ = matched_seqs_ids[eid1]
+                eid2_ = matched_seqs_ids[eid2]
+
+                try:
+                    rid1_ = matched_seqs_mapping[eid1][rid1]
+                except KeyError:
+                    logging.debug(f"Can't map residue {eid1} {rid1} to {eid1_}")
+                    continue
+
+                try:
+                    rid2_ = matched_seqs_mapping[eid2][rid2]
+                except KeyError:
+                    logging.debug(f"Can't map residue {eid2} {rid2} to {eid2_}")
+                    continue
 
                 if eid1_ is None or eid2_ is None:
                     continue
 
-                exl = tuple(sorted(((eid1_, rid1), (eid2_, rid2))))
+                exl = tuple(sorted(((eid1_, rid1_), (eid2_, rid2_))))
+                if exl in sxls:
+                    # Good matching crosslinks
+                    rps_mapping.append((rps, exl))
+                else:
+                    # Residue pairs unique to the entry
+                    rps_mapping.append((rps, None))
+
                 emxls.append(exl)
 
+        emxls = set(emxls)
+
+        # Add non-mapped residue pairs from MS data
+        for exl in list(sxls):
+            if exl not in emxls:
+                rps_mapping.append((None, exl))
+
+        # Calculate some stats
         rps_both = len(set(emxls) & set(sxls))
         mmcif_rps = len(exls)
         ms_rps = len(ms_rps_filtered)
+
+        # Prepare output
 
         out = {
             'pride_id': pid,
@@ -1149,19 +1201,21 @@ class CxValidation(GetInputInformation):
             }
         }
 
-        for k, v in matches_seqs.items():
+        # Add stats about matches
+        for k, v in matched_seqs.items():
             if v is not None:
-
                 match_ =  {
                     'entity': k,
+                    'entity_desc': mmcif_seqs_descriptions[k],
                     'entity_ms': v.best_domain.hit.name.decode("utf-8"),
                     'e-value': v.best_domain.c_evalue,
-                    'exact_match': v.best_domain.alignment.target_sequence == v.best_domain.alignment.hmm_sequence.upper()
+                    'exact_match': v.best_domain.alignment.target_sequence == v.best_domain.alignment.hmm_sequence.upper(),
                 }
 
             else:
                 match_ =  {
                     'entity': k,
+                    'entity_desc': mmcif_seqs_descriptions[k],
                     'entity_ms': utility.NA,
                     'e-value': utility.NA,
                     'exact_match': utility.NA,
@@ -1170,7 +1224,7 @@ class CxValidation(GetInputInformation):
 
             out['matches'].append(match_)
 
-        return out
+        return (out, matched_seqs, rps_mapping)
 
     def validate_all_pride_data(self) -> list:
         '''perform data quality validation for all crosslinking-MS datasets'''
@@ -1180,7 +1234,7 @@ class CxValidation(GetInputInformation):
         for code in codes:
             data = self.get_pride_data(code)
             if data is not None:
-                out = self.validate_pride_data(data)
+                out, _, __ = self.validate_pride_data(data)
                 if out is not None:
                     outs.append(out)
 
@@ -1190,3 +1244,37 @@ class CxValidation(GetInputInformation):
     def get_pyhmmer_version():
         """return pyhmmer version"""
         return pyhmmer.__version__
+
+    @staticmethod
+    def pyhmmer_alignment_to_map(hit) -> (dict, list):
+        """Convert HMMER alignment into residue map"""
+
+        # gaps in HMMER text format
+        GAPS = set(['-', '.'])
+
+        mapping_raw = []
+        mapping_short = {}
+        aln = hit.best_domain.alignment
+        mmcif_start = aln.hmm_from
+        mmcif_seq = aln.hmm_sequence
+        db_start = aln.target_from
+        db_seq = aln.target_sequence
+
+        ii = mmcif_start - 1
+        ij = db_start - 1
+
+        # iterate over alignment
+        # residue indices start from 1
+        for i, (aai, aaj) in enumerate(zip(mmcif_seq.upper(), db_seq.upper())):
+            if aai not in GAPS:
+                ii += 1
+
+            if aaj not in GAPS:
+                ij += 1
+
+            if len(set([aai, aaj]) & GAPS) == 0:
+                mapping_raw.append(((ii, aai), (ij, aaj)))
+                mapping_short[ii] = ij
+
+        # return dict to map residue indices and raw mapping data
+        return mapping_short, mapping_raw
