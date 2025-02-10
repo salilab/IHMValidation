@@ -1014,8 +1014,10 @@ class CxValidation(GetInputInformation):
                         xml = ET.fromstring(r.content)
                         pid = xml.find('Project').attrib['pxid']
                         ids.append(pid)
-
-                    except AttributeError:
+                        logging.info(f'Found PRIDE ID {pid} for JPOST ID {pid_}')
+                    # blanket catch because there are too many
+                    # potential network exceptions
+                    except:
                         pass
 
         return ids
