@@ -459,7 +459,7 @@ class GetMolprobityInformation(GetInputInformation):
 
         def get_mp_formatted_range(data, k1, k2, format=".2f"):
             data_ = [x[k1][k2] for x in data.values()]
-            r_ = utility.format_range(data_)
+            r_ = utility.format_range(data_, format=format)
 
             return r_
 

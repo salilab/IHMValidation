@@ -622,7 +622,7 @@ class GetInputInformation(object):
                         acc = f"<a href=https://pdb-ihm.org/entry.html?{acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.PDBLocation) and acc != utility.NA:
-                        acc = f"<a href=https://www.rcsb.org/structure/{acc}>{acc}</a>"
+                        acc = f"<a href=https://www.wwpdb.org/pdb?id={acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.ModelArchiveLocation) and acc != utility.NA:
                         acc = f"<a href=https://doi.org/10.5452/{acc}>{acc}</a>"
@@ -647,6 +647,12 @@ class GetInputInformation(object):
 
                     if isinstance(_.location, ihm.location.ProteomeXchangeLocation) and acc != utility.NA:
                         acc = f"<a href=https://proteomecentral.proteomexchange.org/cgi/GetDataset?ID={acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.BMRBLocation) and acc != utility.NA:
+                        acc = f"<a href=https://bmrb.io/data_library/summary/index.php?bmrbId={acc}>{acc}</a>"
+
+                    if isinstance(_.location, ihm.location.BMRbigLocation) and acc != utility.NA:
+                        acc = f"<a href=https://bmrbig.bmrb.io/released/{acc.lower()}>{acc}</a>"
 
                 elif isinstance(_.location, ihm.location.FileLocation):
                     try:

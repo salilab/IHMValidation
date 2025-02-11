@@ -89,7 +89,12 @@
             <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabdata">Datasets used for modeling</a></i></td>
             <td>
               {% for dataset_ in Datasets_list[1:] %}
-              - {{ dataset_[1] }}, {{ dataset_[2] }}: {{ dataset_[3] }}<br>
+                {% if dataset_[2] == dataset_[3] == "Not available" %}
+                  - {{ dataset_[1] }}, {{ dataset_[2] }}
+                {% else %}
+                  - {{ dataset_[1] }}, {{ dataset_[2] }}: {{ dataset_[3] }}
+                {% endif %}
+                <br>
               {% endfor %} 
             </td>
          </tr>
@@ -230,7 +235,7 @@
              <td>{{ method_info['Method type'][i] }}</td>
            </tr>
            <tr>
-             <td><i> &nbsp; &nbsp; &nbsp; <a href="hhttps://pdb-ihm.org/validation_help.html#sumtabmet1">Name</a></i></td>
+             <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmet1">Name</a></i></td>
              <td>
                {{ method_info['Method name'][i] }}
              </td>
