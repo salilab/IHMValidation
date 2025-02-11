@@ -370,11 +370,11 @@ class GetInputInformation(object):
                 # if step.name:
                 #     method_link = '<a href='+link+'>'+str(step.method)+'</a>'
                 # else:
-                method_link = str(step.method)
+                # method_link = str(step.method)
 
+                sampling_comp['Method name'].append(step.name)
+                sampling_comp['Method type'].append(step.method)
                 sampling_comp['Method description'].append(step.description)
-                sampling_comp['Method name'].append(method_link)
-                sampling_comp['Method type'].append(step.name)
                 sampling_comp['Number of computed models'].append(
                     step.num_models_end)
         return sampling_comp
