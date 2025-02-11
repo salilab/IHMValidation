@@ -396,6 +396,9 @@ class WriteReport(object):
                 else:
                     l = f'{p:.2f}, Å'
                 model_precision.append(l)
+        else:
+            model_precision.append(utility.NA)
+
         Template_Dict['model_precision'] = model_precision
 
         Template_Dict['restraint_info'] = utility.get_restraints_info(self.input.get_restraints(
