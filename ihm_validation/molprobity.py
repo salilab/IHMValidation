@@ -206,7 +206,7 @@ class GetMolprobityInformation(GetInputInformation):
         header = (
             'Chain', 'Res', 'Type', 'Atoms',
             '|Z|', 'Observed (Å)', 'Ideal (Å)',
-            'Worst', 'Total'
+            'Model ID (Worst)', 'Models (Total)'
         )
 
         duplicates_stats = []
@@ -263,7 +263,7 @@ class GetMolprobityInformation(GetInputInformation):
         header = (
             'Chain', 'Res', 'Type', 'Atoms',
             '|Z|', 'Observed (Å)', 'Ideal (Å)',
-            'Worst', 'Total'
+            'Model ID (Worst)', 'Models (Total)'
         )
 
         duplicates_stats = []
@@ -349,7 +349,7 @@ class GetMolprobityInformation(GetInputInformation):
         header = (
                 'Atom 1', 'Atom 2',
                 'Clash(Å)',
-                'Worst', 'Total'
+                'Model ID (Worst)', 'Models (Total)'
             )
         duplicates_stats = []
 
@@ -411,7 +411,7 @@ class GetMolprobityInformation(GetInputInformation):
 
         header = (
             'Chain', 'Res', 'Type',
-            'Total'
+            'Models (Total)'
         )
 
         duplicates_stats = []
