@@ -370,11 +370,11 @@ class GetInputInformation(object):
                 # if step.name:
                 #     method_link = '<a href='+link+'>'+str(step.method)+'</a>'
                 # else:
-                method_link = str(step.method)
+                # method_link = str(step.method)
 
+                sampling_comp['Method name'].append(step.name)
+                sampling_comp['Method type'].append(step.method)
                 sampling_comp['Method description'].append(step.description)
-                sampling_comp['Method name'].append(method_link)
-                sampling_comp['Method type'].append(step.name)
                 sampling_comp['Number of computed models'].append(
                     step.num_models_end)
         return sampling_comp
@@ -649,10 +649,10 @@ class GetInputInformation(object):
                         acc = f"<a href=https://proteomecentral.proteomexchange.org/cgi/GetDataset?ID={acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.BMRBLocation) and acc != utility.NA:
-                        acc = f"<a href=https://bmrb.io/data_library/summary/index.php?bmrbId={acc}>{acc}</a>"
+                        acc = f"<a href=https://doi.org/10.13018/BMR{acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.BMRbigLocation) and acc != utility.NA:
-                        acc = f"<a href=https://bmrbig.bmrb.io/released/{acc.lower()}>{acc}</a>"
+                        acc = f"<a href=https://doi.org/10.13018/{acc}>{acc}</a>"
 
                 elif isinstance(_.location, ihm.location.FileLocation):
                     try:
