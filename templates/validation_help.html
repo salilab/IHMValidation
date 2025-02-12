@@ -67,6 +67,7 @@
               <ul>
                 <li><a href="#exv" style="color: #003366;">5.1a Excluded Volume Analysis</a></li>
                 <li><a href="#molprobity" style="color: #003366;">5.1b MolProbity Analysis </a></li>
+                <li><a href="#prism" style="color: #003366;">5.2 PrISM precision Analysis </a></li>
               </ul>
             </li>
             <li>
@@ -249,6 +250,11 @@
           
           <p class=ex2 align='justify'>
             <a name='molprobity'><i>5.1b. MolProbity Analysis:</i></a> MolProbity analysis for atomic structures reported is consistent with PDB standards for X-ray structures <a href='https://pubmed.ncbi.nlm.nih.gov/29067766/'>(Williams et al. 2018)</a>. Summarized information is available in both the HTML and PDF reports. Detailed information is available for download as csv files, both from the HTML and the PDF reports. Please refer to the <a href='https://www.wwpdb.org/validation/2017/XrayValidationReportHelp#model_quality'>PDB user guide</a> for details.
+          </p>
+          
+          <p class=ex2 align='justify'>
+            <a name='prism'><i>5.2. PrISM Precision Analysis:</i></a> Regions of <b>low</b> and <b>high</b> precision annotated and visualized using PrISM <a href="https://pubmed.ncbi.nlm.nih.gov/35723541/">(Ullanat et al., 2022)</a>. The per-bead or per-residue precision is computed from the deposited ensemble of superposed integrative models. High- and low-precision regions are then determined by clustering beads of similar precision based on their proximity in the structure.
+    Only coarse-grained beads and CA atoms of deposited models are used for asessement and visualization, and three projections for each representative model are generated. 
           </p>
           
           <p style=margin-bottom:0.5cm;></p>
@@ -488,19 +494,31 @@
           <ul style="list-style-type:none;">
             <li>
               <p class=ex2>
-                <i><a name='sumtabmet1'>8.6.1. Method name:</a></i> Name(s) of method(s) used to generate modeled structures.
+                <i><a name='sumtabmetname'>8.6.1. Name:</a></i> Name(s) of the modeling step(s).
               </p>
             </li>
             
             <li>
               <p class=ex2>
-                <i><a name='sumtabmet2'>8.6.2. Method details:</a></i> Details of method(s) used to generate modeled structures.
+                <i><a name='sumtabmetmet'>8.6.2. Method:</a></i> Name(s) of method(s) used to generate modeled structures.
               </p>
             </li>
             
             <li>
               <p class=ex2>
-                <i><a name='sumtabsoft'>8.6.3. Software details:</a></i> Software used to compute modeled structure, also includes scripts used to generate and analyze models.
+                <i><a name='sumtabmetdesc'>8.6.3. Method description:</a></i> Details of method(s) used to generate modeled structures.
+              </p>
+            </li>
+            
+            <li>
+              <p class=ex2>
+                <i><a name='sumtabmetnummodels'>8.6.4. Number of computed models:</a></i> Number of models computed at each modeling step.
+              </p>
+            </li>
+            
+            <li>
+              <p class=ex2>
+                <i><a name='sumtabsoft'>8.6.5. Software details:</a></i> Software used to compute modeled structure, also includes scripts used to generate and analyze models.
               </p>
             </li>
           </ul>
@@ -522,49 +540,61 @@
               <ol>
                 <li>
                   <p class=ex2>
-                    Berman, Helen M., Paul D. Adams, Alexandre A. Bonvin, Stephen K. Burley, Bridget Carragher, Wah Chiu, Frank DiMaio, et al. 2019. “Federating Structural Models and Data: Outcomes from A Workshop on Archiving Integrative Structures.” Structure  27 (12): 1745–59.
+                    Berman, Helen M., Paul D. Adams, Alexandre A. Bonvin, Stephen K. Burley, Bridget Carragher, Wah Chiu, Frank DiMaio, et al. 2019. "Federating Structural Models and Data: Outcomes from A Workshop on Archiving Integrative Structures." Structure  27 (12): 1745–59.
                   </p>
                 </li>
   
                 <li>
                   <p class=ex2>
-                    Manalastas-Cantos, Karen, Petr V. Konarev, Nelly R. Hajizadeh, Alexey G. Kikhney, Maxim V. Petoukhov, Dmitry S. Molodenskiy, Alejandro Panjkovich, et al. 2021. “ATSAS 3.0: Expanded Functionality and New Tools for Small-Angle Scattering Data Analysis.” Journal of Applied Crystallography 54 (Pt 1): 343–55.
+                    Manalastas-Cantos, Karen, Petr V. Konarev, Nelly R. Hajizadeh, Alexey G. Kikhney, Maxim V. Petoukhov, Dmitry S. Molodenskiy, Alejandro Panjkovich, et al. 2021. "ATSAS 3.0: Expanded Functionality and New Tools for Small-Angle Scattering Data Analysis." Journal of Applied Crystallography 54 (Pt 1): 343–55.
                   </p>
                 </li>
   
                 <li>
                   <p class=ex2>
-                    Rambo, Robert P., and John A. Tainer. 2011. “Characterizing Flexible and Intrinsically Unstructured Biological Macromolecules by SAS Using the Porod-Debye Law.” Biopolymers 95 (8): 559–71.
+                    Rambo, Robert P., and John A. Tainer. 2011. "Characterizing Flexible and Intrinsically Unstructured Biological Macromolecules by SAS Using the Porod-Debye Law." Biopolymers 95 (8): 559–71.
                   </p>
                 </li>
   
                 <li>
                   <p class=ex2>
-                    Sali, Andrej, Helen M. Berman, Torsten Schwede, Jill Trewhella, Gerard Kleywegt, Stephen K. Burley, John Markley, et al. 2015. “Outcome of the First wwPDB Hybrid/Integrative Methods Task Force Workshop.” Structure  23 (7): 1156–67.
+                    Sali, Andrej, Helen M. Berman, Torsten Schwede, Jill Trewhella, Gerard Kleywegt, Stephen K. Burley, John Markley, et al. 2015. "Outcome of the First wwPDB Hybrid/Integrative Methods Task Force Workshop." Structure  23 (7): 1156–67.
                   </p>
                 </li>
   
                 <li>
                   <p class=ex2>
-                    Trewhella, Jill, Anthony P. Duff, Dominique Durand, Frank Gabel, J. Mitchell Guss, Wayne A. Hendrickson, Greg L. Hura, et al. 2017. “2017 Publication Guidelines for Structural Modelling of Small-Angle Scattering Data from Biomolecules in Solution: An Update.” Acta Crystallographica. Section D, Structural Biology 73 (Pt 9): 710–28
+                    Trewhella, Jill, Anthony P. Duff, Dominique Durand, Frank Gabel, J. Mitchell Guss, Wayne A. Hendrickson, Greg L. Hura, et al. 2017. "2017 Publication Guidelines for Structural Modelling of Small-Angle Scattering Data from Biomolecules in Solution: An Update." Acta Crystallographica. Section D, Structural Biology 73 (Pt 9): 710–28
                   </p>
                 </li>
   
                 <li>
                   <p class=ex2>
-                    Valentini, Erica, Alexey G. Kikhney, Gianpietro Previtali, Cy M. Jeffries, and Dmitri I. Svergun. 2015. “SASBDB, a Repository for Biological Small-Angle Scattering Data.” Nucleic Acids Research 43 (Database issue): D357–63.
+                    Valentini, Erica, Alexey G. Kikhney, Gianpietro Previtali, Cy M. Jeffries, and Dmitri I. Svergun. 2015. "SASBDB, a Repository for Biological Small-Angle Scattering Data." Nucleic Acids Research 43 (Database issue): D357–63.
                   </p>
                 </li>
   
                 <li>
                   <p class=ex2>
-                    Viswanath, Shruthi, Ilan E. Chemmama, Peter Cimermancic, and Andrej Sali. 2017. “Assessing Exhaustiveness of Stochastic Sampling for Integrative Modeling of Macromolecular Structures.” Biophysical Journal 113 (11): 2344–53.
+                    Viswanath, Shruthi, Ilan E. Chemmama, Peter Cimermancic, and Andrej Sali. 2017. "Assessing Exhaustiveness of Stochastic Sampling for Integrative Modeling of Macromolecular Structures." Biophysical Journal 113 (11): 2344–53.
                   </p>
                 </li>
   
                 <li>
                   <p class=ex2>
-                    Williams, Christopher J., Jeffrey J. Headd, Nigel W. Moriarty, Michael G. Prisant, Lizbeth L. Videau, Lindsay N. Deis, Vishal Verma, et al. 2018. “MolProbity: More and Better Reference Data for Improved All-Atom Structure Validation.” Protein Science: A Publication of the Protein Society 27 (1): 293–315.
+                    Williams, Christopher J., Jeffrey J. Headd, Nigel W. Moriarty, Michael G. Prisant, Lizbeth L. Videau, Lindsay N. Deis, Vishal Verma, et al. 2018. "MolProbity: More and Better Reference Data for Improved All-Atom Structure Validation." Protein Science: A Publication of the Protein Society 27 (1): 293–315.
+                  </p>
+                </li>
+                
+                <li>
+                  <p class=ex2>
+                    Leitner, Alexander,  Alexandre Bonvin, et al. 2020. "Toward Increased Reliability, Transparency, and Accessibility in Cross-linking Mass Spectrometry." Structure 28 (11): 1259-1268.
+                  </p>
+                </li>
+                
+                <li>
+                  <p class=ex2>
+                    Ullanat, Varun,  Nikhil Kasukurthi, Shruthi Viswanath. 2022. "PrISM: precision for integrative structural models." Bioinformatics 38 (15): 3837-3839.
                   </p>
                 </li>
               </ol>  
