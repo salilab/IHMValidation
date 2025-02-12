@@ -112,17 +112,17 @@
   
         <div class="container">
           <ul class="nav nav-tabs">
-            {% if disclaimer %}
-              <li>
-                <a class="nav-link disabled " data-toggle="tab" href="#home">Model Quality</a>
-              </li>
-            {% else %}
+            {% if glance_plots["MQ"] %}
               <li>
                 <a class="nav-link " data-toggle="tab" href="#home">Model Quality</a>
               </li>
+            {% else %}
+              <li>
+                <a class="nav-link disabled " data-toggle="tab" href="#home">Model Quality</a>
+              </li>
             {% endif %}
           
-            {%- if sas %}
+            {% if glance_plots["DQ"] %}
               <li>
                 <a class="nav-link" data-toggle="tab" href="#menu1">Data Quality</a>
               </li>
@@ -132,7 +132,7 @@
               </li>
             {%- endif %}
           
-            {% if ('SAS DATA' in Data) and (number_of_fits > 0) and (sasdb_sascif|length > 0) %}
+            {% if glance_plots["FQ"]  %}
               <li>
                 <a class="nav-link " data-toggle="tab" href="#menu2">Fit to Data Used for Modeling</a>
               </li>
