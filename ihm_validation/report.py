@@ -167,7 +167,7 @@ class WriteReport(object):
             viol_percent = np.asarray(exv_data['Excluded Volume Satisfaction (%)'], dtype=float)
 
             # let's update template dict with appropriate terms
-            Template_Dict['excluded_volume_models'] = exv_data['Models']
+            Template_Dict['excluded_volume_models'] = exv_data['Model ID']
             Template_Dict['excluded_volume'] = utility.dict_to_JSlist(exv_data)
             r_ = utility.format_range(viol_percent)
             Template_Dict['assess_excluded_volume'] = f'Satisfaction: {r_}%'

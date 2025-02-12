@@ -167,7 +167,7 @@ class GetExcludedVolume(GetInputInformation):
         complete_list = [
             self._get_exc_vol(x) for x in model_dict.values()]
 
-        excluded_volume = {'Models': list(model_dict.keys()),
+        excluded_volume = {'Model ID': list(model_dict.keys()),
                            'Analysed': [i[0] for i in complete_list],
                            'Number of violations': [i[1] for i in complete_list],
                            'Excluded Volume Satisfaction (%)': [i[2] for i in complete_list],

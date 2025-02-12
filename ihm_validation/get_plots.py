@@ -142,9 +142,9 @@ class Plots(GetInputInformation):
 
         # If excluded volume data is available
         if exv_data:
-            numplots = min(len(exv_data['Models']), MAXPLOTS)
+            numplots = min(len(exv_data['Model ID']), MAXPLOTS)
 
-            Models = exv_data['Models'][:numplots]
+            Models = exv_data['Model ID'][:numplots]
             # analysed = exv_data['Analysed'][:numplots]
             # violations = exv_data['Number of violations'][:numplots]
             # satisfaction = exv_data['Number of violations'][:numplots]
