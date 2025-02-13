@@ -42,12 +42,12 @@ class PRISM(GetInputInformation):
         # self.struct = prody.parseMMCIF(mmcif_file, header=False)
 
     def get_data(self):
-        cache_fn = Path(self.cache, f'{self.ID_f}.prism.pkl')
+        cache_fn = Path(self.cache, f'{self.stem}.prism.pkl')
         data = {}
 
         # Check if we already requested the data
         if Path(cache_fn).is_file() and not self.nocache:
-            logging.info(f'Found {self.ID_f} in cache: {cache_fn}')
+            logging.info(f'Found {self.stem} in cache: {cache_fn}')
             with open(cache_fn, 'rb') as f:
                 data = pickle.load(f)
 
