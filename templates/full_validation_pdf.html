@@ -577,7 +577,7 @@
                       <i>
                         Restraint types are summarized in the table below. 
                         Restraints assigned "<a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Items/_ihm_cross_link_restraint.model_granularity.html>by-residue</a>" are interpreted as between CA atoms. 
-                        Restraints between coarse-grained beads are indicated as "coarse-grained".
+                        Restraints between coarse-grained beads are indicated as "coarse-grained". <a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Items/_ihm_cross_link_restraint.group_id.html>Restraint group</a> represents a set of crosslinking restraints applied collectively in the modeling.
                       </i>
                     </p>
                     <p>
@@ -616,8 +616,8 @@
                       {% else %}
                         <p style='text-align: left'>
                           <i>Restraints with identical thresholds are grouped into one plot. 
-                            Only best distance per restraint per model group/ensemble is plotted. 
-                            Intra- and intermolecular self-link restraints are also grouped into one plot.
+                            Only the best distance per restraint per model group/ensemble is plotted. 
+                            Inter- and intramolecular (including self-links) restraints are also grouped into one plot.
                             Distance for a restraint between coarse-grained beads is calculated as a minimal distance 
                             between shells; if beads intersect, the distance will be reported as 0.0. 
                             A bead with the highest available resolution for a given residue is used for the assessment.
@@ -645,8 +645,8 @@
                   <div class=col-lg-12>
                     <p>
                       <i>
-                        Satisfaction of restraints is calculated on a <a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Categories/ihm_cross_link_restraint.html>restraint 
-                        group level</a>. Satisfaction of a restraint group depends on 
+                        Satisfaction of restraints is calculated on a <a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Items/_ihm_cross_link_restraint.group_id.html>restraint 
+                        group</a> (a set of crosslinking restraints applied collectively in the modeling) level. Satisfaction of a restraint group depends on 
                         satisfaction of individual restraints in the group and the 
                         conditionality (all/any). A restraint group is considered 
                         satisfied, if the condition was met in at least one model of 
