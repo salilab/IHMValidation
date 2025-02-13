@@ -18,6 +18,8 @@ import ihm, ihm.reader, ihm.model
 import itertools
 import time
 import signal
+import re
+import requests
 
 NA = 'Not available'
 
@@ -755,3 +757,16 @@ def format_range(data, format=".2f"):
         r_ = f'{min_:{format}}'
 
     return r_
+
+def get_alphafolddb_link(acc: str) -> str|None:
+    """Format link for AlphaFold DB"""
+    url = None
+    regexp = '^AF-(?P<uniprot>[0-9A-Za-z]+)-F1$'
+    m = re.match(regexp, acc)
+    if m:
+        uid = m.groupdict()['uniprot']
+        r = requests.get(f"https://alphafold.ebi.ac.uk/api/prediction/{uid}")
+        if r.status_code == 200:
+            url = f"https://alphafold.ebi.ac.uk/entry/{uid}"
+
+    return url

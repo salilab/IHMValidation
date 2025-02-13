@@ -628,7 +628,14 @@ class GetInputInformation(object):
                         acc = f"<a href=https://doi.org/10.5452/{acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.AlphaFoldDBLocation) and acc != utility.NA:
-                        acc = f"<a href=https://alphafold.ebi.ac.uk/entry/{acc}>{acc}</a>"
+                        # Fallback to plain text
+                        # acc = acc # Do nothing
+
+                        # Try to get a working link to AFDB
+                        url = utility.get_alphafolddb_link(acc)
+                        # If the data is unavailable, use just ID
+                        if url is not None:
+                            acc = f"<a href={url}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.EMPIARLocation) and acc != utility.NA:
                         acc = f"<a href=https://www.ebi.ac.uk/empiar/{acc}>{acc}</a>"
