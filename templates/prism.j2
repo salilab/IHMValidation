@@ -4,10 +4,10 @@
     {{ format_help(current_task, "prism") }} 
   </h5>
   <div><i>
-    Regions of <b>low</b> {% include "prism_palette.j2" %} <b>high</b> precision annotated and visualized using PrISM. 
-    The per-bead or per-residue precision is computed from the deposited ensemble of superposed integrative models. 
+    Regions of <b>low</b> {% include "prism_palette.j2" %} <b>high</b> precision, defined as the variability among the models that satisfy the input data and calculated as the density-weighted root mean-square fluctuation (RMSF) from the bead/atom center of density, annotated and visualized using PrISM. 
+    The per-bead precision is computed from the deposited ensemble of superposed integrative models. 
     High- and low-precision regions are then determined by clustering beads of similar precision based on their proximity in the structure.
-    Only coarse-grained beads and CA atoms of deposited models are used for asessement and visualization, and three projections for each representative model are generated.
+    Only coarse-grained beads (or CA atoms for atomic models) of deposited models are used for assessment and visualization, and three projections for each representative model are generated.
   </i></div>
   {% for k, v in prism_plots.items() %}
     <p class="ex2">PrISM analysis for Ensemble {{ k }} (models deposited/total: {{ v['deposited'] }}/{{ v['total'] }}).</p>
