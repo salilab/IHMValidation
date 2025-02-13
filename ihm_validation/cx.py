@@ -1015,7 +1015,8 @@ class CxValidation(GetInputInformation):
                         logging.info(f'Found PRIDE ID {pid} for JPOST ID {pid_}')
                     # blanket catch because there are too many
                     # potential network exceptions
-                    except:
+                    except Exception as e:
+                        logging.error(e)
                         pass
 
         return ids
