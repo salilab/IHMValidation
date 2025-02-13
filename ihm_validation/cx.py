@@ -934,9 +934,7 @@ class CxValidation(GetInputInformation):
         '''get sequences from PRIDE entry'''
         result = None
         url = f"https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v2/pdbdev/projects/{pid}/sequences"
-        req = self.request_pride(url)
-        if req is not None and 'data' in req:
-            result = req['data']
+        result = self.request_pride(url)
         return result
 
     def get_residue_pairs_pride(self, pid: str, page_size: int = 99) -> dict:
