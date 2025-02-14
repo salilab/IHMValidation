@@ -467,6 +467,7 @@ class Plots(GetInputInformation):
                                 rf], index=i) for i in range(len(legends))], location="center",
                                 orientation='vertical', label_text_font_size="12px")
                 pf.add_layout(legend, 'right')
+                pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
