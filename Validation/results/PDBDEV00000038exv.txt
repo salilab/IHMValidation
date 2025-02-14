@@ -1,3 +1,0 @@
-Models,[1]
-Excluded Volume Satisfaction,[99.79]
-Number of violations,[6806.0]
