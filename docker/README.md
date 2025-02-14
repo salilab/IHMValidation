@@ -1,6 +1,6 @@
 # Building runtime image
 
-We switched from Docket to [Singularity](https://docs.sylabs.io/guides/4.1/user-guide/introduction.html) containers to run the validation pipeline. 
+We switched from Docker to [Singularity](https://docs.sylabs.io/guides/4.1/user-guide/introduction.html) containers to run the validation pipeline. 
 
 To build the image:
 1. Navigate to the directory holding `Singularity.def` file:
