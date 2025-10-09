@@ -38,8 +38,6 @@ class SasValidationPlots(sas.SasValidation):
         p.yaxis.major_label_text_font_size = "14pt"
         p.xaxis.axis_label_text_font_size = '14pt'
         p.yaxis.axis_label_text_font_size = '14pt'
-        p.xaxis.axis_label_text_font_style = 'italic'
-        p.yaxis.axis_label_text_font_style = 'italic'
 
         if p.title is not None:
             p.title.text_font_size = '12pt'
@@ -69,6 +67,9 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label = "q [nm\u207B\u00B9]"
         p.yaxis.axis_label = 'Log I(q) [a.u]'
 
+        p.xaxis.axis_label_text_font_style = 'normal'
+        p.yaxis.axis_label_text_font_style = 'normal'
+
         p = self.set_plot_style(p)
 
         self.save_plots(p, f"{sasbdb}_intensities")
@@ -91,6 +92,9 @@ class SasValidationPlots(sas.SasValidation):
 
         p.xaxis.axis_label = 'Log q [nm\u207B\u00B9]'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
+
+        p.xaxis.axis_label_text_font_style = 'normal'
+        p.yaxis.axis_label_text_font_style = 'normal'
 
         p = self.set_plot_style(p)
 
@@ -115,6 +119,9 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label = 'qRg'
         p.yaxis.axis_label = 'q\u00B2 Rg\u00B2 I(q)/I(0)'
 
+        p.xaxis.axis_label_text_font_style = 'normal'
+        p.yaxis.axis_label_text_font_style = 'normal'
+
         p = self.set_plot_style(p)
 
         self.save_plots(p, f"{sasbdb}_kratky")
@@ -135,6 +142,9 @@ class SasValidationPlots(sas.SasValidation):
 
         p.xaxis.axis_label = 'q \u2074'
         p.yaxis.axis_label = 'q\u2074 I(q)'
+
+        p.xaxis.axis_label_text_font_style = 'normal'
+        p.yaxis.axis_label_text_font_style = 'normal'
 
         p = self.set_plot_style(p)
 
@@ -170,6 +180,9 @@ class SasValidationPlots(sas.SasValidation):
         p.xaxis.axis_label = "r [nm]"
         p.yaxis.axis_label = 'P(r)'
 
+        p.xaxis.axis_label_text_font_style = 'normal'
+        p.yaxis.axis_label_text_font_style = 'normal'
+
         p.legend.orientation = "vertical"
         p.legend.location = "top_right"
         p.legend.border_line_width = 0
@@ -199,7 +212,7 @@ class SasValidationPlots(sas.SasValidation):
                line_width=3, legend_label=legend2)
         # p.circle(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
 
-        p1.xaxis.axis_label = "q [nm\u207B\u00B9]"
+        p1.xaxis.axis_label = "q [nm⁻¹]"
         p1.yaxis.axis_label = 'Log I(q) [a.u]'
 
         p1.legend.orientation = "vertical"
@@ -221,8 +234,11 @@ class SasValidationPlots(sas.SasValidation):
                      line_color="crimson", line_width=3)
         p2.renderers.extend([hline])
 
-        p2.xaxis.axis_label = 'q [nm\u207B\u00B9]'
-        p2.yaxis.axis_label = 'R/\u03C3'
+        p2.xaxis.axis_label = "q [nm⁻¹]"
+        p2.yaxis.axis_label = "Δ/σ"
+
+        p2.xaxis.axis_label_text_font_style = 'normal'
+        p2.yaxis.axis_label_text_font_style = 'normal'
 
         p2 = self.set_plot_style(p2)
         p2.yaxis.ticker = [-3, 0, 3]
@@ -245,15 +261,18 @@ class SasValidationPlots(sas.SasValidation):
         p1 = figure(plot_height=350, plot_width=350,
                    title=f"Guinier plot for {sasbdb}")
         legend1 = 'Experimental data'
-        legend2 = f"Linear fit (R\u00B2={score})"
+        legend2 = f"Linear fit (R²={score})"
         p1.circle(x='Q2', y='lnI', source=source,
                   # color='blue',
                  line_width=1, fill_alpha=0.3, size=5, legend_label=legend1)
         p1.line(x='Q2', y='y_pred', source=source,
                color="crimson", line_width=3, legend_label=legend2)
 
-        p1.xaxis.axis_label = "q [nm\u207B\u00B2]"  # \u212B\u207B\u00B2"
+        p1.xaxis.axis_label = "q [nm⁻²]"  # \u212B\u207B\u00B2"
         p1.yaxis.axis_label = 'Ln I(q)'
+
+        p1.xaxis.axis_label_text_font_style = 'normal'
+        p1.yaxis.axis_label_text_font_style = 'normal'
 
         p1.legend.orientation = "vertical"
         p1.legend.location = "top_right"
@@ -275,8 +294,11 @@ class SasValidationPlots(sas.SasValidation):
                      line_color="crimson", line_width=3)
         p2.renderers.extend([hline])
 
-        p2.xaxis.axis_label = "q [nm\u207B\u00B2]"  # \u212B\u207B\u00B2"
-        p2.yaxis.axis_label = 'R'
+        p2.xaxis.axis_label = "q [nm⁻²]"  # \u212B\u207B\u00B2"
+        p2.yaxis.axis_label = 'Δ'
+
+        p2.xaxis.axis_label_text_font_style = 'normal'
+        p2.yaxis.axis_label_text_font_style = 'normal'
 
         p2 = self.set_plot_style(p2)
 
@@ -347,7 +369,7 @@ class SasValidationPlots(sas.SasValidation):
                 line_width=3, legend_label=legend2)
         # p.circle(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
 
-        p1.yaxis.axis_label = 'Log I(q)'
+        p1.yaxis.axis_label = 'Log I(q) [a.u]'
 
         p1.legend.orientation = "vertical"
         p1.legend.location = "top_right"
@@ -358,6 +380,8 @@ class SasValidationPlots(sas.SasValidation):
         p1.xaxis.visible = False
         p1.yaxis.ticker.desired_num_ticks = 3
         p1.xaxis.ticker.desired_num_ticks = 3
+        p1.xaxis.axis_label_text_font_style = 'normal'
+        p1.yaxis.axis_label_text_font_style = 'normal'
 
         p2 = figure(plot_height=150, plot_width=350,
                    title=None, x_range=p1.x_range)
@@ -365,8 +389,10 @@ class SasValidationPlots(sas.SasValidation):
                   # color='blue',
                   fill_alpha=0.3, size=3)
 
-        p2.xaxis.axis_label = "q [\u212B\u207B\u00B9]"
-        p2.yaxis.axis_label = 'R/\u03C3'
+        p2.xaxis.axis_label = r"q [nm⁻¹]"
+        p2.yaxis.axis_label = r"Δ/σ"
+        p2.xaxis.axis_label_text_font_style = 'normal'
+        p2.yaxis.axis_label_text_font_style = 'normal'
 
         hline = Span(location=0, dimension='width',
                      line_color="crimson", line_width=3)

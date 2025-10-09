@@ -403,6 +403,14 @@ class EMValidation(GetInputInformation):
             p.yaxis.ticker.desired_num_ticks = 3
             p.output_backend = "svg"
 
+            p.title.text_font_size = "14pt"
+            p.xaxis.axis_label_text_font_size = "14pt"
+            p.yaxis.axis_label_text_font_size = "14pt"
+            p.xaxis.major_label_text_font_size = "14pt"
+            p.yaxis.major_label_text_font_size = "14pt"
+            p.xaxis.axis_label_text_font_style = 'normal'
+            p.yaxis.axis_label_text_font_style = 'normal'
+
             title = f'{emdbid}_voxel'
             plots_ = self.save_plots(p, title, imageDirName)
             data_stats_plots[title] = plots_
@@ -422,7 +430,7 @@ class EMValidation(GetInputInformation):
             p = figure(
                     title=f"Volume estimate (Estimated volume={vol:.2f} nm³)",
                     x_axis_label = 'Contour level',
-                    y_axis_label = 'Volume, nm³',
+                    y_axis_label = 'Volume [nm³]',
                     plot_height=350
             )
             p.yaxis.ticker.desired_num_ticks = 3
@@ -438,6 +446,15 @@ class EMValidation(GetInputInformation):
             p.line([min(X), max(X)], [vol, vol], color='orange', legend_label=f'Estimated volume {vol:.2f} nm³')
 
             title = f'{emdbid}_volume'
+
+            p.title.text_font_size = "14pt"
+            p.xaxis.axis_label_text_font_size = "14pt"
+            p.yaxis.axis_label_text_font_size = "14pt"
+            p.xaxis.major_label_text_font_size = "14pt"
+            p.yaxis.major_label_text_font_size = "14pt"
+            p.xaxis.axis_label_text_font_style = 'normal'
+            p.yaxis.axis_label_text_font_style = 'normal'
+
             plots_ = self.save_plots(p, title, imageDirName)
             data_stats_plots[title] = plots_
         except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -449,8 +466,8 @@ class EMValidation(GetInputInformation):
             try:
                 p = figure(
                         title=f"Rotationally averaged power spectrum",
-                        x_axis_label = 'Spatial frequency, Å⁻¹',
-                        y_axis_label = 'Intensity (log10)',
+                        x_axis_label = 'Spatial frequency [Å⁻¹]',
+                        y_axis_label = 'Log (I)',
                         plot_height=350
                     )
                 p.yaxis.ticker.desired_num_ticks = 3
@@ -476,6 +493,14 @@ class EMValidation(GetInputInformation):
                 except (KeyError, ValueError, IndexError, TypeError) as e:
                     logging.error(e)
 
+                p.title.text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_size = "14pt"
+                p.yaxis.axis_label_text_font_size = "14pt"
+                p.xaxis.major_label_text_font_size = "14pt"
+                p.yaxis.major_label_text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_style = 'normal'
+                p.yaxis.axis_label_text_font_style = 'normal'
+
                 title = f'{emdbid}_raps'
                 plots_ = self.save_plots(p, title, imageDirName)
                 data_stats_plots[title] = plots_
@@ -488,7 +513,7 @@ class EMValidation(GetInputInformation):
             try:
                 p = figure(
                     title=f"FSC",
-                    x_axis_label = 'Spatial frequency, Å⁻¹',
+                    x_axis_label = 'Spatial frequency [Å⁻¹]',
                     y_axis_label = 'Correlation',
                     y_range = (-0.1, 1.1),
                     plot_height=350
@@ -516,6 +541,14 @@ class EMValidation(GetInputInformation):
                 p.line(X, Y3, line_dash='dashed', legend_label='Half-bit', color='purple')
 
                 p.line([loc, loc], [miny, maxy], color='black', legend_label=f'Reported resolution {resolution:.2f}*')
+
+                p.title.text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_size = "14pt"
+                p.yaxis.axis_label_text_font_size = "14pt"
+                p.xaxis.major_label_text_font_size = "14pt"
+                p.yaxis.major_label_text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_style = 'normal'
+                p.yaxis.axis_label_text_font_style = 'normal'
 
                 title = f'{emdbid}_fsc'
                 plots_ = self.save_plots(p, title, imageDirName)
@@ -598,6 +631,15 @@ class EMValidation(GetInputInformation):
                 p.line(X, Y2, color='orange', legend_label='All non-hydrogen atoms')
 
                 p.line([recl, recl], [0, 1.1], color='red', legend_label=f'Recommended contour level {recl:.3f}')
+
+                p.title.text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_size = "14pt"
+                p.yaxis.axis_label_text_font_size = "14pt"
+                p.xaxis.major_label_text_font_size = "14pt"
+                p.yaxis.major_label_text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_style = 'normal'
+                p.yaxis.axis_label_text_font_style = 'normal'
+
                 title = f'{mid}_{emdbid}_ai_plot'
                 plots_ = self.save_plots(p, title, imageDirName)
                 fit_plots['ai_plot'] = plots_

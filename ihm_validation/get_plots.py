@@ -110,11 +110,14 @@ class Plots(GetInputInformation):
                        )
 
                 # set labels and fonts
-                p.xaxis.major_label_text_font_size = "12pt"
-                p.yaxis.major_label_text_font_size = "12pt"
+                p.xaxis.axis_label_text_font_size = "14pt"
+                p.yaxis.axis_label_text_font_size = "14pt"
+                p.xaxis.major_label_text_font_size = "14pt"
+                p.yaxis.major_label_text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_style = 'normal'
+                p.yaxis.axis_label_text_font_style = 'normal'
                 p.xaxis.axis_label = 'Outliers'
-                p.xaxis.axis_label_text_font_style = 'italic'
-                p.left[0].group_text_font_size = '14px'
+                p.left[0].group_text_font_size = '14pt'
                 p.left[0].group_text_color = p.left[0].major_label_text_color
                 p.left[0].group_text_font_style = p.left[0].major_label_text_font_style
                 p.left[0].group_text_font_size = p.left[0].major_label_text_font_size
@@ -160,7 +163,7 @@ class Plots(GetInputInformation):
                 return
 
             Scores = [f'Model {m}' for m in Models]
-            legends = [f'{s:.2f}%' for s in satisfaction]
+            legends = [f'{s:.2f} %' for s in satisfaction]
 
             # set the size of the axis
             # n = 3 if len(model) < 3 else len(model)
@@ -185,14 +188,16 @@ class Plots(GetInputInformation):
                 p_ = p.hbar(y=source.data['Scores'][i:i + 1], right=source.data['counts'][i: i + 1], color=source.data['color'][i:i + 1], height=1.0,
                            line_color='white')
 
-                p.xaxis.axis_label = 'Satisfaction rate, %'
+                p.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
                     p_], index=j) for j in range(len(legends[i:i + 1]))], location='center',
-                    label_text_font_size='12px', orientation='vertical')
+                    label_text_font_size='14pt', orientation='vertical')
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
-                p.xaxis.major_label_text_font_size = "12pt"
-                p.yaxis.major_label_text_font_size = "12pt"
+                p.xaxis.major_label_text_font_size = "14pt"
+                p.yaxis.major_label_text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_style = 'normal'
+                p.yaxis.axis_label_text_font_style = 'normal'
                 p.title.vertical_align = 'top'
                 p.title.align = "center"
                 p.output_backend = "svg"
@@ -284,21 +289,21 @@ class Plots(GetInputInformation):
             rd = pd.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
             pd.ygrid.grid_line_color = None
-            pd.xaxis.axis_label = 'Distance (nm)'
-            pd.xaxis.major_label_text_font_size = "12pt"
-            pd.yaxis.major_label_text_font_size = "12pt"
+            pd.xaxis.axis_label = 'Distance [nm]'
             pd.title.text_font_size = '14pt'
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rd], index=i) for i in range(len(legends))], location='center',
-                            orientation='vertical', label_text_font_size="12px")
+                            orientation='vertical', label_text_font_size="14pt")
             pd.add_layout(legend, 'right')
             pd.legend.items.reverse()
             pd.legend.border_line_width = 0
-            pd.legend.label_text_font_size = "12px"
-            pd.xaxis.axis_label_text_font_style = 'italic'
-            pd.yaxis.axis_label_text_font_style = 'italic'
+            pd.legend.label_text_font_size = "14pt"
             pd.xaxis.axis_label_text_font_size = "14pt"
+            pd.yaxis.axis_label_text_font_size = "14pt"
+            pd.xaxis.major_label_text_font_size = "14pt"
             pd.yaxis.major_label_text_font_size = "14pt"
+            pd.xaxis.axis_label_text_font_style = 'normal'
+            pd.yaxis.axis_label_text_font_style = 'normal'
             pd.title.vertical_align = 'top'
             pd.title.align = "center"
             pd.output_backend = "svg"
@@ -364,16 +369,19 @@ class Plots(GetInputInformation):
                 legends_ = source.data['legends'][i * 3: (i + 1) * 3]
                 legend = Legend(items=[LegendItem(label=legends_[j], renderers=[
                             rd], index=j) for j in range(len(legends_))], location='center',
-                            orientation='vertical', label_text_font_size="12px")
+                            orientation='vertical', label_text_font_size="14pt")
                 legend.items = legend.items[::-1]
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
                 # set labels and fonts
-                p.xaxis.major_label_text_font_size = "12pt"
-                p.yaxis.major_label_text_font_size = "12pt"
+                p.xaxis.axis_label_text_font_size = "14pt"
+                p.yaxis.axis_label_text_font_size = "14pt"
+                p.xaxis.major_label_text_font_size = "14pt"
+                p.yaxis.major_label_text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_style = 'normal'
+                p.yaxis.axis_label_text_font_style = 'normal'
                 p.yaxis.major_label_text_align='right'
                 p.xaxis.axis_label = 'Residue pairs'
-                p.xaxis.axis_label_text_font_style = 'italic'
                 p.left[0].group_text_font_size = '14px'
                 p.left[0].group_label_orientation = 'horizontal'
                 p.title.text_font_size = '14pt'
@@ -409,7 +417,7 @@ class Plots(GetInputInformation):
                 counts.append(s)
 
             if len(counts) > 0:
-                legends = [f'{i:.2f}Å' for i in counts]
+                legends = [f'{i:.2f} Å' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
                 pf = figure(y_range=Scores, x_range=(0, 80), plot_height=95 + len(counts) * 20,
@@ -418,23 +426,23 @@ class Plots(GetInputInformation):
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
                 pf.title.text_font_size = '14pt'
-                pf.xaxis.axis_label = 'Resolution'
-                pf.xaxis.major_label_text_font_size = "12pt"
-                pf.yaxis.major_label_text_font_size = "12pt"
+                pf.xaxis.axis_label = 'Resolution [Å]'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="12px")
+                                orientation='vertical', label_text_font_size="14pt")
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
-                pf.legend.label_text_font_size = "12px"
-                pf.xaxis.axis_label_text_font_style = 'italic'
-                pf.yaxis.axis_label_text_font_style = 'italic'
+                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
+                pf.yaxis.axis_label_text_font_size = "14pt"
+                pf.xaxis.major_label_text_font_size = "14pt"
                 pf.yaxis.major_label_text_font_size = "14pt"
+                pf.xaxis.axis_label_text_font_style = 'normal'
+                pf.yaxis.axis_label_text_font_style = 'normal'
                 dq_plots.append(pf)
 
         if len(dq_plots) > 0:
@@ -465,24 +473,24 @@ class Plots(GetInputInformation):
             rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
             pf.ygrid.grid_line_color = None
-            pf.title.text_font_size = '14pt'
             pf.xaxis.axis_label = 'Fit value'
-            pf.xaxis.major_label_text_font_size = "12pt"
-            pf.yaxis.major_label_text_font_size = "12pt"
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rf], index=i) for i in range(len(legends))], location="center",
-                            orientation='vertical', label_text_font_size="12px")
+                            orientation='vertical', label_text_font_size="14pt")
             pf.add_layout(legend, 'right')
             pf.legend.items.reverse()
             pf.legend.border_line_width = 0
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
-            pf.legend.label_text_font_size = "12px"
-            pf.xaxis.axis_label_text_font_style = 'italic'
-            pf.yaxis.axis_label_text_font_style = 'italic'
+            pf.title.text_font_size = '14pt'
+            pf.legend.label_text_font_size = "14pt"
             pf.xaxis.axis_label_text_font_size = "14pt"
+            pf.yaxis.axis_label_text_font_size = "14pt"
+            pf.xaxis.major_label_text_font_size = "14pt"
             pf.yaxis.major_label_text_font_size = "14pt"
+            pf.xaxis.axis_label_text_font_style = 'normal'
+            pf.yaxis.axis_label_text_font_style = 'normal'
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
@@ -514,24 +522,24 @@ class Plots(GetInputInformation):
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
-                pf.title.text_font_size = '14pt'
-                pf.xaxis.axis_label = 'Satisfaction rate, %'
-                pf.xaxis.major_label_text_font_size = "12pt"
-                pf.yaxis.major_label_text_font_size = "12pt"
+                pf.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="12px")
+                                orientation='vertical', label_text_font_size="14pt")
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
-                pf.legend.label_text_font_size = "12px"
-                pf.xaxis.axis_label_text_font_style = 'italic'
-                pf.yaxis.axis_label_text_font_style = 'italic'
+                pf.title.text_font_size = '14pt'
+                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
+                pf.yaxis.axis_label_text_font_size = "14pt"
+                pf.xaxis.major_label_text_font_size = "14pt"
                 pf.yaxis.major_label_text_font_size = "14pt"
+                pf.xaxis.axis_label_text_font_style = 'normal'
+                pf.yaxis.axis_label_text_font_style = 'normal'
                 fq_plots.append(pf)
 
         if em_fit is not None and len(em_fit) > 0:
@@ -556,24 +564,24 @@ class Plots(GetInputInformation):
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
-                pf.title.text_font_size = '14pt'
                 pf.xaxis.axis_label = 'Q-score'
-                pf.xaxis.major_label_text_font_size = "12pt"
-                pf.yaxis.major_label_text_font_size = "12pt"
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="12px")
+                                orientation='vertical', label_text_font_size="14pt")
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
-                pf.legend.label_text_font_size = "12px"
-                pf.xaxis.axis_label_text_font_style = 'italic'
-                pf.yaxis.axis_label_text_font_style = 'italic'
+                pf.title.text_font_size = '14pt'
+                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
+                pf.yaxis.axis_label_text_font_size = "14pt"
+                pf.xaxis.major_label_text_font_size = "14pt"
                 pf.yaxis.major_label_text_font_size = "14pt"
+                pf.xaxis.axis_label_text_font_style = 'normal'
+                pf.yaxis.axis_label_text_font_style = 'normal'
                 fq_plots.append(pf)
 
         if len(fq_plots) > 0:

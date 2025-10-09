@@ -312,7 +312,7 @@ class SasValidation(GetInputInformation):
         get p-values from ATSAS
         '''
         num_of_fits = self.get_number_of_fits()
-        pval_table = {'SASDB ID': [], 'Model': [], 'χ²': [], 'p-value': []}
+        pval_table = {'SASDB ID': [], 'Model': [], 'χ²': [], 'P-value': []}
 
 
         for code in self.sascif_dicts.keys():
@@ -366,13 +366,13 @@ class SasValidation(GetInputInformation):
                     for fn in [f1fn, f2fn, f3fn]:
                         os.remove(fn)
 
-                    pval_table['p-value'].append('%.2E' % Decimal(p_val))
+                    pval_table['P-value'].append('%.2E' % Decimal(p_val))
                     pval_table['χ²'].append('%.2f' % chisq)
 
             if c == 0:
                 pval_table['SASDB ID'].append(code)
                 pval_table['Model'].append(utility.NA)
-                pval_table['p-value'].append(utility.NA)
+                pval_table['P-value'].append(utility.NA)
         return pval_table
 
     def get_pofr_ext(self) -> dict:
@@ -666,6 +666,8 @@ class SasValidation(GetInputInformation):
             refX = np.array(data['_sas_scan_intensity']['momentum_transfer'], dtype=float)
             refY = np.array(data['_sas_scan_intensity']['intensity'], dtype=float)
             refS = np.array(data['_sas_scan_intensity']['intensity_su_counting'], dtype=float)
+            unit = data['_sas_scan']['unit']
+            unitm = self.get_scan_unit_mult(unit)
 
             num = num_of_fits[code]
             fits = {}
@@ -680,7 +682,7 @@ class SasValidation(GetInputInformation):
                     fitS = np.array([refS[np.argmin(np.abs(refX - x))] for x in fitX], dtype=float)
 
                     f_df = pd.DataFrame({
-                        'Q': fitX,
+                        'Q': fitX * unitm,
                         'Ie': fit_refY,
                         'Ib': fitY,
                         'E': fitS,
