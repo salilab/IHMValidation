@@ -767,7 +767,7 @@ def get_alphafolddb_link(acc: str) -> str|None:
     m = re.match(regexp, acc)
     if m:
         uid = m.groupdict()['uniprot']
-        url_ = f'https://alphafold.ebi.ac.uk/files/AF-{uid}-F1-model_v4.cif'
+        url_ = f'https://alphafold.ebi.ac.uk/files/AF-{uid}-F1-model_v6.cif'
         r = requests.head(url_)
         if r.status_code == 200:
             url = f"https://alphafold.ebi.ac.uk/entry/{uid}"
