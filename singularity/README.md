@@ -1,4 +1,4 @@
-# Building runtime image
+### Building runtime image
 
 IHMValidation pipeline is designed to work inside the [Singularity](https://docs.sylabs.io/guides/4.1/user-guide/introduction.html) container with all 3rd-party dependencies.
 
