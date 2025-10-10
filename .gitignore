@@ -33,3 +33,6 @@ templates_for_flasks/
 # VIM
 *.swo
 *.swp
+
+# Sphinx
+docs/build
