@@ -1,101 +1,109 @@
+<!--
+cx_data_quality.j2 - Crosslinking-MS data quality page
+
+Copyright (C) 2024-2025 Arthur Zalevsky <aozalevsky@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 {% from "macro.html" import format_value %}
 {% if enable_cx and cx_present %}
-  <div class="card-body border-success" style="border-color: solid black;">
-    <!-- start overall card body for front page -->
-    <div class="card-header" style="background-color: #FFF;">
-      <!-- Data quality header -->
-      <div class="row">
-        <div class="col-lg-12">
-          <h5 class= ex2 align= center>
-            <u><a name=crosslinking-ms>Crosslinking-MS</a></u>
-          </h5>
-          <p align=justify>
-            <em>
-              At the moment, data validation is only available for crosslinking-MS data deposited as a fully <a href=https://www.ebi.ac.uk/pride/markdownpage/crosslinking>compliant</a> dataset in the <a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE Crosslinking</a> database. 
-              Correspondence between crosslinking-MS and entry entities is established using <a href=https://pyhmmer.readthedocs.io/en/stable/>pyHMMER</a>. Only residue pairs that passed the reported threshold are used for the analysis. The values in the report have to be interpreted in the context
-              of the experiment (i.e. only a minor fraction of in-situ or in-vivo dataset can be used for modeling).
-            </em>
-          </p>
-          {% if cx_data_quality is not none and cx_data_quality|length > 0 %}
-            {% for data in cx_data_quality %}
-              <div name=crosslinking-ms-{{ data["pride_id"] }} {{ 'class="card-header" style="background-color: #FFF;"' if cx_data_quality|length > 1 }}>
-                <table class='table'>
+  <h4 class= ex2 align= center>
+    <u><a name=dq-crosslinking-ms>3.2. Crosslinking-MS</a></u>
+  </h4>
+  <p align=justify>
+    <em>
+      At the moment, data validation is only available for crosslinking-MS data deposited as a fully <a href=https://www.ebi.ac.uk/pride/markdownpage/crosslinking>compliant</a> dataset in the <a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE Crosslinking</a> database. 
+      Correspondence between crosslinking-MS and entry entities is established using <a href=https://pyhmmer.readthedocs.io/en/stable/>pyHMMER</a>. Only residue pairs that passed the reported threshold are used for the analysis. The values in the report have to be interpreted in the context
+      of the experiment (i.e. only a minor fraction of in-situ or in-vivo dataset can be used for modeling).
+    </em>
+  </p>
+  {% if cx_data_quality is not none and cx_data_quality|length > 0 %}
+    {% for data in cx_data_quality %}
+      <div name=crosslinking-ms-{{ data["pride_id"] }} {{ 'class="card-header" style="background-color: #FFF;"' if cx_data_quality|length > 1 }}>
+        <h5>
+          <a href=https://www.ebi.ac.uk/pride/archive/crosslinking/{{ data["pride_id"] }}>{{ data["pride_id"] }}</a>
+        </h5>
+        <table class='table'>
+          <tr>
+            <td>Number of entities in the crosslinking-MS dataset:</td>
+            <td>{{ data['entities_ms'] }}</td>
+          </tr>
+          <tr>
+            <td>Number of entities in the entry:</td>
+            <td>{{ data['entities'] }}</td>
+          </tr>
+          <tr>
+            <td colspan="2">Matching entities:</td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div>
+                <table class='table table-bordered text-center' style='border-color:#003366;'>
                   <tr>
-                    <td>Crosslinking-MS dataset (<a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE ID</a>)</td>
-                    <td><a href=https://www.ebi.ac.uk/pride/archive/crosslinking/{{ data["pride_id"] }}>{{ data["pride_id"] }}</a></td>
+                    <th>Entity ID</th>
+                    <th>Molecule name</th>
+                    <th>Crosslinking-MS Entity ID</th>
+                    <th>E-value</th>
+                    <th>Exact match</th>
+                  </tr>
+                  {% for match in data['matches'] %}
+                    <tr>
+                      <td>{{ match['entity'] }}</td>
+                      <td>{{ match['entity_desc'] }}</td>
+                      <td>{{ match['entity_ms'] }}</td>
+                      <td>{{ format_value(match['e-value']) }}</td>
+                      <td>{{ match['exact_match'] }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">Residue pairs stats:</td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div>
+                <table class='table table-bordered text-center' style='border-color:#003366;'>
+                  <tr>
+                    <th>Source</th>
+                    <th>Total</th>
+                    <th>In matched entities</th>
+                    <th>Total matched</th>
                   </tr>
                   <tr>
-                    <td>Number of entities in the crosslinking-MS dataset:</td>
-                    <td>{{ data['entities_ms'] }}</td>
+                    <td>{{ ID }}</td>
+                    <td>{{ data['stats']['entry']['total'] }}</td>
+                    <td>{{ data['stats']['entry']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['entry']['mapped_entities_pct']) }}%)</td>
+                    <td>{{ data['stats']['entry']['matched'] }} ({{ "%.2f"|format(data['stats']['entry']['matched_pct']) }}%)</td>
                   </tr>
                   <tr>
-                    <td>Number of entities in the entry:</td>
-                    <td>{{ data['entities'] }}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">Matching entities:</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
-                      <div>
-                        <table class='table table-bordered text-center' style='border-color:#003366;'>
-                          <tr>
-                            <th>Entity ID</th>
-                            <th>Molecule name</th>
-                            <th>Crosslinking-MS Entity ID</th>
-                            <th>E-value</th>
-                            <th>Exact match</th>
-                          </tr>
-                          {% for match in data['matches'] %}
-                            <tr>
-                              <td>{{ match['entity'] }}</td>
-                              <td>{{ match['entity_desc'] }}</td>
-                              <td>{{ match['entity_ms'] }}</td>
-                              <td>{{ format_value(match['e-value']) }}</td>
-                              <td>{{ match['exact_match'] }}</td>
-                            </tr>
-                          {% endfor %}
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">Residue pairs stats:</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
-                      <div>
-                        <table class='table table-bordered text-center' style='border-color:#003366;'>
-                          <tr>
-                            <th>Source</th>
-                            <th>Total</th>
-                            <th>In matched entities</th>
-                            <th>Total matched</th>
-                          </tr>
-                          <tr>
-                            <td>{{ ID }}</td>
-                            <td>{{ data['stats']['entry']['total'] }}</td>
-                            <td>{{ data['stats']['entry']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['entry']['mapped_entities_pct']) }}%)</td>
-                            <td>{{ data['stats']['entry']['matched'] }} ({{ "%.2f"|format(data['stats']['entry']['matched_pct']) }}%)</td>
-                          </tr>
-                          <tr>
-                            <td>{{ data["pride_id"] }}</td>
-                            <td>{{ data['stats']['ms']['total'] }}</td>
-                            <td>{{ data['stats']['ms']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['ms']['mapped_entities_pct']) }}%)</td>
-                            <td>{{ data['stats']['ms']['matched'] }} ({{ "%.2f"|format(data['stats']['ms']['matched_pct']) }}% )</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
+                    <td>{{ data["pride_id"] }}</td>
+                    <td>{{ data['stats']['ms']['total'] }}</td>
+                    <td>{{ data['stats']['ms']['mapped_entities'] }} ({{ "%.2f"|format(data['stats']['ms']['mapped_entities_pct']) }}%)</td>
+                    <td>{{ data['stats']['ms']['matched'] }} ({{ "%.2f"|format(data['stats']['ms']['matched_pct']) }}% )</td>
                   </tr>
                 </table>
               </div>
-            {% endfor %}
-          {% else %}
-            <p>Crosslinking-MS dataset is not available in the  <a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE Crosslinking</a> database.</p>
-          {% endif %}
-        </div>
+            </td>
+          </tr>
+        </table>
       </div>
-    </div>
-  </div>
+    {% endfor %}
+  {% else %}
+    <p>Crosslinking-MS dataset is not available in the  <a href=https://www.ebi.ac.uk/pride/archive/crosslinking>PRIDE Crosslinking</a> database.</p>
+  {% endif %}
 {% endif %}

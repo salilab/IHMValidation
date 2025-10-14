@@ -1,11 +1,25 @@
-###################################
-# Script:
-# 1) Contains trivial and useful
-# functions
+# -*- coding: utf-8 -*-
 #
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# utility.py - Various helper functions
+#
+# Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""
+Various helper functions
+"""
 
 import os
 import glob
@@ -20,6 +34,7 @@ import time
 import signal
 import re
 import requests
+import base64
 
 NA = 'Not available'
 
@@ -42,8 +57,12 @@ def dict_to_JSlist(d: dict) -> list:
         for j, v in enumerate(d.values()):
             # iterate over values of every key - fill rows
             for i, el in enumerate(v, start=1):
+                # Otherwise cast as str
+                if isinstance(el, (type(None), type(ihm.unknown))):
+                    el_ = NA
+
                 # Check if int or float
-                if isinstance(el, int) or isinstance(el, float):
+                elif isinstance(el, int) or isinstance(el, float):
                     el_ = el
 
                 # If string, try casting as int or float
@@ -59,12 +78,9 @@ def dict_to_JSlist(d: dict) -> list:
                         except (TypeError, ValueError):
                             el_ = str(el)
 
-                # Otherwise cast as str
                 else:
                     el_ = str(el)
 
-                if el_ == '?':
-                    el_ = '_'
                 try:
                     output_list[i, j] = el_
                 except IndexError:
@@ -194,7 +210,7 @@ def get_unique_datasets(name: dict) -> list:
     '''
     all_data = set(name['Dataset type'])
     sub_data = {'Integrative model', 'Other', 'Comparative model',
-                'Experimental model', 'De Novo model', 'SAS data', 'Crosslinking-MS data'}
+                'Experimental model', 'De Novo model', 'SAS data', 'Crosslinking-MS data', '3DEM volume'}
     fin_data = list(all_data.difference(sub_data))
     output = list()
     for i in fin_data:
@@ -423,7 +439,7 @@ def get_rg_data(rg_dict: dict) -> list:
     fin_rg = []
     for key, val in rg_dict.items():
         fin_rg.append(key+': Rg from Gunier is ' +
-                      str(val[0])+'nm and Rg from p(r) is ' + str(val[1])+'nm')
+                      str(val[0])+' nm and Rg from p(r) is ' + str(val[1])+' nm')
     return fin_rg
 
 
@@ -765,8 +781,84 @@ def get_alphafolddb_link(acc: str) -> str|None:
     m = re.match(regexp, acc)
     if m:
         uid = m.groupdict()['uniprot']
-        r = requests.get(f"https://alphafold.ebi.ac.uk/api/prediction/{uid}")
+        url_ = f'https://alphafold.ebi.ac.uk/files/AF-{uid}-F1-model_v6.cif'
+        r = requests.head(url_)
         if r.status_code == 200:
             url = f"https://alphafold.ebi.ac.uk/entry/{uid}"
 
     return url
+
+def encode_img(buffer):
+    img_base64 = base64.b64encode(buffer)  # encode to base64 (bytes)
+    img_base64 = img_base64.decode()    # convert bytes to string
+    return img_base64
+
+def load_img(path):
+    with open(path, 'rb') as f:
+        img_ = f.read() # read bytes from file
+
+    img_base64 = encode_img(img_)
+    return img_base64
+
+def get_larget_assembly_model(system: ihm.System) -> tuple:
+    """Find model ID corresponding to the largest assembly"""
+    # TODO: The logic has to be updated when we get support for
+    # _ihm_model_representative https://github.com/ihmwg/python-ihm/issues/173
+    idx = None
+    idx_model = None
+    idx_num_asym_ids = None
+    for group, model in system._all_models():
+        asym_ids = set([rep.asym_unit._id for rep in model.representation])
+        num_asym_ids = len(asym_ids)
+        if idx == None or num_asym_ids > idx_num_asym_ids:
+            idx = model._id
+            idx_model = model
+            idx_num_asym_ids = num_asym_ids
+
+    return (idx, idx_model, idx_num_asym_ids)
+
+def format_wwpdb_url(pdbid: str) -> str:
+    """Generate a url to the wwPDB entry page"""
+
+    url = ''
+
+    if len(pdbid) == 4:
+        url = f"https://dx.doi.org/10.2210/pdb{pdbid.lower()}/pdb"
+    elif len(pdbid) == 12:
+        url = f"https://dx.doi.org/10.2210/{pdbid.lower()}/pdb"
+    else:
+        logging.error(f"Wrong PDB ID: {pdbid}")
+
+    return url
+
+def format_wwpdb_id(pdbid: str) -> str:
+    """Format all pdb ids to extended format"""
+    output = pdbid
+
+    if pdbid and len(pdbid) == 12:
+        # We don't do any format checks
+        output = pdbid.lower()
+    elif pdbid and len(pdbid) == 4:
+        output = f"pdb_0000{pdbid.lower()}"
+    else:
+        logging.error(f"Wrong PDB ID: {pdbid}")
+
+    return output
+
+def get_datasets_summary(system: ihm.System) -> list:
+    """Get counts for all data types used for modeling"""
+    datasets = []
+    datatypes = [d.data_type for d in set(system.orphan_datasets)]
+    exps, models = [], []
+    for k, v in Counter(datatypes).items():
+        if re.search('model', k):
+            models.append((k, 'Starting model', v))
+        else:
+            exps.append((k, 'Experimental data', v))
+    exps = sorted(exps, key=lambda x: x[0])
+    models = sorted(models, key=lambda x: x[1])
+    datasets = exps + models
+    if len(datasets) > 0:
+        datasets.insert(0, ('Name', 'Type', 'Count'))
+
+    return datasets

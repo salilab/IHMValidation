@@ -1,7 +1,23 @@
+<!--
+summary_validation_pdf.html - Summary validation report in PDF
+
+Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 {% from "macro.html" import write_bullet, format_value %}
-<!Template for writing Supplemental Table page>
-<! ganesans - Salilab - UCSF>
-<!ganesans@salilab.org>
 <!DOCTYPE html>
 <html>
    <head>
@@ -16,6 +32,7 @@
          border: 1px solid;
          text-align: left;
          padding: 12px;
+         vertical-align: top;
          }
          tr:nth-child(even) {
          background-color: ;
@@ -70,6 +87,9 @@
     <h3 class="center">Summary of integrative structure determination of {{complex_name}} (
       {%- for k, v in ranked_id_list -%}
         {{ comma()}}{{ k ~": " ~ v }}
+          {% if k == "PDB ID" and v|length == 4 -%}
+            | {{ PDB_ID }}
+          {%- endif -%}
       {%- endfor -%}
       )
     </h3>
@@ -80,13 +100,13 @@
             <td></td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtab">Entry composition</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabentry">1.1. Entry composition</a></i></td>
             <td>
               {{ write_bullet(summary_entities) }}
             </td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabdata">Datasets used for modeling</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabdata">1.2. Datasets used for modeling</a></i></td>
             <td>
               {% for dataset_ in Datasets_list[1:] %}
                 {% if dataset_[2] == dataset_[3] == "Not available" %}
@@ -103,20 +123,20 @@
             <td></td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#numrepr">Number of representations</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnumrepr">2.1. Number of representations</a></i></td>
             <td>
                {{ rep_info|length }}
             </td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabscale">Scale</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabscale">2.2. Scale</a></i></td>
             <td>
                {{ write_bullet(summary_scale) }}
             </td>
          </tr>
          <tr>
-            <td><i>Number of <a href="https://pdb-ihm.org/validation_help.html#sumtabrigid">rigid</a> and <a href="https://pdb-ihm.org/validation_help.html#sumtabflex">flexible</a> segments</i></td>
-            <td>{{ write_bullet(summary_segments) }}</td>
+           <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabrigidflex">2.3. Number of rigid and flexible segments</a></i></td>
+           <td>{{ write_bullet(summary_segments) }}</td>
          </tr>
 <!--
          <tr>
@@ -129,14 +149,14 @@
             <td></td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabresphys">Physical principles</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabresphys">3.1. Physical principles</a></i></td>
             <td>
               {{ write_bullet(physics) }} 
             </td>
          </tr>
          <tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabresexp">Experimental data</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabresexp">3.2. Experimental data</a></i></td>
             <td>
               {% for i in range(restraint_info|length) %}
                 - {{ restraint_info[i][0] }} <br>
@@ -150,7 +170,7 @@
          </tr>
          {% if sampling_validation is not none %}
            <tr>
-             <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabval">Sampling validation</a></i></td>
+             <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabval">4.1. Sampling validation</a></i></td>
              <td>
                {{ write_bullet(sampling_validation) }}
              </td>
@@ -165,31 +185,31 @@
           {% endif %}
 -->
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum1">Number of ensembles</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum1">4.2. Number of ensembles</a></i></td>
             <td>{{ num_ensembles }}</td>
          </tr>
 
          <tr>
-           <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum2">Number of models in ensembles</a></i></td>
+           <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum2">4.3. Number of models in ensembles</a></i></td>
            <td>{{ models }}</td>
 	       </tr>
          <tr>
-           <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum2">Number of deposited models</a></i></td>
+           <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabnum3">4.4. Number of deposited models</a></i></td>
            <td>{{ number_of_models }}</td>
 	       </tr>
          <tr>
-            <td><i> <a href="https://pdb-ihm.org/validation_help.html#sumtabprec">Model precision (uncertainty of models)</a></i></td>
+            <td><i> <a href="https://pdb-ihm.org/validation_help.html#sumtabprec">4.5. Model precision</a></i></td>
             <td>{{ write_bullet(model_precision) }}</td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabrvaldata">Data quality</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabdq">4.6. Data quality</a></i></td>
             <td>
               {{ write_bullet(Data_quality) }}
             </td>
          </tr>
          {% if disclaimer > 0 %}
            <tr>
-             <td><i><a href="https://pdb-ihm.org/validation_help.html">Model quality</a></i></td>
+             <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabmq">4.7. Model quality</a></i></td>
              <td>
                Based on existing standards, there are no model quality assessments for this entry.
              </td>
@@ -197,7 +217,7 @@
          {% else %}
            {% if assess_atomic_segments is not none %}
              <tr>
-               <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabvalatom">Model quality: assessment of atomic segments</a></i></td>
+               <td><i><a href="https://pdb-ihm.org/validation_help.html#molprobity">4.7. Model quality: assessment of atomic segments</a></i></td>
                <td>
                  {{ write_bullet(assess_atomic_segments) }}
                </td>
@@ -205,7 +225,7 @@
            {% endif %}
            {% if assess_excluded_volume is not none %}
              <tr>
-               <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabvalexv">Model quality: assessment of excluded volume</a></i></td>
+               <td><i><a href="https://pdb-ihm.org/validation_help.html#exv">4.7. Model quality: assessment of excluded volume</a></i></td>
                <td>
                  {{ assess_excluded_volume }}
                </td>
@@ -213,13 +233,13 @@
             {% endif %}
          {% endif %}
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabfit1">Fit to data used for modeling</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabfit1">4.8. Fit to data used for modeling</a></i></td>
             <td>
               {{ write_bullet(validation_input) }}
             </td>
          </tr>
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabfit2">Fit to data used for validation</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabfit2">4.9. Fit to data used for validation</a></i></td>
             <td>
               {{ write_bullet(cross_validation) }}
             </td>
@@ -231,12 +251,12 @@
          </tr>
          {% for i in range(method_info['Step number']|length) %} 
            <tr>
-             <td><i>{{ i + 1 }}. <a href="https://pdb-ihm.org/validation_help.html#sumtabmetname">Name</a></i></td>
+             <td><i>{{ i + 1 }}. <a href="https://pdb-ihm.org/validation_help.html#sumtabmetname">5.1. Method name</a></i></td>
              <td>{{ format_value(method_info['Method name'][i]) }}</td>
            </tr>
            {% if not ((method_info['Method type'][i] is none) or (method_info['Method type'][i] == "None")) %}
              <tr>
-               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmetmet">Method</a></i></td>
+               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmetmet">5.2. Method type</a></i></td>
                <td>
                  {{ method_info['Method type'][i] }}
                </td>
@@ -244,7 +264,7 @@
            {% endif %}
            {% if not ((method_info['Method description'][i] is none) or (method_info['Method description'][i] == "None")) %}
              <tr>
-               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmetdesc">Description</a></i></td>
+               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmetdesc">5.3. Method description</a></i></td>
                <td>
                  {{ method_info['Method description'][i] }}
                </td>
@@ -252,7 +272,7 @@
             {% endif %}
             {% if not ((method_info['Number of computed models'][i] is none) or (method_info['Number of computed models'][i] == "None")) %}
               <tr>
-               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmetnummodels">Number of computed models</a></i></td>
+               <td><i> &nbsp; &nbsp; &nbsp; <a href="https://pdb-ihm.org/validation_help.html#sumtabmetnummodels">5.4. Number of computed models</a></i></td>
                <td>
                  {{ method_info['Number of computed models'][i] }}
                </td>
@@ -260,7 +280,7 @@
             {% endif %}
          {% endfor %}
          <tr>
-            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabsoft">Software</a></i></td>
+            <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabsoft">5.5. Software</a></i></td>
             <td>
               {{ write_bullet(software) }}
             </td>

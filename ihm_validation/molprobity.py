@@ -1,12 +1,26 @@
-#!/usr/bin/env python
-###################################
-# Script :
-# 1) Contains class to
-# generate molprobity assessments
+# -*- coding: utf-8 -*-
 #
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# molprobity.py - Perform MolProbit assessment
+#
+# Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""
+Perform MolProbit assessment
+"""
+
 import logging
 import pickle
 import os
@@ -50,11 +64,13 @@ class GetMolprobityInformation(GetInputInformation):
         Get MolProbity version.
         We assume that all tools belong to the same release.
         """
-        version = None
+        version = utility.NA
         try:
             # Try to get "internal version" 4.x.x
             version = self.get_internal_version()
-        except OSError:
+        except subprocess.CalledProcessError:
+            logging.error(f'{tool} is missing')
+        except FileNotFoundError:
             # Fallback to commit-based version
             version = subprocess.check_output(
                 [tool, '--version'],
@@ -94,7 +110,7 @@ class GetMolprobityInformation(GetInputInformation):
             return version
 
         else:
-            raise OSError('Molprobity core.php module is missing')
+            raise FileNotFoundError('Molprobity core.php module is missing')
 
     def run_molprobity(self, fname) -> dict|None:
         """ Run MolProbity"""
@@ -540,7 +556,7 @@ class MyModelDumper(ihm.dumper._ModelDumper):
               "label_alt_id", "label_comp_id", "label_seq_id", "auth_seq_id",
               "pdbx_PDB_ins_code", "label_asym_id", "Cartn_x", "Cartn_y",
               "Cartn_z", "occupancy", "label_entity_id", "auth_asym_id",
-              "auth_comp_id", "B_iso_or_equiv", "pdbx_PDB_model_num"]
+              "auth_comp_id", "B_iso_or_equiv", "pdbx_PDB_model_num", "pdbx_formal_charge"]
         if add_ihm:
             it.append("ihm_model_id")
         with writer.loop("_atom_site", it) as lp:
@@ -595,7 +611,8 @@ class MyModelDumper(ihm.dumper._ModelDumper):
                              B_iso_or_equiv=atom.biso,
                              occupancy=atom.occupancy,
                              pdbx_PDB_model_num=model._id,
-                             ihm_model_id=model._id)
+                             ihm_model_id=model._id,
+                             pdbx_formal_charge=ihm.unknown)
         return seen_types
 
 

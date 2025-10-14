@@ -1,10 +1,27 @@
 #!/usr/bin/env python
-###################################
-# Script to run validation and write
-# to HTML and PDF
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# -*- coding: utf-8 -*-
+#
+# ihm_validator.py - Main running script
+#
+# Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""
+Main running script
+"""
+
 from collections import defaultdict
 import os
 import shutil
@@ -82,10 +99,14 @@ parser.add_argument('-dv', type=list, default=[
 parser.add_argument('-res', type=list, default=['Rigid bodies: 1 residue per bead.',
                                                 'Flexible regions: N/A'], help="Add information on model quality (molprobity or excluded volume)")
 
+parser.add_argument('--enable-format-check', default=True, type=lambda x: bool(strtobool(x)),
+                        help="Run format checker")
 parser.add_argument('--enable-sas', default=True, type=lambda x: bool(strtobool(x)),
                         help="Run SAS validation")
 parser.add_argument('--enable-cx', default=True, type=lambda x: bool(strtobool(x)),
                         help="Run crosslinking-MS validation")
+parser.add_argument('--enable-em', default=True, type=lambda x: bool(strtobool(x)),
+                        help="Run 3DEM validation")
 parser.add_argument('--enable-prism', default=True, type=lambda x: bool(strtobool(x)),
                         help="Run PrISM precision analysis")
 
@@ -181,7 +202,7 @@ def write_html(prefix: str, template_dict: dict, template_list: list, dirName: s
 
 def write_pdf(prefix: str, template_dict: dict, template_file: str, dirName: str, dirName_Output: str):
     template = templateEnv.get_template(template_file)
-    outputText = template.render(template_dict)
+    outputText = template.render(template_dict, HTMLDIR=dirName)
     temp_html = os.path.join(dirName, utility.get_output_file_temp_html(prefix))
     output_pdf = os.path.join(dirName_Output, utility.get_output_file_pdf(prefix))
 
@@ -238,8 +259,9 @@ if __name__ == "__main__":
     logging.info("Clean up temporary files")
     utility.clean_all()
 
-    logging.info("Checking file format")
-    format_checker.check_file_log(args.f)
+    if args.enable_format_check:
+        logging.info("Checking file format")
+        format_checker.check_file_log(args.f)
 
     report = WriteReport(args.f,
                          db=args.databases_root,
@@ -247,6 +269,7 @@ if __name__ == "__main__":
                          nocache=args.nocache,
                          enable_sas=args.enable_sas,
                          enable_cx=args.enable_cx,
+                         enable_em=args.enable_em,
                          enable_prism=args.enable_prism
                          )
 
@@ -332,6 +355,19 @@ if __name__ == "__main__":
         cx_fit = None
         cx_data_quality = None
 
+    # 3DEM
+    template_dict['enable_em'] = args.enable_em
+    if args.enable_em:
+        logging.info("3DEM validation")
+        report.run_em_validation(template_dict,
+                                       imageDirName=dirNames['images'])
+        em_data_quality = template_dict['em_data_quality']
+        em_fit = template_dict['em_data_quality']
+
+    else:
+        em_data_quality = []
+        em_fit = []
+
     if args.enable_prism:
         logging.info('PrISM precision analysis')
         template_dict['enable_prism'] = args.enable_prism
@@ -342,6 +378,7 @@ if __name__ == "__main__":
         molprobity_dict, exv_data,
         sas_data, sas_fit,
         cx_data_quality, cx_fit,
+        em_data_quality, em_fit,
         imageDirName=dirNames['images']
     )
     template_dict['glance_plots'] = glance_plots

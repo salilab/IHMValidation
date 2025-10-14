@@ -1,0 +1,209 @@
+<!--
+em_fit.j2 - Model fit to 3DEM data page
+
+Copyright (C) 2025 Arthur Zalevsky <aozalevsky@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+{% from "macro.html" import format_value, format_help, format_emdb_help, insert_json_plot, insert_json_or_svg_plot with context %}
+{% if enable_em and em_present %}
+  <h4 class= ex2 align=center>
+    <u><a id=3dem>5.3. 3DEM</a></u>
+  </h4>
+  <p align=justify>
+    <em>
+      This section describes fit of models to the 3DEM data. Only results for the representative model, selected as a first model with the largest number of asymmetric units.
+    </em>
+  </p>
+  
+  {% if not atomic %}
+    3DEM validation for coarse-grained structures is under development.
+  {% elif em_data_quality is not none and em_data_quality|length > 0 %}
+    {% for data in em_data_quality %}
+      <div id={{ data["emdbid"] }} style="margin-top: 2em;">
+        <h5 class= ex2 align=center>
+          <u><a href=https://emdb-empiar.org/{{ data["emdbid"] }}>{{ data["emdbid"] }}</a></u>
+        </h5>
+        
+        {% if data["fit_stats"]|length > 0 %}
+        
+          <h6 align=center>
+            <u>5.3.1. Map-model fit</u>{{ format_emdb_help("map_model_fit", current_task) }}
+          </h6>
+
+          <em>Only results for the representative Model {{ data["fit_plots"]["model"] }} are shown.</em>
+          
+          <h6 align=center>
+            <u>5.3.1.1 Map-model overlay</u>{{ format_emdb_help("map_model_overlay", current_task) }}
+          </h6>
+          
+          <div align=center>
+            <table style="page-break-inside: avoid;">
+              <tr>
+                {% for k, v in data["fit_plots"]["map_model"].items() %}
+                  <td>
+                    <div style="z-index: 1000;position: relative;">
+                      <img src="data:image/jpeg;base64, {{ v }}" style="min-height: 250px; min-width: 250px; width: 100%">
+                    </div>
+                  </td>
+                {% endfor %}
+              </tr>
+              <tr>
+                {% for k, v in data["fit_plots"]["map_model"].items() %}
+                  <td align=center>
+                    <b>{{ k.upper() }}</b>
+                  </td>
+                {% endfor %}
+              </tr>
+            </table> 
+          </div>
+          <p>
+            The images above show the 3D surface view of the map at the recommended contour level {{ format_value(data["data_stats"]["recommended_level"], num_digits=3) }}
+            at 50% transparency in yellow overlaid with a ribbon representation of the model colored in blue.
+            These images allow for the visual assessment of the quality of fit between the atomic model and
+            the map.
+          </p>
+          
+          <h6 align=center>
+            <u>5.3.1.2. Q-score mapped to coordinate model</u>{{ format_emdb_help("Q-score_mapped_to_coordinate_model", current_task) }}
+          </h6>
+          <div align=center>
+            <table style="page-break-inside: avoid;">
+              <tr>
+                {% for k, v in data["fit_plots"]["map_model_q"].items() %}
+                  <td>
+                    <div style="z-index: 1000;position: relative;">
+                      <img src="data:image/jpeg;base64, {{ v }}" style="min-height: 250px; min-width: 250px; width: 100%">
+                    </div>
+                  </td>
+                {% endfor %}
+                <td>
+                  <div style="z-index: 1000;position: relative;">
+                    <img src="data:image/jpeg;base64, {{ data["fit_plots"]["q_scale"] }}" style="min-height: 250px; height: 250px">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                {% for k, v in data["fit_plots"]["map_model_q"].items() %}
+                  <td align=center>
+                    <b>{{ k.upper() }}</b>
+                  </td>
+                {% endfor %}
+                <td>
+                </td>
+              </tr>
+            </table> 
+          </div>
+          <p>
+            The images above show the model with each residue colored according to its Q-score. This shows
+            their resolvability in the map with higher Q-score values reflecting better resolvability. Please
+            note: Q-score is calculating the resolvability of atoms, and thus high values are only expected at
+            resolutions at which atoms can be resolved. Low Q-score values may therefore be expected for
+            many entries.
+          </p>
+          
+          <h6 align=center>
+            <u>5.3.1.3. Atom inclusion mapped to coordinate model</u>{{ format_emdb_help("Atom_inclusion_mapped_to_coordinate_model", current_task) }}
+          </h6>
+          <div align=center>
+            <table style="page-break-inside: avoid;">
+              <tr>
+                {% for k, v in data["fit_plots"]["map_model_inclusion"].items() %}
+                  <td>
+                    <div style="z-index: 1000;position: relative;">
+                      <img src="data:image/jpeg;base64, {{ v }}" style="min-height: 250px; min-width: 250px; width: 100%">
+                    </div>
+                  </td>
+                {% endfor %}
+                <td>
+                  <div style="z-index: 1000;position: relative;">
+                    <img src="data:image/jpeg;base64, {{ data["fit_plots"]["ai_scale"] }}" style="min-height: 250px; height: 250px">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                {% for k, v in data["fit_plots"]["map_model_inclusion"].items() %}
+                  <td align=center>
+                    <b>{{ k.upper() }}</b>
+                  </td>
+                {% endfor %}
+                <td>
+                </td>
+              </tr>
+            </table> 
+          </div>
+          <p>
+            The images above show the model with each residue colored according to its atom inclusion. This
+            shows to what extent they are inside the map at the recommended contour level {{format_value(data["data_stats"]["recommended_level"], num_digits=3)}}.
+          </p>
+          
+          <h6 align=center>
+            <u>5.3.1.4. Atom inclusion</u>{{ format_emdb_help("atom_inclusion_by_contour", current_task) }}
+          </h6>
+          <div align=center>
+              {% set plot_name = data["fit_plots"]["model"] ~ "_" ~ data["emdbid"] ~ "_" ~ "ai_plot" %}
+              {{ insert_json_or_svg_plot(plot_name, current_task) }}
+          </div>
+          <p>
+            At the recommended contour level, {{ data["fit_stats"][data["fit_plots"]["model"]]["ai_score"]["ai_recl_backbone"] }}% of all backbone atoms, {{ data["fit_stats"][data["fit_plots"]["model"]]["ai_score"]["ai_recl_all"] }}% of all non-hydrogen atoms, are inside the map.
+          </p>
+          
+          <h6 align=center>
+            <u>5.3.1.5. Map-model fit summary</u>{{ format_emdb_help("Map-model_fit_summary", current_task) }}
+          </h6>
+        
+          <p>
+            The table lists the average atom inclusion at the recommended contour level ({{format_value(data["data_stats"]["recommended_level"], num_digits=3)}}) and Q-score for the entire model and for each chain.
+          </p>
+        
+          <div class='row' style="display: -webkit-box;">
+            <div class='col-11'>
+              <div align=center>
+                <table class="table table-bordered" style="border: 1px solid black; margin-top: 0">
+                  <thead>
+                    <tr align=center>
+                      <th>Chain</th>
+                      <th>Atom inclusion</th>
+                      <th>Q-score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for k, v in data["fit_stats"][data["fit_plots"]["model"]]["ai_score"]["chains"].items() %}
+                      <tr align=center>
+                        <td>{{ k }}</td>
+                        <td><div style="background-color: {{ v["color"] }}; height: 0.75em; width: 2em; margin: 0em; border: 0em; display: inline-block"></div>{{ format_value(v["value"], num_digits=3) }}</td>
+                        {% set vq = data["fit_stats"][data["fit_plots"]["model"]]["q_score"]["chains"][k] %}
+                        <td><div style="background-color: {{ vq["color"] }}; height: 0.75em; width: 2em; margin: 0em; border: 0em; display: inline-block"></div>{{ format_value(vq["value"], num_digits=3) }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class='col-1'>
+              <div style="z-index: 1000;position: relative;">
+                <img src="data:image/jpeg;base64, {{ data["fit_plots"]["q_scale"] }}" style="min-height: 250px; height: 250px">
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <p>Model to data fit analysis is not avaliable.</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>3DEM dataset is not available in the <a href=https://emdb-empiar.org>EMDB</a> database.</p>
+  {% endif %}
+{% endif %}

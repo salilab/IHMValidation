@@ -1,9 +1,25 @@
+<!--
+model_composition.html - Model details page
+
+Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 {% extends "validation_report_layout.html" %}
 {% from "macro.html" import write_table %}
 {% block body %}
-<!-- Template for writing model composition webpage -->
-<!-- ganesans - Salilab - UCSF -->
-<!-- ganesans@salilab.org -->
 
   <!-- Ensemble information -->
   <div class="card-body border-success" style="border-color: solid black;">
@@ -11,7 +27,7 @@
       <div class="col-lg-12">
         <div class="card-header" style="background-color: #FFF;">
           <h4 align='center'>
-            <u><a name='ensemble'>Ensemble information</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#ensemble">?</a>
+            <u><a name='ensemble'>2.1. Ensemble information</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#ensemble">?</a>
           </h4>
           {% if num_ensembles < 2 %}
             <p class ="ex2"><i>This entry consists of {{num_ensembles|int}} distinct ensemble.</i></p>
@@ -23,31 +39,24 @@
     </div>
   </div>
   
-  <!-- Structure summary -->
+  <!-- Representation -->
   <div class="card-body border-success" style="border-color: solid black;">
     <div class="row">
       <div class="col-lg-12">
         <div class="card-header" style="background-color: #FFF;">
-          <h4 class="ex2" align="center">
-            <u><a name=summary>Summary</a></u><a class="help" title="help" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px"  href="/validation_help.html#summary">?</a>
-          </h4>
-            
-          <p align="justify">
-            <i>This entry consists of {{ number_of_models }} model(s). A total of {{ number_of_datasets|int }} datasets were used to build this entry.</i>
-          </p>
+          {% include 'representation.j2' %} 
         </div>
       </div>
     </div>
   </div>
   
-  {% include 'representation.j2' %} 
   
   <!-- Datasets summary -->
   <div class="card-body border-success" style="border-color: solid black;">
     <div class="row">
       <div class="col-lg-12">
         <div class="card-header" style="background-color: #FFF;">
-          <h4 class="ex2" align="center"><u><a name='data'>Datasets used for modeling </a></u> <a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#datasets">?</a></h4>
+          <h4 class="ex2" align="center"><u><a name='data'>2.3. Datasets used for modeling </a></u> <a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#datasets">?</a></h4>
           {% if number_of_datasets < 2 %}
             <i>There is {{number_of_datasets|int}} unique dataset used to build the models in this entry.</i>
           {% else %}
@@ -66,7 +75,7 @@
       <div class="col-lg-12">
         <div class="card-header" style="background-color: #FFF;">
           <h4 class="ex2" align="center">
-            <u><a name="methods">Methodology and software</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#software">?</a>
+            <u><a name="methods">2.4. Methodology and software</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href="/validation_help.html#software">?</a>
           </h4>
           <!-- Protocols summary -->
           {% if Protocols_number < 2 %}

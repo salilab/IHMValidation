@@ -1,11 +1,26 @@
-###################################
-# Script :
-# 1) Contains class to validate models
-# built using SAS datasets
+# -*- coding: utf-8 -*-
 #
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# sas.py - SAS assessment for PDB-IHM
+#
+# Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""
+SAS assessment for PDB-IHM
+"""
+
 import os
 import re
 import subprocess
@@ -178,11 +193,11 @@ class SasValidation(GetInputInformation):
                 lambda row: (row['Q'], row['Q']), axis=1)
             I_df['err_y'] = I_df.apply(
                 lambda row: (
-                    np.log(row['I'] - row['E']),
-                    np.log(row['I'] + row['E'])),
+                    np.log10(row['I'] - row['E']),
+                    np.log10(row['I'] + row['E'])),
                 axis=1)
-            I_df['logI'] = np.log(I_df['I'])
-            I_df['logQ'] = np.log(I_df['Q'])
+            I_df['logI'] = np.log10(I_df['I'])
+            I_df['logQ'] = np.log10(I_df['Q'])
             I_df['logX'] = I_df.apply(lambda row: (
                 row['logQ'], row['logQ']), axis=1)
             I_df['Ky'] = I_df['Q'] * I_df['Q'] * I_df['I'] * dim_num
@@ -312,7 +327,7 @@ class SasValidation(GetInputInformation):
         get p-values from ATSAS
         '''
         num_of_fits = self.get_number_of_fits()
-        pval_table = {'SASDB ID': [], 'Model': [], 'χ²': [], 'p-value': []}
+        pval_table = {'SASDB ID': [], 'Model': [], 'χ²': [], 'P-value': []}
 
 
         for code in self.sascif_dicts.keys():
@@ -366,13 +381,13 @@ class SasValidation(GetInputInformation):
                     for fn in [f1fn, f2fn, f3fn]:
                         os.remove(fn)
 
-                    pval_table['p-value'].append('%.2E' % Decimal(p_val))
+                    pval_table['P-value'].append('%.2E' % Decimal(p_val))
                     pval_table['χ²'].append('%.2f' % chisq)
 
             if c == 0:
                 pval_table['SASDB ID'].append(code)
                 pval_table['Model'].append(utility.NA)
-                pval_table['p-value'].append(utility.NA)
+                pval_table['P-value'].append(utility.NA)
         return pval_table
 
     def get_pofr_ext(self) -> dict:
@@ -394,7 +409,7 @@ class SasValidation(GetInputInformation):
                 'I': np.array(data['intensity_reg'], dtype=float)
             })
             pdf_re['Q'] = pdf_re['Q'] * unitm
-            pdf_re['logI'] = np.log(pdf_re['I'])
+            pdf_re['logI'] = np.log10(pdf_re['I'])
             pofr_dict[code] = pdf_re
         return pofr_dict
 
@@ -456,7 +471,7 @@ class SasValidation(GetInputInformation):
             rg = float(data['_sas_result']['Rg_from_PR'])
 
             G_df = val.astype({'Q': float, 'I': float, 'E': float})
-            G_df['logI'] = np.log(G_df['I'])
+            G_df['lnI'] = np.log(G_df['I'])
             # dmax = float(data_dic[code]['pddf_dmax'])
             # index_low = int(data_dic[code]['guinier_point_first'])
             # index_high = int(data_dic[code]['guinier_point_last'])
@@ -466,7 +481,7 @@ class SasValidation(GetInputInformation):
             G_df_range['Q'] = G_df['Q']
             G_df_range['Q2'] = G_df_range['Q']**2
             X = G_df_range[['Q2']].values
-            y = G_df_range['logI'].values
+            y = G_df_range['lnI'].values
             regression = LinearRegression(fit_intercept=True)
             regression.fit(X, y)
             G_df_range['y_pred'] = regression.predict(X)
@@ -666,6 +681,8 @@ class SasValidation(GetInputInformation):
             refX = np.array(data['_sas_scan_intensity']['momentum_transfer'], dtype=float)
             refY = np.array(data['_sas_scan_intensity']['intensity'], dtype=float)
             refS = np.array(data['_sas_scan_intensity']['intensity_su_counting'], dtype=float)
+            unit = data['_sas_scan']['unit']
+            unitm = self.get_scan_unit_mult(unit)
 
             num = num_of_fits[code]
             fits = {}
@@ -680,14 +697,14 @@ class SasValidation(GetInputInformation):
                     fitS = np.array([refS[np.argmin(np.abs(refX - x))] for x in fitX], dtype=float)
 
                     f_df = pd.DataFrame({
-                        'Q': fitX,
+                        'Q': fitX * unitm,
                         'Ie': fit_refY,
                         'Ib': fitY,
                         'E': fitS,
                     })
 
-                    f_df['logIe'] = np.log(f_df['Ie'])
-                    f_df['logIb'] = np.log(f_df['Ib'])
+                    f_df['logIe'] = np.log10(f_df['Ie'])
+                    f_df['logIb'] = np.log10(f_df['Ib'])
                     f_df['r'] = f_df['Ie']-f_df['Ib']
 
                     if f_df['E'].isnull().values.any():

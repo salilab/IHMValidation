@@ -1,16 +1,33 @@
+<!--
+formodeling.html - Model fit to data page
+
+Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 {% extends "validation_report_layout.html" %}
-{% from "macro.html" import insert_json_plot, write_table with context %}
+{% from "macro.html" import insert_json_plot, write_table, format_help, format_value with context %}
 {% block body %}
-<!-- Template for writing fit to information webpage -->
-<!-- ganesans - Salilab - UCSF -->
-<!-- ganesans@salilab.org -->
 <!-- header -->
   <div class="card-body border-success" style="border-color: solid black;">
     <div class="card-header" style="background-color: #FFF; height=18rem">
       <div class="row">
         <div class="col-lg-12">
           <h4 class="ex2" align="center">
-            <u><a name='first'>Fit of model to data used for modeling</a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#fittodata'>?</a>
+            <u><a name='first'>5. Fit of model to data used for modeling</a></u>
+            {{ format_help("fittodata", current_task) }}
           </h4>
         </div>
       </div>
@@ -18,39 +35,32 @@
   </div>
   <!-- SAS header -->
   {% if sas %}
-  	<div class="card-body border-success" style="border-color: solid black;">
+    <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
       <div class="card-header" style="background-color: #FFF; height=18rem">
         <div class="row">
           <div class="col-lg-12">
-            <h5 class= ex2 align= center><u> Fit of model(s) to SAS data</u></h5>
+            <h5 class= ex2 align= center>
+              <u>5.1. SAS</u>
+              {{ format_help("fq-sas", current_task) }}
+            </h5>
             {% if sasdb_sascif|length < 1 %}
               <p align=justify>
-                SAS data used in this integrative model could not be validated as the sascif file is currently unavailable.
+                SAS data used in this integrative model could not be validated as the sasCIF file is currently unavailable or incomplete.
               </p>
             {% endif %}
           </div>
         </div>
         {% if sasdb_sascif|length > 0 %}
+          <p>Model fits displayed in this section are obtained from SASBDB.<p> 
           <div class="row">
             <div class="col-lg-6">
               <h5 class= ex2 align= center>
-                <u><a name='second'>Cormap p-value analysis of fits </a></u><a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#cormap'>?</a>
+                <u><a name='second'>5.1.1. Model versus Experimental Scattering Profiles </a></u>
+                {{ format_help("fq-sas-scattering", current_task) }}
               </h5>
-              {% if number_of_fits > 0 %}
-                <p class =ex2>
-                  <i>ATSAS DATCMP was used for hypothesis testing. <i>All data sets are similar (i.e. the fit and the data collected) </i> is the null hypothesis. p-value is a measure of evidence against the null hypothesis, smaller the value, the stronger the evidence that you should reject the null hypothesis.</i>
-                </p>
-                {{ write_table(p_val) }}
-              {% else %}
-                <p class =ex2>
-                  <i>Model(s) and/or fit for this entry has not been deposited.</i>
-                </p>
-              {% endif %}
-            </div>
-            <div class="col-lg-6">
               <p align=justify align=center>
-                <i>The experimental scattering curve (in blue) can be compared with the theoretical curve calculated from a model (in red). Residual value plot is a measure to assess fit to the data. Residual values should be equally and randomly spaced around the horizontal axis.</i>
+                Experimental (blue) and model (red) scattering profiles are presented as log <i>I(q) vs. q</i> together with error weighted residual difference plot between the experimental and model <i>I(q) vs q</i>. The <i>I(q)</i> is the intensity (preferably in absolute units of cm-1 or arbitrary units) and <i>q</i> is the modulus of the scattering vector. For a good fit, residual values should be equally and randomly spaced around the horizontal axis largely within +/- three standard deviations.
               </p>
               <div class=row align=center>
                 {% for i in range(sasdb_code_html|length) %}
@@ -61,10 +71,40 @@
                 {% endfor %}
               </div>
             </div>
+            <div class="col-lg-6">
+              <h5 class= ex2 align= center>
+                <u><a name='second'>5.1.2. &#x3A7;&#178; Goodness of Fit Assessment and 5.1.3. CorMap Test</a></u>
+                {{ format_help("fq-sas-chi2", current_task) }}
+              </h5>
+              {% if number_of_fits > 0 %}
+                <p class =ex2>
+                  χ² values are a measure of the overall fit of the model to the 1D scattering profile. 
+                  A model that fits the data within its error estimates will have a χ² value close to one, 
+                  provided that the dominant errors are the random statistical errors (i.e. no systematic errors) 
+                  from the SAS measurement that are correctly propagated. 
+                  Correlation Map (CorMap) test is a variance-covariance analysis on the scattering intensities 
+                  comparing two (or more) scattering profiles (e.g. model versus experiment or multiple measures 
+                  from the same sample). The CorMap test complements χ² and importantly is independent of the 
+                  reported errors. The method assigns a probability (P-value based on a 1-tailed Schilling test) 
+                  for finding the longest string of experimental data points that lie systematically 
+                  above (+1) or below (-1) the model profile. The P-value lies between 0 – 1 and 
+                  a significance threshold is chosen below which the model fit is judged 
+                  to show systematic deviation from experiment. A typical range statisticians use 
+                  to indicate significant deviation is 0.01 - 0.05. As implemented in the ATSAS suite, 
+                  the reported CorMap P-value is green (model fit is good) for P > 0.05, yellow 
+                  for 0.01 < P < 0.05, and red (model deviates significantly) for P < 0.01. 
+                </p>
+                {{ write_table(p_val) }}
+              {% else %}
+                <p class =ex2>
+                  <i>Model(s) and/or fit for this entry has not been deposited or sasCIF file is incomplete.</i>
+                </p>
+              {% endif %}
+            </div>
           </div>
         {% endif %}
       </div>
-  	</div>
+    </div>
   {% endif %}
   <!-- start overall card body for front page -->
   {% if cx  %}
@@ -73,8 +113,14 @@
       <div class="card-header" style="background-color: #FFF; height=18rem">
         <div class="row">
           <div class='col-lg-12'>
-            <h4 align=center id="crosslinking-ms"><u> Fit of model(s) to crosslinking-MS data</u></h4>
-            <h5 align=center id="crosslinking-ms_ertypes"><u>Restraint types</u></h5>
+            <h4 align=center id="crosslinking-ms">
+              <u>5.2. Crosslinking-MS</u>
+              {{ format_help("fq-crosslinking-ms", current_task) }}
+            </h4>
+            <h5 align=center id="crosslinking-ms_ertypes">
+              <u>5.2.1. Restraint types</u>
+              {{ format_help("fq-crosslinking-ms-restraints", current_task) }}
+            </h5>
             {% if cx_ertypes is none %}
               <p>Restraint types in this entry are not supported at the moment.</p>
             {% else %}
@@ -82,7 +128,7 @@
                 <div class='col-lg-6'>
                   <p>
                     <i>
-                      Restraint types are summarized in the table below. 
+                      This table summarizes information about crosslinker(s) used for data generation, and how crosslinking information was translated into actual modeling restraints.
                       Restraints assigned "<a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Items/_ihm_cross_link_restraint.model_granularity.html>by-residue</a>" are interpreted as between CA atoms. 
                       Restraints between coarse-grained beads are indicated as "coarse-grained". <a href=https://mmcif.wwpdb.org/dictionaries/mmcif_ihm_ext.dic/Items/_ihm_cross_link_restraint.group_id.html>Restraint group</a> represents a set of crosslinking restraints applied collectively in the modeling.
                     </i>
@@ -106,7 +152,7 @@
                       {% for i in range(cx_ertypes['data']|length) %}
                         <tr>
                           {% for v in cx_ertypes['data'][i] %}
-                            <td>{{ v }}</td>
+                            <td>{{ format_value(v) }}</td>
                           {% endfor %}
                         </tr>
                       {% endfor %}
@@ -122,13 +168,15 @@
                       <p>Distograms for this entry are unavailable the moment.</p>
                     {% else %}
                       <p style='text-align: left'>
-                        <i>Restraints with identical thresholds are grouped into one plot. 
-                          Only the best distance per restraint per model group/ensemble is plotted.
-                          Inter- and intramolecular (including self-links) restraints are also grouped into one plot. 
-                          Distance for a restraint between coarse-grained beads is calculated as a minimal distance 
-                          between shells; if beads intersect, the distance will be reported as 0.0. 
-                          A bead with the highest available resolution for a given residue is used for the assessment.
-                        </i>
+                        Distograms (i.e., histogram plots of distances) provide an overview of distributions of 
+                        distances between residues for which chemical crosslinks were identified. The shift of 
+                        the distogram relative to the threshold value may indicate a poor model.
+                        Restraints with identical thresholds are grouped into one plot. 
+                        Only the best distance per restraint per model group/ensemble is plotted.
+                        Inter- and intramolecular (including self-links) restraints are also grouped into one plot. 
+                        Distance for a restraint between coarse-grained beads is calculated as a minimal distance 
+                        between shells; if beads intersect, the distance will be reported as 0.0. 
+                        A bead with the highest available resolution for a given residue is used for the assessment.
                       </p>
                       <div class='bk-root' id='cx_distograms_plot' style="max-height: 75vh; overflow: auto;">
                       </div>
@@ -142,7 +190,10 @@
               </div>
             {% endif %}
             <!-- end of cx_ertypes --> 
-            <h5 align=center id="crosslinking-ms_satisfaction"><u>Satisfaction of restraints</u></h5>
+            <h5 align=center id="crosslinking-ms_satisfaction">
+              <u>5.2.2. Satisfaction of restraints</u>
+              {{ format_help("fq-crosslinking-ms-satisfaction", current_task) }}
+            </h5>
             {% if cx_stats is none %}
               <p>Satisfaction rates for this entry are unavailable at the moment.</p>
             {% else %}
@@ -237,4 +288,10 @@
       </div>
     </div>
   {% endif %}
+
+  <!-- 3DEM -->
+  <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
+    {% include 'em_fit.j2' %}
+  </div>
+
 {% endblock %}

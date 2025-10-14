@@ -1,0 +1,117 @@
+Bootstrap: docker
+From: ubuntu:22.04
+Stage: spython-base
+
+%arguments
+    
+    TZ="America/Los_Angeles"
+    ATSAS="./ATSAS-3.2.1-1_amd64.deb"
+    CHIMERA="./chimera-alpha-linux_x86_64_osmesa.bin"
+    CHIMERAX="./ucsf-chimerax_1.9ubuntu22.04_amd64.deb"
+
+%files
+
+    {{ ATSAS }} /ATSAS.deb
+    {{ CHIMERA }} /chimera.bin
+    {{ CHIMERAX }} /chimerax.deb
+
+%labels
+
+    MAINTAINER Arthur Zalevsky <aozalevsky@gmail.com>
+
+%post
+
+    TZ={{ TZ }}
+    DEBIAN_FRONTEND=noninteractive
+
+    # Install common dependencies
+    apt update -y && apt install -y wget curl git subversion unzip build-essential time htop locales
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
+    apt install -y ttf-mscorefonts-installer fontconfig
+    fc-cache -fv
+    
+    # Set locale
+    echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+    echo "LANG=en_US.UTF-8" > /etc/locale.conf
+    locale-gen en_US.UTF-8
+
+    # workaround for git cloning errors
+    git config --global http.lowSpeedLimit 0
+    git config --global http.lowSpeedTime 300
+
+    # Set up basic conda environment using conda-forge packages
+    curl -L https://github.com/conda-forge/miniforge/releases/download/23.3.1-1/Mambaforge-23.3.1-1-Linux-x86_64.sh -o miniforge.sh && echo "dbe92c011a1315b9626e2f93a165892f4b89177145bc350b3859a483a3642a24 miniforge.sh" sha256sum -c --status && bash ./miniforge.sh -b -p /opt/conda && rm -f miniforge.sh && /opt/conda/bin/conda init -q bash
+
+    # Ensure that we always use a shell with conda
+    PATH=/opt/conda/bin:${PATH}
+    echo "conda activate" >> ~/.bashrc
+    
+    # Install Python packages and other dependencies needed by IHMValidation
+    apt install -y xvfb mesa-utils libasound2 libdbus-glib-1-2 libgtk-3-0 pymol
+    mamba install -y pip requests "numpy==1.26.2" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd "qt6-main==6.7.3" -c salilab 
+    pip install -qU iqplot pdfkit pyhmmer "mendeleev<1.1" 
+    curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+    
+    # Build molprobity from source code and put the binaries we need in /usr/bin/
+    mkdir /opt/molprobity && cd /opt/molprobity && curl -O https://raw.githubusercontent.com/rlabduke/MolProbity/master/install_via_bootstrap.sh && bash ./install_via_bootstrap.sh 4
+    PATH=${PATH}:/opt/molprobity/build/bin
+
+    # Install SAS tools: ATSAS and SASCIFTOOLS
+    apt install -y /ATSAS.deb && rm -f /ATSAS.deb
+    pip install -q git+https://git.embl.de/grp-svergun/sasciftools3.git@master#egg=sasciftools
+
+    # Install additional certificate for SASBDB
+    curl https://cacerts.digicert.com/ThawteEVRSACAG2.crt.pem -o ThawteEVRSACAG2.crt --output-dir /usr/local/share/ca-certificates/ && update-ca-certificates
+    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+    # Install mzIdentML reader
+    pip install -q git+https://github.com/PRIDE-Archive/mzidentml-reader
+    
+    # Install VA package from EMDB and other dependencies
+    pip install -q va vtk
+    
+    # Install extra chimera and chimerax dependencies
+    apt install -y libglib2.0-0 libxrender1 libxcb-cursor0
+    
+    # Install Chimera
+    chmod +x /chimera.bin && echo "/opt/chimera" | /chimera.bin && rm -rf /chimera.bin
+    PATH=${PATH}:/opt/chimera/bin
+    curl -L https://github.com/gregdp/mapq/raw/refs/heads/master/download/mapq_v2.9.7.zip -o /mapq.zip
+    unzip -d / /mapq.zip && cd /mapq && python install.py $(chimera --root) && cd / && rm -rf /mapq*
+    chimera --silent --nostatus /opt/chimera/share/mapq/mapqp.py 2>/dev/null
+    
+    # Install ChimeraX
+    apt install -y /chimerax.deb && apt install -yf && rm -f /chimerax.deb && echo '#!/bin/bash\nchimerax --offscreen --silent $@' > /usr/local/bin/ChimeraX && chmod +x /usr/local/bin/ChimeraX
+
+    # PRISM dependencies 
+    pip install -q "numpy==1.26.2" "matplotlib>=3.4.0" "scipy>=1.6.1" "networkx>=2.6.2" wget jenkspy pandas biopython
+    
+    # get PrISM
+    git clone -b ihm https://github.com/aozalevsky/prism /opt/prism
+
+    # Get IHMValidation
+    pip install -q "ihm==2.7"
+    git clone --depth 1 https://github.com/salilab/IHMValidation.git /opt/IHMValidation && chmod +x /opt/IHMValidation/ihm_validation/ihm_validator.py
+
+    # Create input and output dirs
+    mkdir -p /ihmv/input /ihmv/output /ihmv/cache /ihmv/databases
+
+    # Cleanup
+    apt clean
+    conda clean -a 
+
+%environment
+
+    export TZ=${TZ}
+    export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    export SE_MANAGER_PATH=/opt/conda/bin/selenium-manager
+    export PATH=/opt/conda/bin:${PATH}
+    export PATH=${PATH}:/opt/molprobity/build/bin
+    export PATH=${PATH}:/opt/chimera/bin
+    export PATH=${PATH}:/opt/IHMValidation/ihm_validation
+    export PYTHONPATH=${PYTHONPATH}:/opt/IHMValidation/ihm_validation
+
+%runscript
+
+    exec /opt/IHMValidation/ihm_validation/ihm_validator.py "$@"

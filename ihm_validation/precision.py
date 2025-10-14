@@ -1,11 +1,25 @@
-###################################
-# Script :
-# 1) Contains class for XL-MS validation
+# -*- coding: utf-8 -*-
 #
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# precision.py - Run local precision assessment (PrISM)
+#
+# Copyright (C) 2025 Arthur Zalevsky <aozalevsky@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+Run local precision assessment (PrISM)
+"""
 from mmcif_io import GetInputInformation
 import pandas as pd
 import logging
@@ -19,8 +33,6 @@ import sys
 pd.options.mode.chained_assignment = None
 
 p = Path(__file__).absolute().parent.parent.parent
-sys.path.append(str(p))
-p = Path(p, 'prism', 'src')
 sys.path.append(str(p))
 p = Path(p, 'prism', 'src')
 sys.path.append(str(p))
@@ -187,3 +199,7 @@ class PRISM(GetInputInformation):
     def pymol_version(self):
         return cmd.get_version()[0]
 
+    @property
+    def prism_version(self):
+        '''This is a stub. Using hardoced commit id for now.'''
+        return 'dbe5a41'

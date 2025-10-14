@@ -1,3 +1,22 @@
+<!--
+macro.html - Helper functions
+
+Copyright (C) 2023 Arthur Zalevsky <aozalevsky@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 <!-- Define a macro for generation of table from list of lists -->
 {% macro write_table(list_to_write, num_digits=2) %}
   <div class='bs-example' class='text-center'>
@@ -74,11 +93,27 @@
 {% endmacro %}
 
 <!-- Define a macro for the html/pdf formatting of help links -->
-{% macro format_help(mode, topic) %}
-  {% if mode == 'html' %}
+{% macro format_help(topic, current_task='html') %}
+  {% if current_task == 'html' %}
     <a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='/validation_help.html#{{ topic }}'>?</a>
   {% else %}
     <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://pdb-ihm.org/validation_help.html#{{ topic }}">?</a>
+  {% endif %}
+{% endmacro %}
+
+{% macro format_emdb_help(topic, current_task='html') %}
+  {% if current_task == 'html' %}
+    <a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://www.wwpdb.org/validation/2017/EMValidationReportHelp#{{ topic }}'>?</a>
+  {% else %}
+    <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://www.wwpdb.org/validation/2017/EMValidationReportHelp#{{ topic }}">?</a>
+  {% endif %}
+{% endmacro %}
+
+{% macro format_xray_help(topic, current_task='html') %}
+  {% if current_task == 'html' %}
+    <a class='help' title='help' style='background-color:#228B22;color:#000000;text-decoration:none font-size=16px' href='https://www.wwpdb.org/validation/XrayValidationReportHelp{{ topic }}'>?</a>
+  {% else %}
+    <a class="help1" style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="https://www.wwpdb.org/validation/XrayValidationReportHelp#{{ topic }}">?</a>
   {% endif %}
 {% endmacro %}
 
@@ -89,4 +124,17 @@
     item = JSON.parse('{{ (HTMLDIR ~ "/../images/" ~ ID_f ~ "_" ~ plot_name ~ ".json") | load_json_plot }}');
     Bokeh.embed.embed_item(item, "{{ plot_name }}");
   </script>
+{% endmacro %}
+
+{% macro insert_json_or_svg_plot(plot_name, current_task='html') %}
+  {% if current_task == 'html' %}
+    <div class='bk-root' id='{{ plot_name }}' style="max-height: 75vh; overflow: auto; padding-bottom: 1em">
+    </div>
+    <script type="text/javascript">
+      item = JSON.parse('{{ (HTMLDIR ~ "/../images/" ~ ID_f ~ "_" ~ plot_name ~ ".json") | load_json_plot }}');
+      Bokeh.embed.embed_item(item, "{{ plot_name }}");
+    </script>
+  {% else %}
+      <img id={{ plot_name }} src={{ "../images/" ~ ID_f ~ "_" ~ plot_name ~ ".svg" }}>
+  {% endif %}
 {% endmacro %}

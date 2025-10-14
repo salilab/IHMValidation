@@ -1,7 +1,23 @@
+<!--
+about_validation.html - Help page
+
+Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 {% extends "layout.html" %}
-<!-- Template for writing main/home flask page -->
-<!-- ganesans - Salilab - UCSF -->
-<!-- ganesans@salilab.org -->
 
 {% block navbar %}
   <nav class="navbar navbar-expand-xl navbar-dark">
@@ -29,14 +45,14 @@
           </p>
   
           <p class=ex2 align='justify'>
-            This validation report was created based on guidelines and recommendations from IHM TaskForce <a href='https://pubmed.ncbi.nlm.nih.gov/31780431/'>(Berman et al. 2019)</a>. The current version of the PDB-IHM validation report consists of four categories, (i) model composition, (ii) data quality assessments, (iii) model quality assessments, and (iv) fit to data used to build the model. A fifth category, fit to data used to validate the model is under development. 
+            This validation report was created based on guidelines and recommendations from IHM TaskForce <a href='https://pubmed.ncbi.nlm.nih.gov/31780431/'>(Berman et al. 2019)</a>. The current version of the PDB-IHM validation report consists of six sections: (i) overview; (ii) model details; (iii) data quality assessments; (iv) local geometry assessments (i.e., model quality); (v) fit of the model to the data used to generate it; and (vi) fit of the model to the data used for validation. The sixth category is currently under development. 
   
-              Data quality assessments and fit to data used for modeling categories are dependent on the different types of experimental data used in integrative modeling. We are breaking down this section based on experimental data type and addressing each method separately. The current version of the validation report is focused on validating models built using Small Angle Scattering (SAS) and Chemical Crosslinking Mass Spectrometry (crosslinking-MS) data and is based on the model and data validation guidelines published by the <a href='https://www.wwpdb.org/task/sas'>wwPDB SAS validation task force</a> <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'>(Trewhella et al. 2017)</a> and crosslinking-MS community <a href='https://pubmed.ncbi.nlm.nih.gov/33065067/'>(Leitner et al., 2020)</a>.
+              Data quality assessments and fit to data used for modeling categories are dependent on the different types of experimental data used in integrative modeling. We are breaking down this section based on experimental data type and addressing each method separately. The current version of the validation report is focused on validating models built using Small Angle Scattering (SAS), Chemical Crosslinking Mass Spectrometry (crosslinking-MS), and 3D Electron Microscopy (3DEM) data and is based on the model and data validation guidelines published by the <a href='https://www.wwpdb.org/task/sas'>wwPDB SAS validation task force</a> <a href='https://pubmed.ncbi.nlm.nih.gov/28876235/'>(Trewhella et al., 2017)</a>, crosslinking-MS <a href='https://pubmed.ncbi.nlm.nih.gov/33065067/'>(Leitner et al., 2020)</a>, and 3DEM <a href='https://pubmed.ncbi.nlm.nih.gov/38358351/'>(Kleywegt et al., 2024)</a> communities.
           </p>
 
           <p style=margin-bottom:0.5cm;></p>
   
-          <p class=ex2 align='justify' > Validation of models built using Förster Resonance Energy Transfer (FRET) and 3D Electron Microscopy (3DEM) data are under development and will be included in subsequent versions of the validation report. </p>
+          <p class=ex2 align='justify' > Validation of models built using Förster Resonance Energy Transfer (FRET) is under development and will be included in subsequent versions of the validation report. </p>
   
           <p style=margin-bottom:0.5cm;></p>
           
@@ -65,6 +81,12 @@
               <p class=ex2>
                 Leitner, Alexander,  Alexandre Bonvin, et al. 2020. "Toward Increased Reliability, Transparency, and Accessibility in Cross-linking Mass Spectrometry." Structure 28 (11): 1259-1268.
               </p>
+            </li>
+            
+            <li>
+              <p class=ex2>
+                Kleywegt, Gerard J., Paul D. Adams, Sarah J. Butcher, Catherine L. Lawson, et al. 2024. "Community recommendations on cryoEM data archiving and validation." IUCrJ, 11, 140-151.
+            </p>
             </li>
           </ol>  
         </div>

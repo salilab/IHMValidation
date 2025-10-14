@@ -1,25 +1,76 @@
+<!--
+report_version.j2 - Current version of the report
+
+Copyright (C) 2025 Arthur Zalevsky <aozalevsky@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 <p>
   <em>The following software was used in the production of this report:</em>
 </p>
 <ul style="list-style-type:none;">
   
-  <li><em><a href='https://github.com/salilab/IHMValidation'>Integrative Modeling Validation</a> Version {{ report_version }}</em></li>
+  {# IHM #}
+  
+  <li><em><a href='https://github.com/salilab/IHMValidation'>IHMValidation</a> Version {{ report_version }}</em></li>
 
   <li><em><a href='https://github.com/ihmwg/python-ihm'>Python-IHM</a> Version {{ python_ihm_version }}</em></li>
 
-  {% if molprobity_version is not none %}
+  {# MolProbity #}
+
+  {% if molprobity_version is defined %}
     <li><em><a href='http://molprobity.biochem.duke.edu/'>MolProbity</a> Version {{ molprobity_version }}</em></li>
   {% endif %}
+  
+  {# SAS #}
 
-  {% if atsas_version is not none %}
+  {% if atsas_version is defined %}
     <li><em><a href='https://www.embl-hamburg.de/biosaxs/software.html'>ATSAS</a> Version {{ atsas_version }}</em></li>
   {% endif %}
-  
-  {% if pyhmmer_version is not none %}
+
+  {# Crosslinking MS #}
+ 
+  {% if pyhmmer_version is defined %}
     <li><em><a href='https://pyhmmer.readthedocs.io/en/stable/'>pyHMMER</a> Version {{ pyhmmer_version }}</em></li>
   {% endif %}
+  
+  {# 3DEM #}
+  
+  {% if va_version is defined %}
+    <li><em><a href='https://www.ebi.ac.uk/emdb/va/'>EMDB validation analysis</a> Version {{ va_version }}</em></li>
+  {% endif %}
+  
+  {% if chimerax_version is defined %}
+    <li><em><a href='https://www.cgl.ucsf.edu/chimerax/'>ChimeraX</a> Version {{ chimerax_version }}</em></li>
+  {% endif %}
+  
+  {% if chimera_version is defined %}
+    <li><em><a href='https://www.cgl.ucsf.edu/chimera/'>Chimera</a> Version {{ chimera_version }}</em></li>
+  {% endif %}
+  
+  {% if mapq_version is defined %}
+    <li><em><a href='https://github.com/gregdp/mapq'>MapQ</a> Version {{ mapq_version }}</em></li>
+  {% endif %}
+  
+  {# PrISM #}
 
-  {% if pymol_version is not none %}
+  {% if prism_version is defined %}
+    <li><em><a href='https://github.com/aozalevsky/prism'>PrISM</a> Version {{ prism_version }}</em></li>
+  {% endif %}
+
+  {% if pymol_version is defined %}
     <li><em><a href='https://pymol.org/'>PyMOL</a> Version {{ pymol_version }}</em></li>
   {% endif %}
 

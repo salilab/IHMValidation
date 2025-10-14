@@ -63,7 +63,9 @@ def check_models(system: ihm.System):
 
 def check_all_exception(system: ihm.System):
     """Perform all checks. Throw an exception if a check fails."""
-    checks = [check_entities_histidines, check_models]
+    # Disable atom check until python-ihm fixes
+    # checks = [check_entities_histidines, check_models]
+    checks = [check_entities_histidines]
 
     for check in checks:
         check(system)

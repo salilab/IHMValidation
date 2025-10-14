@@ -1,5 +1,24 @@
+<!--
+main.html - Main HTML page of the report
+
+Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 {% extends "validation_report_layout.html" %}
-{% from "macro.html" import insert_json_plot with context %}
+{% from "macro.html" import insert_json_plot, format_help with context %}
 {% block body %}
 <!-- start overall card body for front page -->
 <div class="card-body border-success" style="border-color: solid black;">
@@ -40,7 +59,12 @@
             {% for k, v in ranked_id_list %}
               <tr>
                 <td style="text-align:center; vertical-align: middle; white-space:nowrap;">{{ k }}</td>
-                <td style="text-align:center; vertical-align: middle;">{{ v }}</td>
+                <td style="text-align:center; vertical-align: middle;">{{ v }}
+                  <!-- Ad-hoc fix for extended PDB IDs -->
+                  {% if k == "PDB ID" and v|length == 4 %}
+                    | {{ PDB_ID }}
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
             <tr>
@@ -82,11 +106,16 @@
   <!-- start overall card body for front page -->
   <div class="row">
     <div class="col-lg-12">
+      
       <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
-        <h3 align="center">
-          <a name='qual'>Overall quality</a>
-          <a class='help' title='help' style="background-color:#228B22;color:#000000;text-decoration:none font-size=16px" href="/validation_help.html#overview">?</a>
-        </h3>
+        {% include 'summary.j2' %}
+      </div>
+      
+      <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
+        <h4 align="center">
+          <a name='qual'>1.2. Overall quality</a>
+          {{ format_help("ataglance", current_task) }}
+        </h4>
         <p align="justify">
           <em>This validation report contains model quality assessments for all structures. For more detail for each assessment, use the dropdown menus at the top of this page. Number of plots is limited to {{MAXPLOTS}}.
           </em>

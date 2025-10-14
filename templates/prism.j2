@@ -1,8 +1,27 @@
+<!--
+prism.j2 - Local precision (PrISM) assessment content
+
+Copyright (C) 2025 Arthur Zalevsky <aozalevsky@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
 {% if prism_plots|length > 0  %}
-  <h5 class= ex2 align=center>
-    <u><a name='prism'>PrISM precision analysis</a></u>
-    {{ format_help(current_task, "prism") }} 
-  </h5>
+  <h4 class= ex2 align=center>
+    <u><a name='prism'>4.2. PrISM Precision Analysis</a></u>
+    {{ format_help("prism", current_task) }} 
+  </h4>
   <div><i>
     Regions of <b>low</b> {% include "prism_palette.j2" %} <b>high</b> precision, defined as the variability among the models that satisfy the input data and calculated as the density-weighted root mean-square fluctuation (RMSF) from the bead/atom center of density, annotated and visualized using PrISM. 
     The per-bead precision is computed from the deposited ensemble of superposed integrative models. 

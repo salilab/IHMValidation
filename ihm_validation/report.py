@@ -1,12 +1,25 @@
-###################################
-# Script :
-# 1) Contains class to write dictionary
-# for jinja2/write HTML files/PDF files
-# and supplementary table
+# -*- coding: utf-8 -*-
 #
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# report.py - Generation PDF and HTML reports
+#
+# Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""
+Generation of PDF and HTML reports
+"""
 
 import os
 from pathlib import Path
@@ -24,13 +37,15 @@ import numpy as np
 from selenium import webdriver
 import cx
 import precision
+import em
 
-REPORT_VERSION = '2.1'
+REPORT_VERSION = '3.0'
 
 class WriteReport(object):
     def __init__(self, mmcif_file, db, cache, nocache=False,
                  enable_sas=False,
                  enable_cx=False,
+                 enable_em=False,
                  enable_prism=False,
                  ):
         self.mmcif_file = mmcif_file
@@ -41,6 +56,10 @@ class WriteReport(object):
         self.cache = cache
         self.nocache = nocache
         self.report_version = REPORT_VERSION
+        self.enable_sas = enable_sas
+        self.enable_cx = enable_cx
+        self.enable_em = enable_em
+        self.enable_prism = enable_prism
 
     def create_webdriver(self) -> webdriver.Firefox:
         '''instantiate webdriver for rendering plots'''
@@ -87,7 +106,7 @@ class WriteReport(object):
         file_id = self.input.get_file_id()
         Template_Dict['ID'] = entry_id
         Template_Dict['ID_f'] = file_id
-        Template_Dict['PDB_ID'] = self.input.get_pdb_id()
+        Template_Dict['PDB_ID'] = utility.format_wwpdb_id(self.input.get_pdb_id())
         Template_Dict['PDBDEV_ID'] = self.input.get_pdb_dev_id()
         Template_Dict['ranked_id_list'] = self.input.get_ranked_id_list()
         Template_Dict['Molecule'] = self.input.get_struc_title()
@@ -109,10 +128,12 @@ class WriteReport(object):
         Template_Dict['number_of_datasets'] = self.input.get_dataset_length()
         Template_Dict['cx_present'] = self.input.has_crosslinking_ms_dataset
         Template_Dict['sas_present'] = self.input.has_sas_dataset
+        Template_Dict['em_present'] = self.input.has_em_dataset
         Template_Dict['Data'] = [i.upper() for i in list(set(self.input.get_dataset_comp(
         )['Dataset type']).difference({'Experimental model', 'Comparative model'}))]
         Template_Dict['Datasets_list'] = utility.dict_to_JSlist(
             self.input.get_dataset_comp())
+        Template_Dict['Datasets_summary'] = utility.get_datasets_summary(self.input.system)
         Template_Dict['Unique_dataset'] = utility.get_unique_datasets(
             self.input.get_dataset_comp())
         Template_Dict['Protocols_number'] = self.input.get_protocol_number()
@@ -136,7 +157,6 @@ class WriteReport(object):
         Template_Dict['disclaimer'] = 0
         Template_Dict['NumModels'] = self.input.num_models
         Template_Dict['atomic'] = False
-        Template_Dict['molprobity_version'] = None
         Template_Dict['assess_atomic_segments'] = None
         molprobity_dict = None
         Template_Dict['cg'] = False
@@ -191,7 +211,6 @@ class WriteReport(object):
         '''
         # we start by checking if sas dataset was used to build model
         Template_Dict['sas'] = False
-        Template_Dict['atsas_version'] = None
 
         if self.input.has_sas_dataset:
             Template_Dict['sas'] = True
@@ -211,14 +230,11 @@ class WriteReport(object):
             Template_Dict['rg_table'] = utility.dict_to_JSlist(
                 I_sas.get_rg_table_many())
             Template_Dict['sasdb_code_fits'] = I_sas.get_sasdb_code_fits()
-            Template_Dict['Data_quality'] = utility.get_rg_data(
+            Template_Dict['sas_data_quality'] = utility.get_rg_data(
                 I_sas.get_rg_for_plot())
-            Template_Dict['validation_input'] = utility.get_rg_data_fits(
+            Template_Dict['sas_fits_stats'] = utility.get_rg_data_fits(
                 I_sas.get_fits_for_plot())
-            # we check if model fits have been deposited
-            if len(Template_Dict['validation_input']) < 1:
-                Template_Dict['validation_input'] = [
-                    'Fit of model to data has not been deposited']
+
             sas_data = I_sas.get_rg_for_plot()
             sas_fit = I_sas.get_fits_for_plot()
         # if there are no sas datasets used to build the model, we set appropriate keys
@@ -266,7 +282,7 @@ class WriteReport(object):
         Template_Dict['cx_num_of_restraint_groups'] = None
         Template_Dict['cx_stats_per_model'] = None
         Template_Dict['cx_data_quality'] = None
-        Template_Dict['pyhmmer_version'] = None
+        # Template_Dict['pyhmmer_version'] = None
         output = (Template_Dict, None, None)
 
 
@@ -327,16 +343,22 @@ class WriteReport(object):
                 Template_Dict['cx_satisfaction_plot_json'] = plot
                 Template_Dict['cx_satisfaction_plots_svg'] = svgs_fn
 
-    def run_quality_glance(self, molprobity_dict: dict, exv_data: dict,
-                           sas_data: dict, sas_fit: dict,
+    def run_quality_glance(self,
+                           molprobity_dict: dict, exv_data: dict,
+                           sas_data_quality: dict, sas_fit: dict,
                            cx_data_quality: dict, cx_fit: dict,
+                           em_data_quality: dict, em_fit: dict,
                            imageDirName: str) -> dict:
         '''
         get quality at glance image; will be updated as validation report is updated
         '''
         I_plt = get_plots.Plots(self.mmcif_file, imageDirName, driver=self.driver)
         glance_plots = I_plt.plot_quality_at_glance(
-            molprobity_dict, exv_data, sas_data, sas_fit, cx_data_quality, cx_fit)
+            molprobity_dict, exv_data,
+            sas_data_quality, sas_fit,
+            cx_data_quality, cx_fit,
+            em_data_quality, em_fit,
+        )
         return glance_plots
 
     def run_supplementary_table(self,
@@ -403,20 +425,77 @@ class WriteReport(object):
 
         Template_Dict['restraint_info'] = utility.get_restraints_info(self.input.get_restraints(
         )) if self.input.get_restraints() is not None else 'Not provided or used'
-        if 'Data_quality' not in list(Template_Dict.keys()):
-            Template_Dict['Data_quality'] = ['Data quality has not been assessed']
-        # if 'validation_input' not in list(Template_Dict.keys()):
-        #     Template_Dict['validation_input'] = validation_input
 
-        validation_input = []
-        if 'cx_stats_per_model' in Template_Dict:
+        dq = []
+
+        if 'sas_data_quality' in Template_Dict and Template_Dict['sas_data_quality'] is not None:
+            dq.extend(Template_Dict['sas_data_quality'])
+
+        if 'cx_data_quality' in Template_Dict and Template_Dict['cx_data_quality'] is not None:
+            for data_ in Template_Dict['cx_data_quality']:
+                try:
+                    r_ = float(data_['stats']['entry']['matched_pct'])
+                    dq.append(f'{data_["pride_id"]}: {r_:.2f}% of crosslinks found in the data.')
+                except (ValueError, TypeError, KeyError) as e:
+                    pass
+
+            for data_ in Template_Dict['cx_data_quality']:
+                try:
+                    r_ = float(data_['stats']['ms']['mapped_entities_pct'])
+                    dq.append(f'{data_["pride_id"]}: {r_:.2f}% of crosslinks from the data were used for modeling.')
+                except (ValueError, TypeError, KeyError) as e:
+                    pass
+
+        if 'em_data_quality' in Template_Dict and Template_Dict['em_data_quality'] is not None:
+            for data_ in Template_Dict['em_data_quality']:
+                try:
+                    r_ = float(data_["data_stats"]["resolution"])
+                    dq.append(f'{data_["emdbid"]}: resolution is {r_:.2f} Å')
+                except (ValueError, TypeError, KeyError) as e:
+                    dq.append(f'{data_["emdbid"]}: resolution is {utility.NA}')
+
+        if len(dq) == 0:
+            dq.append('Data quality has not been assessed')
+
+        Template_Dict['Data_quality'] = dq
+
+        fq = []
+        if 'sas_fits_stats' in Template_Dict and Template_Dict['sas_fits_stats'] is not None:
+            fq.extend(Template_Dict['sas_fits_stats'])
+
+        if 'cx_stats_per_model' in Template_Dict and Template_Dict['cx_stats_per_model'] is not None:
             if Template_Dict['cx_stats_per_model']:
                 r_ = utility.format_range(Template_Dict['cx_stats_per_model'])
-                validation_input.append(f'Satisfaction of crosslinks: {r_}%')
+                fq.append(f'Satisfaction of crosslinks: {r_}%')
 
-        if len(validation_input) == 0:
-            validation_input.append('Fit of model to information used to compute it has not been determined')
-        Template_Dict['validation_input'] = validation_input
+        if 'em_data_quality' in Template_Dict and Template_Dict['em_data_quality'] is not None:
+            qscores = []
+            for data_ in Template_Dict['em_data_quality']:
+                for mid, fit_stats in data_['fit_stats'].items():
+                    try:
+                        q = float(fit_stats['q_score']['average'])
+                        qscores.append(q)
+                    except (ValueError, TypeError, KeyError):
+                        pass
+            if len(qscores) > 0:
+                r_ = utility.format_range(qscores)
+                fq.append(f'3DEM q-score(s): {r_}')
+
+            aiscores = []
+            for data_ in Template_Dict['em_data_quality']:
+                for mid, fit_stats in data_['fit_stats'].items():
+                    try:
+                        q = float(fit_stats['ai_score']['average'])
+                        aiscores.append(q)
+                    except (ValueError, TypeError, KeyError):
+                        pass
+            if len(aiscores) > 0:
+                r_ = utility.format_range(aiscores)
+                fq.append(f'3DEM atom inclusion score(s): {r_}')
+
+        if len(fq) == 0:
+            fq.append('Fit of model to information used to compute it has not been determined')
+        Template_Dict['validation_input'] = fq
 
         scale = utility.pretty_print_representations(self.input.get_representation_details())
 #        Template_Dict['clustering'] = clustering
@@ -432,7 +511,35 @@ class WriteReport(object):
         Template_Dict['prism_data'] = I_p.get_data()
         Template_Dict['prism_plots'] = I_p.get_plots(imageDirName)
 
-
-        Template_Dict['pymol_version'] = None
         if len(Template_Dict['prism_plots']) > 0:
+            Template_Dict['prism_version'] = I_p.prism_version
             Template_Dict['pymol_version'] = I_p.pymol_version
+
+    def run_em_validation(self, Template_Dict: dict, imageDirName: str) -> (dict):
+        '''
+        3DEM validation
+        '''
+        # if 3DEM dataset was used to build the model
+        Template_Dict['em'] = False
+        Template_Dict['em_stats'] = None
+        Template_Dict['em_data_quality'] = None
+        output = (Template_Dict, None, None)
+
+        if self.enable_em and self.input.has_em_dataset:
+            Template_Dict['em'] = True
+            I_em = em.EMValidation(self.mmcif_file, cache=self.cache)
+            self.I_em = I_em
+
+            em_data_quality = I_em.validate_all_emdb_data(imageDirName)
+            Template_Dict['em_data_quality'] = em_data_quality
+            if len(em_data_quality) > 0:
+                Template_Dict['va_version'] = I_em.get_va_version()
+                # Check if we have fit to data
+                for dataset in em_data_quality:
+                    if dataset['fit_stats'] is not None:
+                        Template_Dict['chimera_version'] = I_em.get_chimera_version()
+                        Template_Dict['chimerax_version'] = I_em.get_chimerax_version()
+                        Template_Dict['mapq_version'] = I_em.get_mapq_version()
+                        break
+
+            output = (Template_Dict, None, None)

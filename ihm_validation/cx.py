@@ -1,10 +1,25 @@
-###################################
-# Script :
-# 1) Contains class for XL-MS validation
+# -*- coding: utf-8 -*-
 #
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# cx.py - Crosslinking-MS validation for PDB-IHM
+#
+# Copyright (C) 2023-2025 Arthur Zalevsky <aozalevsky@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""
+Crosslinking-MS validation for PDB-IHM
+"""
 
 from mmcif_io import GetInputInformation
 from utility import get_hierarchy_from_model, NA
@@ -742,7 +757,18 @@ class CxValidation(GetInputInformation):
             p.output_backend = "svg"
 
             p.x_range = Range1d(xmin, xmax)
-            p.xaxis.axis_label = 'Satisfaction rate, %'
+            p.xaxis.axis_label = 'Satisfaction rate [%]'
+            p.xaxis.axis_label_text_font_size = "14pt"
+            p.yaxis.axis_label_text_font_size = "14pt"
+            p.xaxis.major_label_text_font_size = "14pt"
+            p.yaxis.major_label_text_font_size = "14pt"
+            p.xaxis.axis_label_text_font_style = 'normal'
+            p.yaxis.axis_label_text_font_style = 'normal'
+            p.title.text_font_size = "14pt"
+            p.yaxis.major_label_text_align = 'right'
+            p.yaxis.group_text_align = 'right'
+            p.yaxis.subgroup_text_align = 'right'
+            p.min_border_bottom = 75
 
             return p
 
@@ -791,16 +817,6 @@ class CxValidation(GetInputInformation):
                     title = f'Satisfaction rates in Model Group {gimg}'
                     p.title.text = title
 
-                    p.title.text_font_size = "12pt"
-                    p.xaxis.axis_label_text_font_size = "14pt"
-                    p.yaxis.axis_label_text_font_size = "14pt"
-                    p.xaxis.major_label_text_font_size = "14pt"
-                    p.yaxis.major_label_text_font_size = "14pt"
-                    p.yaxis.major_label_text_align = 'right'
-                    p.yaxis.group_text_align = 'right'
-                    p.yaxis.subgroup_text_align = 'right'
-                    p.min_border_bottom = 75
-
                     col = gridplot(
                         [p], ncols=1, toolbar_location='right',
                         # sizing_mode='scale_width'
@@ -847,11 +863,14 @@ class CxValidation(GetInputInformation):
 
                 title = f"Model Group {gimg}; {lt}: {rt}, {d:.1f} Å"
 
-                p.title.text_font_size = "12pt"
+                p.title.text_font_size = "14pt"
                 p.xaxis.axis_label_text_font_size = "14pt"
                 p.yaxis.axis_label_text_font_size = "14pt"
                 p.xaxis.major_label_text_font_size = "14pt"
                 p.yaxis.major_label_text_font_size = "14pt"
+                p.xaxis.axis_label_text_font_style = 'normal'
+                p.yaxis.axis_label_text_font_style = 'normal'
+
                 p.yaxis.major_label_text_align = 'right'
 
                 p.ray(
@@ -859,7 +878,7 @@ class CxValidation(GetInputInformation):
                     line_color='black', angle=np.pi / 2,
                     line_width=2
                 )
-                p.xaxis.axis_label = 'Euclidean distance, Å'
+                p.xaxis.axis_label = 'Euclidean distance [Å]'
                 p.yaxis.axis_label = 'Count'
                 p.title.text = title
                 p.min_border_bottom = 75

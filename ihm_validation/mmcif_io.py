@@ -1,14 +1,25 @@
-###################################
-# Script :
-# 1) Contains Base class to
-# generate specific information
-# from mmcif files
-# 2) Contains infromation for
-#  entry composition section
+# -*- coding: utf-8 -*-
 #
-# ganesans - Salilab - UCSF
-# ganesans@salilab.org
-###################################
+# mmcif_io.py - Read/write IHMCIF files
+#
+# Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""
+Read/write IHMCIF file
+"""
 
 import logging
 import os, sys
@@ -606,6 +617,19 @@ class GetInputInformation(object):
                         'Database name': [], 'Data access code': []}
         lists = self.system.orphan_datasets
         if len(lists) > 0:
+            try:
+                lists = sorted(lists, key=lambda x: int(x._id))
+            except AttributeError as e:
+                logging.error(f'Missing dataset ID')
+                logging.error(e)
+            except ValueError as e:
+                logging.error(f'Incorrect data type for dataset ID')
+                logging.error(e)
+            except Exception as e:
+                logging.error(f'Unexepcted dataset error')
+                logging.error(e)
+
+        if len(lists) > 0:
             for _ in lists:
                 if isinstance(_.location, ihm.location.DatabaseLocation):
                     try:
@@ -622,7 +646,9 @@ class GetInputInformation(object):
                         acc = f"<a href=https://pdb-ihm.org/entry.html?{acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.PDBLocation) and acc != utility.NA:
-                        acc = f"<a href=https://www.wwpdb.org/pdb?id={acc}>{acc}</a>"
+                        pdbid = utility.format_wwpdb_id(acc)
+                        url = utility.format_wwpdb_url(acc)
+                        acc = f"<a href={url}>{pdbid}</a>"
 
                     if isinstance(_.location, ihm.location.ModelArchiveLocation) and acc != utility.NA:
                         acc = f"<a href=https://doi.org/10.5452/{acc}>{acc}</a>"
@@ -1295,6 +1321,10 @@ class GetInputInformation(object):
     @property
     def has_sas_dataset(self):
         return self._has_dataset_type(ihm.dataset.SASDataset)
+
+    @property
+    def has_em_dataset(self):
+        return self._has_dataset_type(ihm.dataset.EMDensityDataset)
 
     @property
     def deposition_date(self):
