@@ -138,23 +138,39 @@ class GetInputInformation(object):
 
     def get_pdb_id(self) -> str:
         """Check database2 table for PDB ID"""
-        entry_id = None
+        pdb_id = None
         if len(self.system.databases) > 0:
             for db in self.system.databases:
                 if db.id == 'PDB':
-                    entry_id =  db.code.upper()
+                    if utility.is_pdb_id(db.code):
+                        pdb_id = utility.format_pdb_id(db.code)
+                        break
 
-        return entry_id
+        return pdb_id
+    
+    def get_pdbx_id(self) -> str:
+        """Check database2 table for PDBx ID"""
+        pdbx_id = None
+        if len(self.system.databases) > 0:
+            for db in self.system.databases:
+                if db.id == 'PDB':
+                    if utility.is_pdbx_id(db.accession):
+                        pdbx_id = utility.format_pdbx_id(db.accession)
+                        break
+
+        return pdbx_id
 
     def get_pdb_dev_id(self) -> str:
-        """Check database2 table for PDB ID"""
-        entry_id = None
+        """Check database2 table for PDB-DEV ID"""
+        pdb_dev_id = None
         if len(self.system.databases) > 0:
             for db in self.system.databases:
                 if db.id == 'PDB-Dev':
-                    entry_id =  db.code.upper()
+                    if utility.is_pdb_dev_id(db.code):
+                        pdb_dev_id = utility.format_pdb_dev_id(db.code)
+                        break
 
-        return entry_id
+        return pdb_dev_id
 
     def get_ranked_id_list(self) -> list:
         """Get sorted list of multiple ids"""
@@ -165,22 +181,36 @@ class GetInputInformation(object):
         # If we have database2 table
         if len(self.system.databases) > 0:
             pdb_id = self.get_pdb_id()
+            pdbx_id = self.get_pdbx_id()
             pdb_dev_id = self.get_pdb_dev_id()
+            # if PDBx is a primary
+            if pdbx_id is not None and entry_id == pdbx_id:
+                k = ('PDB ID', pdbx_id)
+                ids.append(k)
+
+                if pdb_dev_id is not None:
+                    k = ('PDB-Dev ID', pdb_dev_id)
+                    ids.append(k)
+            
             # if PDB is a primary
-            if pdb_id is not None and entry_id == pdb_id:
+            elif pdb_id is not None and entry_id == pdb_id:
                 k = ('PDB ID', pdb_id)
                 ids.append(k)
 
                 if pdb_dev_id is not None:
                     k = ('PDB-Dev ID', pdb_dev_id)
                     ids.append(k)
-
+            
             # if PDB-Dev is a primary
             elif pdb_dev_id is not None and entry_id == pdb_dev_id:
                 k = ('PDB-Dev ID', pdb_dev_id)
                 ids.append(k)
 
-                if pdb_id is not None:
+                if pdbx_id is not None:
+                    k = ('PDB ID', pdbx_id)
+                    ids.append(k)
+                
+                elif pdb_id is not None:
                     k = ('PDB ID', pdb_id)
                     ids.append(k)
             # Else entity is a primary
@@ -646,9 +676,9 @@ class GetInputInformation(object):
                         acc = f"<a href=https://pdb-ihm.org/entry.html?{acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.PDBLocation) and acc != utility.NA:
-                        pdbid = utility.format_wwpdb_id(acc)
-                        url = utility.format_wwpdb_url(acc)
-                        acc = f"<a href={url}>{pdbid}</a>"
+                        pdb_id = utility.format_pdbx_id(acc)
+                        url = utility.format_wwpdb_url(pdb_id)
+                        acc = f"<a href={url}>{pdb_id}</a>"
 
                     if isinstance(_.location, ihm.location.ModelArchiveLocation) and acc != utility.NA:
                         acc = f"<a href=https://doi.org/10.5452/{acc}>{acc}</a>"

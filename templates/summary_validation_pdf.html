@@ -87,9 +87,13 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
     <h3 class="center">Summary of integrative structure determination of {{complex_name}} (
       {%- for k, v in ranked_id_list -%}
         {{ comma()}}{{ k ~": " ~ v }}
-          {% if k == "PDB ID" and v|length == 4 -%}
+        {%- if k == "PDB ID" -%}
+          {%- if v|length == 4 %}
+            | {{ PDBx_ID }}
+          {%- elif v|length == 12 and PDB_ID is not none %}
             | {{ PDB_ID }}
           {%- endif -%}
+        {%- endif -%}
       {%- endfor -%}
       )
     </h3>

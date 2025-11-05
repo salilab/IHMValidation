@@ -817,33 +817,61 @@ def get_larget_assembly_model(system: ihm.System) -> tuple:
 
     return (idx, idx_model, idx_num_asym_ids)
 
-def format_wwpdb_url(pdbid: str) -> str:
+def format_wwpdb_url(pdb_id: str) -> str:
     """Generate a url to the wwPDB entry page"""
 
     url = ''
 
-    if len(pdbid) == 4:
-        url = f"https://dx.doi.org/10.2210/pdb{pdbid.lower()}/pdb"
-    elif len(pdbid) == 12:
-        url = f"https://dx.doi.org/10.2210/{pdbid.lower()}/pdb"
+    if is_pdb_id(pdb_id):
+        url = f"https://dx.doi.org/10.2210/pdb{pdb_id.lower()}/pdb"
+    elif is_pdbx_id(pdb_id):
+        # TODO: Update in the future, when wwPDB will start issuing new DOIs
+        url = f"https://www.wwpdb.org/pdb?id={pdb_id.lower()}"
     else:
-        logging.error(f"Wrong PDB ID: {pdbid}")
+        logging.error(f"Wrong PDB ID: {pdb_id}")
 
     return url
 
-def format_wwpdb_id(pdbid: str) -> str:
-    """Format all pdb ids to extended format"""
-    output = pdbid
+def is_pdb_id(pdb_id: str) -> bool:
+    """Check if the PDB ID is in PDB format"""
+    return pdb_id and len(pdb_id) == 4 and pdb_id[0].isdigit()
 
-    if pdbid and len(pdbid) == 12:
-        # We don't do any format checks
-        output = pdbid.lower()
-    elif pdbid and len(pdbid) == 4:
-        output = f"pdb_0000{pdbid.lower()}"
+def is_pdbx_id(pdbx_id: str) -> bool:
+    """Check if the PDB ID is in extended format"""
+    return pdbx_id and len(pdbx_id) == 12 and pdbx_id[:4].lower() == 'pdb_'
+
+def is_pdb_dev_id(pdb_dev_id: str) -> bool:
+    """Check if the PDB-DEV ID"""
+    return pdb_dev_id and len(pdb_dev_id) == 15 and pdb_dev_id[:7].upper() == 'PDBDEV_'
+
+def format_pdb_id(pdb_id: str) -> str:
+    """Format short PDB ID"""
+    if is_pdb_id(pdb_id):
+        pdb_id = pdb_id.upper()
     else:
-        logging.error(f"Wrong PDB ID: {pdbid}")
+        raise ValueError(f"Wrong PDB ID: {pdb_id}")
 
-    return output
+    return pdb_id
+
+def format_pdbx_id(pdbx_id: str) -> str:
+    """Format all PDB IDs to extended format"""
+    if is_pdbx_id(pdbx_id):
+        pdbx_id = pdbx_id.lower()
+    elif is_pdb_id(pdbx_id):
+        pdbx_id = f"pdb_0000{pdbx_id.lower()}"
+    else:
+        raise ValueError(f"Wrong PDBx ID: {pdbx_id}")
+
+    return pdbx_id
+
+def format_pdb_dev_id(pdb_dev_id: str) -> str:
+    """Format PDB-DEV ID"""
+    if is_pdb_dev_id(pdb_dev_id):
+        pdb_dev_id = pdb_dev_id.upper()
+    else:
+        raise ValueError(f"Wrong PDB-DEV ID: {pdb_dev_id}")
+    
+    return pdb_dev_id
 
 def get_datasets_summary(system: ihm.System) -> list:
     """Get counts for all data types used for modeling"""

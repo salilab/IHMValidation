@@ -179,10 +179,16 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
                 {% for k, v in ranked_id_list %}
                   <tr>
                     <td style="text-align:center; vertical-align: middle; white-space:nowrap;">{{ k }}</td>
-                    <td style="text-align:center; vertical-align: middle;">{{ v }}
-                      <!-- Ad-hoc fix for extended PDB IDs -->
-                      {% if k == "PDB ID" and v|length == 4 %}
-                        | {{ PDB_ID }}
+                    <td style="text-align:center; vertical-align: middle;">
+                      <!-- Main PDB/PDBx ID first -->
+                      {{ v }}
+                      <!-- Additional PDB/PDBx ID if present -->
+                      {% if k == "PDB ID" %}
+                        {% if v|length == 4 %}
+                          | {{ PDBx_ID }}
+                        {% elif v|length == 12 and PDB_ID is not none %}
+                          | {{ PDB_ID }}
+                        {% endif %}
                       {% endif %}
                     </td>
                   </tr>
