@@ -558,8 +558,7 @@ class EMValidation(GetInputInformation):
 
         # Fit-to-data
         if self.atomic:
-            mid, _, __ = utility.get_larget_assembly_model(self.system)
-            mid = int(mid)
+            mid = int(self.system.get_representative_model().model._id)
             varoot = Path(self.cache, f"{self.ID_f}_va")
             vapath = Path(varoot, f"{mid}_{emdbid}")
             os.makedirs(varoot, exist_ok=True)

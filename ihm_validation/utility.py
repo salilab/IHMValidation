@@ -800,23 +800,6 @@ def load_img(path):
     img_base64 = encode_img(img_)
     return img_base64
 
-def get_larget_assembly_model(system: ihm.System) -> tuple:
-    """Find model ID corresponding to the largest assembly"""
-    # TODO: The logic has to be updated when we get support for
-    # _ihm_model_representative https://github.com/ihmwg/python-ihm/issues/173
-    idx = None
-    idx_model = None
-    idx_num_asym_ids = None
-    for group, model in system._all_models():
-        asym_ids = set([rep.asym_unit._id for rep in model.representation])
-        num_asym_ids = len(asym_ids)
-        if idx == None or num_asym_ids > idx_num_asym_ids:
-            idx = model._id
-            idx_model = model
-            idx_num_asym_ids = num_asym_ids
-
-    return (idx, idx_model, idx_num_asym_ids)
-
 def format_wwpdb_url(pdb_id: str) -> str:
     """Generate a url to the wwPDB entry page"""
 
@@ -870,7 +853,7 @@ def format_pdb_dev_id(pdb_dev_id: str) -> str:
         pdb_dev_id = pdb_dev_id.upper()
     else:
         raise ValueError(f"Wrong PDB-DEV ID: {pdb_dev_id}")
-    
+
     return pdb_dev_id
 
 def get_datasets_summary(system: ihm.System) -> list:
