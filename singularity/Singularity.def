@@ -8,6 +8,7 @@ Stage: spython-base
     ATSAS="./ATSAS-3.2.1-1_amd64.deb"
     CHIMERA="./chimera-alpha-linux_x86_64_osmesa.bin"
     CHIMERAX="./ucsf-chimerax_1.9ubuntu22.04_amd64.deb"
+    NPROC=8
 
 %files
 
@@ -53,8 +54,21 @@ Stage: spython-base
     pip install -qU iqplot pdfkit pyhmmer "mendeleev<1.1" 
     curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
     
-    # Build molprobity from source code and put the binaries we need in /usr/bin/
-    mkdir /opt/molprobity && cd /opt/molprobity && curl -O https://raw.githubusercontent.com/rlabduke/MolProbity/master/install_via_bootstrap.sh && bash ./install_via_bootstrap.sh 4
+    # Install MolProbity
+    mkdir /opt/molprobity
+    
+    mkdir -p /opt/molprobity/modules/chem_data && cd /opt/molprobity/modules/chem_data
+    git clone --depth 1 https://github.com/phenix-project/geostd.git
+    git clone --depth 1 https://github.com/rlabduke/mon_lib.git
+    git clone --depth 1 https://github.com/rlabduke/rotarama_data.git
+    git clone --depth 1 https://github.com/rlabduke/cablam_data.git
+
+    mkdir rama_z && cd rama_z
+    curl -o top8000_rama_z_dict.pkl -L https://github.com/rlabduke/reference_data/raw/master/Top8000/rama_z/top8000_rama_z_dict.pkl
+
+    cd /opt/molprobity
+    curl -o bootstrap.py -L https://github.com/cctbx/cctbx_project/raw/master/libtbx/auto_build/bootstrap.py
+    CI=true python3 bootstrap.py --builder=molprobity --nproc={{ NPROC }} --python=38 --use-conda && rm -rf bootstrap.py
     PATH=${PATH}:/opt/molprobity/build/bin
 
     # Install SAS tools: ATSAS and SASCIFTOOLS
