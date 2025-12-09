@@ -43,8 +43,12 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
         <li class="nav-item mr-4 dropdown">
           <a class="btn btn-primary " href="/about_validation.html"><span class="overview">About <br> Validation</span></a>
         </li>
+        
         <li class="nav-item mr-4 dropdown">
-          <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location='main.html';>Validation <br> Overview</button></a>
+          <a href="main.html" class="btn btn-primary">Validation <br> Overview</a>
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-left: 0">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
           <div class="dropdown-menu">
             <a class="dropdown-item colorclass" href="main.html#qual">Overall quality</a>
           </div>
@@ -52,7 +56,10 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
         
         <!-- Model details -->
         <li class="nav-item mr-4 dropdown">
-          <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location='model_composition.html';>Model <br> Details </button></a>
+          <a href="model_composition.html" class="btn btn-primary">Model <br> Details</a>
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-left: 0">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
           <div class="dropdown-menu">
             <a class="dropdown-item colorclass" href="model_composition.html#ensemble">Ensemble information</a>
             <a class="dropdown-item colorclass" href="model_composition.html#summary">Summary</a>
@@ -64,12 +71,19 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
         
         <!-- Model details -->
         <li class="nav-item mr-4 dropdown">
-          <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location="data_quality.html";>Data <br> Quality </button></a>
+          {% if (enable_sas and ('SAS DATA' in Data)) or (enable_cx and cx_data_quality) or (enable_em and em_data_quality and em_data_quality|length > 0) %}  
+            <a href="data_quality.html" class="btn btn-primary">Data <br> Quality</a>
+          {% else %}
+              <a class="btn btn-primary disabled">Data <br> Quality</a>
+          {% endif %}
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-left: 0">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
           <div class="dropdown-menu">
             
             {% if ('SAS DATA' in Data) and (sasdb_sascif|length > 0) and enable_sas %}
-              <a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#first>SAS</a>
-              <ul class=dropdown-submenu>                  
+              <a class="dropdown-item colorclass" href=data_quality.html#first>SAS</a>
+              <ul>                  
                 <li>
                   <a class=dropdown-item2 href=data_quality.html#firstI>Scattering profiles</a>
                 </li>
@@ -91,12 +105,12 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
                 </li>
               </ul>
             {% elif ('SAS DATA' in Data) and (sasdb_sascif|length < 1) and enable_sas %}
-              <a class="dropdown-item colorclass" dropdown-toggle type=button href=data_quality.html#first>SAS</a>
+              <a class="dropdown-item colorclass" type=button href=data_quality.html#first>SAS</a>
             {% endif %}
             
             {% if (enable_cx and cx_data_quality) %}
-                <a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#crosslinking-ms>Crosslinking-MS</a>
-                <ul class=dropdown-submenu>                  
+                <a class="dropdown-item colorclass" href=data_quality.html#crosslinking-ms>Crosslinking-MS</a>
+                <ul>                  
                   {% for data in cx_data_quality %}
                     <li>
                       <a class=dropdown-item2 href=data_quality.html#{{ data["pride_id"] }}>{{ data["pride_id"] }}</a>
@@ -106,8 +120,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
             {% endif %}
             
             {% if (enable_em and em_data_quality and em_data_quality|length > 0) %}
-                <a class="dropdown-item colorclass" dropdown-toggle  href=data_quality.html#3dem>3DEM</a>
-                <ul class=dropdown-submenu>                  
+                <a class="dropdown-item colorclass" href=data_quality.html#3dem>3DEM</a>
+                <ul>                  
                   {% for data in em_data_quality %}
                     <li>
                       <a class=dropdown-item2 href=data_quality.html#{{ data["emdbid"] }}>{{ data["emdbid"] }}</a>
@@ -117,14 +131,17 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
             {% endif %}
               
             {% for item in Unique_dataset %}
-              <a class=dropdown-item-text dropdown-toggle type=button>{{item}}</a>
+              <a class="dropdown-item btn btn-primary disabled" type=button>{{item}}</a>
             {% endfor %}
           </div>
         </li>
   
         <!-- Model quality -->
         <li class="nav-item mr-4 dropdown">
-          <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location='model_quality.html';>Model <br> Quality </button></a>
+          <a href="model_quality.html" class="btn btn-primary">Model <br> Quality</a>
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-left: 0">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
           <div class="dropdown-menu">
             {% if cg %}
               <a class="dropdown-item colorclass" href=model_quality.html#ex>Excluded volume</a>
@@ -145,19 +162,25 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
         <!-- Fit to data used for modeling -->
         <li class="nav-item mr-4 dropdown">
           {% if (('SAS DATA' in Data) and enable_sas) or (enable_cx and cx_stats) or ((enable_em and em_data_quality and em_data_quality|length > 0) and atomic) %}
-            <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary" onclick=window.location="formodeling.html";>Fit to Data <br> Used for Modeling </button></a>
+            <a href="formodeling.html" class="btn btn-primary">Fit to Data <br> Used for Modeling</a>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-left: 0">
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
                 
           {% elif Unique_dataset|length > 0 %}
-            <a class="dropdown-toggle"  data-toggle="dropdown"><button type="button" class="btn btn-primary";>Fit to Data <br> Used for Modeling </button></a>
+            <a class="btn btn-primary disabled">Fit to Data <br> Used for Modeling</a>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-left: 0">
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
               
           {% else %}
-            <a class="btn btn-success dropdown-toggle button4" value="Disabled" disabled background-color: #555555 ><span >Fit to Data <br>Used for Modeling</span></a>
+            <a class="btn btn-primary disabled">Fit to Data <br>Used for Modeling</a>
           {% endif %}
           
-  				<div class="dropdown-menu">
+  		  <div class="dropdown-menu">
             {% if ('SAS DATA' in Data) and (sasdb_sascif|length > 0) and enable_sas %}
-              <a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html>SAS</a>
-              <ul class=dropdown-submenu>
+              <a class="dropdown-item colorclass" href=formodeling.html>SAS</a>
+              <ul>
                 <li>
                   <a class=dropdown-item2 href=formodeling.html#first>Goodness of fit</a>
                 </li>
@@ -166,15 +189,15 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
                 </li>
               </ul>
             {% elif ('SAS DATA' in Data) and (sasdb_sascif|length < 1) and enable_sas%}
-              <a class=dropdown-item dropdown-toggle type=button href=data_quality.html#first>SAS</a>
+              <a class="dropdown-item" type=button href=data_quality.html#first>SAS</a>
             {% endif %}
             
-						{% if (enable_cx and cx_stats) %}
-              <a class="dropdown-item colorclass" dropdown-toggle href=formodeling.html#crosslinking-ms>
+			{% if (enable_cx and cx_stats) %}
+              <a class="dropdown-item colorclass" href=formodeling.html#crosslinking-ms>
                 Crosslinking-MS
               </a>
 
-              <ul class=dropdown-submenu>
+              <ul>
                 <li>
                   <a class=dropdown-item2 href=formodeling.html#crosslinking-ms_ertypes>
                     Restraint types
@@ -189,8 +212,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
             {% endif %}
             
             {% if (enable_em and em_data_quality and em_data_quality|length > 0) and atomic %}
-                <a class="dropdown-item colorclass" dropdown-toggle  href=formodeling.html#3dem>3DEM</a>
-                <ul class=dropdown-submenu>                  
+                <a class="dropdown-item colorclass" href=formodeling.html#3dem>3DEM</a>
+                <ul>                  
                   {% for data in em_data_quality %}
                     <li>
                       <a class=dropdown-item2 href=formodeling.html#{{ data["emdbid"] }}>{{ data["emdbid"] }}</a>
@@ -200,17 +223,14 @@ along with this program.  If not, see https://www.gnu.org/licenses/.
             {% endif %}
   					
             {% for item in Unique_dataset %}
-              <a class=dropdown-item-text dropdown-toggle type=button>{{item}}</a>
+              <a class="dropdown-item btn btn-primary disabled" type=button>{{item}}</a>
             {% endfor %}
           </div>
         </li>
   
         <!-- Fit to data used for validation -->
         <li class="nav-item mr-4 dropdown">
-          <a class="btn button4" value="Disabled" disabled background-color: #555555 ><span >Fit to Data <br>Used for Validation</span></a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item-text" dropdown-toggle type=button >Data</a>
-          </div>
+          <a href="#" class="btn btn-primary disabled">Fit to Data <br>Used for Validation</a>
         </li>
         <li class="nav-item mr-4 dropdown">
           <a class="btn btn-primary " href="/validation_help.html"><span class="overview">Validation <br> Help</span></a>
