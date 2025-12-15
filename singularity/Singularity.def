@@ -84,6 +84,8 @@ Stage: spython-base
     
     # Install VA package from EMDB and other dependencies
     pip install -q va vtk
+    cd / && wget -O /va.patch https://gist.githubusercontent.com/aozalevsky/814e96b02f972cc387a4408febb1cb71/raw/35a634c9e4e174daffc1a565cdc753368473cfcb/va-0.0.1.dev127.patch
+    patch -d /opt/conda/lib/python3.10/site-packages/va < /va.patch && rm -rf /va.patch
     
     # Install extra chimera and chimerax dependencies
     apt install -y libglib2.0-0 libxrender1 libxcb-cursor0
