@@ -83,8 +83,8 @@ Stage: spython-base
     pip install -q git+https://github.com/PRIDE-Archive/mzidentml-reader
     
     # Install VA package from EMDB and other dependencies
-    pip install -q va vtk
-    cd / && wget -O /va.patch https://gist.githubusercontent.com/aozalevsky/814e96b02f972cc387a4408febb1cb71/raw/35a634c9e4e174daffc1a565cdc753368473cfcb/va-0.0.1.dev127.patch
+    pip install -q "va==0.0.1.dev130" vtk
+    cd / && wget -O /va.patch https://gist.githubusercontent.com/aozalevsky/814e96b02f972cc387a4408febb1cb71/raw/9f4564e6c580589dc3c1445f3c9e665b4133c79d/va-0.0.1.dev127.patch
     patch -d /opt/conda/lib/python3.10/site-packages/va < /va.patch && rm -rf /va.patch
     
     # Install extra chimera and chimerax dependencies
