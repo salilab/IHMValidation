@@ -1,6 +1,6 @@
 # IHMValidation
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![version](https://img.shields.io/github/v/release/salilab/IHMValidation) [![docs](https://app.readthedocs.org/projects/ihmvalidation/badge/?version=latest&style=flat-default)](https://ihmvalidation.readthedocs.io/en/latest/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![version](https://img.shields.io/github/v/release/salilab/IHMValidation) [![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.jmb.2025.169598-blue)](https://doi.org/10.1016/j.jmb.2025.169598) [![docs](https://app.readthedocs.org/projects/ihmvalidation/badge/?version=latest&style=flat-default)](https://ihmvalidation.readthedocs.io/en/latest/) 
 
 IHMValidation is a software pipeline that follows guidelines and recommendations from IHM TaskForce [(Berman et al. 2019)](https://pubmed.ncbi.nlm.nih.gov/31780431/) for assesment of integrative biomolecular structures. The current version of the PDB-IHM validation report consists of six sections: (i) overview; (ii) model details; (iii) data quality assessments; (iv) local geometry assessments (i.e., model quality); (v) fit of the model to the data used to generate it; and (vi) fit of the model to the data used for validation. The sixth category, fit to the data used to validate the model is under development. Data quality assessments and fit to the data used for modeling sections are dependent on the different types of experimental data used in integrative modeling. We are breaking down this section based on experimental data type and addressing each method separately. The current version of the validation report is focused on validating models built using Small Angle Scattering (SAS), Chemical Crosslinking Mass Spectrometry (crosslinking-MS), and 3D Electron Microscopy (3DEM) data and is based on the model and data validation guidelines published by the [wwPDB SAS validation task force](https://www.wwpdb.org/task/sas) [(Trewhella et al., 2017)](https://pubmed.ncbi.nlm.nih.gov/28876235/), crosslinking-MS [(Leitner et al., 2020)](https://pubmed.ncbi.nlm.nih.gov/33065067/), and 3DEM [(Kleywegt et al., 2024)](https://pubmed.ncbi.nlm.nih.gov/38358351/) communities.
 
@@ -8,9 +8,15 @@ Validation of models built using Förster Resonance Energy Transfer (FRET) is un
 
 Please refer to the [documentation](https://ihmvalidation.readthedocs.io/en/latest/) for details on running the pipeline and interpreting the validation reports. 
 
+**Citing IHMValidation**
+
+If you use IHMValidation in your research, please cite:
+
+"IHMValidation: Assessment of Integrative Structure Models Deposited to the Protein Data Bank", Zalevsky, A., et al., JMB, 2025. [DOI: 10.1016/j.jmb.2025.169598](https://doi.org/10.1016/j.jmb.2025.169598)
+
 **References**
 
-1.  Berman, Helen M., Paul D. Adams, Alexandre Bonvin, Stephen K. Burley, Bridget Carragher, Wah Chiu, Frank DiMaio, et al. 2019. "Federating Structural Models and Data: Outcomes from A Workshop on Archiving Integrative Structures." Structure 27 (12): 1745–59.
+1.  Berman, Helen M., Paul D. Adams, Alexandre Bonvin, Stephen K. Burley, Bridget Carragher, Wah Chiu, Frank DiMaio, et al. 2019. "Federating Structural Models and Data: Outcomes from A Workshop on Archiving Integrative Structures." Structure 28 (12): 1745–59.
     
 2.  Trewhella, Jill, Anthony P. Duff, Dominique Durand, Frank Gabel, J. Mitchell Guss, Wayne A. Hendrickson, Greg L. Hura, et al. 2017. "2017 Publication Guidelines for Structural Modelling of Small-Angle Scattering Data from Biomolecules in Solution: An Update." Acta Crystallographica. Section D, Structural Biology 73 (Pt 9): 710–28.
     
