@@ -42,24 +42,34 @@ import em
 REPORT_VERSION = '3.0'
 
 class WriteReport(object):
-    def __init__(self, mmcif_file, db, cache, nocache=False,
-                 enable_sas=False,
-                 enable_cx=False,
-                 enable_em=False,
-                 enable_prism=False,
+    report_version = REPORT_VERSION
+    def __init__(self,
+                 mmcif_file: str,
+                 db: str='.',
+                 cache: str='.',
+                 nocache: bool=False,
+                 enable_sas: bool=False,
+                 enable_cx: bool=False,
+                 enable_em: bool=False,
+                 enable_prism: bool=False,
                  ):
+
         self.mmcif_file = mmcif_file
-        self.db = db
-        self.input = GetInputInformation(self.mmcif_file)
-        # Webdriver for figures
-        self.driver = self.create_webdriver()
         self.cache = cache
         self.nocache = nocache
-        self.report_version = REPORT_VERSION
         self.enable_sas = enable_sas
         self.enable_cx = enable_cx
         self.enable_em = enable_em
         self.enable_prism = enable_prism
+        # Webdriver for figures
+        self.driver = self.create_webdriver()
+
+        # Read input
+        self.input = GetInputInformation(mmcif_file=self.mmcif_file,
+                                         cache=self.cache,
+                                         nocache=self.nocache)
+        self.system = self.input.system
+        self.encoding = self.input.encoding
 
     def create_webdriver(self) -> webdriver.Firefox:
         '''instantiate webdriver for rendering plots'''
@@ -132,7 +142,7 @@ class WriteReport(object):
         )['Dataset type']).difference({'Experimental model', 'Comparative model'}))]
         Template_Dict['Datasets_list'] = utility.dict_to_JSlist(
             self.input.get_dataset_comp())
-        Template_Dict['Datasets_summary'] = utility.get_datasets_summary(self.input.system)
+        Template_Dict['Datasets_summary'] = utility.get_datasets_summary(self.system)
         Template_Dict['Unique_dataset'] = utility.get_unique_datasets(
             self.input.get_dataset_comp())
         Template_Dict['Protocols_number'] = self.input.get_protocol_number()
@@ -166,7 +176,9 @@ class WriteReport(object):
             Template_Dict['atomic'] = True
             # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
             # global clashscore; global rama; global sidechain;
-            I_mp = molprobity.GetMolprobityInformation(self.mmcif_file,
+            I_mp = molprobity.GetMolprobityInformation(mmcif_file=self.mmcif_file,
+                                                       system=self.system,
+                                                       encoding=self.encoding,
                                                        cache=self.cache,
                                                        nocache=self.nocache)
             molprobity_raw_data = I_mp.get_mp_data()
@@ -181,7 +193,11 @@ class WriteReport(object):
             Template_Dict['cg'] = True
             # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
             logging.info("Getting excluded volume satisfaction")
-            I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache, nocache=self.nocache)
+            I_ev = excludedvolume.GetExcludedVolume(mmcif_file=self.mmcif_file,
+                                                    system=self.system,
+                                                    encoding=self.encoding,
+                                                    cache=self.cache,
+                                                    nocache=self.nocache)
             exv_data = I_ev.get_excluded_volume()
             viol_percent = np.asarray(exv_data['Excluded Volume Satisfaction (%)'], dtype=float)
 
@@ -213,7 +229,11 @@ class WriteReport(object):
 
         if self.input.has_sas_dataset:
             Template_Dict['sas'] = True
-            I_sas = sas.SasValidation(self.mmcif_file, db=self.cache)
+            I_sas = sas.SasValidation(mmcif_file=self.mmcif_file,
+                                      system=self.system,
+                                      encoding=self.encoding,
+                                      cache=self.cache,
+                                      nocache=self.nocache)
             Template_Dict['atsas_version'] = I_sas.get_atsas_version()
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
             Template_Dict['sasdb_code'] = I_sas.get_sas_ids()
@@ -254,8 +274,11 @@ class WriteReport(object):
             # I_sas = sas.SasValidation(self.mmcif_file)
             # create all relevant plots
             # try:
-            I_sas_plt = sas_plots.SasValidationPlots(
-                self.mmcif_file, imageDirName, self.driver, self.cache)
+            I_sas_plt = sas_plots.SasValidationPlots(mmcif_file=self.mmcif_file,
+                                                     imageDirName=imageDirName,
+                                                     driver=self.driver,
+                                                     cache=self.cache,
+                                                     nocache=self.nocache)
             I_sas_plt.plot_multiple()
             # I_sas.get_pofr_errors()
             I_sas_plt.plot_pf()
@@ -287,7 +310,11 @@ class WriteReport(object):
 
         if self.input.has_crosslinking_ms_dataset:
             Template_Dict['cx'] = True
-            I_cx = cx.CxValidation(self.mmcif_file, cache=self.cache)
+            I_cx = cx.CxValidation(mmcif_file=self.mmcif_file,
+                                   system=self.system,
+                                   encoding=self.encoding,
+                                   cache=self.cache,
+                                   nocache=self.nocache)
             self.I_cx = I_cx
 
             raw_data = None
@@ -351,7 +378,13 @@ class WriteReport(object):
         '''
         get quality at glance image; will be updated as validation report is updated
         '''
-        I_plt = get_plots.Plots(self.mmcif_file, imageDirName, driver=self.driver)
+        I_plt = get_plots.Plots(mmcif_file=self.mmcif_file,
+                                system=self.system,
+                                encoding=self.encoding,
+                                cache=self.cache,
+                                nocache=self.nocache,
+                                imageDirName=imageDirName,
+                                driver=self.driver)
         glance_plots = I_plt.plot_quality_at_glance(
             molprobity_dict, exv_data,
             sas_data_quality, sas_fit,
@@ -506,7 +539,11 @@ class WriteReport(object):
 
 
     def run_prism(self, Template_Dict: dict, imageDirName: str) -> dict:
-        I_p = precision.PRISM(self.mmcif_file, cache=self.cache, nocache=self.nocache)
+        I_p = precision.PRISM(mmcif_file=self.mmcif_file,
+                              system=self.system,
+                              encoding=self.encoding,
+                              cache=self.cache,
+                              nocache=self.nocache)
         Template_Dict['prism_data'] = I_p.get_data()
         Template_Dict['prism_plots'] = I_p.get_plots(imageDirName)
 
@@ -526,7 +563,11 @@ class WriteReport(object):
 
         if self.enable_em and self.input.has_em_dataset:
             Template_Dict['em'] = True
-            I_em = em.EMValidation(self.mmcif_file, cache=self.cache)
+            I_em = em.EMValidation(mmcif_file=self.mmcif_file,
+                                   system=self.system,
+                                   encoding=self.encoding,
+                                   cache=self.cache,
+                                   nocache=self.nocache)
             self.I_em = I_em
 
             em_data_quality = I_em.validate_all_emdb_data(imageDirName)

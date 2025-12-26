@@ -48,14 +48,13 @@ import utility
 import ihm
 
 class SasValidation(GetInputInformation):
-    def __init__(self, mmcif_file, db='.'):
-        super().__init__(mmcif_file)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.version = self.get_atsas_version()
         self.dataset = GetInputInformation.get_dataset_comp(self)
         self.imagepath = '../static/images/'
         self.saslink = 'https://sasbdb.org/media/sascif/sascif_files/'
         # self.sasentry = 'https://sasbdb.org/rest-api/entry/summary/'
-        self.db = db
         self.sasbdb_ids = self.get_sasbdb_ids()
         self.sascif_dicts = self.get_sascif_dicts()
         self.intensities = self.get_intensities()
@@ -110,7 +109,7 @@ class SasValidation(GetInputInformation):
         sasCIFIn = mmcifIO.CifFileReader()
 
         for code in self.sasbdb_ids:
-            sascif_fn = self.get_sascif_file(code, self.db)
+            sascif_fn = self.get_sascif_file(code, self.cache)
             if sascif_fn is not None:
                 sascif_dicts[code] = sasCIFIn.read(sascif_fn)
 

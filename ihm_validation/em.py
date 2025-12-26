@@ -69,9 +69,8 @@ class EMValidation(GetInputInformation):
     driver = None
     VA_TIMEOUT = 900
 
-    def __init__(self, mmcif_file, cache):
-        super().__init__(mmcif_file)
-        self.cache = cache
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         # Only atomic structures are supported so far
 
     def save_plots(self, plot, title, imageDirName='.'):

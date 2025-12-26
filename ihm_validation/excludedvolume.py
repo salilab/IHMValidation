@@ -34,9 +34,8 @@ import logging
 import mendeleev
 
 class GetExcludedVolume(GetInputInformation):
-    def __init__(self, mmcif_file: str, cache: str='.', nocache: bool=False):
-        super().__init__(mmcif_file, cache=cache, nocache=nocache)
-        self.cache = cache
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def get_all_spheres(self, fname: str | None = None) -> dict:
         """ Get spheres and atoms for each model """

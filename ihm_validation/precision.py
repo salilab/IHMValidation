@@ -47,11 +47,9 @@ class PRISM(GetInputInformation):
     timeout = 120
     data = {}
 
-    def __init__(self, mmcif_file, cache='.', nocache=False, timeout=120):
-        super().__init__(mmcif_file, cache=cache, nocache=nocache)
+    def __init__(self, *args, timeout=120, **kwargs):
+        super().__init__(*args, **kwargs)
         self.timeout = timeout
-        # Only atomic structures are supported so far
-        # self.struct = prody.parseMMCIF(mmcif_file, header=False)
 
     def get_data(self):
         cache_fn = Path(self.cache, f'{self.stem}.prism.pkl')

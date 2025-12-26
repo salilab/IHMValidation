@@ -34,17 +34,18 @@ import utility
 import json
 
 class SasValidationPlots(sas.SasValidation):
-    def __init__(self, mmcif_file, imageDirName, driver, db='.'):
-        super().__init__(mmcif_file, db=db)
+    def __init__(self, *args, imageDirName, driver, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.imageDirName = imageDirName
+        self.driver = driver
+
         self.df_dict = self.intensities
         self.pdf_dict = sas.SasValidation.get_pddf(self)
         self.fdf_dict = sas.SasValidation.get_fit_data(self)
         self.pdf_ext_dict = sas.SasValidation.get_pofr_ext(self)
         self.pdf_dict_err = sas.SasValidation.get_pofr_errors(self)
         self.score, self.gdf = sas.SasValidation.get_Guinier_data(self)
-        self.imageDirName = imageDirName
-        self.driver = driver
-
 
     @staticmethod
     def set_plot_style(p):

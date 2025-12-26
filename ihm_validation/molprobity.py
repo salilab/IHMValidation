@@ -44,8 +44,8 @@ class GetMolprobityInformation(GetInputInformation):
     data = {}
     convert = Path(__file__).with_name('molprobity_convert.py')
 
-    def __init__(self, mmcif_file, cache=".", nocache=False):
-        super().__init__(mmcif_file, cache, nocache)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.verify_molprobity_installation()
 
         self._tempcif = str(Path(self.cache, f'{self.stem}_temp.cif'))

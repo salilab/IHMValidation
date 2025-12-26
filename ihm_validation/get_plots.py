@@ -47,11 +47,10 @@ from bokeh.embed import json_item
 MAXPLOTS = 256
 
 class Plots(GetInputInformation):
-    def __init__(self, mmcif, imageDirName, driver):
-        super().__init__(mmcif)
-        # self.dirname = os.path.dirname(os.path.abspath(__file__))
+    def __init__(self, *args, imageDirName, driver, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.imageDirName = imageDirName
-        self.filename = imageDirName
         self.driver=driver
 
     def plot_quality_at_glance(self,

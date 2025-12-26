@@ -51,9 +51,8 @@ class CxValidation(GetInputInformation):
     ID = None
     driver = None
 
-    def __init__(self, mmcif_file, cache):
-        super().__init__(mmcif_file)
-        self.cache = cache
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.nos = self.get_number_of_models()
         self.dataset = self.get_dataset_comp()
         # Only atomic structures are supported so far

@@ -77,9 +77,12 @@ MAX_NUM_MODELS: Final = __max_num_models  # Set constant for maximum number of m
 #########################
 
 class GetInputInformation(object):
-    nocache = False
-    def __init__(self, mmcif_file, cache='.', nocache=False):
-        self.mmcif_file = mmcif_file
+    def __init__(self,
+                 mmcif_file: str=None,
+                 system: ihm.System=None,
+                 encoding: str='utf-8',
+                 cache: str='.', nocache: bool=False):
+
         self.datasets = {}
         self.entities = {}
 
@@ -94,8 +97,17 @@ class GetInputInformation(object):
         self.cache = cache
         self.nocache = nocache
 
-        self.system, self.encoding = utility.parse_ihm_cif(mmcif_file)
+        self.mmcif_file = mmcif_file
         self.stem = Path(self.mmcif_file).stem
+
+        if system is None:
+            logging.info(f'Reading {self.mmcif_file}')
+            self.system, self.encoding = utility.parse_ihm_cif(mmcif_file)
+        else:
+            logging.info(f'Using provided system object')
+            self.system = system
+            self.encoding = encoding
+
         self.ID = self.get_id()
         self.ID_f = self.get_file_id()
 
@@ -147,7 +159,7 @@ class GetInputInformation(object):
                         break
 
         return pdb_id
-    
+
     def get_pdbx_id(self) -> str:
         """Check database2 table for PDBx ID"""
         pdbx_id = None
@@ -191,7 +203,7 @@ class GetInputInformation(object):
                 if pdb_dev_id is not None:
                     k = ('PDB-Dev ID', pdb_dev_id)
                     ids.append(k)
-            
+
             # if PDB is a primary
             elif pdb_id is not None and entry_id == pdb_id:
                 k = ('PDB ID', pdb_id)
@@ -200,7 +212,7 @@ class GetInputInformation(object):
                 if pdb_dev_id is not None:
                     k = ('PDB-Dev ID', pdb_dev_id)
                     ids.append(k)
-            
+
             # if PDB-Dev is a primary
             elif pdb_dev_id is not None and entry_id == pdb_dev_id:
                 k = ('PDB-Dev ID', pdb_dev_id)
@@ -209,7 +221,7 @@ class GetInputInformation(object):
                 if pdbx_id is not None:
                     k = ('PDB ID', pdbx_id)
                     ids.append(k)
-                
+
                 elif pdb_id is not None:
                     k = ('PDB ID', pdb_id)
                     ids.append(k)
