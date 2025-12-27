@@ -435,6 +435,10 @@ class GetInputInformation(object):
                 sampling_comp['Method description'].append(step.description)
                 sampling_comp['Number of computed models'].append(
                     step.num_models_end)
+
+        if len(sampling_comp['Step number']) == 0:
+            logging.error('Empty modeling protocol and/or analysis steps.')
+
         return sampling_comp
 
     def get_representation(self):

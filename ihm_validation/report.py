@@ -434,12 +434,13 @@ class WriteReport(object):
         Template_Dict['software'] = utility.get_software(
             self.input.get_software_comp())
         Template_Dict['struc'] = self.input.get_atomic_coverage()
-        Template_Dict['method'] = utility.get_method_name(
-            self.input.get_sampling())
-#        Template_Dict['protocol_name'] = self.input.get_protocol_name()
         Template_Dict['method_info'] = self.input.get_sampling()
-        Template_Dict['method_type'] = utility.get_method_type(
-            self.input.get_sampling())
+        # TODO: Remove because deprecated
+        # Template_Dict['method'] = utility.get_method_name(
+        #     self.input.get_sampling())
+        # Template_Dict['protocol_name'] = self.input.get_protocol_name()
+        # Template_Dict['method_type'] = utility.get_method_type(
+        #     self.input.get_sampling())
         # Template_Dict['method_details'] = utility.get_method_details(self.input.get_sampling())
         Template_Dict['models'] = ', '.join(self.input.get_ensembles(
         )['Number of models']) if self.input.get_ensembles() is not None else 'Not applicable'
