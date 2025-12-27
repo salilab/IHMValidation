@@ -39,11 +39,10 @@ import utility
 import json
 
 class SasValidationPlots(sas.SasValidation):
-    def __init__(self, *args, imageDirName, driver, **kwargs):
+    def __init__(self, *args, imageDirName, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.imageDirName = imageDirName
-        self.driver = driver
 
         self.df_dict = self.intensities
         self.pdf_dict = sas.SasValidation.get_pddf(self)
@@ -441,7 +440,7 @@ class SasValidationPlots(sas.SasValidation):
         fname_json = fname_html.with_suffix('.json')
         # output_file(filename=fname_html, mode='inline')
         # save(p)
-        export_svg(p, filename=fname_svg, webdriver=self.driver)
+        export_svg(p, filename=fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)

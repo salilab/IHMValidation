@@ -54,7 +54,6 @@ pd.options.mode.chained_assignment = None
 
 class CxValidation(GetInputInformation):
     ID = None
-    driver = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -926,8 +925,7 @@ class CxValidation(GetInputInformation):
             imgDirname,
             f'{stem}.svg')
 
-        svgs = export_svgs(plot, filename=imgpath_svg,
-                   webdriver=self.driver, timeout=15)
+        svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
 
         svgs = [Path(x).name for x in svgs]
 

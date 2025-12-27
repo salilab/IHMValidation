@@ -39,7 +39,6 @@ import json
 from multiprocessing import Manager
 from collections import Counter
 import numpy as np
-from selenium import webdriver
 import cx
 import precision
 import em
@@ -66,8 +65,6 @@ class WriteReport(object):
         self.enable_cx = enable_cx
         self.enable_em = enable_em
         self.enable_prism = enable_prism
-        # Webdriver for figures
-        self.driver = self.create_webdriver()
 
         # Read input
         self.input = GetInputInformation(mmcif_file=self.mmcif_file,
@@ -76,17 +73,9 @@ class WriteReport(object):
         self.system = self.input.system
         self.encoding = self.input.encoding
 
-    def create_webdriver(self) -> webdriver.Firefox:
-        '''instantiate webdriver for rendering plots'''
-        firefox_options = webdriver.FirefoxOptions()
-        firefox_options.add_argument('--headless')
-        driver = webdriver.Firefox(options=firefox_options)
-        return driver
-
     def clean(self) -> None:
         '''cleanup'''
-        if self.driver:
-            self.driver.quit()
+        pass
 
     def run_entry_composition(self, Template_Dict: dict) -> dict:
         '''
@@ -285,7 +274,7 @@ class WriteReport(object):
                                                      cache=self.cache,
                                                      nocache=self.nocache,
                                                      imageDirName=imageDirName,
-                                                     driver=self.driver)
+                                                     )
             I_sas_plt.plot_multiple()
             # I_sas.get_pofr_errors()
             I_sas_plt.plot_pf()
@@ -363,7 +352,6 @@ class WriteReport(object):
         if bool(Template_Dict['cx']):
             if Template_Dict['cx_stats'] is not None:
 
-                self.I_cx.driver = self.driver
                 html_fn, json_fn, svgs_fn = self.I_cx.plot_distograms_per_model_group(imageDirName)
                 with open(json_fn, 'r') as f:
                     plot = json.dumps(json.load(f))
@@ -391,7 +379,7 @@ class WriteReport(object):
                                 cache=self.cache,
                                 nocache=self.nocache,
                                 imageDirName=imageDirName,
-                                driver=self.driver)
+                                )
         glance_plots = I_plt.plot_quality_at_glance(
             molprobity_dict, exv_data,
             sas_data_quality, sas_fit,

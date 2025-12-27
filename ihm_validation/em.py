@@ -71,7 +71,6 @@ pd.options.mode.chained_assignment = None
 
 class EMValidation(GetInputInformation):
     ID = None
-    driver = None
     VA_TIMEOUT = 900
 
     def __init__(self, *args, **kwargs):
@@ -93,8 +92,7 @@ class EMValidation(GetInputInformation):
             imageDirName,
             f'{stem}.svg')
 
-        svgs = export_svgs(plot, filename=imgpath_svg,
-                   webdriver=self.driver, timeout=15)
+        svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
 
         svgs = [Path(x).name for x in svgs]
 

@@ -52,11 +52,10 @@ from bokeh.embed import json_item
 MAXPLOTS = 256
 
 class Plots(GetInputInformation):
-    def __init__(self, *args, imageDirName, driver, **kwargs):
+    def __init__(self, *args, imageDirName, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.imageDirName = imageDirName
-        self.driver=driver
 
     def plot_quality_at_glance(self,
                                molprobity_data: dict=None, exv_data: dict=None,
@@ -145,7 +144,7 @@ class Plots(GetInputInformation):
                 p.output_backend = "svg"
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
-                export_svg(p, filename=fname, webdriver=self.driver)
+                export_svg(p, filename=fname)
 
                 plots.append(p)
 
@@ -222,7 +221,7 @@ class Plots(GetInputInformation):
                 p.min_border_top = 20
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
-                export_svg(p, filename=fname, webdriver=self.driver)
+                export_svg(p, filename=fname)
 
                 plots.append(p)
 
@@ -268,7 +267,7 @@ class Plots(GetInputInformation):
         # make panel figures
         # first panel is model quality
 #        export_svg(fullplot, filename=self.filename+'/' +
-#                    self.ID_f + "_quality_at_glance_MQ.svg", webdriver=self.driver)
+#                    self.ID_f + "_quality_at_glance_MQ.svg")
 #        save(fullplot, filename=self.filename+'/' +
 #             self.ID_f +"_quality_at_glance_MQ.html")
 
@@ -620,7 +619,7 @@ class Plots(GetInputInformation):
         fname_json = fname_html.with_suffix('.json')
         # output_file(filename=fname_html, mode='inline')
         # save(p)
-        export_svg(p, filename=fname_svg, webdriver=self.driver)
+        export_svg(p, filename=fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)
