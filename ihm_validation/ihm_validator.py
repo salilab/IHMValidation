@@ -266,7 +266,9 @@ if __name__ == "__main__":
 
     if args.enable_format_check:
         logging.info("Checking file format")
-        format_checker.check_file_log(args.f)
+        fcheck = format_checker.check_file_log(args.f, validate_dictionary=False)
+        if fcheck:
+            sys.exit(fcheck)
 
     report = WriteReport(args.f,
                          db=args.databases_root,
