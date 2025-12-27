@@ -70,7 +70,6 @@ import va
 pd.options.mode.chained_assignment = None
 
 class EMValidation(GetInputInformation):
-    ID = None
     VA_TIMEOUT = 900
 
     def __init__(self, *args, **kwargs):

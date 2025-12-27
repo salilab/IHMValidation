@@ -53,8 +53,6 @@ pd.options.mode.chained_assignment = None
 
 
 class CxValidation(GetInputInformation):
-    ID = None
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.nos = self.get_number_of_models()
