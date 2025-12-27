@@ -280,10 +280,12 @@ class WriteReport(object):
             # create all relevant plots
             # try:
             I_sas_plt = sas_plots.SasValidationPlots(mmcif_file=self.mmcif_file,
-                                                     imageDirName=imageDirName,
-                                                     driver=self.driver,
+                                                     system=self.system,
+                                                     encoding=self.encoding,
                                                      cache=self.cache,
-                                                     nocache=self.nocache)
+                                                     nocache=self.nocache,
+                                                     imageDirName=imageDirName,
+                                                     driver=self.driver)
             I_sas_plt.plot_multiple()
             # I_sas.get_pofr_errors()
             I_sas_plt.plot_pf()
