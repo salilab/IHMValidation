@@ -60,13 +60,11 @@ parser.add_argument('-f', default='PDBDEV_00000001.cif',
                     help="Input mmcif file")
 parser.add_argument('--databases-root', type=str, default='.', required=False,
                     help="Path to a local copy of SASBDB and EMDB databases")
-parser.add_argument('--cache-root', type=str,
-                    default=str(Path('..', 'Validation', 'cache')),
-                    required=False,
-                    help="Path to a local copy of SASBDB and EMDB databases")
+parser.add_argument('--cache-root', type=str, default='.', required=False,
+                    help="Path to cache with intermidiate assessment results")
 parser.add_argument('--nocache', action='store_true', default=False,
                     help="Ignore cached assesment results")
-parser.add_argument('--output-root', type=str, default=str(Path(Path(__file__).parent.resolve(), 'Validation')),
+parser.add_argument('--output-root', type=str, default='.',
                     help="Path to a directory where the output will be written")
 parser.add_argument('--output-prefix', type=str, default=None,
                     help="Prefix of the output directory. Default is a stem of the mmCIF file")
