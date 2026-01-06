@@ -41,6 +41,7 @@ import argparse as ag
 from pathlib import Path
 from enum import Enum
 from typing import Tuple
+import subprocess
 
 # Import ihm modules only when needed for validation
 try:
@@ -548,6 +549,8 @@ def check_file_exception(fname: str, check_format: bool = True, validate_diction
 
     system, encoding = parse_ihm_cif(fname)
     check_all_exception(system)
+    if check_atom_names_chimerax(fname):
+        raise ValueError('Wrong atom names')
 
 def check_file_log(fname: str, check_format: bool = True, validate_dictionary: bool = True) -> int:
     """
@@ -572,7 +575,92 @@ def check_file_log(fname: str, check_format: bool = True, validate_dictionary: b
             return 1
 
     system, encoding = parse_ihm_cif(fname)
+    check_atom_names_chimerax(fname)
     exit_code = check_all_log(system)
+    return exit_code
+
+def check_atom_names_chimerax(cif_file, timeout=180):
+    """
+    Run ChimeraX on a CIF file and extract warnings about atoms not in residue templates.
+
+    Args:
+        cif_file: Path to the CIF file
+        timeout: Timeout in seconds (default: 180)
+
+    Returns:
+        List of warning messages (empty list if no warnings)
+    """
+    cif_path = Path(cif_file)
+
+    if not cif_path.exists():
+        raise FileNotFoundError(f"File not found: {cif_file}")
+
+    # Run ChimeraX as subprocess
+    cmd = ['chimerax', '--nogui', '--exit', str(cif_path)]
+
+    try:
+        # Run the command and capture both stdout and stderr
+        result = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,  # Combine stderr into stdout
+            text=True,
+            timeout=timeout,
+            encoding='utf-8',
+            errors='replace'  # Handle encoding errors gracefully
+        )
+
+        output = result.stdout
+
+    except subprocess.TimeoutExpired:
+        raise TimeoutError(f"ChimeraX execution timed out after {timeout} seconds")
+    except FileNotFoundError:
+        raise FileNotFoundError("ChimeraX not found. Please ensure ChimeraX is installed and in PATH")
+    except Exception as e:
+        raise RuntimeError(f"Error running ChimeraX: {e}")
+
+    # Extract warning lines matching the pattern
+    # Pattern: "Atom <ATOM> is not in the residue template for <RESIDUE>"
+    # Also handles lines with "_warnings_ |" prefix
+    pattern = r'Atom\s+(\S+)\s+is\s+not\s+in\s+the\s+residue\s+template\s+for\s+(\S+)'
+
+    warnings = []
+    lines = output.split('\n')
+
+    for line in lines:
+        line = line.strip()
+        # Remove "_warnings_ |" prefix if present
+        if line.startswith('_warnings_'):
+            line = line.split('|', 1)[1].strip() if '|' in line else line.replace('_warnings_', '').strip()
+
+        # Check if line matches the warning pattern
+        match = re.search(pattern, line, re.IGNORECASE)
+        if match:
+            # Extract the full warning line (without prefix)
+            warnings.append(line)
+
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_warnings = []
+    for warning in warnings:
+        if warning not in seen:
+            seen.add(warning)
+            unique_warnings.append(warning)
+
+    exit_code = 0
+    if len(unique_warnings) > 0:
+        exit_code = 127
+        # TODO: Improve warning message
+        logging.warning(
+            "NOTE: ChimeraX uses /_auth_asym_id:_auth_seq_id numbering.\n"
+            "Also, ChimeraX might not properly recognize hydrogens in\n"
+            "N/C or 5'/3' - terminal residues. For example, H in a first\n"
+            "residue in a truncated protein structure, or HO5' in a \n"
+            "5' nucleotide without a phosphate."
+            )
+        for warning in unique_warnings:
+            logging.warning(warning)
+
     return exit_code
 
 if __name__ == "__main__":
