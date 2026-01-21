@@ -94,6 +94,7 @@ Stage: spython-base
     curl -L https://github.com/gregdp/mapq/raw/refs/heads/master/download/mapq_v2.9.7.zip -o /mapq.zip
     unzip -d / /mapq.zip && cd /mapq && python install.py $(chimera --root) && cd / && rm -rf /mapq*
     chimera --silent --nostatus /opt/chimera/share/mapq/mapqp.py 2>/dev/null
+    chmod +r /opt/chimera/share/mapq/*.py*
     
     # Install ChimeraX
     apt install -y /chimerax.deb && apt install -yf && rm -f /chimerax.deb && echo '#!/bin/bash\nchimerax --offscreen --silent $@' > /usr/local/bin/ChimeraX && chmod +x /usr/local/bin/ChimeraX
