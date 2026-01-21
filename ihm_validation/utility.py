@@ -268,14 +268,14 @@ def get_supp_file_html(prefix: str) -> str:
     '''
     minor func
     '''
-    return f'Supplementary_{prefix}.html'
+    return f'{prefix}_summary_validation.html'
 
 
 def get_output_file_temp_html(prefix: str) -> str:
     '''
     minor func
     '''
-    return 'temp.html'
+    return f'{prefix}_full_validation.html'
 
 
 def get_output_file_pdf(prefix: str) -> str:
