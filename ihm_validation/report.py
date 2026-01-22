@@ -43,7 +43,7 @@ import cx
 import precision
 import em
 
-REPORT_VERSION = '3.0'
+REPORT_VERSION = '3.1'
 
 class WriteReport(object):
     report_version = REPORT_VERSION
