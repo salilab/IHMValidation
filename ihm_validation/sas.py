@@ -4,18 +4,23 @@
 #
 # Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 """
 SAS assessment for PDB-IHM
@@ -48,14 +53,13 @@ import utility
 import ihm
 
 class SasValidation(GetInputInformation):
-    def __init__(self, mmcif_file, db='.'):
-        super().__init__(mmcif_file)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.version = self.get_atsas_version()
         self.dataset = GetInputInformation.get_dataset_comp(self)
         self.imagepath = '../static/images/'
         self.saslink = 'https://sasbdb.org/media/sascif/sascif_files/'
         # self.sasentry = 'https://sasbdb.org/rest-api/entry/summary/'
-        self.db = db
         self.sasbdb_ids = self.get_sasbdb_ids()
         self.sascif_dicts = self.get_sascif_dicts()
         self.intensities = self.get_intensities()
@@ -110,7 +114,7 @@ class SasValidation(GetInputInformation):
         sasCIFIn = mmcifIO.CifFileReader()
 
         for code in self.sasbdb_ids:
-            sascif_fn = self.get_sascif_file(code, self.db)
+            sascif_fn = self.get_sascif_file(code, self.cache)
             if sascif_fn is not None:
                 sascif_dicts[code] = sasCIFIn.read(sascif_fn)
 
@@ -331,9 +335,9 @@ class SasValidation(GetInputInformation):
 
 
         for code in self.sascif_dicts.keys():
-            f1fn = f'{code}_fit1.dat'
-            f2fn = f'{code}_fit2.dat'
-            f3fn = f'{code}_pval.dat'
+            f1fn = Path(self.cache, f'{code}_fit1.dat')
+            f2fn = Path(self.cache, f'{code}_fit2.dat')
+            f3fn = Path(self.cache, f'{code}_pval.dat')
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]

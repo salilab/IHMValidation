@@ -4,18 +4,23 @@
 #
 # Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 """
 Various helper functions
@@ -263,14 +268,14 @@ def get_supp_file_html(prefix: str) -> str:
     '''
     minor func
     '''
-    return f'Supplementary_{prefix}.html'
+    return f'{prefix}_summary_validation.html'
 
 
 def get_output_file_temp_html(prefix: str) -> str:
     '''
     minor func
     '''
-    return 'temp.html'
+    return f'{prefix}_full_validation.html'
 
 
 def get_output_file_pdf(prefix: str) -> str:
@@ -800,50 +805,61 @@ def load_img(path):
     img_base64 = encode_img(img_)
     return img_base64
 
-def get_larget_assembly_model(system: ihm.System) -> tuple:
-    """Find model ID corresponding to the largest assembly"""
-    # TODO: The logic has to be updated when we get support for
-    # _ihm_model_representative https://github.com/ihmwg/python-ihm/issues/173
-    idx = None
-    idx_model = None
-    idx_num_asym_ids = None
-    for group, model in system._all_models():
-        asym_ids = set([rep.asym_unit._id for rep in model.representation])
-        num_asym_ids = len(asym_ids)
-        if idx == None or num_asym_ids > idx_num_asym_ids:
-            idx = model._id
-            idx_model = model
-            idx_num_asym_ids = num_asym_ids
-
-    return (idx, idx_model, idx_num_asym_ids)
-
-def format_wwpdb_url(pdbid: str) -> str:
+def format_wwpdb_url(pdb_id: str) -> str:
     """Generate a url to the wwPDB entry page"""
 
     url = ''
 
-    if len(pdbid) == 4:
-        url = f"https://dx.doi.org/10.2210/pdb{pdbid.lower()}/pdb"
-    elif len(pdbid) == 12:
-        url = f"https://dx.doi.org/10.2210/{pdbid.lower()}/pdb"
+    if is_pdb_id(pdb_id):
+        url = f"https://dx.doi.org/10.2210/pdb{pdb_id.lower()}/pdb"
+    elif is_pdbx_id(pdb_id):
+        # TODO: Update in the future, when wwPDB will start issuing new DOIs
+        url = f"https://www.wwpdb.org/pdb?id={pdb_id.lower()}"
     else:
-        logging.error(f"Wrong PDB ID: {pdbid}")
+        logging.error(f"Wrong PDB ID: {pdb_id}")
 
     return url
 
-def format_wwpdb_id(pdbid: str) -> str:
-    """Format all pdb ids to extended format"""
-    output = pdbid
+def is_pdb_id(pdb_id: str) -> bool:
+    """Check if the PDB ID is in PDB format"""
+    return pdb_id and len(pdb_id) == 4 and pdb_id[0].isdigit()
 
-    if pdbid and len(pdbid) == 12:
-        # We don't do any format checks
-        output = pdbid.lower()
-    elif pdbid and len(pdbid) == 4:
-        output = f"pdb_0000{pdbid.lower()}"
+def is_pdbx_id(pdbx_id: str) -> bool:
+    """Check if the PDB ID is in extended format"""
+    return pdbx_id and len(pdbx_id) == 12 and pdbx_id[:4].lower() == 'pdb_'
+
+def is_pdb_dev_id(pdb_dev_id: str) -> bool:
+    """Check if the PDB-DEV ID"""
+    return pdb_dev_id and len(pdb_dev_id) == 15 and pdb_dev_id[:7].upper() == 'PDBDEV_'
+
+def format_pdb_id(pdb_id: str) -> str:
+    """Format short PDB ID"""
+    if is_pdb_id(pdb_id):
+        pdb_id = pdb_id.upper()
     else:
-        logging.error(f"Wrong PDB ID: {pdbid}")
+        raise ValueError(f"Wrong PDB ID: {pdb_id}")
 
-    return output
+    return pdb_id
+
+def format_pdbx_id(pdbx_id: str) -> str:
+    """Format all PDB IDs to extended format"""
+    if is_pdbx_id(pdbx_id):
+        pdbx_id = pdbx_id.lower()
+    elif is_pdb_id(pdbx_id):
+        pdbx_id = f"pdb_0000{pdbx_id.lower()}"
+    else:
+        raise ValueError(f"Wrong PDBx ID: {pdbx_id}")
+
+    return pdbx_id
+
+def format_pdb_dev_id(pdb_dev_id: str) -> str:
+    """Format PDB-DEV ID"""
+    if is_pdb_dev_id(pdb_dev_id):
+        pdb_dev_id = pdb_dev_id.upper()
+    else:
+        raise ValueError(f"Wrong PDB-DEV ID: {pdb_dev_id}")
+
+    return pdb_dev_id
 
 def get_datasets_summary(system: ihm.System) -> list:
     """Get counts for all data types used for modeling"""

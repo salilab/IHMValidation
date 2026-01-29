@@ -4,18 +4,23 @@
 #
 # Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 """
 Generate plots for SAS assessment
@@ -34,17 +39,17 @@ import utility
 import json
 
 class SasValidationPlots(sas.SasValidation):
-    def __init__(self, mmcif_file, imageDirName, driver, db='.'):
-        super().__init__(mmcif_file, db=db)
+    def __init__(self, *args, imageDirName, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.imageDirName = imageDirName
+
         self.df_dict = self.intensities
         self.pdf_dict = sas.SasValidation.get_pddf(self)
         self.fdf_dict = sas.SasValidation.get_fit_data(self)
         self.pdf_ext_dict = sas.SasValidation.get_pofr_ext(self)
         self.pdf_dict_err = sas.SasValidation.get_pofr_errors(self)
         self.score, self.gdf = sas.SasValidation.get_Guinier_data(self)
-        self.imageDirName = imageDirName
-        self.driver = driver
-
 
     @staticmethod
     def set_plot_style(p):
@@ -435,7 +440,7 @@ class SasValidationPlots(sas.SasValidation):
         fname_json = fname_html.with_suffix('.json')
         # output_file(filename=fname_html, mode='inline')
         # save(p)
-        export_svg(p, filename=fname_svg, webdriver=self.driver)
+        export_svg(p, filename=fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)

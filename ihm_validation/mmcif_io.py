@@ -4,18 +4,23 @@
 #
 # Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 """
 Read/write IHMCIF file
@@ -77,9 +82,12 @@ MAX_NUM_MODELS: Final = __max_num_models  # Set constant for maximum number of m
 #########################
 
 class GetInputInformation(object):
-    nocache = False
-    def __init__(self, mmcif_file, cache='.', nocache=False):
-        self.mmcif_file = mmcif_file
+    def __init__(self,
+                 mmcif_file: str=None,
+                 system: ihm.System=None,
+                 encoding: str='utf-8',
+                 cache: str='.', nocache: bool=False):
+
         self.datasets = {}
         self.entities = {}
 
@@ -94,8 +102,17 @@ class GetInputInformation(object):
         self.cache = cache
         self.nocache = nocache
 
-        self.system, self.encoding = utility.parse_ihm_cif(mmcif_file)
+        self.mmcif_file = mmcif_file
         self.stem = Path(self.mmcif_file).stem
+
+        if system is None:
+            logging.info(f'Reading {self.mmcif_file}')
+            self.system, self.encoding = utility.parse_ihm_cif(mmcif_file)
+        else:
+            logging.info(f'Using provided system object')
+            self.system = system
+            self.encoding = encoding
+
         self.ID = self.get_id()
         self.ID_f = self.get_file_id()
 
@@ -138,23 +155,39 @@ class GetInputInformation(object):
 
     def get_pdb_id(self) -> str:
         """Check database2 table for PDB ID"""
-        entry_id = None
+        pdb_id = None
         if len(self.system.databases) > 0:
             for db in self.system.databases:
                 if db.id == 'PDB':
-                    entry_id =  db.code.upper()
+                    if utility.is_pdb_id(db.code):
+                        pdb_id = utility.format_pdb_id(db.code)
+                        break
 
-        return entry_id
+        return pdb_id
+
+    def get_pdbx_id(self) -> str:
+        """Check database2 table for PDBx ID"""
+        pdbx_id = None
+        if len(self.system.databases) > 0:
+            for db in self.system.databases:
+                if db.id == 'PDB':
+                    if utility.is_pdbx_id(db.accession):
+                        pdbx_id = utility.format_pdbx_id(db.accession)
+                        break
+
+        return pdbx_id
 
     def get_pdb_dev_id(self) -> str:
-        """Check database2 table for PDB ID"""
-        entry_id = None
+        """Check database2 table for PDB-DEV ID"""
+        pdb_dev_id = None
         if len(self.system.databases) > 0:
             for db in self.system.databases:
                 if db.id == 'PDB-Dev':
-                    entry_id =  db.code.upper()
+                    if utility.is_pdb_dev_id(db.code):
+                        pdb_dev_id = utility.format_pdb_dev_id(db.code)
+                        break
 
-        return entry_id
+        return pdb_dev_id
 
     def get_ranked_id_list(self) -> list:
         """Get sorted list of multiple ids"""
@@ -165,9 +198,19 @@ class GetInputInformation(object):
         # If we have database2 table
         if len(self.system.databases) > 0:
             pdb_id = self.get_pdb_id()
+            pdbx_id = self.get_pdbx_id()
             pdb_dev_id = self.get_pdb_dev_id()
+            # if PDBx is a primary
+            if pdbx_id is not None and entry_id == pdbx_id:
+                k = ('PDB ID', pdbx_id)
+                ids.append(k)
+
+                if pdb_dev_id is not None:
+                    k = ('PDB-Dev ID', pdb_dev_id)
+                    ids.append(k)
+
             # if PDB is a primary
-            if pdb_id is not None and entry_id == pdb_id:
+            elif pdb_id is not None and entry_id == pdb_id:
                 k = ('PDB ID', pdb_id)
                 ids.append(k)
 
@@ -180,7 +223,11 @@ class GetInputInformation(object):
                 k = ('PDB-Dev ID', pdb_dev_id)
                 ids.append(k)
 
-                if pdb_id is not None:
+                if pdbx_id is not None:
+                    k = ('PDB ID', pdbx_id)
+                    ids.append(k)
+
+                elif pdb_id is not None:
                     k = ('PDB ID', pdb_id)
                     ids.append(k)
             # Else entity is a primary
@@ -388,6 +435,10 @@ class GetInputInformation(object):
                 sampling_comp['Method description'].append(step.description)
                 sampling_comp['Number of computed models'].append(
                     step.num_models_end)
+
+        if len(sampling_comp['Step number']) == 0:
+            logging.error('Empty modeling protocol and/or analysis steps.')
+
         return sampling_comp
 
     def get_representation(self):
@@ -646,9 +697,9 @@ class GetInputInformation(object):
                         acc = f"<a href=https://pdb-ihm.org/entry.html?{acc}>{acc}</a>"
 
                     if isinstance(_.location, ihm.location.PDBLocation) and acc != utility.NA:
-                        pdbid = utility.format_wwpdb_id(acc)
-                        url = utility.format_wwpdb_url(acc)
-                        acc = f"<a href={url}>{pdbid}</a>"
+                        pdb_id = utility.format_pdbx_id(acc)
+                        url = utility.format_wwpdb_url(pdb_id)
+                        acc = f"<a href={url}>{pdb_id}</a>"
 
                     if isinstance(_.location, ihm.location.ModelArchiveLocation) and acc != utility.NA:
                         acc = f"<a href=https://doi.org/10.5452/{acc}>{acc}</a>"

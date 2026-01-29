@@ -4,18 +4,23 @@
 #
 # Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 """
 Generate overview plots
@@ -47,12 +52,10 @@ from bokeh.embed import json_item
 MAXPLOTS = 256
 
 class Plots(GetInputInformation):
-    def __init__(self, mmcif, imageDirName, driver):
-        super().__init__(mmcif)
-        # self.dirname = os.path.dirname(os.path.abspath(__file__))
+    def __init__(self, *args, imageDirName, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.imageDirName = imageDirName
-        self.filename = imageDirName
-        self.driver=driver
 
     def plot_quality_at_glance(self,
                                molprobity_data: dict=None, exv_data: dict=None,
@@ -141,7 +144,7 @@ class Plots(GetInputInformation):
                 p.output_backend = "svg"
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
-                export_svg(p, filename=fname, webdriver=self.driver)
+                export_svg(p, filename=fname)
 
                 plots.append(p)
 
@@ -218,7 +221,7 @@ class Plots(GetInputInformation):
                 p.min_border_top = 20
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
-                export_svg(p, filename=fname, webdriver=self.driver)
+                export_svg(p, filename=fname)
 
                 plots.append(p)
 
@@ -264,7 +267,7 @@ class Plots(GetInputInformation):
         # make panel figures
         # first panel is model quality
 #        export_svg(fullplot, filename=self.filename+'/' +
-#                    self.ID_f + "_quality_at_glance_MQ.svg", webdriver=self.driver)
+#                    self.ID_f + "_quality_at_glance_MQ.svg")
 #        save(fullplot, filename=self.filename+'/' +
 #             self.ID_f +"_quality_at_glance_MQ.html")
 
@@ -616,7 +619,7 @@ class Plots(GetInputInformation):
         fname_json = fname_html.with_suffix('.json')
         # output_file(filename=fname_html, mode='inline')
         # save(p)
-        export_svg(p, filename=fname_svg, webdriver=self.driver)
+        export_svg(p, filename=fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)

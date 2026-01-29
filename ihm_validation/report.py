@@ -4,18 +4,23 @@
 #
 # Copyright (C) 2019-2025 Arthur Zalevsky, Sai Ganesan, Benjamin M. Webb, Brinda Vallat
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 """
 Generation of PDF and HTML reports
@@ -34,44 +39,43 @@ import json
 from multiprocessing import Manager
 from collections import Counter
 import numpy as np
-from selenium import webdriver
 import cx
 import precision
 import em
 
-REPORT_VERSION = '3.0'
+REPORT_VERSION = '3.1'
 
 class WriteReport(object):
-    def __init__(self, mmcif_file, db, cache, nocache=False,
-                 enable_sas=False,
-                 enable_cx=False,
-                 enable_em=False,
-                 enable_prism=False,
+    report_version = REPORT_VERSION
+    def __init__(self,
+                 mmcif_file: str,
+                 db: str='.',
+                 cache: str='.',
+                 nocache: bool=False,
+                 enable_sas: bool=False,
+                 enable_cx: bool=False,
+                 enable_em: bool=False,
+                 enable_prism: bool=False,
                  ):
+
         self.mmcif_file = mmcif_file
-        self.db = db
-        self.input = GetInputInformation(self.mmcif_file)
-        # Webdriver for figures
-        self.driver = self.create_webdriver()
         self.cache = cache
         self.nocache = nocache
-        self.report_version = REPORT_VERSION
         self.enable_sas = enable_sas
         self.enable_cx = enable_cx
         self.enable_em = enable_em
         self.enable_prism = enable_prism
 
-    def create_webdriver(self) -> webdriver.Firefox:
-        '''instantiate webdriver for rendering plots'''
-        firefox_options = webdriver.FirefoxOptions()
-        firefox_options.add_argument('--headless')
-        driver = webdriver.Firefox(options=firefox_options)
-        return driver
+        # Read input
+        self.input = GetInputInformation(mmcif_file=self.mmcif_file,
+                                         cache=self.cache,
+                                         nocache=self.nocache)
+        self.system = self.input.system
+        self.encoding = self.input.encoding
 
     def clean(self) -> None:
         '''cleanup'''
-        if self.driver:
-            self.driver.quit()
+        pass
 
     def run_entry_composition(self, Template_Dict: dict) -> dict:
         '''
@@ -102,11 +106,10 @@ class WriteReport(object):
             utility.dict_to_JSlist_rows(RB, flex))
         Template_Dict['flex'] = utility.get_flex(
             utility.dict_to_JSlist_rows(RB, flex))
-        entry_id = self.input.get_id()
-        file_id = self.input.get_file_id()
-        Template_Dict['ID'] = entry_id
-        Template_Dict['ID_f'] = file_id
-        Template_Dict['PDB_ID'] = utility.format_wwpdb_id(self.input.get_pdb_id())
+        Template_Dict['ID'] = self.input.get_id()
+        Template_Dict['ID_f'] = self.input.get_file_id()
+        Template_Dict['PDB_ID'] = self.input.get_pdb_id()
+        Template_Dict['PDBx_ID'] = self.input.get_pdbx_id()
         Template_Dict['PDBDEV_ID'] = self.input.get_pdb_dev_id()
         Template_Dict['ranked_id_list'] = self.input.get_ranked_id_list()
         Template_Dict['Molecule'] = self.input.get_struc_title()
@@ -133,7 +136,7 @@ class WriteReport(object):
         )['Dataset type']).difference({'Experimental model', 'Comparative model'}))]
         Template_Dict['Datasets_list'] = utility.dict_to_JSlist(
             self.input.get_dataset_comp())
-        Template_Dict['Datasets_summary'] = utility.get_datasets_summary(self.input.system)
+        Template_Dict['Datasets_summary'] = utility.get_datasets_summary(self.system)
         Template_Dict['Unique_dataset'] = utility.get_unique_datasets(
             self.input.get_dataset_comp())
         Template_Dict['Protocols_number'] = self.input.get_protocol_number()
@@ -167,7 +170,9 @@ class WriteReport(object):
             Template_Dict['atomic'] = True
             # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
             # global clashscore; global rama; global sidechain;
-            I_mp = molprobity.GetMolprobityInformation(self.mmcif_file,
+            I_mp = molprobity.GetMolprobityInformation(mmcif_file=self.mmcif_file,
+                                                       system=self.system,
+                                                       encoding=self.encoding,
                                                        cache=self.cache,
                                                        nocache=self.nocache)
             molprobity_raw_data = I_mp.get_mp_data()
@@ -182,7 +187,11 @@ class WriteReport(object):
             Template_Dict['cg'] = True
             # if there are no spheres, wed have atoms, so go ahead and set exv to 0/none
             logging.info("Getting excluded volume satisfaction")
-            I_ev = excludedvolume.GetExcludedVolume(self.mmcif_file, cache=self.cache, nocache=self.nocache)
+            I_ev = excludedvolume.GetExcludedVolume(mmcif_file=self.mmcif_file,
+                                                    system=self.system,
+                                                    encoding=self.encoding,
+                                                    cache=self.cache,
+                                                    nocache=self.nocache)
             exv_data = I_ev.get_excluded_volume()
             viol_percent = np.asarray(exv_data['Excluded Volume Satisfaction (%)'], dtype=float)
 
@@ -214,7 +223,11 @@ class WriteReport(object):
 
         if self.input.has_sas_dataset:
             Template_Dict['sas'] = True
-            I_sas = sas.SasValidation(self.mmcif_file, db=self.cache)
+            I_sas = sas.SasValidation(mmcif_file=self.mmcif_file,
+                                      system=self.system,
+                                      encoding=self.encoding,
+                                      cache=self.cache,
+                                      nocache=self.nocache)
             Template_Dict['atsas_version'] = I_sas.get_atsas_version()
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
             Template_Dict['sasdb_code'] = I_sas.get_sas_ids()
@@ -255,8 +268,13 @@ class WriteReport(object):
             # I_sas = sas.SasValidation(self.mmcif_file)
             # create all relevant plots
             # try:
-            I_sas_plt = sas_plots.SasValidationPlots(
-                self.mmcif_file, imageDirName, self.driver, self.cache)
+            I_sas_plt = sas_plots.SasValidationPlots(mmcif_file=self.mmcif_file,
+                                                     system=self.system,
+                                                     encoding=self.encoding,
+                                                     cache=self.cache,
+                                                     nocache=self.nocache,
+                                                     imageDirName=imageDirName,
+                                                     )
             I_sas_plt.plot_multiple()
             # I_sas.get_pofr_errors()
             I_sas_plt.plot_pf()
@@ -288,7 +306,11 @@ class WriteReport(object):
 
         if self.input.has_crosslinking_ms_dataset:
             Template_Dict['cx'] = True
-            I_cx = cx.CxValidation(self.mmcif_file, cache=self.cache)
+            I_cx = cx.CxValidation(mmcif_file=self.mmcif_file,
+                                   system=self.system,
+                                   encoding=self.encoding,
+                                   cache=self.cache,
+                                   nocache=self.nocache)
             self.I_cx = I_cx
 
             raw_data = None
@@ -330,7 +352,6 @@ class WriteReport(object):
         if bool(Template_Dict['cx']):
             if Template_Dict['cx_stats'] is not None:
 
-                self.I_cx.driver = self.driver
                 html_fn, json_fn, svgs_fn = self.I_cx.plot_distograms_per_model_group(imageDirName)
                 with open(json_fn, 'r') as f:
                     plot = json.dumps(json.load(f))
@@ -352,7 +373,13 @@ class WriteReport(object):
         '''
         get quality at glance image; will be updated as validation report is updated
         '''
-        I_plt = get_plots.Plots(self.mmcif_file, imageDirName, driver=self.driver)
+        I_plt = get_plots.Plots(mmcif_file=self.mmcif_file,
+                                system=self.system,
+                                encoding=self.encoding,
+                                cache=self.cache,
+                                nocache=self.nocache,
+                                imageDirName=imageDirName,
+                                )
         glance_plots = I_plt.plot_quality_at_glance(
             molprobity_dict, exv_data,
             sas_data_quality, sas_fit,
@@ -395,12 +422,13 @@ class WriteReport(object):
         Template_Dict['software'] = utility.get_software(
             self.input.get_software_comp())
         Template_Dict['struc'] = self.input.get_atomic_coverage()
-        Template_Dict['method'] = utility.get_method_name(
-            self.input.get_sampling())
-#        Template_Dict['protocol_name'] = self.input.get_protocol_name()
         Template_Dict['method_info'] = self.input.get_sampling()
-        Template_Dict['method_type'] = utility.get_method_type(
-            self.input.get_sampling())
+        # TODO: Remove because deprecated
+        # Template_Dict['method'] = utility.get_method_name(
+        #     self.input.get_sampling())
+        # Template_Dict['protocol_name'] = self.input.get_protocol_name()
+        # Template_Dict['method_type'] = utility.get_method_type(
+        #     self.input.get_sampling())
         # Template_Dict['method_details'] = utility.get_method_details(self.input.get_sampling())
         Template_Dict['models'] = ', '.join(self.input.get_ensembles(
         )['Number of models']) if self.input.get_ensembles() is not None else 'Not applicable'
@@ -507,7 +535,11 @@ class WriteReport(object):
 
 
     def run_prism(self, Template_Dict: dict, imageDirName: str) -> dict:
-        I_p = precision.PRISM(self.mmcif_file, cache=self.cache, nocache=self.nocache)
+        I_p = precision.PRISM(mmcif_file=self.mmcif_file,
+                              system=self.system,
+                              encoding=self.encoding,
+                              cache=self.cache,
+                              nocache=self.nocache)
         Template_Dict['prism_data'] = I_p.get_data()
         Template_Dict['prism_plots'] = I_p.get_plots(imageDirName)
 
@@ -527,7 +559,11 @@ class WriteReport(object):
 
         if self.enable_em and self.input.has_em_dataset:
             Template_Dict['em'] = True
-            I_em = em.EMValidation(self.mmcif_file, cache=self.cache)
+            I_em = em.EMValidation(mmcif_file=self.mmcif_file,
+                                   system=self.system,
+                                   encoding=self.encoding,
+                                   cache=self.cache,
+                                   nocache=self.nocache)
             self.I_em = I_em
 
             em_data_quality = I_em.validate_all_emdb_data(imageDirName)
