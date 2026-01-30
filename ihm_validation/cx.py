@@ -1060,23 +1060,24 @@ class CxValidation(GetInputInformation):
             if e.is_polymeric:
                 seq = ''.join([x.code_canonical for x in e.sequence])
                 desc = e.description
-                seq_ = pyhmmer.easel.TextSequence(
-                            sequence=seq,
-                            name=e._id.encode('utf-8'),
-                            description=desc.encode('utf-8')
-                            ).digitize(pyhmmer.easel.Alphabet.amino())
+                seq_ = self._build_text_sequence(
+                    sequence=seq,
+                    name=e._id.encode('utf-8'),
+                    description=desc.encode('utf-8')
+                ).digitize(pyhmmer.easel.Alphabet.amino())
 
                 mmcif_seqs[e._id] = seq_
                 mmcif_seqs_descriptions[e._id] = desc
 
         # Get sequences from crosslinking-MS data
         ms_seqs = [
-            pyhmmer.easel.TextSequence(
+            self._build_text_sequence(
                 sequence=x['sequence'],
                 name=x['id'].encode('utf-8'),
                 source=x['file'].encode('utf-8')
             ).digitize(pyhmmer.easel.Alphabet.amino()) for x in ms_seqs_
         ]
+        ms_seqs_block = self._to_digital_sequence_block(ms_seqs)
 
         # Match sequences using pyHMMER
         # select only 1st best match
@@ -1085,13 +1086,15 @@ class CxValidation(GetInputInformation):
         matched_seqs_ids = {}
 
         for k, v in mmcif_seqs.items():
-            matches_ = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0]
+            matches_ = self._phmmer_tophits(v, ms_seqs_block)
             if len(matches_) > 0:
-                best_hit = list(pyhmmer.hmmer.phmmer(v, ms_seqs))[0][0]
+                best_hit = matches_[0]
                 matched_seqs[k] = best_hit
                 mapping_, _ = self.pyhmmer_alignment_to_map(best_hit)
                 matched_seqs_mapping[k] = mapping_
-                matched_seqs_ids[k] = best_hit.best_domain.hit.name.decode("utf-8")
+                matched_seqs_ids[k] = self._decode_pyhmmer_name(
+                    getattr(best_hit, "name", None) or best_hit.best_domain.hit.name
+                )
             else:
                 logging.warning(f"Couldn't match mmCIF entity {k} to any entities in {pid}")
                 matched_seqs[k] = None
@@ -1225,7 +1228,9 @@ class CxValidation(GetInputInformation):
                 match_ =  {
                     'entity': k,
                     'entity_desc': mmcif_seqs_descriptions[k],
-                    'entity_ms': v.best_domain.hit.name.decode("utf-8"),
+                    'entity_ms': self._decode_pyhmmer_name(
+                        getattr(v, "name", None) or v.best_domain.hit.name
+                    ),
                     'e-value': v.best_domain.c_evalue,
                     'exact_match': v.best_domain.alignment.target_sequence == v.best_domain.alignment.hmm_sequence.upper(),
                 }
@@ -1257,6 +1262,55 @@ class CxValidation(GetInputInformation):
                     outs.append(out)
 
         return outs
+
+    @staticmethod
+    def _build_text_sequence(sequence, name, description=None, source=None):
+        """Create a TextSequence with backward-compatible metadata fields."""
+        kwargs = {
+            "sequence": sequence,
+            "name": name
+        }
+        if description is not None:
+            kwargs["description"] = description
+        if source is not None:
+            try:
+                return pyhmmer.easel.TextSequence(**kwargs, source=source)
+            except TypeError:
+                # `source` is not supported in newer pyhmmer versions
+                if "description" not in kwargs or kwargs["description"] is None:
+                    kwargs["description"] = source
+                return pyhmmer.easel.TextSequence(**kwargs)
+        return pyhmmer.easel.TextSequence(**kwargs)
+
+    @staticmethod
+    def _to_digital_sequence_block(seqs):
+        """Create a DigitalSequenceBlock from a list of sequences."""
+        try:
+            return pyhmmer.easel.DigitalSequenceBlock(seqs)
+        except TypeError:
+            block = pyhmmer.easel.DigitalSequenceBlock(pyhmmer.easel.Alphabet.amino())
+            block.extend(seqs)
+            return block
+
+    @staticmethod
+    def _phmmer_tophits(query, target_block):
+        """Run phmmer and return TopHits for a single query."""
+        try:
+            result = pyhmmer.hmmer.phmmer(query, target_block)
+        except TypeError:
+            query_block = CXValidation._to_digital_sequence_block([query])
+            result = pyhmmer.hmmer.phmmer(query_block, target_block)
+        if isinstance(result, pyhmmer.plan7.TopHits):
+            return result
+        return next(iter(result))
+
+    @staticmethod
+    def _decode_pyhmmer_name(name):
+        if name is None:
+            return None
+        if isinstance(name, (bytes, bytearray)):
+            return name.decode("utf-8")
+        return str(name)
 
     @staticmethod
     def get_pyhmmer_version():
