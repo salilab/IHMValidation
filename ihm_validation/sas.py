@@ -45,10 +45,7 @@ import sys
 import pkgutil
 from pathlib import Path
 
-saspath = pkgutil.get_loader('sasciftools').path
-saspath = str(Path(saspath).parent)
-sys.path.insert(0, saspath)
-from mmCif import mmcifIO
+from sasciftools.mmCif import mmcifIO
 import utility
 import ihm
 

@@ -73,7 +73,7 @@ Stage: spython-base
 
     # Install SAS tools: ATSAS and SASCIFTOOLS
     apt install -y /ATSAS.deb && rm -f /ATSAS.deb
-    pip install -q git+https://git.embl.de/grp-svergun/sasciftools3.git@master#egg=sasciftools
+    pip install -q git+https://github.com/aozalevsky/sascif-reader@855b4bfb74d596a74d834b7291a304a74e49ea77
 
     # Install additional certificate for SASBDB
     curl https://cacerts.digicert.com/ThawteEVRSACAG2.crt.pem -o ThawteEVRSACAG2.crt --output-dir /usr/local/share/ca-certificates/ && update-ca-certificates
