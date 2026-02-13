@@ -5,14 +5,12 @@ Stage: spython-base
 %arguments
     
     TZ="America/Los_Angeles"
-    ATSAS="./ATSAS-3.2.1-1_amd64.deb"
     CHIMERA="./chimera-alpha-linux_x86_64_osmesa.bin"
     CHIMERAX="./ucsf-chimerax_1.9ubuntu22.04_amd64.deb"
     NPROC=8
 
 %files
 
-    {{ ATSAS }} /ATSAS.deb
     {{ CHIMERA }} /chimera.bin
     {{ CHIMERAX }} /chimerax.deb
 
@@ -71,8 +69,8 @@ Stage: spython-base
     CI=true python3 bootstrap.py --builder=molprobity --nproc={{ NPROC }} --python=38 --use-conda && rm -rf bootstrap.py
     PATH=${PATH}:/opt/molprobity/build/bin
 
-    # Install SAS tools: ATSAS and SASCIFTOOLS
-    apt install -y /ATSAS.deb && rm -f /ATSAS.deb
+    # Install SAS tools: FreeSAS and SASCIFTOOLS
+    pip install -q freesas
     pip install -q git+https://github.com/aozalevsky/sascif-reader@855b4bfb74d596a74d834b7291a304a74e49ea77
 
     # Install additional certificate for SASBDB

@@ -228,7 +228,7 @@ class WriteReport(object):
                                       encoding=self.encoding,
                                       cache=self.cache,
                                       nocache=self.nocache)
-            Template_Dict['atsas_version'] = I_sas.get_atsas_version()
+            Template_Dict['freesas_version'] = I_sas.get_freesas_version()
             Template_Dict['p_val'] = utility.dict_to_JSlist(I_sas.get_pvals())
             Template_Dict['sasdb_code'] = I_sas.get_sas_ids()
             Template_Dict['sasdb_code_html'] = I_sas.get_sasbdb_ids()
