@@ -5,10 +5,9 @@ from collections import defaultdict
 import warnings
 import tempfile
 
-path=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
-sys.path.insert(0, path)
-from validation import GetInputInformation, utility
-from validation.Report import WriteReport
+from ihm_validation.mmcif_io import GetInputInformation
+from ihm_validation import utility
+from ihm_validation.report import WriteReport
 
 def ignore_warnings(test_func):
 	def do_test(self, *args, **kwargs):

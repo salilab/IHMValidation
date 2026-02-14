@@ -40,10 +40,10 @@ import pytz
 import sys
 import logging
 from pathlib import Path
-import utility
-from report import WriteReport
+from ihm_validation import utility
+from ihm_validation.report import WriteReport
 from distutils.util import strtobool
-import format_checker
+from ihm_validation import format_checker
 # from validation.WKhtmlToPdf import  wkhtmltopdf
 # import utility
 
@@ -246,8 +246,8 @@ def write_json(mmcif_file: str, template_dict: dict, dirName: str, dirName_Outpu
 # Run script
 #################################################
 
-if __name__ == "__main__":
-    args = parser.parse_args()
+def main(args=None):
+    args = parser.parse_args(args)
 
     if args.p.upper() == 'YES':
         physics = [
@@ -448,3 +448,7 @@ if __name__ == "__main__":
 
     logging.info("Final cleanup")
     utility.clean_all(report=report)
+
+
+if __name__ == "__main__":
+    main()

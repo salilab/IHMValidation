@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ihm-validation"
+version = "3.1.0"
+description = "Validation pipeline for integrative biomolecular structures deposited to PDB-IHM"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "Arthur Zalevsky", email = "aozalevsky@gmail.com"},
+    {name = "Sai Ganesan"},
+    {name = "Benjamin M. Webb"},
+    {name = "Brinda Vallat"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "ihm>=2.9",
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "jinja2",
+    "pdfkit",
+    "pytz",
+    "requests",
+    "bokeh<3.0",
+    "iqplot",
+    "scikit-learn",
+]
+
+[project.optional-dependencies]
+sas = ["freesas"]
+cx = ["pyhmmer<0.12.0"]
+em = ["vtk"]
+all = ["freesas", "pyhmmer<0.12.0", "vtk"]
+
+[project.scripts]
+ihm-validator = "ihm_validation.ihm_validator:main"
+
+[project.urls]
+Homepage = "https://github.com/salilab/IHMValidation"
+Documentation = "https://ihmvalidation.readthedocs.io"
+Repository = "https://github.com/salilab/IHMValidation"
+Issues = "https://github.com/salilab/IHMValidation/issues"
+
+[tool.setuptools.packages.find]
+include = ["ihm_validation*"]
+
+[tool.setuptools.package-data]
+ihm_validation = ["../templates/**/*", "../static/**/*"]

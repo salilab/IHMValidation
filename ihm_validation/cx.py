@@ -26,8 +26,8 @@
 Crosslinking-MS validation for PDB-IHM
 """
 
-from mmcif_io import GetInputInformation
-from utility import get_hierarchy_from_model, NA
+from ihm_validation.mmcif_io import GetInputInformation
+from ihm_validation.utility import get_hierarchy_from_model, NA
 import pandas as pd
 import logging
 import ihm
@@ -46,7 +46,7 @@ import requests
 import pickle
 import pyhmmer
 import time
-import utility
+from ihm_validation import utility
 import xml.etree.ElementTree as ET
 
 pd.options.mode.chained_assignment = None

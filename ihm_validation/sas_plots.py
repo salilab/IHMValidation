@@ -28,14 +28,14 @@ Generate plots for SAS assessment
 
 import pandas as pd
 from pathlib import Path
-from mmcif_io import GetInputInformation
-import sas
+from ihm_validation.mmcif_io import GetInputInformation
+from ihm_validation import sas
 from bokeh.io import output_file, export_svg
 from bokeh.models import Span, ColumnDataSource
 from bokeh.plotting import figure, save
 from bokeh.layouts import column, gridplot
 from bokeh.embed import json_item
-import utility
+from ihm_validation import utility
 import json
 
 class SasValidationPlots(sas.SasValidation):

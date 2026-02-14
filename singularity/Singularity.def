@@ -106,8 +106,8 @@ Stage: spython-base
     git clone -b ihm https://github.com/aozalevsky/prism /opt/prism
 
     # Get IHMValidation
-    pip install -q "ihm==2.9"
-    git clone --depth 1 https://github.com/salilab/IHMValidation.git /opt/IHMValidation && chmod +x /opt/IHMValidation/ihm_validation/ihm_validator.py
+    pip install -q "ihm>=2.9"
+    git clone --depth 1 https://github.com/salilab/IHMValidation.git /opt/IHMValidation && pip install -q /opt/IHMValidation
 
     # Create input and output dirs
     mkdir -p /ihmv/input /ihmv/output /ihmv/cache /ihmv/databases
@@ -124,9 +124,9 @@ Stage: spython-base
     export PATH=/opt/conda/bin:${PATH}
     export PATH=${PATH}:/opt/molprobity/build/bin
     export PATH=${PATH}:/opt/chimera/bin
-    export PATH=${PATH}:/opt/IHMValidation/ihm_validation
-    export PYTHONPATH=${PYTHONPATH}:/opt/IHMValidation/ihm_validation
+    export PATH=${PATH}:/opt/IHMValidation/ihm_validation  # kept for bind-mount dev mode
+    export PYTHONPATH=${PYTHONPATH}:/opt/IHMValidation  # kept for bind-mount dev mode
 
 %runscript
 
-    exec /opt/IHMValidation/ihm_validation/ihm_validator.py "$@"
+    exec ihm-validator "$@"

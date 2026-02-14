@@ -28,8 +28,8 @@ Generate overview plots
 
 import os
 from pathlib import Path
-import utility
-from mmcif_io import GetInputInformation
+from ihm_validation import utility
+from ihm_validation.mmcif_io import GetInputInformation
 import bokeh
 import numpy as np
 from bokeh.io import output_file, curdoc, export_svg, show

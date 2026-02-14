@@ -36,7 +36,7 @@ from collections import defaultdict
 from itertools import chain
 
 import ihm
-import utility
+from ihm_validation import utility
 
 #########################
 # Setup operational mode

@@ -31,8 +31,8 @@ import logging
 import argparse
 from pathlib import Path
 import jinja2
-import utility
-from report import REPORT_VERSION
+from ihm_validation import utility
+from ihm_validation.report import REPORT_VERSION
 
 #############################################################################################################################
 # Jinja scripts
