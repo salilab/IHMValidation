@@ -27,7 +27,7 @@ Excluded volume assessment for PDB-IHM
 """
 
 from pathlib import Path
-from mmcif_io import GetInputInformation
+from ihm_validation.mmcif_io import GetInputInformation
 import ihm
 import multiprocessing as mp
 import pandas as pd

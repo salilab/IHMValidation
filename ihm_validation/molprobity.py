@@ -32,14 +32,14 @@ import os
 from pathlib import Path
 import subprocess
 from subprocess import run, check_call, CalledProcessError
-from mmcif_io import GetInputInformation, MAX_NUM_MODELS
+from ihm_validation.mmcif_io import GetInputInformation, MAX_NUM_MODELS
 import ihm, ihm.reader, ihm.dumper
 import collections
 import pandas as pd
 import csv
 import re
 import string
-import utility
+from ihm_validation import utility
 from typing import Literal
 import argparse
 import itertools

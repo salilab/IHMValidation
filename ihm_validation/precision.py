@@ -25,13 +25,13 @@
 """
 Run local precision assessment (PrISM)
 """
-from mmcif_io import GetInputInformation
+from ihm_validation.mmcif_io import GetInputInformation
 import pandas as pd
 import logging
 from pathlib import Path
 import pickle
 import time
-import utility
+from ihm_validation import utility
 # import pymol
 import sys
 

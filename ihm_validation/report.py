@@ -29,19 +29,19 @@ Generation of PDF and HTML reports
 import os
 from pathlib import Path
 import logging
-from mmcif_io import GetInputInformation
-import excludedvolume
-import molprobity
-import get_plots, sas, sas_plots
-import utility
+from ihm_validation.mmcif_io import GetInputInformation
+from ihm_validation import excludedvolume
+from ihm_validation import molprobity
+from ihm_validation import get_plots, sas, sas_plots
+from ihm_validation import utility
 import pickle
 import json
 from multiprocessing import Manager
 from collections import Counter
 import numpy as np
-import cx
-import precision
-import em
+from ihm_validation import cx
+from ihm_validation import precision
+from ihm_validation import em
 
 REPORT_VERSION = '3.1'
 

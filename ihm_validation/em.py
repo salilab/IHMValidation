@@ -57,11 +57,11 @@ from bokeh.io import export_svgs
 import iqplot
 
 # ihmv
-from mmcif_io import GetInputInformation
-import utility
+from ihm_validation.mmcif_io import GetInputInformation
+from ihm_validation import utility
 import ihm
-from molprobity import MyModelDumper, AtomSiteVariant, _stub
-import images
+from ihm_validation.molprobity import MyModelDumper, AtomSiteVariant, _stub
+from ihm_validation import images
 
 # EMDB
 import va

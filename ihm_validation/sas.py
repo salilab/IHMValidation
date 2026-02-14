@@ -35,7 +35,7 @@ import requests
 import json
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
-from mmcif_io import GetInputInformation
+from ihm_validation.mmcif_io import GetInputInformation
 from subprocess import run
 import operator
 import logging
@@ -49,7 +49,7 @@ saspath = pkgutil.get_loader('sasciftools').path
 saspath = str(Path(saspath).parent)
 sys.path.insert(0, saspath)
 from mmCif import mmcifIO
-import utility
+from ihm_validation import utility
 import ihm
 
 class SasValidation(GetInputInformation):

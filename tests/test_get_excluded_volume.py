@@ -7,10 +7,9 @@ import warnings
 import tempfile
 import ihm
 
-path=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
-sys.path.insert(0, path)
-from validation import GetInputInformation, utility 
-from validation.excludedvolume import GetExcludedVolume
+from ihm_validation.mmcif_io import GetInputInformation
+from ihm_validation import utility 
+from ihm_validation.excludedvolume import GetExcludedVolume
 
 
 def ignore_warnings(test_func):

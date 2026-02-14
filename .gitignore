@@ -36,3 +36,7 @@ templates_for_flasks/
 
 # Sphinx
 docs/build
+*.egg-info/
+*.egg/
+dist/
+build/

@@ -6,11 +6,10 @@ import warnings
 import tempfile
 import ihm
 
-path=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
-sys.path.insert(0, path)
 
-from validation import GetInputInformation, utility 
-from validation.sas import SasValidation
+from ihm_validation.mmcif_io import GetInputInformation
+from ihm_validation import utility 
+from ihm_validation.sas import SasValidation
 
 
 def ignore_warnings(test_func):

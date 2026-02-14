@@ -4,9 +4,7 @@ import unittest
 import warnings
 import tempfile
 import ihm
-path=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'master', 'pyext', 'src'))
-sys.path.insert(0, path)
-from validation import GetInputInformation
+from ihm_validation.mmcif_io import GetInputInformation
 
 
 def ignore_warnings(test_func):
