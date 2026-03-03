@@ -53,21 +53,11 @@ Stage: spython-base
     curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
     
     # Install MolProbity
-    mkdir /opt/molprobity
-    
-    mkdir -p /opt/molprobity/modules/chem_data && cd /opt/molprobity/modules/chem_data
-    git clone --depth 1 https://github.com/phenix-project/geostd.git
-    git clone --depth 1 https://github.com/rlabduke/mon_lib.git
-    git clone --depth 1 https://github.com/rlabduke/rotarama_data.git
-    git clone --depth 1 https://github.com/rlabduke/cablam_data.git
-
-    mkdir rama_z && cd rama_z
-    curl -o top8000_rama_z_dict.pkl -L https://github.com/rlabduke/reference_data/raw/master/Top8000/rama_z/top8000_rama_z_dict.pkl
-
-    cd /opt/molprobity
-    curl -o bootstrap.py -L https://github.com/cctbx/cctbx_project/raw/master/libtbx/auto_build/bootstrap.py
-    CI=true python3 bootstrap.py --builder=molprobity --nproc={{ NPROC }} --python=38 --use-conda && rm -rf bootstrap.py
-    PATH=${PATH}:/opt/molprobity/build/bin
+    apt install -y software-properties-common && add-apt-repository -y ppa:apptainer/ppa && apt update && apt install -y apptainer
+    mkdir -p /opt/molprobity && wget https://salilab.org/~arthur/ihmv/prebuilt_containers/molprobity_20260303.sif -O /opt/molprobity/molprobity.sif
+    echo '#!/bin/bash\nsingularity run /opt/molprobity/molprobity.sif molprobity.molprobity $@' > /usr/local/bin/molprobity.molprobity && chmod +x /usr/local/bin/molprobity.molprobity
+    echo '#!/bin/bash\nsingularity run /opt/molprobity/molprobity.sif molprobity.version.py $@' > /usr/local/bin/molprobity.version.py && chmod +x /usr/local/bin/molprobity.version.py
+    echo '#!/bin/bash\nsingularity run /opt/molprobity/molprobity.sif mmtbx.python $@' > /usr/local/bin/mmtbx.python && chmod +x /usr/local/bin/mmtbx.python
 
     # Install SAS tools: FreeSAS and SASCIFTOOLS
     pip install -q freesas
