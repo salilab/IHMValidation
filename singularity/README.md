@@ -16,5 +16,3 @@ which will generate `ihmv.cif` image file.
 **NB 1:** To get a date-tagged name, use `ihmv_$(date +%Y%m%d).sif` as an image name. 
 
 **NB 2:** It takes about ~25 minutes on a modern workstation to build the image from scratch. 
-
-**NB 3:** Due to the [MolProbity](https://github.com/rlabduke/MolProbity)'s rolling release model we can't freeze MolProbity version thus we can't guarantee the `IHMValidation` package will work with a freshly-built image. 
