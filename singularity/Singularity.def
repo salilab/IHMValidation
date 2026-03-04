@@ -5,8 +5,8 @@ Stage: spython-base
 %arguments
     
     TZ="America/Los_Angeles"
-    CHIMERA="./chimera-alpha-linux_x86_64_osmesa.bin"
-    CHIMERAX="./ucsf-chimerax_1.9ubuntu22.04_amd64.deb"
+    CHIMERA="./chimera-1.19-linux_x86_64_osmesa.bin"
+    CHIMERAX="./ucsf-chimerax_1.11.1ubuntu22.04_amd64.deb"
     NPROC=8
 
 %files
@@ -48,7 +48,7 @@ Stage: spython-base
     
     # Install Python packages and other dependencies needed by IHMValidation
     apt install -y xvfb mesa-utils libasound2 libdbus-glib-1-2 libgtk-3-0 pymol
-    mamba install -y pip requests "numpy==1.26.2" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd "qt6-main==6.7.3" -c salilab 
+    mamba install -y pip requests "numpy==1.26.2" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd -c salilab 
     pip install -qU iqplot pdfkit "pyhmmer==0.12.0" "mendeleev<1.1" 
     curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
     
@@ -71,7 +71,7 @@ Stage: spython-base
     pip install -q git+https://github.com/PRIDE-Archive/mzidentml-reader
     
     # Install VA package from EMDB and other dependencies
-    pip install -q "va==0.0.1.dev132" vtk
+    pip install -q "va==0.0.1.dev132"
     
     # Install extra chimera and chimerax dependencies
     apt install -y libglib2.0-0 libxrender1 libxcb-cursor0

@@ -694,18 +694,15 @@ class EMValidation(GetInputInformation):
         return outs
 
     @staticmethod
-    def get_chimera_version() -> str:
-        """return chimera version"""
-        version_string = subprocess.check_output(['chimera', '--version', '--nogui']).decode()
-        version = re.search(' (\d+.\d+) ', version_string).groups()[0]
+    def get_chimera_version(tool: str="chimera") -> str:
+        """Return Chimera(X) version"""
+        version_string = subprocess.check_output([tool, '--version', '--nogui']).decode()
+        version = re.search(r' ([\d.]+) ', version_string).groups()[0]
         return version
 
-    @staticmethod
-    def get_chimerax_version() -> str:
+    def get_chimerax_version(self) -> str:
         """return chimera version"""
-        version_string = subprocess.check_output(['chimerax', '--version', '--nogui']).decode()
-        version = re.search(' (\d+.\d+) ', version_string).groups()[0]
-        return version
+        return self.get_chimera_version("chimerax")
 
     @staticmethod
     def get_mapq_version() -> str:
