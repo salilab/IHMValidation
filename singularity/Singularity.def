@@ -54,10 +54,10 @@ Stage: spython-base
     
     # Install MolProbity
     apt install -y software-properties-common && add-apt-repository -y ppa:apptainer/ppa && apt update && apt install -y apptainer
-    mkdir -p /opt/molprobity && wget https://salilab.org/~arthur/ihmv/prebuilt_containers/molprobity_20260303.sif -O /opt/molprobity/molprobity.sif
-    echo '#!/bin/bash\nsingularity run /opt/molprobity/molprobity.sif molprobity.molprobity $@' > /usr/local/bin/molprobity.molprobity && chmod +x /usr/local/bin/molprobity.molprobity
-    echo '#!/bin/bash\nsingularity run /opt/molprobity/molprobity.sif molprobity.version.py $@' > /usr/local/bin/molprobity.version.py && chmod +x /usr/local/bin/molprobity.version.py
-    echo '#!/bin/bash\nsingularity run /opt/molprobity/molprobity.sif mmtbx.python $@' > /usr/local/bin/mmtbx.python && chmod +x /usr/local/bin/mmtbx.python
+    mkdir -p /opt/molprobity && apptainer pull /opt/molprobity/molprobity.sif oras://ghcr.io/aozalevsky/molprobity:20260303 
+    echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif molprobity.molprobity $@' > /usr/local/bin/molprobity.molprobity && chmod +x /usr/local/bin/molprobity.molprobity
+    echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif molprobity.version.py $@' > /usr/local/bin/molprobity.version.py && chmod +x /usr/local/bin/molprobity.version.py
+    echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif mmtbx.python $@' > /usr/local/bin/mmtbx.python && chmod +x /usr/local/bin/mmtbx.python
 
     # Install SAS tools: FreeSAS and SASCIFTOOLS
     pip install -q freesas
@@ -110,7 +110,6 @@ Stage: spython-base
     export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     export SE_MANAGER_PATH=/opt/conda/bin/selenium-manager
     export PATH=/opt/conda/bin:${PATH}
-    export PATH=${PATH}:/opt/molprobity/build/bin
     export PATH=${PATH}:/opt/chimera/bin
     export PATH=${PATH}:/opt/IHMValidation/ihm_validation
     export PYTHONPATH=${PYTHONPATH}:/opt/IHMValidation/ihm_validation
