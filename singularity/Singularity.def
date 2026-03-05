@@ -24,10 +24,11 @@ Stage: spython-base
     DEBIAN_FRONTEND=noninteractive
 
     # Install common dependencies
-    apt update -y && apt install -y wget curl git subversion unzip build-essential time htop locales
+    apt update -y && apt install -y curl git unzip time htop locales
+    
+    # Install fonts
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
-    apt install -y ttf-mscorefonts-installer fontconfig
-    fc-cache -fv
+    apt install -y ttf-mscorefonts-installer fontconfig && fc-cache -fv
     
     # Set locale
     echo "LC_ALL=en_US.UTF-8" >> /etc/environment
