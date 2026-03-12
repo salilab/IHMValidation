@@ -403,6 +403,8 @@ class EMValidation(GetInputInformation):
                 logging.error(e)
             p.yaxis.ticker.desired_num_ticks = 3
             p.output_backend = "svg"
+            p.border_fill_color = None
+            p.background_fill_color = None
 
             p.title.text_font_size = "14pt"
             p.xaxis.axis_label_text_font_size = "14pt"
@@ -436,6 +438,8 @@ class EMValidation(GetInputInformation):
             )
             p.yaxis.ticker.desired_num_ticks = 3
             p.output_backend = "svg"
+            p.border_fill_color = None
+            p.background_fill_color = None
 
             p.line(X, Y, color='blue')
 
@@ -473,6 +477,8 @@ class EMValidation(GetInputInformation):
                     )
                 p.yaxis.ticker.desired_num_ticks = 3
                 p.output_backend = "svg"
+                p.border_fill_color = None
+                p.background_fill_color = None
 
                 X = map_validation['rotationally_averaged_power_spectrum']['x']
                 Y = map_validation['rotationally_averaged_power_spectrum']['y']
@@ -522,6 +528,8 @@ class EMValidation(GetInputInformation):
 
                 p.yaxis.ticker.desired_num_ticks = 3
                 p.output_backend = "svg"
+                p.border_fill_color = None
+                p.background_fill_color = None
 
                 if 'load_fsc' in map_validation:
                     X0 = map_validation['load_fsc']['curves']['fscx']
@@ -617,6 +625,8 @@ class EMValidation(GetInputInformation):
                     plot_height=350,
                 )
                 p.output_backend = "svg"
+                p.border_fill_color = None
+                p.background_fill_color = None
 
                 X = data_['atom_inclusion_by_level']['0']['level']
                 Y1 = data_['atom_inclusion_by_level']['0']['backbone']

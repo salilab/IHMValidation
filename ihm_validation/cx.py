@@ -756,6 +756,8 @@ class CxValidation(GetInputInformation):
             )
 
             p.output_backend = "svg"
+            p.border_fill_color = None
+            p.background_fill_color = None
 
             p.x_range = Range1d(xmin, xmax)
             p.xaxis.axis_label = 'Satisfaction rate [%]'
@@ -861,6 +863,8 @@ class CxValidation(GetInputInformation):
                 p.yaxis.ticker.desired_num_ticks = 3
 
                 p.output_backend = "svg"
+                p.border_fill_color = None
+                p.background_fill_color = None
 
                 title = f"Model Group {gimg}; {lt}: {rt}, {d:.1f} Å"
 

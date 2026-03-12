@@ -36,7 +36,7 @@ SOFTWARE.
   </p>
   {% if cx_data_quality is not none and cx_data_quality|length > 0 %}
     {% for data in cx_data_quality %}
-      <div name=crosslinking-ms-{{ data["pride_id"] }} {{ 'class="card-header" style="background-color: #FFF;"' if cx_data_quality|length > 1 }}>
+      <div name=crosslinking-ms-{{ data["pride_id"] }} {{ 'class="card-header" style="background-color: transparent;"' if cx_data_quality|length > 1 }}>
         <h5>
           <a href=https://www.ebi.ac.uk/pride/archive/crosslinking/{{ data["pride_id"] }}>{{ data["pride_id"] }}</a>
         </h5>

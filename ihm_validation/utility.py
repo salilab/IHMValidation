@@ -40,6 +40,7 @@ import signal
 import re
 import requests
 import base64
+import pypdf
 
 NA = 'Not available'
 
@@ -878,3 +879,19 @@ def get_datasets_summary(system: ihm.System) -> list:
         datasets.insert(0, ('Name', 'Type', 'Count'))
 
     return datasets
+
+def add_pdf_watermark(input_pdf: str, watermark_pdf: str) -> str:
+    """Add watermark to every page of the input file"""
+    reader = pypdf.PdfReader(input_pdf)
+    watermark = pypdf.PdfReader(watermark_pdf).pages[0]
+    writer = pypdf.PdfWriter()
+
+    for page in reader.pages:
+        # Merge the original page ON TOP of the watermark
+        page.merge_page(watermark, over=False)
+        writer.add_page(page)
+
+    with open(input_pdf, "wb") as f:
+        writer.write(f)
+
+    return input_pdf

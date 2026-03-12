@@ -30,7 +30,7 @@ SOFTWARE.
   <!-- start overall card body for front page -->
   <div class="row">
     <div class="col-lg-4">
-      <div class="card-header" style="background-color: #FFFFFF; border-color:#003366; height: 29rem;">
+      <div class="card-header" style="background-color: transparent; border-color:#003366; height: 29rem;">
         <h3 align=center>
           <a href=/entry.html?{{ ID }}>
             {{ ID }}
@@ -58,7 +58,7 @@ SOFTWARE.
     </div>
     <!-- end col -->
     <div class="col-lg-8 col-md-2">
-      <div class="card-header" style="background-color:#FFFFFF; border-color:#003366;">
+      <div class="card-header" style="background-color: transparent; border-color:#003366;">
         <div class="bs-example" class="text-center">
           <table class="table table-bordered" style="border-color:#003366; height: 25rem;">
             {% for k, v in ranked_id_list %}
@@ -118,11 +118,11 @@ SOFTWARE.
   <div class="row">
     <div class="col-lg-12">
       
-      <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
+      <div class="card-header" style="background-color: transparent; border-color:#003366;">
         {% include 'summary.j2' %}
       </div>
       
-      <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
+      <div class="card-header" style="background-color: transparent; border-color:#003366;">
         <h4 align="center">
           <a name='qual'>1.2. Overall quality</a>
           {{ format_help("ataglance", current_task) }}

@@ -50,7 +50,7 @@ Stage: spython-base
     # Install Python packages and other dependencies needed by IHMValidation
     apt install -y xvfb mesa-utils libasound2 libdbus-glib-1-2 libgtk-3-0 pymol
     mamba install -y pip requests "numpy==1.26.2" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd -c salilab 
-    pip install -qU iqplot pdfkit "pyhmmer==0.12.0" "mendeleev<1.1" 
+    pip install -qU iqplot pdfkit pypdf "pyhmmer==0.12.0" "mendeleev<1.1" 
     curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
     
     # Install MolProbity

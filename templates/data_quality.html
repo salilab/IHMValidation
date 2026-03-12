@@ -27,7 +27,7 @@ SOFTWARE.
 {% block body %}
   <!-- Data quality header -->
   <div class="card-body border-success" style="border-color: solid black;">
-    <div class="card-header" style="background-color: #FFF;">    
+    <div class="card-header" style="background-color: transparent;">    
       <div class="row">
         <div class="col-lg-12">
           <h4 class="ex2" align="center">
@@ -42,7 +42,7 @@ SOFTWARE.
   {% if sas and sasdb_sascif|length < 1 %}
     <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
-      <div class="card-header" style="background-color: #FFF;">
+      <div class="card-header" style="background-color: transparent;">
         <!-- Data quality header -->
         <div class="row">
           <div class="col-lg-12">
@@ -66,7 +66,7 @@ SOFTWARE.
     <!-- SAS: Scattering profile-->
     <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
-      <div class="card-header" style="background-color: #FFF;">
+      <div class="card-header" style="background-color: transparent;">
         <!-- Data quality header -->
         <div class="row">
           <div class="col-lg-12">
@@ -114,7 +114,7 @@ SOFTWARE.
       <!-- start overall card body for front page -->
       <div class="row">
         <div class="col-lg-12">
-          <div class="card-header" style="background-color: #FFF;">
+          <div class="card-header" style="background-color: transparent;">
             <h5 class= ex2 align= center>
               <u><a name=firstE>3.1.2. Key experimental estimates</a></u>
               {{ format_help("expt", current_task) }}
@@ -134,7 +134,7 @@ SOFTWARE.
     <!-- SAS: Flexibility analysis -->
     <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
-      <div class="card-header" style="background-color: #FFF;">
+      <div class="card-header" style="background-color: transparent;">
         <div class="row">
           <!-- header -->
           <div class="col-lg-12">
@@ -176,7 +176,7 @@ SOFTWARE.
     <!-- SAS: Pair-distance distribution -->
     <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
-      <div class="card-header" style="background-color: #FFF;">
+      <div class="card-header" style="background-color: transparent;">
         <div class="row">
           <!-- header -->
           <div class="col-lg-12">
@@ -218,7 +218,7 @@ SOFTWARE.
     <!-- SAS: Guinier analysis -->
     <div class="card-body border-success" style="border-color: solid black;">
       <!-- start overall card body for front page -->
-      <div class="card-header" style="background-color: #FFF;">
+      <div class="card-header" style="background-color: transparent;">
         <div class="row">
           <!-- description -->
           <div class="col-lg-12">
@@ -271,11 +271,11 @@ SOFTWARE.
     </div>
   {% endif %}  
 
-  <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
+  <div class="card-header" style="background-color: transparent; border-color:#003366;">
     {% include 'cx_data_quality.j2' %}
   </div>
   
-  <div class="card-header" style="background-color: #FFFFFF; border-color:#003366;">
+  <div class="card-header" style="background-color: transparent; border-color:#003366;">
     {% include 'em_data_quality.j2' %}
   </div>
 
