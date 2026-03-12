@@ -522,9 +522,6 @@ class Plots(GetInputInformation):
             pf.yaxis.major_label_text_font_size = "14pt"
             pf.xaxis.axis_label_text_font_style = 'normal'
             pf.yaxis.axis_label_text_font_style = 'normal'
-            pf.title.vertical_align = 'top'
-            pf.title.align = "center"
-            pf.output_backend = "svg"
             fq_plots.append(pf)
 
         if cx_fit is not None and len(cx_fit) > 0:
