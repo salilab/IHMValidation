@@ -113,6 +113,10 @@ parser.add_argument('--enable-em', default=True, type=lambda x: bool(strtobool(x
 parser.add_argument('--enable-prism', default=True, type=lambda x: bool(strtobool(x)),
                         help="Run PrISM precision analysis")
 
+parser.add_argument('--watermark', default='preliminary', type=str,
+                        choices = ['preliminary', 'confidential', 'none'],
+                        help="Watermark for the PDF reports")
+
 
 #############################################################################################################################
 # Input for Jinja
@@ -391,8 +395,18 @@ if __name__ == "__main__":
     template_dict['current_task'] = 'pdf'
 
     logging.info("Write PDF")
+
+    watermark = None
+    if args.watermark in ['preliminary', 'confidential']:
+        watermark = Path(args.html_resources, 'images', f'{args.watermark}.pdf')
+    logging.info(f'Selected watermark: {args.watermark}')
+
     output_pdf = write_pdf(template_dict['ID_f'], template_dict, template_pdf,
               dirNames['pdf'], dirNames['pdf'])
+
+    if watermark is not None:
+        utility.add_pdf_watermark(output_pdf, watermark)
+
     output_pdf_ext = Path(str(output_path), utility.get_output_file_pdf(output_prefix))
     shutil.copy(output_pdf, str(output_pdf_ext))
 
@@ -411,6 +425,10 @@ if __name__ == "__main__":
                                                   )
     output_pdf = write_supplementary_table(
         template_dict['ID_f'], template_dict, template_file_supp, dirNames['pdf'], dirNames['pdf'])
+
+    if watermark is not None:
+        utility.add_pdf_watermark(output_pdf, watermark)
+
     output_pdf_ext = Path(str(output_path), utility.get_supp_file_pdf(output_prefix))
     shutil.copy(output_pdf, str(output_pdf_ext))
 

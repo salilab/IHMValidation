@@ -71,16 +71,24 @@ class GetMolprobityInformation(GetInputInformation):
         """
         version = utility.NA
         try:
-            # Try to get "internal version" 4.x.x
-            version = self.get_internal_version()
-        except subprocess.CalledProcessError:
-            logging.error(f'{tool} is missing')
-        except FileNotFoundError:
-            # Fallback to commit-based version
+            # Assume molprobity container first
             version = subprocess.check_output(
-                [tool, '--version'],
+                ['molprobity.version.py'],
                 text=True,
                 stderr=subprocess.STDOUT).strip()
+
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            try:
+                # Try to get "internal version" 4.x.x
+                version = self.get_internal_version()
+            except subprocess.CalledProcessError:
+                logging.error(f'{tool} is missing')
+            except FileNotFoundError:
+                # Fallback to commit-based version
+                version = subprocess.check_output(
+                    [tool, '--version'],
+                    text=True,
+                    stderr=subprocess.STDOUT).strip()
 
         return version
 

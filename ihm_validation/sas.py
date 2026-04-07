@@ -28,7 +28,6 @@ SAS assessment for PDB-IHM
 
 import os
 import re
-import subprocess
 import numpy as np
 import pandas as pd
 import requests
@@ -36,26 +35,22 @@ import json
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
 from mmcif_io import GetInputInformation
-from subprocess import run
 import operator
 import logging
 from io import StringIO
 
-import sys
-import pkgutil
 from pathlib import Path
 
-saspath = pkgutil.get_loader('sasciftools').path
-saspath = str(Path(saspath).parent)
-sys.path.insert(0, saspath)
-from mmCif import mmcifIO
+from sasciftools.mmCif import mmcifIO
+import freesas.cormap
+
 import utility
 import ihm
 
 class SasValidation(GetInputInformation):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.version = self.get_atsas_version()
+        self.version = self.get_freesas_version()
         self.dataset = GetInputInformation.get_dataset_comp(self)
         self.imagepath = '../static/images/'
         self.saslink = 'https://sasbdb.org/media/sascif/sascif_files/'
@@ -66,17 +61,9 @@ class SasValidation(GetInputInformation):
         self.intensities = self.modify_intensity()
         # self.data_dic = self.get_data_from_SASBDB()
 
-    def get_atsas_version(self, tool: str = 'datcmp') -> str:
-        """ Get ATSAS version """
-        line = subprocess.check_output(
-            [tool, '--version'],
-            stderr=subprocess.STDOUT, text=True).strip()
-
-        q = re.search(f'^{tool}, ATSAS (?P<version>.*)\nCopyright', line)
-
-        version = q.group("version")
-
-        return version
+    def get_freesas_version(self) -> str:
+        """ Get FreeSAS version """
+        return str(freesas.dated_version.version)
 
     def get_sas_ids(self) -> list:
         '''
@@ -328,7 +315,7 @@ class SasValidation(GetInputInformation):
 
     def get_pvals(self) -> dict:
         '''
-        get p-values from ATSAS
+        get CorMap p-values
         '''
         num_of_fits = self.get_number_of_fits()
         pval_table = {'SASDB ID': [], 'Model': [], 'χ²': [], 'P-value': []}
@@ -357,41 +344,27 @@ class SasValidation(GetInputInformation):
 
                     pval_table['SASDB ID'].append(code)
                     pval_table['Model'].append(c)
+                    pval_table['χ²'].append('%.2f' % chisq)
 
                     fitX = np.array(v['_sas_model_fitting']['momentum_transfer'], dtype=float)
                     fit_refY = np.array(v['_sas_model_fitting']['intensity'], dtype=float)
                     fitY = np.array(v['_sas_model_fitting']['fit'], dtype=float)
 
-                    fit_1 = pd.DataFrame({
-                        'Q': fitX,
-                        'Ie': fit_refY
-                    })
+                    try:
+                        p_val = freesas.cormap.gof(fit_refY, fitY).P
 
-                    fit_2 = pd.DataFrame({
-                        'Q': fitX,
-                        'Ib': fitY
-                    })
+                        pval_table['P-value'].append('%.2E' % Decimal(p_val))
+                    except (KeyError, IndexError, ValueError, AttributeError) as e:
+                        logging.error(e)
 
-                    fit_1.to_csv(f1fn, header=False, index=False)
-                    fit_2.to_csv(f2fn, header=False, index=False)
-                    with open(f3fn, 'w+') as f:
-                       run(['datcmp', f1fn, f2fn], stdout=f)
-                    with open(f3fn, 'r') as f:
-                      all_lines = [j.strip().split()
-                                 for i, j in enumerate(f.readlines())]
-                    p_val = [all_lines[i+1][4]
-                             for i, j in enumerate(all_lines) if 'adj' in j][0]
-
-                    for fn in [f1fn, f2fn, f3fn]:
-                        os.remove(fn)
-
-                    pval_table['P-value'].append('%.2E' % Decimal(p_val))
-                    pval_table['χ²'].append('%.2f' % chisq)
+                        pval_table['P-value'].append(utility.NA)
 
             if c == 0:
                 pval_table['SASDB ID'].append(code)
                 pval_table['Model'].append(utility.NA)
                 pval_table['P-value'].append(utility.NA)
+                pval_table['χ²'].append(utility.NA)
+
         return pval_table
 
     def get_pofr_ext(self) -> dict:

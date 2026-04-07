@@ -64,6 +64,8 @@ class SasValidationPlots(sas.SasValidation):
             p.title.vertical_align = 'top'
 
         p.output_backend = "svg"
+        p.border_fill_color = None
+        p.background_fill_color = None
 
         return p
 

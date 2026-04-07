@@ -5,14 +5,12 @@ Stage: spython-base
 %arguments
     
     TZ="America/Los_Angeles"
-    ATSAS="./ATSAS-3.2.1-1_amd64.deb"
-    CHIMERA="./chimera-alpha-linux_x86_64_osmesa.bin"
-    CHIMERAX="./ucsf-chimerax_1.9ubuntu22.04_amd64.deb"
+    CHIMERA="./chimera-1.19-linux_x86_64_osmesa.bin"
+    CHIMERAX="./ucsf-chimerax_1.11.1ubuntu22.04_amd64.deb"
     NPROC=8
 
 %files
 
-    {{ ATSAS }} /ATSAS.deb
     {{ CHIMERA }} /chimera.bin
     {{ CHIMERAX }} /chimerax.deb
 
@@ -26,10 +24,11 @@ Stage: spython-base
     DEBIAN_FRONTEND=noninteractive
 
     # Install common dependencies
-    apt update -y && apt install -y wget curl git subversion unzip build-essential time htop locales
+    apt update -y && apt install -y curl git unzip time htop locales
+    
+    # Install fonts
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
-    apt install -y ttf-mscorefonts-installer fontconfig
-    fc-cache -fv
+    apt install -y ttf-mscorefonts-installer fontconfig && fc-cache -fv
     
     # Set locale
     echo "LC_ALL=en_US.UTF-8" >> /etc/environment
@@ -50,30 +49,20 @@ Stage: spython-base
     
     # Install Python packages and other dependencies needed by IHMValidation
     apt install -y xvfb mesa-utils libasound2 libdbus-glib-1-2 libgtk-3-0 pymol
-    mamba install -y pip requests "numpy==1.26.2" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd "qt6-main==6.7.3" -c salilab 
-    pip install -qU iqplot pdfkit "pyhmmer<0.12.0" "mendeleev<1.1" 
+    mamba install -y pip requests "numpy==1.26.2" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd -c salilab 
+    pip install -qU iqplot pdfkit pypdf "pyhmmer==0.12.0" "mendeleev<1.1" 
     curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
     
     # Install MolProbity
-    mkdir /opt/molprobity
-    
-    mkdir -p /opt/molprobity/modules/chem_data && cd /opt/molprobity/modules/chem_data
-    git clone --depth 1 https://github.com/phenix-project/geostd.git
-    git clone --depth 1 https://github.com/rlabduke/mon_lib.git
-    git clone --depth 1 https://github.com/rlabduke/rotarama_data.git
-    git clone --depth 1 https://github.com/rlabduke/cablam_data.git
+    apt install -y software-properties-common && add-apt-repository -y ppa:apptainer/ppa && apt update && apt install -y apptainer
+    mkdir -p /opt/molprobity && apptainer pull /opt/molprobity/molprobity.sif oras://ghcr.io/aozalevsky/molprobity:20260303 
+    echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif molprobity.molprobity $@' > /usr/local/bin/molprobity.molprobity && chmod +x /usr/local/bin/molprobity.molprobity
+    echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif molprobity.version.py $@' > /usr/local/bin/molprobity.version.py && chmod +x /usr/local/bin/molprobity.version.py
+    echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif mmtbx.python $@' > /usr/local/bin/mmtbx.python && chmod +x /usr/local/bin/mmtbx.python
 
-    mkdir rama_z && cd rama_z
-    curl -o top8000_rama_z_dict.pkl -L https://github.com/rlabduke/reference_data/raw/master/Top8000/rama_z/top8000_rama_z_dict.pkl
-
-    cd /opt/molprobity
-    curl -o bootstrap.py -L https://github.com/cctbx/cctbx_project/raw/master/libtbx/auto_build/bootstrap.py
-    CI=true python3 bootstrap.py --builder=molprobity --nproc={{ NPROC }} --python=38 --use-conda && rm -rf bootstrap.py
-    PATH=${PATH}:/opt/molprobity/build/bin
-
-    # Install SAS tools: ATSAS and SASCIFTOOLS
-    apt install -y /ATSAS.deb && rm -f /ATSAS.deb
-    pip install -q git+https://git.embl.de/grp-svergun/sasciftools3.git@master#egg=sasciftools
+    # Install SAS tools: FreeSAS and SASCIFTOOLS
+    pip install -q freesas
+    pip install -q git+https://github.com/aozalevsky/sascif-reader@855b4bfb74d596a74d834b7291a304a74e49ea77
 
     # Install additional certificate for SASBDB
     curl https://cacerts.digicert.com/ThawteEVRSACAG2.crt.pem -o ThawteEVRSACAG2.crt --output-dir /usr/local/share/ca-certificates/ && update-ca-certificates
@@ -83,7 +72,7 @@ Stage: spython-base
     pip install -q git+https://github.com/PRIDE-Archive/mzidentml-reader
     
     # Install VA package from EMDB and other dependencies
-    pip install -q "va==0.0.1.dev132" vtk
+    pip install -q "va==0.0.1.dev132"
     
     # Install extra chimera and chimerax dependencies
     apt install -y libglib2.0-0 libxrender1 libxcb-cursor0
@@ -122,7 +111,6 @@ Stage: spython-base
     export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     export SE_MANAGER_PATH=/opt/conda/bin/selenium-manager
     export PATH=/opt/conda/bin:${PATH}
-    export PATH=${PATH}:/opt/molprobity/build/bin
     export PATH=${PATH}:/opt/chimera/bin
     export PATH=${PATH}:/opt/IHMValidation/ihm_validation
     export PYTHONPATH=${PYTHONPATH}:/opt/IHMValidation/ihm_validation

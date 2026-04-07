@@ -142,6 +142,8 @@ class Plots(GetInputInformation):
                 p.title.vertical_align = 'top'
                 p.title.align = "center"
                 p.output_backend = "svg"
+                p.border_fill_color = None
+                p.background_fill_color = None
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
                 export_svg(p, filename=fname)
@@ -218,6 +220,8 @@ class Plots(GetInputInformation):
                 p.title.vertical_align = 'top'
                 p.title.align = "center"
                 p.output_backend = "svg"
+                p.border_fill_color = None
+                p.background_fill_color = None
                 p.min_border_top = 20
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
@@ -260,6 +264,8 @@ class Plots(GetInputInformation):
         #    p.title.align = "center"
         #
         #    p.output_backend = "svg"
+        #    p.border_fill_color = None
+        #    p.background_fill_color = None
         #    p.title.vertical_align = 'top'
         #    fullplot = p
         #
@@ -324,6 +330,8 @@ class Plots(GetInputInformation):
             pd.title.vertical_align = 'top'
             pd.title.align = "center"
             pd.output_backend = "svg"
+            pd.border_fill_color = None
+            pd.background_fill_color = None
 
             dq_plots.append(pd)
 
@@ -405,6 +413,8 @@ class Plots(GetInputInformation):
                 p.title.vertical_align = 'top'
                 p.title.align = "center"
                 p.output_backend = "svg"
+                p.border_fill_color = None
+                p.background_fill_color = None
                 plots.append(p)
 
             grid = gridplot(plots, ncols=1,
@@ -453,6 +463,8 @@ class Plots(GetInputInformation):
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
+                pf.border_fill_color = None
+                pf.background_fill_color = None
                 pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
                 pf.yaxis.axis_label_text_font_size = "14pt"
@@ -500,6 +512,8 @@ class Plots(GetInputInformation):
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
+            pf.border_fill_color = None
+            pf.background_fill_color = None
             pf.title.text_font_size = '14pt'
             pf.legend.label_text_font_size = "14pt"
             pf.xaxis.axis_label_text_font_size = "14pt"
@@ -508,9 +522,6 @@ class Plots(GetInputInformation):
             pf.yaxis.major_label_text_font_size = "14pt"
             pf.xaxis.axis_label_text_font_style = 'normal'
             pf.yaxis.axis_label_text_font_style = 'normal'
-            pf.title.vertical_align = 'top'
-            pf.title.align = "center"
-            pf.output_backend = "svg"
             fq_plots.append(pf)
 
         if cx_fit is not None and len(cx_fit) > 0:
@@ -549,6 +560,8 @@ class Plots(GetInputInformation):
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
+                pf.border_fill_color = None
+                pf.background_fill_color = None
                 pf.title.text_font_size = '14pt'
                 pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
@@ -591,6 +604,8 @@ class Plots(GetInputInformation):
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
+                pf.border_fill_color = None
+                pf.background_fill_color = None
                 pf.title.text_font_size = '14pt'
                 pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
