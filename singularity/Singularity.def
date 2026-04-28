@@ -95,7 +95,7 @@ Stage: spython-base
     git clone -b ihm https://github.com/aozalevsky/prism /opt/prism
 
     # Get IHMValidation
-    pip install -q "ihm==2.9"
+    pip install -q "ihm==2.10"
     git clone --depth 1 https://github.com/salilab/IHMValidation.git /opt/IHMValidation && chmod +x /opt/IHMValidation/ihm_validation/ihm_validator.py
 
     # Create input and output dirs
