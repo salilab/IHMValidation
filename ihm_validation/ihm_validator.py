@@ -36,7 +36,7 @@ import argparse
 from multiprocessing import Manager
 import pdfkit
 import jinja2
-import pytz
+import zoneinfo
 import sys
 import logging
 from pathlib import Path
@@ -166,7 +166,7 @@ template_flask = [
 # Get the UTC time from user
 d = datetime.datetime.now(datetime.timezone.utc)
 # Set UCSF's timezone
-timezone = pytz.timezone("America/Los_Angeles")
+timezone = zoneinfo.ZoneInfo("America/Los_Angeles")
 d_format = d.astimezone(timezone)
 timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
 
