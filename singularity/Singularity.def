@@ -50,8 +50,8 @@ Stage: spython-base
     # Install Python packages and other dependencies needed by IHMValidation
     # apt install -y xvfb mesa-utils # pymol
     conda install -y pip firefox geckodriver selenium imp pyrmsd pymol-open-source -c salilab 
-    pip install -qU requests "numpy<2.0" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" iqplot pdfkit pypdf jinja2 ipython "pyhmmer>=0.12.0" "mendeleev<1.1" 
-    curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+    pip install -qU requests numpy scipy pandas scikit-learn matplotlib "bokeh<3.7" iqplot pdfkit pypdf jinja2 ipython pyhmmer "mendeleev<1.1"
+    curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-3.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-3.jammy_amd64.deb
     
     # Install MolProbity
     apt install -y software-properties-common && add-apt-repository -y ppa:apptainer/ppa && apt install -y apptainer
@@ -87,9 +87,9 @@ Stage: spython-base
     
     # Install ChimeraX
     apt install -y /chimerax.deb && apt install -yf && rm -f /chimerax.deb && echo '#!/bin/bash\nchimerax --offscreen --silent $@' > /usr/local/bin/ChimeraX && chmod +x /usr/local/bin/ChimeraX
-
+    
     # PRISM dependencies 
-    pip install -q "numpy==1.26.2" "matplotlib>=3.4.0" "scipy>=1.6.1" "networkx>=2.6.2" wget jenkspy pandas biopython
+    pip install -q numpy matplotlib scipy networkx wget jenkspy pandas biopython
     
     # get PrISM
     git clone -b ihm https://github.com/aozalevsky/prism /opt/prism

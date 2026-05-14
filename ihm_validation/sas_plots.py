@@ -74,11 +74,11 @@ class SasValidationPlots(sas.SasValidation):
         plot intensities with errors
         '''
         source = ColumnDataSource(df)
-        p = figure(plot_height=350, plot_width=350,
+        p = figure(height=350, width=350,
                    title=f"Log I(q) vs q with for {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.circle(x='Q', y='logI', source=source,
+        p.scatter(x='Q', y='logI', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
@@ -100,11 +100,11 @@ class SasValidationPlots(sas.SasValidation):
         plot intensities on a log scale with errors
         '''
         source = ColumnDataSource(df)
-        p = figure(plot_height=350, plot_width=350,
+        p = figure(height=350, width=350,
                    title=f"Log I(q) vs Log q for {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.circle(x='logQ', y='logI', source=source,
+        p.scatter(x='logQ', y='logI', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
@@ -126,11 +126,11 @@ class SasValidationPlots(sas.SasValidation):
         plot dimensionless kratky
         '''
         source = ColumnDataSource(df)
-        p = figure(plot_height=350, plot_width=350,
+        p = figure(height=350, width=350,
                    title=f"Dimensionless Kratky plot {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.circle(x='Kx', y='Ky', source=source,
+        p.scatter(x='Kx', y='Ky', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
@@ -152,11 +152,11 @@ class SasValidationPlots(sas.SasValidation):
         Porod-Debye plot for flexibility
         '''
         source = ColumnDataSource(df)
-        p = figure(plot_height=350, plot_width=350,
+        p = figure(height=350, width=350,
                    title=f"Porod-Debye plot {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.circle(x='Px', y='Py', source=source,
+        p.scatter(x='Px', y='Py', source=source,
                  #color='blue',
                  fill_alpha=0.3,
                  size=5)
@@ -178,12 +178,12 @@ class SasValidationPlots(sas.SasValidation):
         source = ColumnDataSource(df)
         ymax = max(df['P']) * 1.1
 
-        p = figure(plot_height=350, plot_width=350,
+        p = figure(height=350, width=350,
                    y_range=(0, ymax),
                    title=f"P(r) {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.circle(x='R', y='P', source=source,
+        p.scatter(x='R', y='P', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
@@ -221,17 +221,17 @@ class SasValidationPlots(sas.SasValidation):
         '''
         source1 = ColumnDataSource(df_int)
         source2 = ColumnDataSource(df_pofr)
-        p1 = figure(plot_height=350, plot_width=350,
+        p1 = figure(height=350, width=350,
                    title=f"P(r) extrapolated fit for {sasbdb}")
         legend1 = 'Experimental data'
         legend2 = "Extrapolated fit"
 
-        p1.circle(x='Q', y='logI', source=source1,
+        p1.scatter(x='Q', y='logI', source=source1,
                   #color='blue',
                   line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p1.line(x='Q', y='logI', source=source2, color="crimson",
                line_width=3, legend_label=legend2)
-        # p.circle(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
+        # p.scatter(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
 
         p1.xaxis.axis_label = "q [nm⁻¹]"
         p1.yaxis.axis_label = 'Log I(q) [a.u]'
@@ -244,11 +244,11 @@ class SasValidationPlots(sas.SasValidation):
         p1.xaxis.visible = False
 
         source3 = ColumnDataSource(df_error)
-        p2 = figure(plot_height=150, plot_width=350,
+        p2 = figure(height=150, width=350,
                    x_range=p1.x_range,
                    # title="Error weighted residuals for P(r) fit ("+sasbdb+")"
                    )
-        p2.circle(x='Q', y='WR', source=source3,
+        p2.scatter(x='Q', y='WR', source=source3,
                   # color='blue',
                   fill_alpha=0.3, size=5)
         hline = Span(location=0, dimension='width',
@@ -279,11 +279,11 @@ class SasValidationPlots(sas.SasValidation):
         Gunier plot with fit
         '''
         source = ColumnDataSource(df)
-        p1 = figure(plot_height=350, plot_width=350,
+        p1 = figure(height=350, width=350,
                    title=f"Guinier plot for {sasbdb}")
         legend1 = 'Experimental data'
         legend2 = f"Linear fit (R²={score})"
-        p1.circle(x='Q2', y='lnI', source=source,
+        p1.scatter(x='Q2', y='lnI', source=source,
                   # color='blue',
                  line_width=1, fill_alpha=0.3, size=5, legend_label=legend1)
         p1.line(x='Q2', y='y_pred', source=source,
@@ -304,11 +304,11 @@ class SasValidationPlots(sas.SasValidation):
         p1.xaxis.ticker.desired_num_ticks = 3
         p1.xaxis.visible = False
 
-        p2 = figure(plot_height=150, plot_width=350,
+        p2 = figure(height=150, width=350,
                     x_range=p1.x_range
                    # title="Residuals for Guinier plot fit ("+sasbdb+")"
                     )
-        p2.circle(x='Q2', y='res', source=source,
+        p2.scatter(x='Q2', y='res', source=source,
                   # color='blue', fill_alpha=0.3, size=5,
                   )
         hline = Span(location=0, dimension='width',
@@ -379,16 +379,16 @@ class SasValidationPlots(sas.SasValidation):
         plot chi-squared fit
         '''
         source = ColumnDataSource(df)
-        p1 = figure(plot_height=350, plot_width=350,
+        p1 = figure(height=350, width=350,
                    title=f"Model fit for {sasbdb}, model {fit + 1}")
         legend1 = 'Experimental data'
         legend2 = "Model fit"
-        p1.circle(x='Q', y='logIe', source=source,
+        p1.scatter(x='Q', y='logIe', source=source,
                   # color='blue',
                   line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p1.line(x='Q', y='logIb', source=source, color="crimson",
                 line_width=3, legend_label=legend2)
-        # p.circle(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
+        # p.scatter(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
 
         p1.yaxis.axis_label = 'Log I(q) [a.u]'
 
@@ -404,9 +404,9 @@ class SasValidationPlots(sas.SasValidation):
         p1.xaxis.axis_label_text_font_style = 'normal'
         p1.yaxis.axis_label_text_font_style = 'normal'
 
-        p2 = figure(plot_height=150, plot_width=350,
+        p2 = figure(height=150, width=350,
                    title=None, x_range=p1.x_range)
-        p2.circle(x='Q', y='rsigma', source=source,
+        p2.scatter(x='Q', y='rsigma', source=source,
                   # color='blue',
                   fill_alpha=0.3, size=3)
 
@@ -443,6 +443,7 @@ class SasValidationPlots(sas.SasValidation):
         # output_file(filename=fname_html, mode='inline')
         # save(p)
         export_svg(p, filename=fname_svg)
+        utility.strip_bokeh_invisible_outline(fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)

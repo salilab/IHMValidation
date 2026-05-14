@@ -37,7 +37,6 @@ from bokeh.models import (ColumnDataSource, Legend, LegendItem, FactorRange,
                           Div, BasicTickFormatter)
 from bokeh.palettes import linear_palette, Greys256, Blues256, Oranges256, Greens256
 from bokeh.plotting import figure, save
-from bokeh.models.widgets import Tabs, Panel
 from bokeh.layouts import row
 from bokeh.core.validation import silence
 from bokeh.core.validation.warnings import MISSING_RENDERERS, EMPTY_LAYOUT
@@ -114,8 +113,8 @@ class Plots(GetInputInformation):
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(0, upper),
-                    plot_height=120,
-                    plot_width=700
+                    height=120,
+                    width=700
                 )
 
                 p_ = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
@@ -147,19 +146,20 @@ class Plots(GetInputInformation):
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
                 export_svg(p, filename=fname)
+                utility.strip_bokeh_invisible_outline(fname)
 
                 plots.append(p)
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
                             toolbar_location='right')
-            grid.children[1].css_classes = ['scrollable']
-            grid.children[1].sizing_mode = 'fixed'
-            grid.children[1].height = 450
-            grid.children[1].width = 800
+            # grid.children[1].css_classes = ['scrollable']
+            # grid.children[1].sizing_mode = 'fixed'
+            # grid.children[1].height = 450
+            # grid.children[1].width = 800
 
             title = Div(text="<p>Model Quality: Molprobity Analysis</p>",
-                        style={"font-size": "1.5em", "font-weight": "bold",
+                        styles={"font-size": "1.5em", "font-weight": "bold",
                                "text-align": "center", "width": '100%'}, width=800
                         )
 
@@ -199,8 +199,8 @@ class Plots(GetInputInformation):
             lower, upper = 0, 102
 
             for i, name_ in enumerate(Models):
-                p = figure(y_range=FactorRange(factors=source.data['Scores'][i: i + 1]), x_range=(lower, upper), plot_height=90,
-                           plot_width=700)  # , title='Model Quality: Excluded Volume Analysis')
+                p = figure(y_range=FactorRange(factors=source.data['Scores'][i: i + 1]), x_range=(lower, upper), height=90,
+                           width=700)  # , title='Model Quality: Excluded Volume Analysis')
                 # p.xaxis.formatter = BasicTickFormatter(use_scientific=True, power_limit_high=3)
                 p.xaxis.ticker.desired_num_ticks = 3
 
@@ -226,19 +226,20 @@ class Plots(GetInputInformation):
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
                 export_svg(p, filename=fname)
+                utility.strip_bokeh_invisible_outline(fname)
 
                 plots.append(p)
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
                             toolbar_location='right')
-            grid.children[1].css_classes = ['scrollable']
-            grid.children[1].sizing_mode = 'fixed'
-            grid.children[1].height = 450
-            grid.children[1].width = 800
+            # grid.children[1].css_classes = ['scrollable']
+            # grid.children[1].sizing_mode = 'fixed'
+            # grid.children[1].height = 450
+            # grid.children[1].width = 800
 
             title = Div(text='<p>Model Quality: Excluded Volume Analysis</p>',
-                        style={"font-size": "1.5em", "font-weight": "bold",
+                        styles={"font-size": "1.5em", "font-weight": "bold",
                                "text-align": "center", "width": '100%'}, width=800
                         )
 
@@ -255,7 +256,7 @@ class Plots(GetInputInformation):
         #    source = ColumnDataSource(
         #        data=dict(Scores=Scores, counts=counts, legends=legends))
         #    p = figure(y_range=Scores, x_range=(0, 1),
-        #               plot_height=300, plot_width=800)
+        #               height=300, width=800)
         #
         #    p.ygrid.grid_line_color = None
         #    p.xaxis.axis_label_text_font_size = "14pt"
@@ -308,7 +309,7 @@ class Plots(GetInputInformation):
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=colors))
             pd = figure(y_range=Scores, x_range=(0, max(
-                counts)+1), plot_height=90 + len(counts) * 20, plot_width=800, title="Data Quality for SAS: Rg Analysis",)
+                counts)+1), height=90 + len(counts) * 20, width=800, title="Data Quality for SAS: Rg Analysis",)
             rd = pd.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
             pd.ygrid.grid_line_color = None
@@ -369,7 +370,7 @@ class Plots(GetInputInformation):
 
                 title_txt = "Crosslinking-MS Data Quality"
                 title = Div(text=f"<p>{title_txt}</p>",
-                            style={"font-size": "1.5em", "font-weight": "bold",
+                            styles={"font-size": "1.5em", "font-weight": "bold",
                                    "text-align": "center"}
                             )
 
@@ -378,8 +379,8 @@ class Plots(GetInputInformation):
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(lower, upper),
-                    plot_height=95 + 3 * 20,
-                    plot_width=700,
+                    height=95 + 3 * 20,
+                    width=700,
                     title=title_txt
                 )
                 p.xaxis.ticker.desired_num_ticks = 3
@@ -447,8 +448,8 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.2f} Å' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 80), plot_height=95 + len(counts) * 20,
-                            plot_width=800, title="3DEM resolution")
+                pf = figure(y_range=Scores, x_range=(0, 80), height=95 + len(counts) * 20,
+                            width=800, title="3DEM resolution")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
@@ -497,8 +498,8 @@ class Plots(GetInputInformation):
             legends = [str(i) for i in counts]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=linear_palette(Blues256, len(legends) + 2)[1:-1]))
-            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 20,
-                        plot_width=800, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
+            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), height=100 + len(counts) * 20,
+                        width=800, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
             rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
             pf.ygrid.grid_line_color = None
@@ -545,8 +546,8 @@ class Plots(GetInputInformation):
                 # identical in all plots because they're separated
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Oranges256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 102), plot_height=95 + len(counts) * 20,
-                            plot_width=800, title="Crosslink satisfaction")
+                pf = figure(y_range=Scores, x_range=(0, 102), height=95 + len(counts) * 20,
+                            width=800, title="Crosslink satisfaction")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
@@ -589,8 +590,8 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.3f}' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(-1, 1), plot_height=95 + len(counts) * 20,
-                            plot_width=800, title="Q-score")
+                pf = figure(y_range=Scores, x_range=(-1, 1), height=95 + len(counts) * 20,
+                            width=800, title="Q-score")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
@@ -635,6 +636,7 @@ class Plots(GetInputInformation):
         # output_file(filename=fname_html, mode='inline')
         # save(p)
         export_svg(p, filename=fname_svg)
+        utility.strip_bokeh_invisible_outline(fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)

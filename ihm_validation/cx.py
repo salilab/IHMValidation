@@ -35,8 +35,7 @@ import numpy as np
 from pathlib import Path
 from bokeh.plotting import save
 from bokeh.layouts import gridplot
-from bokeh.models import Range1d
-from bokeh.models.widgets import Panel, Tabs
+from bokeh.models import Range1d, Tabs, TabPanel
 from bokeh.resources import CDN
 import iqplot
 import json
@@ -824,7 +823,7 @@ class CxValidation(GetInputInformation):
                         [p], ncols=1, toolbar_location='right',
                         # sizing_mode='scale_width'
                     )
-                    tab = Panel(child=col, title=f'Model Group {gimg}')
+                    tab = TabPanel(child=col, title=f'Model Group {gimg}')
                     tabs_.append(tab)
 
         tabs = Tabs(tabs=tabs_)
@@ -857,7 +856,7 @@ class CxValidation(GetInputInformation):
                     data=data_, q='Crosslinks', density=False,
                     bins=bins,
                     style="step_filled",
-                    frame_width=500, frame_height=100,
+                    frame_width=510, frame_height=100,
                     # sizing_mode='scale_width',
                 )
                 p.yaxis.ticker.desired_num_ticks = 3
@@ -893,7 +892,7 @@ class CxValidation(GetInputInformation):
                 plots, ncols=1, toolbar_location='right',
                 # sizing_mode='scale_width'
             )
-            tab = Panel(
+            tab = TabPanel(
                 child=col, title=f'Model Group {gimg}',)
             tabs_.append(tab)
 
@@ -928,6 +927,9 @@ class CxValidation(GetInputInformation):
             f'{stem}.svg')
 
         svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
+
+        for svg in svgs:
+            utility.strip_bokeh_invisible_outline(svg)
 
         svgs = [Path(x).name for x in svgs]
 

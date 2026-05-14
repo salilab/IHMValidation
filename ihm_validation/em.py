@@ -51,7 +51,6 @@ import pandas as pd
 from bokeh.plotting import save, figure
 from bokeh.layouts import gridplot
 from bokeh.models import Range1d
-from bokeh.models.widgets import Panel, Tabs
 from bokeh.embed import json_item
 from bokeh.io import export_svgs
 import iqplot
@@ -92,6 +91,9 @@ class EMValidation(GetInputInformation):
             f'{stem}.svg')
 
         svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
+
+        for svg in svgs:
+            utility.strip_bokeh_invisible_outline(svg)
 
         svgs = [Path(x).name for x in svgs]
 
@@ -392,7 +394,7 @@ class EMValidation(GetInputInformation):
                 title=f"Voxel-value distribution (Mode={map_validation['density_distribution']['mode']})",
                 x_axis_label='Voxel value',
                 y_axis_label='Number of voxels (log10)',
-                plot_height=350
+                height=350
                 )
             X = map_validation['density_distribution']['x']
             Y = map_validation['density_distribution']['y']
@@ -434,7 +436,7 @@ class EMValidation(GetInputInformation):
                     title=f"Volume estimate (Estimated volume={vol:.2f} nm³)",
                     x_axis_label = 'Contour level',
                     y_axis_label = 'Volume [nm³]',
-                    plot_height=350
+                    height=350
             )
             p.yaxis.ticker.desired_num_ticks = 3
             p.output_backend = "svg"
@@ -473,7 +475,7 @@ class EMValidation(GetInputInformation):
                         title=f"Rotationally averaged power spectrum",
                         x_axis_label = 'Spatial frequency [Å⁻¹]',
                         y_axis_label = 'Log (I)',
-                        plot_height=350
+                        height=350
                     )
                 p.yaxis.ticker.desired_num_ticks = 3
                 p.output_backend = "svg"
@@ -523,7 +525,7 @@ class EMValidation(GetInputInformation):
                     x_axis_label = 'Spatial frequency [Å⁻¹]',
                     y_axis_label = 'Correlation',
                     y_range = (-0.1, 1.1),
-                    plot_height=350
+                    height=350
                     )
 
                 p.yaxis.ticker.desired_num_ticks = 3
@@ -622,7 +624,7 @@ class EMValidation(GetInputInformation):
                     x_axis_label = 'Contour level',
                     y_axis_label = 'Fraction of atoms inside the map',
                     y_range = (0., 1.1),
-                    plot_height=350,
+                    height=350,
                 )
                 p.output_backend = "svg"
                 p.border_fill_color = None

@@ -44,6 +44,25 @@ import pypdf
 
 NA = 'Not available'
 
+# Bokeh 3.x emits a duplicate <text> element per label with stroke-opacity="0"
+# (intended as an invisible outline). wkhtmltopdf ignores stroke-opacity and
+# renders these as solid black outlines around every plot label.
+_BOKEH_INVISIBLE_STROKE_TEXT_RE = re.compile(
+    r'<text [^>]*stroke-opacity="0"[^>]*>[^<]*</text>'
+)
+
+
+def strip_bokeh_invisible_outline(svg_path) -> None:
+    """Remove bokeh's invisible stroke-opacity=0 ghost text from an SVG file."""
+    path = Path(svg_path)
+    if not path.is_file():
+        return
+    text = path.read_text(encoding='utf-8')
+    cleaned = _BOKEH_INVISIBLE_STROKE_TEXT_RE.sub('', text)
+    if cleaned != text:
+        path.write_text(cleaned, encoding='utf-8')
+
+
 def dict_to_JSlist(d: dict) -> list:
     '''
     convert dictionary to list of lists
