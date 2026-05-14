@@ -347,9 +347,17 @@ class EMValidation(GetInputInformation):
     def get_map_image(self, code, name, rawmap=False, extension="jpeg"):
         img = None
         code_ = self.get_emdb_numerical_code(code)
-        url = f"https://www.ebi.ac.uk/pdbe/emdb/emdb-entry/emdbva/va-{code_}/va/emd_{code_}.map_{name}.{extension}"
+
+        stem_ = f"{code_[:2]}"
+        if len(str(code_)) > 4:
+            stem_ += f"/{code_[2]}"
+        stem_ += f"/{code_}"
+
+        url_ = f"https://www.ebi.ac.uk/emdb/static/sessions/validation_analysis/{stem_}/va/emd_{code_}"
+
+        url = f"{url_}.map_{name}.{extension}"
         if rawmap:
-            url = f"https://www.ebi.ac.uk/pdbe/emdb/emdb-entry/emdbva/va-{code_}/va/emd_{code_}_rawmap.map_{name}.{extension}"
+            url = f"{url_}_rawmap.map_{name}.{extension}"
 
         r = requests.get(url, stream=True)
         if r.status_code == 200:

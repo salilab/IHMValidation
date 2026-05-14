@@ -72,7 +72,7 @@ Stage: spython-base
     pip install -q git+https://github.com/PRIDE-Archive/mzidentml-reader
     
     # Install VA package from EMDB and other dependencies
-    pip install -q "va==0.0.1.dev132"
+    pip install -q "va==0.0.1.dev133"
     
     # Install extra chimera and chimerax dependencies
     apt install -y libglib2.0-0 libxrender1 libxcb-cursor0
