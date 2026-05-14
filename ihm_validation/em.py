@@ -161,7 +161,7 @@ class EMValidation(GetInputInformation):
     @staticmethod
     def get_emdb_numerical_code(code) -> str:
         """Extract only numerical part of the EMDB ID"""
-        code_ = re.search('\d+', code).group()
+        code_ = re.search(r'\d+', code).group()
         return code_
 
     def get_emdb_map(self, code, fname) -> str:
