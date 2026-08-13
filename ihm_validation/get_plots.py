@@ -69,6 +69,29 @@ GLANCE_PLOT_WIDTH = 840
 # than the height of the 14pt category labels next to them (about 19 px).
 GLANCE_BAR_HEIGHT = 21
 
+# Font for the legend labels, deliberately smaller than the 14pt used
+# everywhere else on these plots.
+#
+# Each of these legends has one entry per bar, so any mismatch between the
+# legend row and the bar accumulates down the plot: with ten SAS Rg datasets a
+# 14pt legend ran 26 px per row against 21 px bars and finished 67 px past the
+# bottom of the plot frame. Bokeh takes the row height as the tallest of the
+# glyph, the label box and the *measured* label text, so no glyph or spacing
+# setting can pull a row below the text itself - and at 14pt that text measures
+# 23 px (for '2.98 nm'; it is string-dependent, '2.02' comes out at 21). 12pt
+# is the largest size whose text fits inside GLANCE_BAR_HEIGHT for every label
+# the report produces, which is what lets a legend row line up with its bar.
+GLANCE_LEGEND_FONT_SIZE = '12pt'
+
+
+def align_legend_to_bars(legend) -> None:
+    """Pin a legend to one row per bar, at exactly the bar pitch."""
+    legend.glyph_height = GLANCE_BAR_HEIGHT
+    legend.label_height = GLANCE_BAR_HEIGHT
+    legend.spacing = 0
+    legend.label_text_font_size = GLANCE_LEGEND_FONT_SIZE
+
+
 class Plots(GetInputInformation):
     def __init__(self, *args, imageDirName, **kwargs):
         super().__init__(*args, **kwargs)
@@ -264,7 +287,8 @@ class Plots(GetInputInformation):
                 p.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
                     p_], index=j) for j in range(len(legends[i:i + 1]))], location='center',
-                    label_text_font_size='14pt', orientation='vertical')
+                    orientation='vertical')
+                align_legend_to_bars(legend)
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
                 p.xaxis.major_label_text_font_size = "14pt"
@@ -373,11 +397,11 @@ class Plots(GetInputInformation):
             pd.title.text_font_size = '14pt'
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rd], index=i) for i in range(len(legends))], location='center',
-                            orientation='vertical', label_text_font_size="14pt")
+                            orientation='vertical')
+            align_legend_to_bars(legend)
             pd.add_layout(legend, 'right')
             pd.legend.items.reverse()
             pd.legend.border_line_width = 0
-            pd.legend.label_text_font_size = "14pt"
             pd.xaxis.axis_label_text_font_size = "14pt"
             pd.yaxis.axis_label_text_font_size = "14pt"
             pd.xaxis.major_label_text_font_size = "14pt"
@@ -462,8 +486,9 @@ class Plots(GetInputInformation):
                                           ('Residue pairs', '@legends')])
                 legend = Legend(items=[LegendItem(label=legends_[j], renderers=[
                             rd], index=j) for j in range(len(legends_))], location='center',
-                            orientation='vertical', label_text_font_size="14pt")
+                            orientation='vertical')
                 legend.items = legend.items[::-1]
+                align_legend_to_bars(legend)
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
                 # set labels and fonts
@@ -526,7 +551,8 @@ class Plots(GetInputInformation):
                 pf.xaxis.axis_label = 'Resolution [Å]'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="14pt")
+                                orientation='vertical')
+                align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
@@ -535,7 +561,6 @@ class Plots(GetInputInformation):
                 pf.output_backend = "svg"
                 pf.border_fill_color = None
                 pf.background_fill_color = None
-                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
                 pf.yaxis.axis_label_text_font_size = "14pt"
                 pf.xaxis.major_label_text_font_size = "14pt"
@@ -577,7 +602,8 @@ class Plots(GetInputInformation):
             pf.xaxis.axis_label = 'Fit value'
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rf], index=i) for i in range(len(legends))], location="center",
-                            orientation='vertical', label_text_font_size="14pt")
+                            orientation='vertical')
+            align_legend_to_bars(legend)
             pf.add_layout(legend, 'right')
             pf.legend.items.reverse()
             pf.legend.border_line_width = 0
@@ -587,7 +613,6 @@ class Plots(GetInputInformation):
             pf.border_fill_color = None
             pf.background_fill_color = None
             pf.title.text_font_size = '14pt'
-            pf.legend.label_text_font_size = "14pt"
             pf.xaxis.axis_label_text_font_size = "14pt"
             pf.yaxis.axis_label_text_font_size = "14pt"
             pf.xaxis.major_label_text_font_size = "14pt"
@@ -627,7 +652,8 @@ class Plots(GetInputInformation):
                 pf.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="14pt")
+                                orientation='vertical')
+                align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
@@ -637,7 +663,6 @@ class Plots(GetInputInformation):
                 pf.border_fill_color = None
                 pf.background_fill_color = None
                 pf.title.text_font_size = '14pt'
-                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
                 pf.yaxis.axis_label_text_font_size = "14pt"
                 pf.xaxis.major_label_text_font_size = "14pt"
@@ -673,7 +698,8 @@ class Plots(GetInputInformation):
                 pf.xaxis.axis_label = 'Q-score'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="14pt")
+                                orientation='vertical')
+                align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
@@ -683,7 +709,6 @@ class Plots(GetInputInformation):
                 pf.border_fill_color = None
                 pf.background_fill_color = None
                 pf.title.text_font_size = '14pt'
-                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
                 pf.yaxis.axis_label_text_font_size = "14pt"
                 pf.xaxis.major_label_text_font_size = "14pt"
