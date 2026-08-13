@@ -174,6 +174,7 @@ timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
 template_path = Path(Path(__file__).parent.parent.resolve(), 'templates')
 templateLoader = jinja2.FileSystemLoader(searchpath=template_path)
 templateEnv = jinja2.Environment(loader=templateLoader)
+templateEnv.globals['bokeh_version'] = utility.BOKEH_VERSION
 template_pdf = "full_validation_pdf.html"
 template_file_supp = "summary_validation_pdf.html"
 Template_Dict = {}

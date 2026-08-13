@@ -41,8 +41,16 @@ import re
 import requests
 import base64
 import pypdf
+import bokeh
 
 NA = 'Not available'
+
+# The HTML report embeds plots as bokeh JSON and hands them to BokehJS loaded
+# from the CDN, so the two have to be the same version - a 3.x document is not
+# readable by 2.x BokehJS, and the plots silently come out blank. Take the
+# version from the installed package rather than pinning it in the template,
+# which is how they drifted apart in the first place.
+BOKEH_VERSION = bokeh.__version__
 
 # Bokeh 3.x emits a duplicate <text> element per label with stroke-opacity="0"
 # (intended as an invisible outline). wkhtmltopdf ignores stroke-opacity and
