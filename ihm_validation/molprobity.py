@@ -477,7 +477,14 @@ class GetMolprobityInformation(GetInputInformation):
                 r_ = {
                     'Clashscore': clashscore_,
                     'Ramachandran outliers': rama_,
-                    'Sidechain outliers': rota_
+                    'Sidechain outliers': rota_,
+                    # What the outlier counts are out of, so the plot can show
+                    # them as a proportion too. A clashscore is already a rate
+                    # (clashes per 1000 atoms) and has nothing to divide by.
+                    'totals': {
+                        'Ramachandran outliers': v['rama']['total'],
+                        'Sidechain outliers': v['rota']['total'],
+                    },
                 }
                 stats[k] = r_
 

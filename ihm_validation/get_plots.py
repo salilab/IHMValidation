@@ -145,6 +145,20 @@ class Plots(GetInputInformation):
             for s in Scores:
                 data[s] = [x[s] for x in molprobity_data.values()]
 
+            # Label each bar with its value, as the other at-a-glance plots do.
+            # The two outlier counts also get the share of residues they
+            # represent; a clashscore is a rate and is shown as it comes.
+            legends = []
+            for x in molprobity_data.values():
+                for s in Scores:
+                    total = x.get('totals', {}).get(s)
+                    if total:
+                        legends.append(f'{x[s]} ({x[s] / total * 100:.2f}%)')
+                    elif isinstance(x[s], float):
+                        legends.append(f'{x[s]:.2f}')
+                    else:
+                        legends.append(f'{x[s]}')
+
             y = [(f"Model {model}", score) for model in Models for score in Scores]
             counts = sum(
                 zip(
@@ -177,9 +191,11 @@ class Plots(GetInputInformation):
 
                 # slice out this model's three bars into their own source, so
                 # the hover tool has a metric name to show alongside the count
+                legends_ = legends[i * 3: (i + 1) * 3]
                 source_ = ColumnDataSource(data=dict(
                     y=source.data['y'][i * 3: (i + 1) * 3],
                     counts=source.data['counts'][i * 3: (i + 1) * 3],
+                    legends=legends_,
                     metric=Scores))
 
                 p_ = p.hbar(y='y',
@@ -191,7 +207,18 @@ class Plots(GetInputInformation):
                                               start=1, end=2)
                        )
 
-                utility.add_hover(p, p_, [('', '@metric'), ('Outliers', '@counts')])
+                utility.add_hover(p, p_, [('', '@metric'), ('', '@legends')])
+
+                legend = Legend(items=[LegendItem(label=legends_[j], renderers=[
+                                p_], index=j) for j in range(len(legends_))],
+                                location='center', orientation='vertical')
+                # bokeh draws the first factor at the bottom, so the legend has
+                # to run the other way to sit alongside the bars it labels
+                legend.items = legend.items[::-1]
+                align_legend_to_bars(legend)
+                p.add_layout(legend, 'right')
+                p.legend.border_line_width = 0
+                utility.clear_legend_background(p)
 
                 # set labels and fonts
                 p.xaxis.axis_label_text_font_size = "14pt"
