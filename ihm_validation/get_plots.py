@@ -291,6 +291,7 @@ class Plots(GetInputInformation):
                 align_legend_to_bars(legend)
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
+                utility.clear_legend_background(p)
                 p.xaxis.major_label_text_font_size = "14pt"
                 p.yaxis.major_label_text_font_size = "14pt"
                 p.xaxis.axis_label_text_font_style = 'normal'
@@ -402,6 +403,7 @@ class Plots(GetInputInformation):
             pd.add_layout(legend, 'right')
             pd.legend.items.reverse()
             pd.legend.border_line_width = 0
+            utility.clear_legend_background(pd)
             pd.xaxis.axis_label_text_font_size = "14pt"
             pd.yaxis.axis_label_text_font_size = "14pt"
             pd.xaxis.major_label_text_font_size = "14pt"
@@ -491,6 +493,7 @@ class Plots(GetInputInformation):
                 align_legend_to_bars(legend)
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
+                utility.clear_legend_background(p)
                 # set labels and fonts
                 p.xaxis.axis_label_text_font_size = "14pt"
                 p.yaxis.axis_label_text_font_size = "14pt"
@@ -556,6 +559,7 @@ class Plots(GetInputInformation):
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
@@ -607,6 +611,7 @@ class Plots(GetInputInformation):
             pf.add_layout(legend, 'right')
             pf.legend.items.reverse()
             pf.legend.border_line_width = 0
+            utility.clear_legend_background(pf)
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
@@ -657,6 +662,7 @@ class Plots(GetInputInformation):
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
@@ -703,6 +709,7 @@ class Plots(GetInputInformation):
                 pf.add_layout(legend, 'right')
                 pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"

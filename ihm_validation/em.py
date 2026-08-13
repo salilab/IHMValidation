@@ -429,6 +429,7 @@ class EMValidation(GetInputInformation):
             p.yaxis.axis_label_text_font_style = 'normal'
 
             title = f'{emdbid}_voxel'
+            utility.clear_legend_background(p)
             plots_ = self.save_plots(p, title, imageDirName)
             data_stats_plots[title] = plots_
         except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -478,6 +479,7 @@ class EMValidation(GetInputInformation):
             p.xaxis.axis_label_text_font_style = 'normal'
             p.yaxis.axis_label_text_font_style = 'normal'
 
+            utility.clear_legend_background(p)
             plots_ = self.save_plots(p, title, imageDirName)
             data_stats_plots[title] = plots_
         except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -531,6 +533,7 @@ class EMValidation(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
 
                 title = f'{emdbid}_raps'
+                utility.clear_legend_background(p)
                 plots_ = self.save_plots(p, title, imageDirName)
                 data_stats_plots[title] = plots_
             except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -587,6 +590,7 @@ class EMValidation(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
 
                 title = f'{emdbid}_fsc'
+                utility.clear_legend_background(p)
                 plots_ = self.save_plots(p, title, imageDirName)
                 data_stats_plots[title] = plots_
             except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -686,6 +690,7 @@ class EMValidation(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
 
                 title = f'{mid}_{emdbid}_ai_plot'
+                utility.clear_legend_background(p)
                 plots_ = self.save_plots(p, title, imageDirName)
                 fit_plots['ai_plot'] = plots_
 

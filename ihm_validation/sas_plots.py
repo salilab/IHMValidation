@@ -222,6 +222,7 @@ class SasValidationPlots(sas.SasValidation):
         p.legend.orientation = "vertical"
         p.legend.location = "top_right"
         p.legend.border_line_width = 0
+        utility.clear_legend_background(p)
 
         p = self.set_plot_style(p)
 
@@ -257,6 +258,7 @@ class SasValidationPlots(sas.SasValidation):
         p1.legend.orientation = "vertical"
         p1.legend.location = "top_right"
         p1.legend.border_line_width = 0
+        utility.clear_legend_background(p1)
 
         p1 = self.set_plot_style(p1)
         p1.xaxis.visible = False
@@ -323,6 +325,7 @@ class SasValidationPlots(sas.SasValidation):
         p1.legend.orientation = "vertical"
         p1.legend.location = "top_right"
         p1.legend.border_line_width = 0
+        utility.clear_legend_background(p1)
 
         p1 = self.set_plot_style(p1)
         p1.yaxis.ticker.desired_num_ticks = 3
@@ -427,6 +430,7 @@ class SasValidationPlots(sas.SasValidation):
         p1.legend.orientation = "vertical"
         p1.legend.location = "top_right"
         p1.legend.border_line_width = 0
+        utility.clear_legend_background(p1)
 
         p1 = self.set_plot_style(p1)
 

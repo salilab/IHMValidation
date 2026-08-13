@@ -78,6 +78,22 @@ def add_hover(plot, renderers, tooltips, mode: str = 'mouse') -> None:
                              tooltips=list(tooltips),
                              mode=mode))
 
+
+def clear_legend_background(plot) -> None:
+    """
+    Stop a plot's legend painting itself onto an opaque panel.
+
+    Every figure in the report is given a transparent background so the PDF
+    watermark shows through, but a bokeh legend is not covered by that: it
+    defaults to a white fill at 0.95 alpha and punches a white rectangle back
+    through the page.
+
+    Takes the plot rather than the legend so it also covers the plots that
+    build their legend implicitly from `legend_label`. Safe on a plot with no
+    legend at all - bokeh's splattable accessor makes it a no-op.
+    """
+    plot.legend.background_fill_color = None
+
 # Bokeh 3.x emits a duplicate <text> element per label with stroke-opacity="0"
 # (intended as an invisible outline). wkhtmltopdf ignores stroke-opacity and
 # renders these as solid black outlines around every plot label.
