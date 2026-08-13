@@ -42,6 +42,7 @@ import requests
 import base64
 import pypdf
 import bokeh
+from bokeh.models import HoverTool
 
 NA = 'Not available'
 
@@ -52,6 +53,31 @@ NA = 'Not available'
 # which is how they drifted apart in the first place.
 BOKEH_VERSION = bokeh.__version__
 
+
+def add_hover(plot, renderers, tooltips, mode: str = 'mouse') -> None:
+    """
+    Attach a HoverTool to `plot` showing `tooltips` for `renderers` only.
+
+    `tooltips` is the usual bokeh list of (label, field) pairs, e.g.
+    ``[('q', '@Q{0.0000}'), ('Log I(q)', '@logI{0.000}')]``.
+
+    The tool is always tied to explicit renderers, because most plots in the
+    report carry helper glyphs - error bars, fit lines, threshold markers -
+    that have no values worth showing and would otherwise steal the hover.
+
+    Use ``mode='vline'`` for line plots, where the pointer is rarely close
+    enough to a vertex for the default 'mouse' mode to trigger.
+
+    Tooltips only ever reach the HTML report; the PDF embeds SVG exports, and
+    a HoverTool leaves those byte-for-byte identical.
+    """
+    if not isinstance(renderers, (list, tuple)):
+        renderers = [renderers]
+
+    plot.add_tools(HoverTool(renderers=list(renderers),
+                             tooltips=list(tooltips),
+                             mode=mode))
+
 # Bokeh 3.x emits a duplicate <text> element per label with stroke-opacity="0"
 # (intended as an invisible outline). wkhtmltopdf ignores stroke-opacity and
 # renders these as solid black outlines around every plot label.
@@ -59,14 +85,28 @@ _BOKEH_INVISIBLE_STROKE_TEXT_RE = re.compile(
     r'<text [^>]*stroke-opacity="0"[^>]*>[^<]*</text>'
 )
 
+# Fully transparent glyphs - we use them as invisible hover targets - are still
+# exported, one empty <path> each. They have no geometry to draw, so they only
+# add bulk to the SVG that ends up in the PDF.
+_BOKEH_EMPTY_PATH_RE = re.compile(
+    r'<path fill="none" stroke="none"/>'
+)
 
-def strip_bokeh_invisible_outline(svg_path) -> None:
-    """Remove bokeh's invisible stroke-opacity=0 ghost text from an SVG file."""
+
+def strip_bokeh_svg_noise(svg_path) -> None:
+    """
+    Drop elements bokeh's SVG export emits that cannot draw anything.
+
+    Two kinds: the ghost text bokeh writes behind every label (which
+    wkhtmltopdf turns into a black outline because it ignores stroke-opacity),
+    and the empty paths left behind by fully transparent glyphs.
+    """
     path = Path(svg_path)
     if not path.is_file():
         return
     text = path.read_text(encoding='utf-8')
     cleaned = _BOKEH_INVISIBLE_STROKE_TEXT_RE.sub('', text)
+    cleaned = _BOKEH_EMPTY_PATH_RE.sub('', cleaned)
     if cleaned != text:
         path.write_text(cleaned, encoding='utf-8')
 

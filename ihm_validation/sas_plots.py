@@ -78,12 +78,15 @@ class SasValidationPlots(sas.SasValidation):
                    title=f"Log I(q) vs q with for {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.scatter(x='Q', y='logI', source=source,
+        r = p.scatter(x='Q', y='logI', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
         p.multi_line('err_x', 'err_y', source=source,
                      color='gray', line_width=0.5)
+
+        utility.add_hover(p, r, [('q [nm\u207B\u00B9]', '@Q{0.0000}'),
+                                 ('Log I(q)', '@logI{0.000}')])
 
         p.xaxis.axis_label = "q [nm\u207B\u00B9]"
         p.yaxis.axis_label = 'Log I(q) [a.u]'
@@ -104,12 +107,15 @@ class SasValidationPlots(sas.SasValidation):
                    title=f"Log I(q) vs Log q for {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.scatter(x='logQ', y='logI', source=source,
+        r = p.scatter(x='logQ', y='logI', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
         p.multi_line('logX', 'err_y', source=source,
                      color='gray', line_width=0.5)
+
+        utility.add_hover(p, r, [('Log q [nm\u207B\u00B9]', '@logQ{0.000}'),
+                                 ('Log I(q)', '@logI{0.000}')])
 
         p.xaxis.axis_label = 'Log q [nm\u207B\u00B9]'
         p.yaxis.axis_label = 'Log I(q) [a.u]'
@@ -130,10 +136,13 @@ class SasValidationPlots(sas.SasValidation):
                    title=f"Dimensionless Kratky plot {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.scatter(x='Kx', y='Ky', source=source,
+        r = p.scatter(x='Kx', y='Ky', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
+
+        utility.add_hover(p, r, [('qRg', '@Kx{0.000}'),
+                                 ('q\u00B2 Rg\u00B2 I(q)/I(0)', '@Ky{0.000}')])
         # vline = Span(location=0.1732, dimension='height', line_color="crimson", line_width=3)
         # hline = Span(location=0.1104, dimension='width', line_color='green', line_width=3)
         # p.renderers.extend([vline, hline])
@@ -156,10 +165,13 @@ class SasValidationPlots(sas.SasValidation):
                    title=f"Porod-Debye plot {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.scatter(x='Px', y='Py', source=source,
+        r = p.scatter(x='Px', y='Py', source=source,
                  #color='blue',
                  fill_alpha=0.3,
                  size=5)
+
+        utility.add_hover(p, r, [('q\u2074', '@Px{0.0000}'),
+                                 ('q\u2074 I(q)', '@Py{0.000}')])
 
         p.xaxis.axis_label = 'q \u2074'
         p.yaxis.axis_label = 'q\u2074 I(q)'
@@ -183,12 +195,15 @@ class SasValidationPlots(sas.SasValidation):
                    title=f"P(r) {sasbdb}",
                    toolbar_location="above",
                    toolbar_sticky=False)
-        p.scatter(x='R', y='P', source=source,
+        r = p.scatter(x='R', y='P', source=source,
                  # color='blue',
                  fill_alpha=0.3,
                  size=5)
         p.multi_line('err_x', 'err_y', source=source,
                      color='gray', line_width=1.5)
+
+        utility.add_hover(p, r, [('r [nm]', '@R{0.00}'),
+                                 ('P(r)', '@P{0.000}')])
 
         if Rg is not None or Rg != utility.NA:
             p.line([Rg, Rg], [0, ymax], legend_label='Rg',
@@ -226,11 +241,14 @@ class SasValidationPlots(sas.SasValidation):
         legend1 = 'Experimental data'
         legend2 = "Extrapolated fit"
 
-        p1.scatter(x='Q', y='logI', source=source1,
+        r1 = p1.scatter(x='Q', y='logI', source=source1,
                   #color='blue',
                   line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p1.line(x='Q', y='logI', source=source2, color="crimson",
                line_width=3, legend_label=legend2)
+
+        utility.add_hover(p1, r1, [('q [nm⁻¹]', '@Q{0.0000}'),
+                                   ('Log I(q)', '@logI{0.000}')])
         # p.scatter(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
 
         p1.xaxis.axis_label = "q [nm⁻¹]"
@@ -248,9 +266,12 @@ class SasValidationPlots(sas.SasValidation):
                    x_range=p1.x_range,
                    # title="Error weighted residuals for P(r) fit ("+sasbdb+")"
                    )
-        p2.scatter(x='Q', y='WR', source=source3,
+        r2 = p2.scatter(x='Q', y='WR', source=source3,
                   # color='blue',
                   fill_alpha=0.3, size=5)
+
+        utility.add_hover(p2, r2, [('q [nm⁻¹]', '@Q{0.0000}'),
+                                   ('Δ/σ', '@WR{0.00}')])
         hline = Span(location=0, dimension='width',
                      line_color="crimson", line_width=3)
         p2.renderers.extend([hline])
@@ -283,11 +304,15 @@ class SasValidationPlots(sas.SasValidation):
                    title=f"Guinier plot for {sasbdb}")
         legend1 = 'Experimental data'
         legend2 = f"Linear fit (R²={score})"
-        p1.scatter(x='Q2', y='lnI', source=source,
+        r1 = p1.scatter(x='Q2', y='lnI', source=source,
                   # color='blue',
                  line_width=1, fill_alpha=0.3, size=5, legend_label=legend1)
         p1.line(x='Q2', y='y_pred', source=source,
                color="crimson", line_width=3, legend_label=legend2)
+
+        utility.add_hover(p1, r1, [('q [nm⁻²]', '@Q2{0.0000}'),
+                                   ('Ln I(q)', '@lnI{0.000}'),
+                                   ('Linear fit', '@y_pred{0.000}')])
 
         p1.xaxis.axis_label = "q [nm⁻²]"  # \u212B\u207B\u00B2"
         p1.yaxis.axis_label = 'Ln I(q)'
@@ -308,9 +333,12 @@ class SasValidationPlots(sas.SasValidation):
                     x_range=p1.x_range
                    # title="Residuals for Guinier plot fit ("+sasbdb+")"
                     )
-        p2.scatter(x='Q2', y='res', source=source,
+        r2 = p2.scatter(x='Q2', y='res', source=source,
                   # color='blue', fill_alpha=0.3, size=5,
                   )
+
+        utility.add_hover(p2, r2, [('q [nm⁻²]', '@Q2{0.0000}'),
+                                   ('Δ', '@res{0.00}')])
         hline = Span(location=0, dimension='width',
                      line_color="crimson", line_width=3)
         p2.renderers.extend([hline])
@@ -383,11 +411,15 @@ class SasValidationPlots(sas.SasValidation):
                    title=f"Model fit for {sasbdb}, model {fit + 1}")
         legend1 = 'Experimental data'
         legend2 = "Model fit"
-        p1.scatter(x='Q', y='logIe', source=source,
+        r1 = p1.scatter(x='Q', y='logIe', source=source,
                   # color='blue',
                   line_width=1, fill_alpha=0.3, size=3, legend_label=legend1)
         p1.line(x='Q', y='logIb', source=source, color="crimson",
                 line_width=3, legend_label=legend2)
+
+        utility.add_hover(p1, r1, [('q [nm⁻¹]', '@Q{0.0000}'),
+                                   ('Log I(q) experimental', '@logIe{0.000}'),
+                                   ('Log I(q) model', '@logIb{0.000}')])
         # p.scatter(x='Q',y='logIb',source=source, color="crimson",line_width=1,fill_alpha=0.1,size=3,legend_label=legend2)
 
         p1.yaxis.axis_label = 'Log I(q) [a.u]'
@@ -406,9 +438,12 @@ class SasValidationPlots(sas.SasValidation):
 
         p2 = figure(height=150, width=350,
                    title=None, x_range=p1.x_range)
-        p2.scatter(x='Q', y='rsigma', source=source,
+        r2 = p2.scatter(x='Q', y='rsigma', source=source,
                   # color='blue',
                   fill_alpha=0.3, size=3)
+
+        utility.add_hover(p2, r2, [('q [nm⁻¹]', '@Q{0.0000}'),
+                                   ('Δ/σ', '@rsigma{0.00}')])
 
         p2.xaxis.axis_label = r"q [nm⁻¹]"
         p2.yaxis.axis_label = r"Δ/σ"
@@ -443,7 +478,7 @@ class SasValidationPlots(sas.SasValidation):
         # output_file(filename=fname_html, mode='inline')
         # save(p)
         export_svg(p, filename=fname_svg)
-        utility.strip_bokeh_invisible_outline(fname_svg)
+        utility.strip_bokeh_svg_noise(fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)

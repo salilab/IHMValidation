@@ -50,7 +50,7 @@ import pandas as pd
 # plotting
 from bokeh.plotting import save, figure
 from bokeh.layouts import gridplot
-from bokeh.models import Range1d
+from bokeh.models import Range1d, ColumnDataSource
 from bokeh.embed import json_item
 from bokeh.io import export_svgs
 import iqplot
@@ -93,7 +93,7 @@ class EMValidation(GetInputInformation):
         svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
 
         for svg in svgs:
-            utility.strip_bokeh_invisible_outline(svg)
+            utility.strip_bokeh_svg_noise(svg)
 
         svgs = [Path(x).name for x in svgs]
 
@@ -406,7 +406,11 @@ class EMValidation(GetInputInformation):
                 )
             X = map_validation['density_distribution']['x']
             Y = map_validation['density_distribution']['y']
-            p.line(X, Y, color='blue')
+            r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y)),
+                       color='blue')
+            utility.add_hover(p, r, [('Voxel value', '@x{0.000}'),
+                                     ('Number of voxels (log10)', '@y{0.00}')],
+                              mode='vline')
             try:
                 p.line([recl, recl], [0, max(Y)], line_color='red', line_width=3, legend_label=f'Recommended contour level {recl:.2f}')
             except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -451,7 +455,11 @@ class EMValidation(GetInputInformation):
             p.border_fill_color = None
             p.background_fill_color = None
 
-            p.line(X, Y, color='blue')
+            r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y)),
+                       color='blue')
+            utility.add_hover(p, r, [('Contour level', '@x{0.000}'),
+                                     ('Volume [nm³]', '@y{0.00}')],
+                              mode='vline')
 
             try:
                 p.line([recl, recl], [0, max(Y)], color='red', legend_label=f'Recommended contour level {recl:.2f}')
@@ -502,7 +510,11 @@ class EMValidation(GetInputInformation):
                     miny = min(np.min(Y), np.min(Y))
                     p.line(X_raw, Y_raw, color='orange', legend_label='Raw map RAPS')
 
-                p.line(X, Y, color='blue', legend_label='Primary map RAPS')
+                r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y)),
+                           color='blue', legend_label='Primary map RAPS')
+                utility.add_hover(p, r, [('Spatial frequency', '@x{0.0000}'),
+                                         ('Log amplitude', '@y{0.000}')],
+                                  mode='vline')
 
                 try:
                     loc = 1 / resolution
@@ -548,7 +560,12 @@ class EMValidation(GetInputInformation):
 
                 X = map_validation['fsc']['curves']['level']
                 Y1 = map_validation['fsc']['curves']['fsc']
-                p.line(X, Y1, legend_label='Unmasked-calculated FSC', color='orange')
+                r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y1)),
+                           legend_label='Unmasked-calculated FSC', color='orange')
+                utility.add_hover(p, r,
+                                  [('Spatial frequency [Å⁻¹]', '@x{0.0000}'),
+                                   ('Correlation', '@y{0.000}')],
+                                  mode='vline')
 
                 Y2 = map_validation['fsc']['curves']['0.143']
                 p.line(X, Y2, line_dash='dashed', legend_label='0.143', color='green')
@@ -647,8 +664,16 @@ class EMValidation(GetInputInformation):
                 fit_stats[mid]['ai_score']['ai_recl_backbone'] = ai_recl_backbone
                 fit_stats[mid]['ai_score']['ai_recl_all'] = ai_recl_all
 
-                p.line(X, Y1, color='blue', legend_label='Backbone atoms')
-                p.line(X, Y2, color='orange', legend_label='All non-hydrogen atoms')
+                ai_src = ColumnDataSource(dict(x=X, backbone=Y1, all_atom=Y2))
+                r = p.line('x', 'backbone', source=ai_src,
+                           color='blue', legend_label='Backbone atoms')
+                p.line('x', 'all_atom', source=ai_src,
+                       color='orange', legend_label='All non-hydrogen atoms')
+                utility.add_hover(p, r,
+                                  [('Contour level', '@x{0.000}'),
+                                   ('Backbone atoms', '@backbone{0.000}'),
+                                   ('All non-hydrogen atoms', '@all_atom{0.000}')],
+                                  mode='vline')
 
                 p.line([recl, recl], [0, 1.1], color='red', legend_label=f'Recommended contour level {recl:.3f}')
 

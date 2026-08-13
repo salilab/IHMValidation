@@ -152,13 +152,23 @@ class Plots(GetInputInformation):
                     width=GLANCE_PLOT_WIDTH
                 )
 
-                p_ = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
-                       right=source.data['counts'][i * 3: (i + 1) * 3],
+                # slice out this model's three bars into their own source, so
+                # the hover tool has a metric name to show alongside the count
+                source_ = ColumnDataSource(data=dict(
+                    y=source.data['y'][i * 3: (i + 1) * 3],
+                    counts=source.data['counts'][i * 3: (i + 1) * 3],
+                    metric=Scores))
+
+                p_ = p.hbar(y='y',
+                       right='counts',
+                       source=source_,
                        line_color="white",
                             fill_color=factor_cmap('y', palette=linear_palette(Greys256, len(Scores) + 2)[1:-1],
                                               factors=Scores,
                                               start=1, end=2)
                        )
+
+                utility.add_hover(p, p_, [('', '@metric'), ('Outliers', '@counts')])
 
                 # set labels and fonts
                 p.xaxis.axis_label_text_font_size = "14pt"
@@ -181,7 +191,7 @@ class Plots(GetInputInformation):
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
                 export_svg(p, filename=fname)
-                utility.strip_bokeh_invisible_outline(fname)
+                utility.strip_bokeh_svg_noise(fname)
 
                 plots.append(p)
 
@@ -239,8 +249,17 @@ class Plots(GetInputInformation):
                 # p.xaxis.formatter = BasicTickFormatter(use_scientific=True, power_limit_high=3)
                 p.xaxis.ticker.desired_num_ticks = 3
 
-                p_ = p.hbar(y=source.data['Scores'][i:i + 1], right=source.data['counts'][i: i + 1], color=source.data['color'][i:i + 1], height=1.0,
-                           line_color='white')
+                source_ = ColumnDataSource(data=dict(
+                    Scores=source.data['Scores'][i: i + 1],
+                    counts=source.data['counts'][i: i + 1],
+                    legends=source.data['legends'][i: i + 1],
+                    color=source.data['color'][i: i + 1]))
+
+                p_ = p.hbar(y='Scores', right='counts', color='color', height=1.0,
+                           source=source_, line_color='white')
+
+                utility.add_hover(p, p_, [('', '@Scores'),
+                                          ('Satisfaction rate', '@legends')])
 
                 p.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
@@ -261,7 +280,7 @@ class Plots(GetInputInformation):
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
                 export_svg(p, filename=fname)
-                utility.strip_bokeh_invisible_outline(fname)
+                utility.strip_bokeh_svg_noise(fname)
 
                 plots.append(p)
 
@@ -347,6 +366,8 @@ class Plots(GetInputInformation):
                 counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT, width=GLANCE_PLOT_WIDTH, title="Data Quality for SAS: Rg Analysis",)
             rd = pd.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
+            utility.add_hover(pd, rd, [('', '@Scores'), ('Rg', '@legends')])
+
             pd.ygrid.grid_line_color = None
             pd.xaxis.axis_label = 'Distance [nm]'
             pd.title.text_font_size = '14pt'
@@ -420,14 +441,25 @@ class Plots(GetInputInformation):
                 )
                 p.xaxis.ticker.desired_num_ticks = 3
 
-                rd = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
-                       right=source.data['counts'][i * 3: (i + 1) * 3],
+                legends_ = source.data['legends'][i * 3: (i + 1) * 3]
+
+                source_ = ColumnDataSource(data=dict(
+                    y=source.data['y'][i * 3: (i + 1) * 3],
+                    counts=source.data['counts'][i * 3: (i + 1) * 3],
+                    legends=legends_,
+                    metric=Scores))
+
+                rd = p.hbar(y='y',
+                       right='counts',
+                       source=source_,
                        line_color="white",
                         fill_color=factor_cmap('y', palette=linear_palette(Oranges256, len(Scores) + 2)[1:-1],
                                               factors=Scores,
                                               start=1, end=2)
                        )
-                legends_ = source.data['legends'][i * 3: (i + 1) * 3]
+
+                utility.add_hover(p, rd, [('', '@metric'),
+                                          ('Residue pairs', '@legends')])
                 legend = Legend(items=[LegendItem(label=legends_[j], renderers=[
                             rd], index=j) for j in range(len(legends_))], location='center',
                             orientation='vertical', label_text_font_size="14pt")
@@ -487,6 +519,8 @@ class Plots(GetInputInformation):
                             width=GLANCE_PLOT_WIDTH, title="3DEM resolution")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
+                utility.add_hover(pf, rf, [('', '@Scores'), ('Resolution', '@legends')])
+
                 pf.ygrid.grid_line_color = None
                 pf.title.text_font_size = '14pt'
                 pf.xaxis.axis_label = 'Resolution [Å]'
@@ -537,6 +571,8 @@ class Plots(GetInputInformation):
                         width=GLANCE_PLOT_WIDTH, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
             rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
+            utility.add_hover(pf, rf, [('', '@Scores'), ('χ² fit', '@legends')])
+
             pf.ygrid.grid_line_color = None
             pf.xaxis.axis_label = 'Fit value'
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
@@ -585,6 +621,8 @@ class Plots(GetInputInformation):
                             width=GLANCE_PLOT_WIDTH, title="Crosslink satisfaction")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
+                utility.add_hover(pf, rf, [('', '@Scores'), ('Satisfaction rate', '@legends')])
+
                 pf.ygrid.grid_line_color = None
                 pf.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
@@ -629,6 +667,8 @@ class Plots(GetInputInformation):
                             width=GLANCE_PLOT_WIDTH, title="Q-score")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
+                utility.add_hover(pf, rf, [('', '@Scores'), ('Q-score', '@legends')])
+
                 pf.ygrid.grid_line_color = None
                 pf.xaxis.axis_label = 'Q-score'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
@@ -671,7 +711,7 @@ class Plots(GetInputInformation):
         # output_file(filename=fname_html, mode='inline')
         # save(p)
         export_svg(p, filename=fname_svg)
-        utility.strip_bokeh_invisible_outline(fname_svg)
+        utility.strip_bokeh_svg_noise(fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)

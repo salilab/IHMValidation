@@ -35,7 +35,7 @@ import numpy as np
 from pathlib import Path
 from bokeh.plotting import save
 from bokeh.layouts import gridplot
-from bokeh.models import Range1d, Tabs, TabPanel
+from bokeh.models import Range1d, Tabs, TabPanel, ColumnDataSource, Scatter
 from bokeh.resources import CDN
 import iqplot
 import json
@@ -772,6 +772,16 @@ class CxValidation(GetInputInformation):
             p.yaxis.subgroup_text_align = 'right'
             p.min_border_bottom = 75
 
+            # iqplot builds the figure itself, so pick the per-model points out
+            # of its renderers rather than the box and whisker glyphs. It keeps
+            # the q and cats columns of the dataframe we passed in, which is
+            # exactly what is worth showing.
+            points = [r for r in p.renderers if isinstance(r.glyph, Scatter)]
+            if points:
+                utility.add_hover(p, points,
+                                  [('', '@Category'),
+                                   ('Satisfaction rate [%]', '@Satisfaction{0.00}')])
+
             return p
 
         gistg = 0
@@ -877,6 +887,26 @@ class CxValidation(GetInputInformation):
 
                 p.yaxis.major_label_text_align = 'right'
 
+                # iqplot draws the histogram as a single staircase glyph, which
+                # can only report the whole outline on hover. Overlay one
+                # transparent quad per bin so the tooltip can name the bin and
+                # its count. We already know the bin edges, so this is just the
+                # same histogram computed again.
+                if len(dists) > 0:
+                    edges = np.histogram_bin_edges(dists, bins=bins)
+                    heights, _ = np.histogram(dists, bins=edges)
+                    bin_src = ColumnDataSource(dict(
+                        left=edges[:-1], right=edges[1:],
+                        top=heights, bottom=np.zeros_like(heights),
+                        label=[f'{lo:.1f} - {hi:.1f}'
+                               for lo, hi in zip(edges[:-1], edges[1:])]))
+                    bin_r = p.quad(left='left', right='right',
+                                   top='top', bottom='bottom',
+                                   source=bin_src, alpha=0, line_alpha=0)
+                    utility.add_hover(p, bin_r,
+                                      [('Distance [Å]', '@label'),
+                                       ('Crosslinks', '@top')])
+
                 p.ray(
                     x=d, y=0,
                     line_color='black', angle=np.pi / 2,
@@ -929,7 +959,7 @@ class CxValidation(GetInputInformation):
         svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
 
         for svg in svgs:
-            utility.strip_bokeh_invisible_outline(svg)
+            utility.strip_bokeh_svg_noise(svg)
 
         svgs = [Path(x).name for x in svgs]
 
