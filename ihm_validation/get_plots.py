@@ -50,6 +50,25 @@ from bokeh.embed import json_item
 
 MAXPLOTS = 256
 
+# Total canvas width of the "quality at a glance" plots.
+#
+# These figures are sized by their total width, so everything bokeh puts around
+# the data area - axis labels, the categorical group labels and the legend -
+# eats into the plot itself. Bokeh 3 reserves more room for that chrome than
+# bokeh 2 did, which left the plots cramped; the crosslinking-MS data quality
+# plot lost the most because its category labels are long (its data area went
+# from 192 to 119 px). Keep this comfortably below the printable width of the
+# letter-sized PDF report (540 pt, i.e. about 910 px); note that the model
+# quality plots are wrapped in a column layout that adds another 30 px.
+GLANCE_PLOT_WIDTH = 840
+
+# Height of the data area per horizontal bar. Set as a frame (data area) height
+# instead of being folded into the total height, so the bars keep their
+# thickness regardless of how much vertical space the title and axes take.
+# These plots are meant to be tight, so this is deliberately only a little more
+# than the height of the 14pt category labels next to them (about 19 px).
+GLANCE_BAR_HEIGHT = 21
+
 class Plots(GetInputInformation):
     def __init__(self, *args, imageDirName, **kwargs):
         super().__init__(*args, **kwargs)
@@ -62,6 +81,22 @@ class Plots(GetInputInformation):
                                cx_data_quality: dict=None, cx_fit: dict=None,
                                em_data_quality: dict=None, em_fit: dict=None
                                ) -> dict:
+        """
+        Generate the "quality at a glance" summary plots.
+
+        Produces up to three horizontal bar charts - model quality (MQ), data
+        quality (DQ) and fit to data used for modeling (FQ) - saved as SVG and
+        JSON, and returns a dict telling the report templates which of them
+        exist.
+
+        All of these figures are sized by their total width
+        (:data:`GLANCE_PLOT_WIDTH`), so the axis labels, categorical group
+        labels and legend are subtracted from the data area rather than added
+        around it. Their data area is therefore only as wide as that width
+        minus whatever bokeh decides the labels need; the bar thickness, on the
+        other hand, is pinned by :data:`GLANCE_BAR_HEIGHT`. See the comments on
+        both constants before changing either.
+        """
 
         glance_plots = {
             'MQ': False,
@@ -113,8 +148,8 @@ class Plots(GetInputInformation):
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(0, upper),
-                    height=120,
-                    width=700
+                    frame_height=3 * GLANCE_BAR_HEIGHT,
+                    width=GLANCE_PLOT_WIDTH
                 )
 
                 p_ = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
@@ -160,7 +195,7 @@ class Plots(GetInputInformation):
 
             title = Div(text="<p>Model Quality: Molprobity Analysis</p>",
                         styles={"font-size": "1.5em", "font-weight": "bold",
-                               "text-align": "center", "width": '100%'}, width=800
+                               "text-align": "center", "width": '100%'}, width=GLANCE_PLOT_WIDTH
                         )
 
             fullplot = column(title, grid)
@@ -199,8 +234,8 @@ class Plots(GetInputInformation):
             lower, upper = 0, 102
 
             for i, name_ in enumerate(Models):
-                p = figure(y_range=FactorRange(factors=source.data['Scores'][i: i + 1]), x_range=(lower, upper), height=90,
-                           width=700)  # , title='Model Quality: Excluded Volume Analysis')
+                p = figure(y_range=FactorRange(factors=source.data['Scores'][i: i + 1]), x_range=(lower, upper), frame_height=GLANCE_BAR_HEIGHT,
+                           width=GLANCE_PLOT_WIDTH)  # , title='Model Quality: Excluded Volume Analysis')
                 # p.xaxis.formatter = BasicTickFormatter(use_scientific=True, power_limit_high=3)
                 p.xaxis.ticker.desired_num_ticks = 3
 
@@ -240,7 +275,7 @@ class Plots(GetInputInformation):
 
             title = Div(text='<p>Model Quality: Excluded Volume Analysis</p>',
                         styles={"font-size": "1.5em", "font-weight": "bold",
-                               "text-align": "center", "width": '100%'}, width=800
+                               "text-align": "center", "width": '100%'}, width=GLANCE_PLOT_WIDTH
                         )
 
             fullplot = column(title, grid)
@@ -309,7 +344,7 @@ class Plots(GetInputInformation):
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=colors))
             pd = figure(y_range=Scores, x_range=(0, max(
-                counts)+1), height=90 + len(counts) * 20, width=800, title="Data Quality for SAS: Rg Analysis",)
+                counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT, width=GLANCE_PLOT_WIDTH, title="Data Quality for SAS: Rg Analysis",)
             rd = pd.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
             pd.ygrid.grid_line_color = None
@@ -379,8 +414,8 @@ class Plots(GetInputInformation):
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(lower, upper),
-                    height=95 + 3 * 20,
-                    width=700,
+                    frame_height=3 * GLANCE_BAR_HEIGHT,
+                    width=GLANCE_PLOT_WIDTH,
                     title=title_txt
                 )
                 p.xaxis.ticker.desired_num_ticks = 3
@@ -448,8 +483,8 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.2f} Å' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 80), height=95 + len(counts) * 20,
-                            width=800, title="3DEM resolution")
+                pf = figure(y_range=Scores, x_range=(0, 80), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH, title="3DEM resolution")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
@@ -498,8 +533,8 @@ class Plots(GetInputInformation):
             legends = [str(i) for i in counts]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=linear_palette(Blues256, len(legends) + 2)[1:-1]))
-            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), height=100 + len(counts) * 20,
-                        width=800, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
+            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                        width=GLANCE_PLOT_WIDTH, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
             rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
             pf.ygrid.grid_line_color = None
@@ -546,8 +581,8 @@ class Plots(GetInputInformation):
                 # identical in all plots because they're separated
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Oranges256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 102), height=95 + len(counts) * 20,
-                            width=800, title="Crosslink satisfaction")
+                pf = figure(y_range=Scores, x_range=(0, 102), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH, title="Crosslink satisfaction")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
@@ -590,8 +625,8 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.3f}' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(-1, 1), height=95 + len(counts) * 20,
-                            width=800, title="Q-score")
+                pf = figure(y_range=Scores, x_range=(-1, 1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH, title="Q-score")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
                 pf.ygrid.grid_line_color = None
