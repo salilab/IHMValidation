@@ -1022,11 +1022,11 @@ class CxValidation(GetInputInformation):
         data = None
 
         # Check if we already requested the data
-        if Path(cache_fn).is_file():
+        if Path(cache_fn).is_file() and not self.nocache:
             logging.info(f'Found {code} in cache! {cache_fn}')
             with open(cache_fn, 'rb') as f:
                 data = pickle.load(f)
-        elif not Path(cache_fn).is_file():
+        elif not Path(cache_fn).is_file() or self.nocache:
             ms_seqs = self.get_sequences_pride(code)
             ms_res_pairs = self.get_residue_pairs_pride(code)
 

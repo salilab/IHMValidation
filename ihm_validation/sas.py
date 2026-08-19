@@ -119,9 +119,9 @@ class SasValidation(GetInputInformation):
         fn = Path(output_dir, f'{code}.sascif')
 
         # Check if we already requested the data
-        if os.path.isfile(fn):
+        if os.path.isfile(fn) and not self.nocache:
             logging.info(f'Found {fn} in cache!')
-        elif not os.path.isfile(fn):
+        elif not os.path.isfile(fn) or self.nocache:
             response = requests.get(url)
             response.encoding = 'ascii'
             if response.status_code != 200:

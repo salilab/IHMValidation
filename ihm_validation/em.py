@@ -127,11 +127,11 @@ class EMValidation(GetInputInformation):
         data = None
 
         # Check if we already requested the data
-        if Path(cache_fn).is_file():
+        if Path(cache_fn).is_file() and not self.nocache:
             logging.info(f'Found {code} in cache! {cache_fn}')
             with open(cache_fn, 'rb') as f:
                 data = pickle.load(f)
-        elif not Path(cache_fn).is_file():
+        elif not Path(cache_fn).is_file() or self.nocache:
             map_metadata = self.get_emdb_map_metadata(code)
             map_validation = self.get_emdb_map_validation(code)
             map_path = Path(self.cache, f'{code}.map')
@@ -603,9 +603,14 @@ class EMValidation(GetInputInformation):
             vapath = Path(varoot, f"{mid}_{emdbid}")
             os.makedirs(varoot, exist_ok=True)
 
-            if Path(vapath).is_dir():
+            if Path(vapath).is_dir() and not self.nocache:
                 logging.info(f"Found VA for {emdbid} in cache: {vapath}")
             else:
+                # run_va copies its whole output directory into place, which
+                # fails if one is already there - and under --nocache the point
+                # is to not reuse what is there.
+                if Path(vapath).is_dir():
+                    shutil.rmtree(vapath)
                 self.run_va(data, mid, vapath)
             try:
                 plots_ = {}
