@@ -51,7 +51,7 @@ NA = 'Not available'
 # Version of IHMValidation itself. It lives here rather than in report.py so
 # that the assessment modules can stamp it into their caches without importing
 # report, which imports them.
-IHMV_VERSION = '3.2'
+IHMV_VERSION = '3.3'
 
 # Bump when the shape of a cache entry changes in a way older readers cannot
 # understand.
