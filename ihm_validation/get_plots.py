@@ -751,6 +751,94 @@ class Plots(GetInputInformation):
                 pf.yaxis.axis_label_text_font_style = 'normal'
                 fq_plots.append(pf)
 
+        if em_fit is not None and len(em_fit) > 0:
+            # Where each model's Q-score sits in the EMDB archive. VA gives the
+            # fraction of entries scoring at or below it, once against the whole
+            # archive and once against entries of comparable resolution, so
+            # higher is better on both bars.
+            Scores = ['Similar resolution', 'All EMDB entries']
+            entries = []
+
+            for dataset in em_fit:
+                emdbid = dataset['emdbid']
+                for mid, data_ in dataset['fit_stats'].items():
+                    pct = data_['q_score'].get('percentile')
+
+                    if pct is None or pct['whole'] is None or pct['relative'] is None:
+                        continue
+
+                    entries.append((f'Model {mid}/{emdbid}', pct))
+
+            # One plot per map, as the MolProbity and crosslinking plots do per
+            # model and per dataset. Grouping every map into a single plot
+            # instead would make bokeh insert a gap between the groups that a
+            # legend cannot reproduce, drifting a bar-width out of step with its
+            # bars for every map after the first.
+            # reversed so the maps stack in the same order as the Q-score
+            # plot above, which puts its first factor at the bottom
+            for i, (model, pct) in enumerate(reversed(entries)):
+                y = [(model, score) for score in Scores]
+                counts = [pct['relative'] * 100, pct['whole'] * 100]
+                legends = [f"{c:.1f} %" for c in counts]
+                tooltips = [
+                    f"{pct['relative_counts']} entries, "
+                    f"{pct['relative_res_high']}-{pct['relative_res_low']} \u00C5",
+                    f"{pct['whole_counts']} entries, "
+                    f"{pct['whole_res_high']}-{pct['whole_res_low']} \u00C5",
+                ]
+
+                source = ColumnDataSource(data=dict(
+                    y=y, counts=counts, legends=legends,
+                    tooltips=tooltips, metric=Scores))
+
+                pf = figure(y_range=FactorRange(*y), x_range=(0, 100),
+                            frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH,
+                            # only the first plot carries the heading
+                            title="Q-score percentile" if i == 0 else None)
+                rf = pf.hbar(y='y', right='counts', source=source, line_color='white',
+                             fill_color=factor_cmap(
+                                 'y',
+                                 palette=linear_palette(Greens256, len(Scores) + 2)[1:-1],
+                                 factors=Scores, start=1, end=2))
+
+                utility.add_hover(pf, rf, [('', '@metric'),
+                                           ('Percentile', '@legends'),
+                                           ('Compared against', '@tooltips')])
+
+                pf.ygrid.grid_line_color = None
+                pf.xaxis.axis_label = 'Percentile'
+                legend = Legend(items=[LegendItem(label=legends[j], renderers=[
+                                rf], index=j) for j in range(len(legends))], location="center",
+                                orientation='vertical')
+                legend.items = legend.items[::-1]
+                align_legend_to_bars(legend)
+                pf.add_layout(legend, 'right')
+                pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
+                pf.output_backend = "svg"
+                pf.border_fill_color = None
+                pf.background_fill_color = None
+                pf.xaxis.axis_label_text_font_size = "14pt"
+                pf.yaxis.axis_label_text_font_size = "14pt"
+                pf.xaxis.major_label_text_font_size = "14pt"
+                pf.yaxis.major_label_text_font_size = "14pt"
+                pf.xaxis.axis_label_text_font_style = 'normal'
+                pf.yaxis.axis_label_text_font_style = 'normal'
+
+                if pf.title is not None:
+                    pf.title.text_font_size = '14pt'
+                    pf.title.vertical_align = 'top'
+                    pf.title.align = "center"
+
+                # After the major label styling, not before: these copy from it,
+                # and bokeh's default group text is far smaller than 14pt.
+                pf.left[0].group_text_color = pf.left[0].major_label_text_color
+                pf.left[0].group_text_font_style = pf.left[0].major_label_text_font_style
+                pf.left[0].group_text_font_size = pf.left[0].major_label_text_font_size
+                pf.left[0].group_label_orientation = 'horizontal'
+                fq_plots.append(pf)
+
         if len(fq_plots) > 0:
             pd = gridplot(fq_plots, ncols=1,
                      toolbar_location="above",

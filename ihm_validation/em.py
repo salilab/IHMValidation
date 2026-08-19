@@ -710,6 +710,27 @@ class EMValidation(GetInputInformation):
                 fit_stats[mid]['q_score']['chains'].update(data_['qscore']['0']['data']['chainqscore'])
                 fit_stats[mid]['q_score']['average'] = data_['qscore']['0']['data']['averageqscore']
 
+                # Where this model's average Q-score sits in the EMDB archive.
+                # VA reports the fraction of archive entries scoring at or
+                # below it, both against everything and against entries of a
+                # comparable resolution, so higher is better in both cases.
+                # VA runs older than the slider have no bar to read.
+                qscore_bar = data_['qscore']['0']['data'].get('qscore_bar')
+                if qscore_bar is not None:
+                    fit_stats[mid]['q_score']['percentile'] = {
+                        'whole': qscore_bar['whole'],
+                        'whole_counts': qscore_bar['whole_counts'],
+                        'whole_res_low': qscore_bar['whole_res_low'],
+                        'whole_res_high': qscore_bar['whole_res_high'],
+                        'relative': qscore_bar['relative'],
+                        'relative_counts': qscore_bar['relative_counts'],
+                        'relative_res_low': qscore_bar['relative_res_low'],
+                        'relative_res_high': qscore_bar['relative_res_high'],
+                        'statistics_version':
+                            data_['qscore']['0']['data'].get(
+                                'em_statistic_version', utility.NA),
+                    }
+
             except (FileNotFoundError, OSError, IndexError, KeyError) as e:
                 logging.error(e)
                 fit_stats = {}
