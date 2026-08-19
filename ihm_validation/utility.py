@@ -166,6 +166,33 @@ def add_hover(plot, renderers, tooltips, mode: str = 'mouse') -> None:
                              mode=mode))
 
 
+# Bokeh labels plots with font-family="helvetica", which is an alias rather than
+# an installed font. The browser that measures the text to lay an axis out and
+# the wkhtmltopdf that finally renders it resolve that alias independently, so
+# text ends up narrower than the space reserved for it and right-aligned labels
+# come out ragged. Name the font helvetica resolves to anyway: same typeface,
+# but both sides now agree.
+PLOT_FONT = 'Arial'
+
+
+def set_plot_font(root, font: str = PLOT_FONT) -> None:
+    """
+    Name the font explicitly on every piece of text in a plot or layout.
+
+    Walks the model tree rather than the caller listing properties, so it
+    catches titles, axis and tick labels, legends, categorical group labels and
+    anything iqplot built for us. Properties ending in `text_font_size` or
+    `text_font_style` do not match and are left alone.
+    """
+    for obj in root.references():
+        for prop in obj.properties():
+            if prop.endswith('text_font'):
+                try:
+                    setattr(obj, prop, font)
+                except (ValueError, AttributeError) as e:
+                    logging.error(f'Could not set {prop} on {obj}: {e}')
+
+
 def clear_legend_background(plot) -> None:
     """
     Stop a plot's legend painting itself onto an opaque panel.

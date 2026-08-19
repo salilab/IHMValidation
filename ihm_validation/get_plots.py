@@ -240,6 +240,7 @@ class Plots(GetInputInformation):
                 p.background_fill_color = None
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
+                utility.set_plot_font(p)
                 export_svg(p, filename=fname)
                 utility.strip_bokeh_svg_noise(fname)
 
@@ -331,6 +332,7 @@ class Plots(GetInputInformation):
                 p.min_border_top = 20
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
+                utility.set_plot_font(p)
                 export_svg(p, filename=fname)
                 utility.strip_bokeh_svg_noise(fname)
 
@@ -856,6 +858,7 @@ class Plots(GetInputInformation):
 
     def save_plots(self, p, plot_name: str) -> dict:
         """Save html and svg plots"""
+        utility.set_plot_font(p)
         fname_html = Path(self.imageDirName, f"{self.ID_f}_{plot_name}.html")
         fname_svg = fname_html.with_suffix('.svg')
         fname_json = fname_html.with_suffix('.json')

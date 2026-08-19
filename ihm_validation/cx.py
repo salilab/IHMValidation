@@ -934,6 +934,7 @@ class CxValidation(GetInputInformation):
         return self.save_plots(tabs, title, imgDirname)
 
     def save_plots(self, plot, title, imgDirname='.'):
+        utility.set_plot_font(plot)
         stem = f'{self.ID_f}_{title}'
 
         imgpath = Path(

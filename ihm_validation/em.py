@@ -77,6 +77,7 @@ class EMValidation(GetInputInformation):
 
     def save_plots(self, plot, title, imageDirName='.'):
         """Save bokeh plots as svg images and json blobs"""
+        utility.set_plot_font(plot)
         stem = f'{self.ID_f}_{title}'
 
         imgpath_json = Path(

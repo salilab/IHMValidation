@@ -476,6 +476,7 @@ class SasValidationPlots(sas.SasValidation):
 
     def save_plots(self, p, plot_name: str) -> dict:
         """Save html and svg plots"""
+        utility.set_plot_font(p)
         fname_html = Path(self.imageDirName, f"{self.ID_f}_{plot_name}.html")
         fname_svg = fname_html.with_suffix('.svg')
         fname_json = fname_html.with_suffix('.json')
