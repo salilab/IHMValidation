@@ -322,9 +322,6 @@ class SasValidation(GetInputInformation):
 
 
         for code in self.sascif_dicts.keys():
-            f1fn = Path(self.cache, f'{code}_fit1.dat')
-            f2fn = Path(self.cache, f'{code}_fit2.dat')
-            f3fn = Path(self.cache, f'{code}_pval.dat')
             sascif = self.sascif_dicts[code]
             main = f'{code}_MAIN'
             data = sascif[main]
