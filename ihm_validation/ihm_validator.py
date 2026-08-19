@@ -264,6 +264,15 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
 
+    # --nocache does not turn the cache off, it stops us reading from it:
+    # every assessment still writes its result back for the next run.
+    cache_root = Path(args.cache_root).resolve()
+    if args.nocache:
+        logging.info(f'Cache is disabled: results in {cache_root} '
+                     'will be ignored and overwritten')
+    else:
+        logging.info(f'Cache is enabled: {cache_root}')
+
     logging.info("Clean up temporary files")
     utility.clean_all()
 
