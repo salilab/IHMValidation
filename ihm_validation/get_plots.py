@@ -530,7 +530,11 @@ class Plots(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
                 p.yaxis.major_label_text_align='right'
                 p.xaxis.axis_label = 'Residue pairs'
-                p.left[0].group_text_font_size = '14px'
+                # match the major labels beside it, as the other grouped plots
+                # do; the default group text is smaller and greyer
+                p.left[0].group_text_color = p.left[0].major_label_text_color
+                p.left[0].group_text_font_style = p.left[0].major_label_text_font_style
+                p.left[0].group_text_font_size = p.left[0].major_label_text_font_size
                 p.left[0].group_label_orientation = 'horizontal'
                 p.title.text_font_size = '14pt'
                 p.title.vertical_align = 'top'
