@@ -40,11 +40,98 @@ import signal
 import re
 import requests
 import base64
+import json
 import pypdf
 import bokeh
+from datetime import datetime, timezone
 from bokeh.models import HoverTool
 
 NA = 'Not available'
+
+# Version of IHMValidation itself. It lives here rather than in report.py so
+# that the assessment modules can stamp it into their caches without importing
+# report, which imports them.
+IHMV_VERSION = '3.2'
+
+# Bump when the shape of a cache entry changes in a way older readers cannot
+# understand.
+CACHE_FORMAT = 1
+
+
+# Directory caches cannot be wrapped the way a pickle can, so they carry their
+# provenance in a sidecar of this name instead.
+CACHE_METADATA_FILE = 'ihmv_cache.json'
+
+
+def cache_metadata(software: dict = None) -> dict:
+    """
+    Provenance for a cache entry.
+
+    Records when it was written, which IHMValidation wrote it, and the versions
+    of any external tool whose output is baked into it - a MolProbity result is
+    only meaningful next to the MolProbity that produced it.
+    """
+    return {
+        'cache_format': CACHE_FORMAT,
+        'created': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'ihmv_version': IHMV_VERSION,
+        'software': dict(software or {}),
+    }
+
+
+def wrap_cache(data, software: dict = None) -> dict:
+    """Bundle cached data together with its provenance, ready to pickle."""
+    return {**cache_metadata(software), 'data': data}
+
+
+def write_cache_metadata(dirname, software: dict = None) -> None:
+    """Record provenance for a cache that is a directory rather than a pickle."""
+    try:
+        with open(Path(dirname, CACHE_METADATA_FILE), 'w') as f:
+            json.dump(cache_metadata(software), f, indent=2)
+    except OSError as e:
+        logging.error(f'Could not write cache metadata to {dirname}: {e}')
+
+
+def read_cache_metadata(dirname) -> dict:
+    """Provenance for a directory cache, or None if it predates this."""
+    path = Path(dirname, CACHE_METADATA_FILE)
+
+    if not path.is_file():
+        return None
+
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except (OSError, ValueError) as e:
+        logging.error(f'Could not read cache metadata from {path}: {e}')
+        return None
+
+
+def unwrap_cache(raw):
+    """
+    Split a loaded cache entry into (data, metadata).
+
+    Entries written before this metadata existed are bare payloads. They are
+    still good data - some cost a 280 MB download or a long MolProbity run -
+    so they come back with metadata None instead of being thrown away.
+    """
+    if isinstance(raw, dict) and 'cache_format' in raw and 'data' in raw:
+        return raw['data'], {k: v for k, v in raw.items() if k != 'data'}
+
+    return raw, None
+
+
+def describe_cache(meta: dict) -> str:
+    """One line of provenance for logging a cache hit."""
+    if not meta:
+        return 'no metadata, written before it was recorded'
+
+    bits = [f"IHMValidation {meta.get('ihmv_version', NA)}",
+            meta.get('created', NA)]
+    bits += [f'{k} {v}' for k, v in sorted((meta.get('software') or {}).items())]
+
+    return ', '.join(bits)
 
 # The HTML report embeds plots as bokeh JSON and hands them to BokehJS loaded
 # from the CDN, so the two have to be the same version - a 3.x document is not

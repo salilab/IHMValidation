@@ -43,7 +43,9 @@ import cx
 import precision
 import em
 
-REPORT_VERSION = '3.2'
+# Single source of truth lives in utility so the assessment modules can
+# stamp it into their caches without importing report.
+REPORT_VERSION = utility.IHMV_VERSION
 
 class WriteReport(object):
     report_version = REPORT_VERSION

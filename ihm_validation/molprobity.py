@@ -170,9 +170,10 @@ class GetMolprobityInformation(GetInputInformation):
         cache_fn = Path(self.cache, self.stem + '.mp.pkl')
 
         if cache_fn.is_file() and not self.nocache:
-            logging.info(f'Found MolProbity data {cache_fn} in cache')
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found MolProbity data {cache_fn} in cache '
+                         f'({utility.describe_cache(meta)})')
 
         else:
 
@@ -205,7 +206,8 @@ class GetMolprobityInformation(GetInputInformation):
             os.remove(outfn)
 
             with open(cache_fn, 'wb') as f:
-                pickle.dump(data, f)
+                pickle.dump(utility.wrap_cache(
+                    data, {'MolProbity': self.molprobity_version}), f)
 
         if len(data) == 0:
             logging.warning('Empty MolProbity data')

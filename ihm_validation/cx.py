@@ -1023,9 +1023,10 @@ class CxValidation(GetInputInformation):
 
         # Check if we already requested the data
         if Path(cache_fn).is_file() and not self.nocache:
-            logging.info(f'Found {code} in cache! {cache_fn}')
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found {code} in cache! {cache_fn} '
+                         f'({utility.describe_cache(meta)})')
         elif not Path(cache_fn).is_file() or self.nocache:
             ms_seqs = self.get_sequences_pride(code)
             ms_res_pairs = self.get_residue_pairs_pride(code)
@@ -1038,7 +1039,7 @@ class CxValidation(GetInputInformation):
                 }
 
                 with open(cache_fn, 'wb') as f:
-                    pickle.dump(data, f)
+                    pickle.dump(utility.wrap_cache(data), f)
 
             else:
                 logging.info(f'PRIDE data for {code} is incomplete')

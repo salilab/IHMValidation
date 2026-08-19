@@ -128,9 +128,10 @@ class EMValidation(GetInputInformation):
 
         # Check if we already requested the data
         if Path(cache_fn).is_file() and not self.nocache:
-            logging.info(f'Found {code} in cache! {cache_fn}')
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found {code} in cache! {cache_fn} '
+                         f'({utility.describe_cache(meta)})')
         elif not Path(cache_fn).is_file() or self.nocache:
             map_metadata = self.get_emdb_map_metadata(code)
             map_validation = self.get_emdb_map_validation(code)
@@ -152,7 +153,7 @@ class EMValidation(GetInputInformation):
                 }
 
                 with open(cache_fn, 'wb') as f:
-                    pickle.dump(data, f)
+                    pickle.dump(utility.wrap_cache(data), f)
             else:
                 logging.info(f'EMDB data for {code} is incomplete')
 
@@ -604,7 +605,9 @@ class EMValidation(GetInputInformation):
             os.makedirs(varoot, exist_ok=True)
 
             if Path(vapath).is_dir() and not self.nocache:
-                logging.info(f"Found VA for {emdbid} in cache: {vapath}")
+                meta = utility.read_cache_metadata(vapath)
+                logging.info(f"Found VA for {emdbid} in cache: {vapath} "
+                             f"({utility.describe_cache(meta)})")
             else:
                 # run_va copies its whole output directory into place, which
                 # fails if one is already there - and under --nocache the point
@@ -775,6 +778,26 @@ class EMValidation(GetInputInformation):
         version = va.__version__
         return version
 
+    def _va_software_versions(self) -> dict:
+        """
+        Versions of the tools behind a VA run, for the cache stamp.
+
+        Best effort on purpose: this is provenance, and failing to read a
+        version is never a reason to lose a VA run that takes minutes.
+        """
+        versions = {}
+
+        for name, getter in (('EMDB VA', self.get_va_version),
+                             ('ChimeraX', self.get_chimerax_version),
+                             ('MapQ', self.get_mapq_version)):
+            try:
+                versions[name] = getter()
+            except Exception as e:
+                logging.error(f'Could not determine {name} version: {e}')
+                versions[name] = utility.NA
+
+        return versions
+
     def run_va(self, data, mid, outpath):
         """Run EMDB va validation pipeline for map and model"""
 
@@ -831,6 +854,8 @@ class EMValidation(GetInputInformation):
                 logging.error("Could not finish the VA run")
 
             shutil.copytree(tempdir, outpath)
+
+        utility.write_cache_metadata(outpath, self._va_software_versions())
 
     @staticmethod
     def get_level_from_primary_contour(data: dict) -> float:
