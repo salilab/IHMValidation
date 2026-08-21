@@ -33,7 +33,7 @@ from collections import Counter, defaultdict
 from multiprocessing import Process
 import numpy as np
 import logging
-import ihm, ihm.reader, ihm.model
+import ihm, ihm.reader, ihm.model, ihm.restraint
 import itertools
 import time
 import signal
@@ -575,6 +575,139 @@ def get_method_type(sample_dict: dict) -> str:
 
     datastr = '%s ' % (sample_dict['Method type'][0])
     return datastr.replace('monte carlo', 'Monte Carlo')
+
+
+def count_noun(count, noun: str) -> str:
+    '''
+    minor func: '1 restraint', but '2 restraints'
+
+    The count is printed as given, so that a malformed entry that hands us
+    something other than a number is described rather than crashed on.
+    '''
+    return '%s %s' % (count, noun) if count == 1 else '%s %ss' % (count, noun)
+
+
+# Readable names for the shapes a GeometricRestraint can restrain against
+GEOMETRIC_OBJECT_NAMES = {
+    'Axis': 'axis',
+    'HalfTorus': 'half torus',
+    'Plane': 'plane',
+    'Sphere': 'sphere',
+    'Torus': 'torus',
+    'XAxis': 'X axis',
+    'XYPlane': 'XY plane',
+    'XZPlane': 'XZ plane',
+    'YAxis': 'Y axis',
+    'YZPlane': 'YZ plane',
+    'ZAxis': 'Z axis',
+}
+
+
+def join_description(*parts) -> str:
+    """Join the parts of a description that the entry actually provides"""
+    kept = [part for part in parts if part]
+    return ', '.join(kept) if kept else NA
+
+
+def format_multi_state(multi_state) -> str:
+    """Say whether a fit is multi-state, but only if the entry says so"""
+    if multi_state is None:
+        return None
+    return 'multi-state' if multi_state else 'single-state'
+
+
+def format_distance_restraint(distance) -> str:
+    """Describe an ihm.restraint.DistanceRestraint of any flavour
+
+    The same distance can be a lower bound, an upper bound, both, or
+    harmonic, and saying which is the whole point of the description.
+    """
+    if isinstance(distance, ihm.restraint.LowerUpperBoundDistanceRestraint):
+        return ('lower/upper bound distance: %s-%s Å'
+                % (distance.distance_lower_limit, distance.distance_upper_limit))
+    if isinstance(distance, ihm.restraint.LowerBoundDistanceRestraint):
+        return 'lower bound distance: %s Å' % distance.distance
+    if isinstance(distance, ihm.restraint.UpperBoundDistanceRestraint):
+        return 'upper bound distance: %s Å' % distance.distance
+    if isinstance(distance, ihm.restraint.HarmonicDistanceRestraint):
+        return 'harmonic distance: %s Å' % distance.distance
+
+    value = getattr(distance, 'distance', None)
+    return 'distance: %s Å' % value if value is not None else NA
+
+
+def format_geometric_object(obj) -> str:
+    """Name the object a GeometricRestraint restrains against
+
+    The distance is deliberately left out: an entry can carry dozens of
+    geometric restraints, and it is the object that tells them apart.
+    """
+    name = GEOMETRIC_OBJECT_NAMES.get(type(obj).__name__, 'geometric object')
+    if getattr(obj, 'name', None):
+        name += ' "%s"' % obj.name
+    return name
+
+
+def count_crosslinks(restraint) -> int:
+    """Count the crosslinks one CrossLinkRestraint was built from
+
+    experimental_cross_links is a list of *lists*: each sublist holds the
+    alternatives of one ambiguous identification. The crosslinks are the
+    entries, not the sublists.
+    """
+    return sum(len(group) for group in restraint.experimental_cross_links)
+
+
+def format_crosslink_info(restraint) -> str:
+    """Name the linker of one CrossLinkRestraint and count its crosslinks"""
+    linker = getattr(restraint.linker, 'auth_name', None) or NA
+    return '%s, %s' % (linker, count_noun(count_crosslinks(restraint),
+                                          'crosslink'))
+
+
+def format_restraint_info(restraint) -> str:
+    """Describe a single restraint in one line
+
+    Every restraint gets a description, including one of a type we have
+    nothing specific to say about, so that the columns of the restraints
+    table stay in step with each other.
+    """
+    if isinstance(restraint, ihm.restraint.CrossLinkRestraint):
+        return format_crosslink_info(restraint)
+
+    if isinstance(restraint, ihm.restraint.EM3DRestraint):
+        return join_description(restraint.fitting_method)
+
+    if isinstance(restraint, ihm.restraint.EM2DRestraint):
+        micrographs = restraint.number_raw_micrographs
+        resolution = restraint.image_resolution
+        return join_description(
+            count_noun(micrographs, 'micrograph') if micrographs else None,
+            'image resolution: %s Å' % resolution if resolution else None)
+
+    if isinstance(restraint, ihm.restraint.SASRestraint):
+        return join_description(
+            'assembly: %s' % restraint.assembly.name
+            if getattr(restraint.assembly, 'name', None) else None,
+            'fitting method: %s' % restraint.fitting_method
+            if restraint.fitting_method else None,
+            format_multi_state(restraint.multi_state))
+
+    if isinstance(restraint, ihm.restraint.EPRRestraint):
+        return join_description(
+            'fitting method: %s' % restraint.fitting_method
+            if restraint.fitting_method else None,
+            format_multi_state(restraint.multi_state))
+
+    if isinstance(restraint, ihm.restraint.GeometricRestraint):
+        return format_geometric_object(restraint.geometric_object)
+
+    if isinstance(restraint, (ihm.restraint.PredictedContactRestraint,
+                              ihm.restraint.DerivedDistanceRestraint)):
+        return format_distance_restraint(restraint.distance)
+
+    details = getattr(restraint, 'details', None)
+    return str(details) if details else NA
 
 
 def get_restraints_info(restraints: dict) -> list:

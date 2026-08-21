@@ -635,12 +635,20 @@ class GetInputInformation(object):
             return None
 
     def get_dataset_xl_info(self, id: int) -> str:
-        """Get dataset XL info given dataset ID"""
-        restraints = self.get_restraints()
-        return 'Linker name and number of crosslinks: %s' % (restraints
-                                                              ['Restraint info']
-                                                              [restraints['Dataset ID']
-                                                               .index(id)])
+        """Get dataset XL info given dataset ID
+
+        A single crosslinking dataset can be built with several linkers, and
+        python-ihm turns each of them into a restraint of its own, so report
+        all of them rather than whichever one happens to come first.
+        """
+        linkers = [utility.format_crosslink_info(r) for r in self.system.restraints
+                   if isinstance(r, ihm.restraint.CrossLinkRestraint)
+                   and str(getattr(r.dataset, '_id', None)) == str(id)]
+
+        if not linkers:
+            raise ValueError('No crosslinking restraints for dataset %s' % id)
+
+        return 'Linker name and number of crosslinks: %s' % '; '.join(linkers)
 
     def get_dataset_dict(self):
         """get dataset dictionary """
@@ -786,75 +794,19 @@ class GetInputInformation(object):
 
     def get_restraints(self) -> dict:
         """ get restraints table from cif file"""
-        r = self.system.restraints
         restraints_comp = {'ID': [], 'Dataset ID': [],
                            'Restraint type': [], 'Restraint info': []}
-        for j, i in enumerate(r):
-            restraints_comp['ID'].append(j+1)
+        for j, i in enumerate(self.system.restraints):
+            restraints_comp['ID'].append(j + 1)
             restraints_comp['Restraint type'].append(str(i.__class__.__name__))
             try:
                 restraints_comp['Dataset ID'].append(str(i.dataset._id))
             except AttributeError:
                 restraints_comp['Dataset ID'].append(utility.NA)
-            if isinstance(i, ihm.restraint.CrossLinkRestraint):
-                restraints_comp['Restraint info'].append(
-                    str(i.linker.auth_name) + ', ' +
-                    str(len(i.experimental_cross_links)) + ' crosslinks')
-            elif isinstance(i, ihm.restraint.EM3DRestraint):
-                restraints_comp['Restraint info'].append(
-                    str(i.fitting_method)) # + ', '+str(i.number_of_gaussians) + ' components')
-
-            elif isinstance(i, ihm.restraint.PredictedContactRestraint):
-                # Temporary fix for Entry 161;
-                # Should be unified with DerivedRestraint
-                if isinstance(i.distance, ihm.restraint.LowerUpperBoundDistanceRestraint):
-                    restraints_comp['Restraint info'].append(
-                        ('Lower Upper Bound Distance: '+str(i.distance.distance_lower_limit)+'-' +
-                         str(i.distance.distance_upper_limit)))
-                else:
-                    restraints_comp['Restraint info'].append('Distance: '+str(i.distance.distance))
-#                                                         + ' between residues ' +
-#                                                         str(i.resatom1.seq_id)
-#                                                         + ' and ' + str(i.resatom2.seq_id))
-
-            elif isinstance(i, ihm.restraint.EM2DRestraint):
-                restraints_comp['Restraint info'].append('Number of micrographs: '
-                                                         + str(i.number_raw_micrographs)
-                                                         + ',' + ' Image resolution: '
-                                                         + str(i.image_resolution))
-            elif isinstance(i, ihm.restraint.SASRestraint):
-                restraints_comp['Restraint info'].append('Assembly name: '+str(
-                    i.assembly.name)+' Fitting method: ' +
-                    str(i.fitting_method) + ' Multi-state: ' + str(i.multi_state))
-            elif isinstance(i, ihm.restraint.UpperBoundDistanceRestraint):
-                restraints_comp['Restraint info'].append(
-                    'Distance: '+str(i.distance))
-            elif 'Mutagenesis' in str(i.__class__.__name__):
-                restraints_comp['Restraint info'].append(
-                    'Details: '+str(i.details))
-            elif isinstance(i, ihm.restraint.DerivedDistanceRestraint):
-                dic = self.dataset_id_type_dic()
-                try:
-                    ID = str(i.dataset._id)
-                except AttributeError:
-                    ID = utility.NA
-                # restraints_comp['Restraint info'].append(dic[ID])
-                if isinstance(i.distance, ihm.restraint.UpperBoundDistanceRestraint):
-                    restraints_comp['Restraint info'].append(
-                        ('Upper Bound Distance: '+str(i.distance.distance)))
-                elif isinstance(i.distance, ihm.restraint.LowerUpperBoundDistanceRestraint):
-                    restraints_comp['Restraint info'].append(
-                        ('Lower Upper Bound Distance: '+str(i.distance.distance_lower_limit)+'-' +
-                         str(i.distance.distance_upper_limit)))
-                else:
-                    restraints_comp['Restraint info'].append(
-                        'restraint type ' + str(i.distance.__class__.__name__) + str(dic[ID]))
-                '''
-                if 'UpperBound' in str(i.distance.__class__.__name__):
-                    print (i.distance,i.distance.distance_lower_limit)
-                    restraints_comp['Restraint info'].append(
-                        ('Upper Bound Distance: '+str(i.distance.distance)))
-                '''
+            # Describing every restraint, supported type or not, is what keeps
+            # the four columns of this table aligned with each other
+            restraints_comp['Restraint info'].append(
+                utility.format_restraint_info(i))
         return restraints_comp
 
     def get_dataset_details(self) -> dict:
