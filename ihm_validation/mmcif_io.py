@@ -778,6 +778,30 @@ class GetInputInformation(object):
 
         return dataset_comp
 
+    def get_dataset_data_quality(self) -> list:
+        """Describe the experimental data behind every dataset
+
+        What characterises the data - the crosslinker it was made with, the
+        resolution of a class average, the radius of gyration of a scattering
+        profile - is recorded on the restraints derived from a dataset rather
+        than on the dataset itself, so read it off those.
+        """
+        restraints_by_dataset = defaultdict(list)
+        for restraint in self.system.restraints:
+            dataset_id = getattr(restraint.dataset, '_id', None)
+            if dataset_id is not None:
+                restraints_by_dataset[dataset_id].append(restraint)
+
+        described = []
+        for dataset in self.system.orphan_datasets:
+            content = utility.describe_dataset_content(
+                restraints_by_dataset[dataset._id])
+            if content == utility.NA:
+                continue
+            described.append('%s: %s' % (utility.name_dataset(dataset),
+                                         content))
+        return described
+
     def dataset_id_type_dic(self) -> dict:
         """dataset id and data items"""
         dataset_dic = defaultdict()

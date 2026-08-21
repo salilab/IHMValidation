@@ -484,6 +484,11 @@ class WriteReport(object):
                 except (ValueError, TypeError, KeyError) as e:
                     dq.append(f'{data_["emdbid"]}: resolution is {utility.NA}')
 
+        # What the entry says about its own data, after what we derived from
+        # it: the crosslinker, the resolution of a class average, the radius
+        # of gyration of a scattering profile
+        dq.extend(self.input.get_dataset_data_quality())
+
         if len(dq) == 0:
             dq.append('Data quality has not been assessed')
 

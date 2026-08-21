@@ -710,6 +710,77 @@ def format_restraint_info(restraint) -> str:
     return str(details) if details else NA
 
 
+def name_dataset(dataset) -> str:
+    '''
+    name a dataset by its accession where it has one, by its id otherwise
+    '''
+    code = getattr(dataset.location, 'access_code', None)
+    return str(code) if code else 'Dataset %s' % dataset._id
+
+
+def format_radius_of_gyration(radius) -> str:
+    '''
+    report a deposited radius of gyration in the units the rest of the row uses
+
+    The mmCIF value is in Angstroms, while the Rg the report derives from
+    SASBDB data is in nanometres, and the two are there to be compared.
+    '''
+    try:
+        return 'deposited Rg is %.2f nm' % (float(radius) / 10)
+    except (TypeError, ValueError):
+        return NA
+
+
+def describe_crosslinks(restraints: list) -> str:
+    '''
+    count the crosslinks of one dataset, broken down by linker
+
+    A dataset can be a mixture of crosslinkers, which python-ihm splits into
+    a restraint per linker, so add them back up.
+    '''
+    per_linker = defaultdict(int)
+    for restraint in restraints:
+        linker = getattr(restraint.linker, 'auth_name', None) or NA
+        per_linker[linker] += count_crosslinks(restraint)
+
+    breakdown = ', '.join('%d %s' % (num, linker)
+                          for linker, num in per_linker.items())
+    return '%s (%s)' % (count_noun(sum(per_linker.values()), 'crosslink'),
+                        breakdown)
+
+
+def describe_dataset_content(restraints: list) -> str:
+    '''
+    describe the experimental data one dataset holds
+
+    What characterises the data - the crosslinker it was made with, the
+    resolution of a class average - is recorded on the restraints derived
+    from the dataset rather than on the dataset itself, so read it off those.
+    How the data was then fitted belongs with the restraints, not here.
+    '''
+    described = []
+
+    crosslinks = [r for r in restraints
+                  if isinstance(r, ihm.restraint.CrossLinkRestraint)]
+    if crosslinks:
+        described.append(describe_crosslinks(crosslinks))
+
+    for restraint in restraints:
+        if isinstance(restraint, ihm.restraint.EM2DRestraint):
+            micrographs = restraint.number_raw_micrographs
+            resolution = restraint.image_resolution
+            described.append(join_description(
+                count_noun(micrographs, 'micrograph') if micrographs else None,
+                'image resolution is %s Å' % resolution if resolution else None))
+
+        elif isinstance(restraint, ihm.restraint.SASRestraint):
+            described.append(
+                format_radius_of_gyration(restraint.radius_of_gyration))
+
+    distinct = [d for d in dict.fromkeys(described) if d != NA]
+    return '; '.join(distinct) if distinct else NA
+
+
 # Human-readable names for the restraint classes of python-ihm. A class that
 # is missing here falls back to its own name, so a restraint type we haven't
 # met yet still shows up in the report instead of disappearing from it.
