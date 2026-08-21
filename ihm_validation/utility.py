@@ -710,26 +710,68 @@ def format_restraint_info(restraint) -> str:
     return str(details) if details else NA
 
 
-def get_restraints_info(restraints: dict) -> list:
+# Human-readable names for the restraint classes of python-ihm. A class that
+# is missing here falls back to its own name, so a restraint type we haven't
+# met yet still shows up in the report instead of disappearing from it.
+RESTRAINT_TYPE_NAMES = {
+    'CrossLinkRestraint': 'Crosslinking-MS',
+    'DerivedDistanceRestraint': 'Derived distance',
+    'EM2DRestraint': '2DEM',
+    'EM3DRestraint': '3DEM',
+    'EPRRestraint': 'EPR',
+    'GeometricRestraint': 'Geometric',
+    'HDXRestraint': 'HDX',
+    'HydroxylRadicalFPRestraint': 'Hydroxyl radical footprinting',
+    'InnerSurfaceGeometricRestraint': 'Geometric, inner surface',
+    'OuterSurfaceGeometricRestraint': 'Geometric, outer surface',
+    'PredictedContactRestraint': 'Predicted contacts',
+    'SASRestraint': 'SAS',
+}
+
+def count_crosslink_groups(restraints: list) -> int:
+    '''
+    count the experimental identifications a set of crosslinks rests on
+
+    One identification can be turned into several modelling restraints; the
+    report calls the restraints that share an identification a restraint
+    group.
+    '''
+    return len({crosslink.experimental_cross_link._id
+                for restraint in restraints
+                for crosslink in restraint.cross_links
+                if crosslink.experimental_cross_link is not None})
+
+
+def summarize_restraint_group(restraints: list) -> str:
+    '''
+    count off one restraint type
+    '''
+    if isinstance(restraints[0], ihm.restraint.CrossLinkRestraint):
+        # Crosslinks are counted twice over: the experimental identifications
+        # behind them, and the restraints they were turned into
+        return '%s, %s' % (
+            count_noun(count_crosslink_groups(restraints), 'group'),
+            count_noun(sum(len(r.cross_links) for r in restraints), 'restraint'))
+
+    return count_noun(len(restraints), 'restraint')
+
+
+def get_restraints_info(restraints: list) -> list:
     '''
     format restraints info for supplementary/summary table
-    '''
 
-    restraints_num = len(restraints['Restraint type'])
-    datalist = []
-    try:
-        dataset = [(restraints['Restraint info'][i], restraints['Restraint type'][i])
-                   for i in range(restraints_num)]
-    except (ValueError, TypeError, IndexError):
-        new_restraints = {key: list(set(val))
-                          for key, val in restraints.items()}
-        restraints_num = min(len(new_restraints['Restraint info']), len(
-            new_restraints['Restraint type']))
-        dataset = [(new_restraints['Restraint info'][i], new_restraints['Restraint type'][i])
-                   for i in range(restraints_num)]
-    for i, j in Counter(dataset).items():
-        datalist.append(['%s unique %s: %s' % (j, i[1], i[0])])
-    return datalist
+    One line per restraint type, carrying its totals and nothing else. What
+    a restraint was derived from - crosslinker chemistry, image resolution -
+    describes the data rather than the restraint, and belongs with the
+    datasets instead.
+    '''
+    grouped = defaultdict(list)
+    for restraint in restraints:
+        grouped[type(restraint).__name__].append(restraint)
+
+    return ['%s (%s)' % (RESTRAINT_TYPE_NAMES.get(restraint_type, restraint_type),
+                         summarize_restraint_group(group))
+            for restraint_type, group in grouped.items()]
 
 
 def format_list_text(sublist: list) -> str:

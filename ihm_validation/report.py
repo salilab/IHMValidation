@@ -453,8 +453,8 @@ class WriteReport(object):
 
         Template_Dict['model_precision'] = model_precision
 
-        Template_Dict['restraint_info'] = utility.get_restraints_info(self.input.get_restraints(
-        )) if self.input.get_restraints() is not None else 'Not provided or used'
+        Template_Dict['restraint_info'] = utility.get_restraints_info(
+            self.system.restraints) or ['Not provided or used']
 
         dq = []
 
