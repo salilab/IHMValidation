@@ -404,7 +404,9 @@ class Plots(GetInputInformation):
 
         if len(sas_data_quality.keys()) > 0:
             # Don't forget to update palette if adding new metric
-            Rgl = {0: 'P(r)', 1: 'Guinier'}
+            # get_rg_for_plot() reports Guinier first, the order the summary
+            # table states the two in as well
+            Rgl = {0: 'Guinier', 1: 'P(r)'}
             Scores = [Rgl[m] + ' ('+i+')' for i, j in sas_data_quality.items()
                       for m, n in enumerate(j)]
             counts = [float(n)for i, j in sas_data_quality.items()
