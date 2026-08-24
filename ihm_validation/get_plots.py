@@ -84,6 +84,16 @@ GLANCE_BAR_HEIGHT = 21
 GLANCE_LEGEND_FONT_SIZE = '12pt'
 
 
+def top_down(factors: list) -> list:
+    """Order categorical factors so that the first one reads at the top
+
+    Bokeh lays a categorical range out from the axis origin, which on a y
+    axis is the bottom, so an entry with three model groups would otherwise
+    open on the third one.
+    """
+    return list(reversed(factors))
+
+
 def align_legend_to_bars(legend) -> None:
     """Pin a legend to one row per bar, at exactly the bar pitch."""
     legend.glyph_height = GLANCE_BAR_HEIGHT
@@ -418,7 +428,7 @@ class Plots(GetInputInformation):
                       for m, n in enumerate(j)]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=colors))
-            pd = figure(y_range=Scores, x_range=(0, max(
+            pd = figure(y_range=top_down(Scores), x_range=(0, max(
                 counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT, width=GLANCE_PLOT_WIDTH, title="Data Quality for SAS: Rg Analysis",)
             rd = pd.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
@@ -432,7 +442,6 @@ class Plots(GetInputInformation):
                             orientation='vertical')
             align_legend_to_bars(legend)
             pd.add_layout(legend, 'right')
-            pd.legend.items.reverse()
             pd.legend.border_line_width = 0
             utility.clear_legend_background(pd)
             pd.xaxis.axis_label_text_font_size = "14pt"
@@ -578,7 +587,7 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.2f} Å' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 80), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                pf = figure(y_range=top_down(Scores), x_range=(0, 80), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
                             width=GLANCE_PLOT_WIDTH, title="3DEM resolution")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
@@ -592,7 +601,6 @@ class Plots(GetInputInformation):
                                 orientation='vertical')
                 align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
-                pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
                 utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
@@ -631,7 +639,7 @@ class Plots(GetInputInformation):
             legends = [str(i) for i in counts]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=linear_palette(Blues256, len(legends) + 2)[1:-1]))
-            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+            pf = figure(y_range=top_down(Scores), x_range=(0, max(counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
                         width=GLANCE_PLOT_WIDTH, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
             rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
@@ -644,7 +652,6 @@ class Plots(GetInputInformation):
                             orientation='vertical')
             align_legend_to_bars(legend)
             pf.add_layout(legend, 'right')
-            pf.legend.items.reverse()
             pf.legend.border_line_width = 0
             utility.clear_legend_background(pf)
             pf.title.vertical_align = 'top'
@@ -682,7 +689,7 @@ class Plots(GetInputInformation):
                 # identical in all plots because they're separated
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Oranges256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 102), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                pf = figure(y_range=top_down(Scores), x_range=(0, 102), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
                             width=GLANCE_PLOT_WIDTH, title="Crosslink satisfaction")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
@@ -695,7 +702,6 @@ class Plots(GetInputInformation):
                                 orientation='vertical')
                 align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
-                pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
                 utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
@@ -729,7 +735,7 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.3f}' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(-1, 1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                pf = figure(y_range=top_down(Scores), x_range=(-1, 1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
                             width=GLANCE_PLOT_WIDTH, title="Q-score")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
@@ -742,7 +748,6 @@ class Plots(GetInputInformation):
                                 orientation='vertical')
                 align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
-                pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
                 utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
@@ -782,9 +787,8 @@ class Plots(GetInputInformation):
             # instead would make bokeh insert a gap between the groups that a
             # legend cannot reproduce, drifting a bar-width out of step with its
             # bars for every map after the first.
-            # reversed so the maps stack in the same order as the Q-score
-            # plot above, which puts its first factor at the bottom
-            for i, (model, pct) in enumerate(reversed(entries)):
+            # the maps stack in the same order as the Q-score plot above
+            for i, (model, pct) in enumerate(entries):
                 y = [(model, score) for score in Scores]
                 counts = [pct['relative'] * 100, pct['whole'] * 100]
                 legends = [f"{c:.1f} %" for c in counts]
