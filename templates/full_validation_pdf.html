@@ -23,16 +23,15 @@ SOFTWARE.
 -->
 
 {% from "macro.html" import write_table, format_help, format_value with context %}
+{% from "web_resources.j2" import bootstrap_css, bootstrap_js with context %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <title>PDB-IHM Validation Report Landing Page</title>
     <!-- add bootstrap css file -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {{ bootstrap_css() }}
+    {{ bootstrap_js() }}
     <style>
        @charset "UTF-8";
        /* CSS Document */

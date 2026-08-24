@@ -1,12 +1,12 @@
 Bootstrap: docker
-From: ubuntu:22.04
+From: ubuntu:24.04
 Stage: spython-base
 
 %arguments
     
     TZ="America/Los_Angeles"
     CHIMERA="./chimera-1.19-linux_x86_64_osmesa.bin"
-    CHIMERAX="./ucsf-chimerax_1.11.1ubuntu22.04_amd64.deb"
+    CHIMERAX="./ucsf-chimerax_1.11.1ubuntu24.04_amd64.deb"
     NPROC=8
 
 %files
@@ -24,7 +24,7 @@ Stage: spython-base
     DEBIAN_FRONTEND=noninteractive
 
     # Install common dependencies
-    apt update -y && apt install -y curl git unzip time htop locales
+    apt update -y && apt install -y curl git unzip time htop locales build-essential
     
     # Install fonts
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
@@ -41,20 +41,20 @@ Stage: spython-base
     git config --global http.lowSpeedTime 300
 
     # Set up basic conda environment using conda-forge packages
-    curl -L https://github.com/conda-forge/miniforge/releases/download/23.3.1-1/Mambaforge-23.3.1-1-Linux-x86_64.sh -o miniforge.sh && echo "dbe92c011a1315b9626e2f93a165892f4b89177145bc350b3859a483a3642a24 miniforge.sh" sha256sum -c --status && bash ./miniforge.sh -b -p /opt/conda && rm -f miniforge.sh && /opt/conda/bin/conda init -q bash
+    curl -L https://github.com/conda-forge/miniforge/releases/download/25.11.0-1/Miniforge3-25.11.0-1-Linux-x86_64.sh -o miniforge.sh && echo "ea7e37523454524043f7a0cc234f20baa388901657cfd8ed5643da49ffa8cdff miniforge.sh" sha256sum -c --status && bash ./miniforge.sh -b -p /opt/conda && rm -f miniforge.sh && /opt/conda/bin/conda init -q bash
 
     # Ensure that we always use a shell with conda
     PATH=/opt/conda/bin:${PATH}
     echo "conda activate" >> ~/.bashrc
     
     # Install Python packages and other dependencies needed by IHMValidation
-    apt install -y xvfb mesa-utils libasound2 libdbus-glib-1-2 libgtk-3-0 pymol
-    mamba install -y pip requests "numpy==1.26.2" "scipy<1.15" pandas scikit-learn matplotlib "bokeh<3.0" selenium pyvirtualdisplay firefox geckodriver jinja2 ipython imp pyrmsd -c salilab 
-    pip install -qU iqplot pdfkit pypdf "pyhmmer==0.12.0" "mendeleev<1.1" 
-    curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+    # apt install -y xvfb mesa-utils # pymol
+    conda install -y pip firefox geckodriver selenium imp pyrmsd pymol-open-source -c salilab 
+    pip install -qU requests numpy scipy pandas scikit-learn matplotlib "bokeh<3.7" iqplot pdfkit pypdf jinja2 ipython pyhmmer "mendeleev<1.1"
+    curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb && apt install -y ./wkhtmltox_0.12.6.1-3.jammy_amd64.deb && rm -rf ./wkhtmltox_0.12.6.1-3.jammy_amd64.deb
     
     # Install MolProbity
-    apt install -y software-properties-common && add-apt-repository -y ppa:apptainer/ppa && apt update && apt install -y apptainer
+    apt install -y software-properties-common && add-apt-repository -y ppa:apptainer/ppa && apt install -y apptainer
     mkdir -p /opt/molprobity && apptainer pull /opt/molprobity/molprobity.sif oras://ghcr.io/aozalevsky/molprobity:20260303 
     echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif molprobity.molprobity $@' > /usr/local/bin/molprobity.molprobity && chmod +x /usr/local/bin/molprobity.molprobity
     echo '#!/bin/bash\napptainer run /opt/molprobity/molprobity.sif molprobity.version.py $@' > /usr/local/bin/molprobity.version.py && chmod +x /usr/local/bin/molprobity.version.py
@@ -72,7 +72,7 @@ Stage: spython-base
     pip install -q git+https://github.com/PRIDE-Archive/mzidentml-reader
     
     # Install VA package from EMDB and other dependencies
-    pip install -q "va==0.0.1.dev132"
+    pip install -q "va==0.0.1.dev133"
     
     # Install extra chimera and chimerax dependencies
     apt install -y libglib2.0-0 libxrender1 libxcb-cursor0
@@ -87,15 +87,15 @@ Stage: spython-base
     
     # Install ChimeraX
     apt install -y /chimerax.deb && apt install -yf && rm -f /chimerax.deb && echo '#!/bin/bash\nchimerax --offscreen --silent $@' > /usr/local/bin/ChimeraX && chmod +x /usr/local/bin/ChimeraX
-
+    
     # PRISM dependencies 
-    pip install -q "numpy==1.26.2" "matplotlib>=3.4.0" "scipy>=1.6.1" "networkx>=2.6.2" wget jenkspy pandas biopython
+    pip install -q numpy matplotlib scipy networkx wget jenkspy pandas biopython
     
     # get PrISM
     git clone -b ihm https://github.com/aozalevsky/prism /opt/prism
 
     # Get IHMValidation
-    pip install -q "ihm==2.9"
+    pip install -q "ihm==2.11"
     git clone --depth 1 https://github.com/salilab/IHMValidation.git /opt/IHMValidation && chmod +x /opt/IHMValidation/ihm_validation/ihm_validator.py
 
     # Create input and output dirs

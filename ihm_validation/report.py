@@ -43,7 +43,9 @@ import cx
 import precision
 import em
 
-REPORT_VERSION = '3.2'
+# Single source of truth lives in utility so the assessment modules can
+# stamp it into their caches without importing report.
+REPORT_VERSION = utility.IHMV_VERSION
 
 class WriteReport(object):
     report_version = REPORT_VERSION
@@ -451,8 +453,8 @@ class WriteReport(object):
 
         Template_Dict['model_precision'] = model_precision
 
-        Template_Dict['restraint_info'] = utility.get_restraints_info(self.input.get_restraints(
-        )) if self.input.get_restraints() is not None else 'Not provided or used'
+        Template_Dict['restraint_info'] = utility.get_restraints_info(
+            self.system.restraints) or ['Not provided or used']
 
         dq = []
 
@@ -481,6 +483,11 @@ class WriteReport(object):
                     dq.append(f'{data_["emdbid"]}: resolution is {r_:.2f} Å')
                 except (ValueError, TypeError, KeyError) as e:
                     dq.append(f'{data_["emdbid"]}: resolution is {utility.NA}')
+
+        # What the entry says about its own data, after what we derived from
+        # it: the crosslinker, the resolution of a class average, the radius
+        # of gyration of a scattering profile
+        dq.extend(self.input.get_dataset_data_quality())
 
         if len(dq) == 0:
             dq.append('Data quality has not been assessed')

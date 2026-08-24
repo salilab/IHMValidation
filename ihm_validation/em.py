@@ -50,8 +50,7 @@ import pandas as pd
 # plotting
 from bokeh.plotting import save, figure
 from bokeh.layouts import gridplot
-from bokeh.models import Range1d
-from bokeh.models.widgets import Panel, Tabs
+from bokeh.models import Range1d, ColumnDataSource
 from bokeh.embed import json_item
 from bokeh.io import export_svgs
 import iqplot
@@ -78,6 +77,7 @@ class EMValidation(GetInputInformation):
 
     def save_plots(self, plot, title, imageDirName='.'):
         """Save bokeh plots as svg images and json blobs"""
+        utility.set_plot_font(plot)
         stem = f'{self.ID_f}_{title}'
 
         imgpath_json = Path(
@@ -92,6 +92,9 @@ class EMValidation(GetInputInformation):
             f'{stem}.svg')
 
         svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
+
+        for svg in svgs:
+            utility.strip_bokeh_svg_noise(svg)
 
         svgs = [Path(x).name for x in svgs]
 
@@ -125,11 +128,12 @@ class EMValidation(GetInputInformation):
         data = None
 
         # Check if we already requested the data
-        if Path(cache_fn).is_file():
-            logging.info(f'Found {code} in cache! {cache_fn}')
+        if Path(cache_fn).is_file() and not self.nocache:
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
-        elif not Path(cache_fn).is_file():
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found {code} in cache! {cache_fn} '
+                         f'({utility.describe_cache(meta)})')
+        elif not Path(cache_fn).is_file() or self.nocache:
             map_metadata = self.get_emdb_map_metadata(code)
             map_validation = self.get_emdb_map_validation(code)
             map_path = Path(self.cache, f'{code}.map')
@@ -150,7 +154,7 @@ class EMValidation(GetInputInformation):
                 }
 
                 with open(cache_fn, 'wb') as f:
-                    pickle.dump(data, f)
+                    pickle.dump(utility.wrap_cache(data), f)
             else:
                 logging.info(f'EMDB data for {code} is incomplete')
 
@@ -159,7 +163,7 @@ class EMValidation(GetInputInformation):
     @staticmethod
     def get_emdb_numerical_code(code) -> str:
         """Extract only numerical part of the EMDB ID"""
-        code_ = re.search('\d+', code).group()
+        code_ = re.search(r'\d+', code).group()
         return code_
 
     def get_emdb_map(self, code, fname) -> str:
@@ -345,9 +349,17 @@ class EMValidation(GetInputInformation):
     def get_map_image(self, code, name, rawmap=False, extension="jpeg"):
         img = None
         code_ = self.get_emdb_numerical_code(code)
-        url = f"https://www.ebi.ac.uk/pdbe/emdb/emdb-entry/emdbva/va-{code_}/va/emd_{code_}.map_{name}.{extension}"
+
+        stem_ = f"{code_[:2]}"
+        if len(str(code_)) > 4:
+            stem_ += f"/{code_[2]}"
+        stem_ += f"/{code_}"
+
+        url_ = f"https://www.ebi.ac.uk/emdb/static/sessions/validation_analysis/{stem_}/va/emd_{code_}"
+
+        url = f"{url_}.map_{name}.{extension}"
         if rawmap:
-            url = f"https://www.ebi.ac.uk/pdbe/emdb/emdb-entry/emdbva/va-{code_}/va/emd_{code_}_rawmap.map_{name}.{extension}"
+            url = f"{url_}_rawmap.map_{name}.{extension}"
 
         r = requests.get(url, stream=True)
         if r.status_code == 200:
@@ -392,11 +404,15 @@ class EMValidation(GetInputInformation):
                 title=f"Voxel-value distribution (Mode={map_validation['density_distribution']['mode']})",
                 x_axis_label='Voxel value',
                 y_axis_label='Number of voxels (log10)',
-                plot_height=350
+                height=350
                 )
             X = map_validation['density_distribution']['x']
             Y = map_validation['density_distribution']['y']
-            p.line(X, Y, color='blue')
+            r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y)),
+                       color='blue')
+            utility.add_hover(p, r, [('Voxel value', '@x{0.000}'),
+                                     ('Number of voxels (log10)', '@y{0.00}')],
+                              mode='vline')
             try:
                 p.line([recl, recl], [0, max(Y)], line_color='red', line_width=3, legend_label=f'Recommended contour level {recl:.2f}')
             except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -415,6 +431,7 @@ class EMValidation(GetInputInformation):
             p.yaxis.axis_label_text_font_style = 'normal'
 
             title = f'{emdbid}_voxel'
+            utility.clear_legend_background(p)
             plots_ = self.save_plots(p, title, imageDirName)
             data_stats_plots[title] = plots_
         except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -434,14 +451,18 @@ class EMValidation(GetInputInformation):
                     title=f"Volume estimate (Estimated volume={vol:.2f} nm³)",
                     x_axis_label = 'Contour level',
                     y_axis_label = 'Volume [nm³]',
-                    plot_height=350
+                    height=350
             )
             p.yaxis.ticker.desired_num_ticks = 3
             p.output_backend = "svg"
             p.border_fill_color = None
             p.background_fill_color = None
 
-            p.line(X, Y, color='blue')
+            r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y)),
+                       color='blue')
+            utility.add_hover(p, r, [('Contour level', '@x{0.000}'),
+                                     ('Volume [nm³]', '@y{0.00}')],
+                              mode='vline')
 
             try:
                 p.line([recl, recl], [0, max(Y)], color='red', legend_label=f'Recommended contour level {recl:.2f}')
@@ -460,6 +481,7 @@ class EMValidation(GetInputInformation):
             p.xaxis.axis_label_text_font_style = 'normal'
             p.yaxis.axis_label_text_font_style = 'normal'
 
+            utility.clear_legend_background(p)
             plots_ = self.save_plots(p, title, imageDirName)
             data_stats_plots[title] = plots_
         except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -473,7 +495,7 @@ class EMValidation(GetInputInformation):
                         title=f"Rotationally averaged power spectrum",
                         x_axis_label = 'Spatial frequency [Å⁻¹]',
                         y_axis_label = 'Log (I)',
-                        plot_height=350
+                        height=350
                     )
                 p.yaxis.ticker.desired_num_ticks = 3
                 p.output_backend = "svg"
@@ -492,7 +514,11 @@ class EMValidation(GetInputInformation):
                     miny = min(np.min(Y), np.min(Y))
                     p.line(X_raw, Y_raw, color='orange', legend_label='Raw map RAPS')
 
-                p.line(X, Y, color='blue', legend_label='Primary map RAPS')
+                r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y)),
+                           color='blue', legend_label='Primary map RAPS')
+                utility.add_hover(p, r, [('Spatial frequency', '@x{0.0000}'),
+                                         ('Log amplitude', '@y{0.000}')],
+                                  mode='vline')
 
                 try:
                     loc = 1 / resolution
@@ -509,6 +535,7 @@ class EMValidation(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
 
                 title = f'{emdbid}_raps'
+                utility.clear_legend_background(p)
                 plots_ = self.save_plots(p, title, imageDirName)
                 data_stats_plots[title] = plots_
             except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -523,7 +550,7 @@ class EMValidation(GetInputInformation):
                     x_axis_label = 'Spatial frequency [Å⁻¹]',
                     y_axis_label = 'Correlation',
                     y_range = (-0.1, 1.1),
-                    plot_height=350
+                    height=350
                     )
 
                 p.yaxis.ticker.desired_num_ticks = 3
@@ -538,7 +565,12 @@ class EMValidation(GetInputInformation):
 
                 X = map_validation['fsc']['curves']['level']
                 Y1 = map_validation['fsc']['curves']['fsc']
-                p.line(X, Y1, legend_label='Unmasked-calculated FSC', color='orange')
+                r = p.line('x', 'y', source=ColumnDataSource(dict(x=X, y=Y1)),
+                           legend_label='Unmasked-calculated FSC', color='orange')
+                utility.add_hover(p, r,
+                                  [('Spatial frequency [Å⁻¹]', '@x{0.0000}'),
+                                   ('Correlation', '@y{0.000}')],
+                                  mode='vline')
 
                 Y2 = map_validation['fsc']['curves']['0.143']
                 p.line(X, Y2, line_dash='dashed', legend_label='0.143', color='green')
@@ -560,6 +592,7 @@ class EMValidation(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
 
                 title = f'{emdbid}_fsc'
+                utility.clear_legend_background(p)
                 plots_ = self.save_plots(p, title, imageDirName)
                 data_stats_plots[title] = plots_
             except (KeyError, ValueError, IndexError, TypeError) as e:
@@ -572,9 +605,16 @@ class EMValidation(GetInputInformation):
             vapath = Path(varoot, f"{mid}_{emdbid}")
             os.makedirs(varoot, exist_ok=True)
 
-            if Path(vapath).is_dir():
-                logging.info(f"Found VA for {emdbid} in cache: {vapath}")
+            if Path(vapath).is_dir() and not self.nocache:
+                meta = utility.read_cache_metadata(vapath)
+                logging.info(f"Found VA for {emdbid} in cache: {vapath} "
+                             f"({utility.describe_cache(meta)})")
             else:
+                # run_va copies its whole output directory into place, which
+                # fails if one is already there - and under --nocache the point
+                # is to not reuse what is there.
+                if Path(vapath).is_dir():
+                    shutil.rmtree(vapath)
                 self.run_va(data, mid, vapath)
             try:
                 plots_ = {}
@@ -622,7 +662,7 @@ class EMValidation(GetInputInformation):
                     x_axis_label = 'Contour level',
                     y_axis_label = 'Fraction of atoms inside the map',
                     y_range = (0., 1.1),
-                    plot_height=350,
+                    height=350,
                 )
                 p.output_backend = "svg"
                 p.border_fill_color = None
@@ -637,8 +677,16 @@ class EMValidation(GetInputInformation):
                 fit_stats[mid]['ai_score']['ai_recl_backbone'] = ai_recl_backbone
                 fit_stats[mid]['ai_score']['ai_recl_all'] = ai_recl_all
 
-                p.line(X, Y1, color='blue', legend_label='Backbone atoms')
-                p.line(X, Y2, color='orange', legend_label='All non-hydrogen atoms')
+                ai_src = ColumnDataSource(dict(x=X, backbone=Y1, all_atom=Y2))
+                r = p.line('x', 'backbone', source=ai_src,
+                           color='blue', legend_label='Backbone atoms')
+                p.line('x', 'all_atom', source=ai_src,
+                       color='orange', legend_label='All non-hydrogen atoms')
+                utility.add_hover(p, r,
+                                  [('Contour level', '@x{0.000}'),
+                                   ('Backbone atoms', '@backbone{0.000}'),
+                                   ('All non-hydrogen atoms', '@all_atom{0.000}')],
+                                  mode='vline')
 
                 p.line([recl, recl], [0, 1.1], color='red', legend_label=f'Recommended contour level {recl:.3f}')
 
@@ -651,6 +699,7 @@ class EMValidation(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
 
                 title = f'{mid}_{emdbid}_ai_plot'
+                utility.clear_legend_background(p)
                 plots_ = self.save_plots(p, title, imageDirName)
                 fit_plots['ai_plot'] = plots_
 
@@ -661,6 +710,27 @@ class EMValidation(GetInputInformation):
                 }
                 fit_stats[mid]['q_score']['chains'].update(data_['qscore']['0']['data']['chainqscore'])
                 fit_stats[mid]['q_score']['average'] = data_['qscore']['0']['data']['averageqscore']
+
+                # Where this model's average Q-score sits in the EMDB archive.
+                # VA reports the fraction of archive entries scoring at or
+                # below it, both against everything and against entries of a
+                # comparable resolution, so higher is better in both cases.
+                # VA runs older than the slider have no bar to read.
+                qscore_bar = data_['qscore']['0']['data'].get('qscore_bar')
+                if qscore_bar is not None:
+                    fit_stats[mid]['q_score']['percentile'] = {
+                        'whole': qscore_bar['whole'],
+                        'whole_counts': qscore_bar['whole_counts'],
+                        'whole_res_low': qscore_bar['whole_res_low'],
+                        'whole_res_high': qscore_bar['whole_res_high'],
+                        'relative': qscore_bar['relative'],
+                        'relative_counts': qscore_bar['relative_counts'],
+                        'relative_res_low': qscore_bar['relative_res_low'],
+                        'relative_res_high': qscore_bar['relative_res_high'],
+                        'statistics_version':
+                            data_['qscore']['0']['data'].get(
+                                'em_statistic_version', utility.NA),
+                    }
 
             except (FileNotFoundError, OSError, IndexError, KeyError) as e:
                 logging.error(e)
@@ -730,6 +800,26 @@ class EMValidation(GetInputInformation):
         version = va.__version__
         return version
 
+    def _va_software_versions(self) -> dict:
+        """
+        Versions of the tools behind a VA run, for the cache stamp.
+
+        Best effort on purpose: this is provenance, and failing to read a
+        version is never a reason to lose a VA run that takes minutes.
+        """
+        versions = {}
+
+        for name, getter in (('EMDB VA', self.get_va_version),
+                             ('ChimeraX', self.get_chimerax_version),
+                             ('MapQ', self.get_mapq_version)):
+            try:
+                versions[name] = getter()
+            except Exception as e:
+                logging.error(f'Could not determine {name} version: {e}')
+                versions[name] = utility.NA
+
+        return versions
+
     def run_va(self, data, mid, outpath):
         """Run EMDB va validation pipeline for map and model"""
 
@@ -786,6 +876,8 @@ class EMValidation(GetInputInformation):
                 logging.error("Could not finish the VA run")
 
             shutil.copytree(tempdir, outpath)
+
+        utility.write_cache_metadata(outpath, self._va_software_versions())
 
     @staticmethod
     def get_level_from_primary_contour(data: dict) -> float:

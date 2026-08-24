@@ -37,6 +37,7 @@ import math
 import pickle
 import logging
 import mendeleev
+import utility
 
 class GetExcludedVolume(GetInputInformation):
     def __init__(self, *args, **kwargs):
@@ -200,9 +201,10 @@ class GetExcludedVolume(GetInputInformation):
 
         # Check if we already requested the data
         if Path(cache_fn).is_file() and not self.nocache:
-            logging.info(f'Found {self.stem} in cache: {cache_fn}')
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found {self.stem} in cache: {cache_fn} '
+                         f'({utility.describe_cache(meta)})')
 
         elif not Path(cache_fn).is_file() or self.nocache:
             logging.info("Excluded volume is being calculated...")
@@ -210,6 +212,6 @@ class GetExcludedVolume(GetInputInformation):
             data = self._run_exc_vol(model_dict)
 
             with open(cache_fn, 'wb') as f:
-                pickle.dump(data, f)
+                pickle.dump(utility.wrap_cache(data), f)
 
         return data

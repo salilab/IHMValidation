@@ -479,9 +479,9 @@ _ihm_sas_restraint.details
             output = {'ID': [1, 2, 3, 4],
                       'Dataset ID': ['26', '25', '10', '18'],
                       'Restraint type': ['EM3DRestraint', 'CrossLinkRestraint', 'EM2DRestraint', 'SASRestraint'],
-                      'Restraint info': ['Gaussian mixture models, 400', 'DSS, 1 cross-links',
-                                         'Number of micrographs: None, Image resolution: 50.0',
-                                         'Assembly name: None Fitting method: FoXS Multi-state: False']}
+                      'Restraint info': ['Gaussian mixture models', 'DSS, 1 crosslink',
+                                         'image resolution: 50.0 Å',
+                                         'fitting method: FoXS, single-state']}
             temp = GetInputInformation(tmpfilepath)
             self.assertEqual(output, temp.get_restraints())
 

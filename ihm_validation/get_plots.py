@@ -37,7 +37,6 @@ from bokeh.models import (ColumnDataSource, Legend, LegendItem, FactorRange,
                           Div, BasicTickFormatter)
 from bokeh.palettes import linear_palette, Greys256, Blues256, Oranges256, Greens256
 from bokeh.plotting import figure, save
-from bokeh.models.widgets import Tabs, Panel
 from bokeh.layouts import row
 from bokeh.core.validation import silence
 from bokeh.core.validation.warnings import MISSING_RENDERERS, EMPTY_LAYOUT
@@ -51,6 +50,58 @@ from bokeh.embed import json_item
 
 MAXPLOTS = 256
 
+# Total canvas width of the "quality at a glance" plots.
+#
+# These figures are sized by their total width, so everything bokeh puts around
+# the data area - axis labels, the categorical group labels and the legend -
+# eats into the plot itself. Bokeh 3 reserves more room for that chrome than
+# bokeh 2 did, which left the plots cramped; the crosslinking-MS data quality
+# plot lost the most because its category labels are long (its data area went
+# from 192 to 119 px). Keep this comfortably below the printable width of the
+# letter-sized PDF report (540 pt, i.e. about 910 px); note that the model
+# quality plots are wrapped in a column layout that adds another 30 px.
+GLANCE_PLOT_WIDTH = 840
+
+# Height of the data area per horizontal bar. Set as a frame (data area) height
+# instead of being folded into the total height, so the bars keep their
+# thickness regardless of how much vertical space the title and axes take.
+# These plots are meant to be tight, so this is deliberately only a little more
+# than the height of the 14pt category labels next to them (about 19 px).
+GLANCE_BAR_HEIGHT = 21
+
+# Font for the legend labels, deliberately smaller than the 14pt used
+# everywhere else on these plots.
+#
+# Each of these legends has one entry per bar, so any mismatch between the
+# legend row and the bar accumulates down the plot: with ten SAS Rg datasets a
+# 14pt legend ran 26 px per row against 21 px bars and finished 67 px past the
+# bottom of the plot frame. Bokeh takes the row height as the tallest of the
+# glyph, the label box and the *measured* label text, so no glyph or spacing
+# setting can pull a row below the text itself - and at 14pt that text measures
+# 23 px (for '2.98 nm'; it is string-dependent, '2.02' comes out at 21). 12pt
+# is the largest size whose text fits inside GLANCE_BAR_HEIGHT for every label
+# the report produces, which is what lets a legend row line up with its bar.
+GLANCE_LEGEND_FONT_SIZE = '12pt'
+
+
+def top_down(factors: list) -> list:
+    """Order categorical factors so that the first one reads at the top
+
+    Bokeh lays a categorical range out from the axis origin, which on a y
+    axis is the bottom, so an entry with three model groups would otherwise
+    open on the third one.
+    """
+    return list(reversed(factors))
+
+
+def align_legend_to_bars(legend) -> None:
+    """Pin a legend to one row per bar, at exactly the bar pitch."""
+    legend.glyph_height = GLANCE_BAR_HEIGHT
+    legend.label_height = GLANCE_BAR_HEIGHT
+    legend.spacing = 0
+    legend.label_text_font_size = GLANCE_LEGEND_FONT_SIZE
+
+
 class Plots(GetInputInformation):
     def __init__(self, *args, imageDirName, **kwargs):
         super().__init__(*args, **kwargs)
@@ -63,6 +114,22 @@ class Plots(GetInputInformation):
                                cx_data_quality: dict=None, cx_fit: dict=None,
                                em_data_quality: dict=None, em_fit: dict=None
                                ) -> dict:
+        """
+        Generate the "quality at a glance" summary plots.
+
+        Produces up to three horizontal bar charts - model quality (MQ), data
+        quality (DQ) and fit to data used for modeling (FQ) - saved as SVG and
+        JSON, and returns a dict telling the report templates which of them
+        exist.
+
+        All of these figures are sized by their total width
+        (:data:`GLANCE_PLOT_WIDTH`), so the axis labels, categorical group
+        labels and legend are subtracted from the data area rather than added
+        around it. Their data area is therefore only as wide as that width
+        minus whatever bokeh decides the labels need; the bar thickness, on the
+        other hand, is pinned by :data:`GLANCE_BAR_HEIGHT`. See the comments on
+        both constants before changing either.
+        """
 
         glance_plots = {
             'MQ': False,
@@ -87,6 +154,20 @@ class Plots(GetInputInformation):
 
             for s in Scores:
                 data[s] = [x[s] for x in molprobity_data.values()]
+
+            # Label each bar with its value, as the other at-a-glance plots do.
+            # The two outlier counts also get the share of residues they
+            # represent; a clashscore is a rate and is shown as it comes.
+            legends = []
+            for x in molprobity_data.values():
+                for s in Scores:
+                    total = x.get('totals', {}).get(s)
+                    if total:
+                        legends.append(f'{x[s]} ({x[s] / total * 100:.2f}%)')
+                    elif isinstance(x[s], float):
+                        legends.append(f'{x[s]:.2f}')
+                    else:
+                        legends.append(f'{x[s]}')
 
             y = [(f"Model {model}", score) for model in Models for score in Scores]
             counts = sum(
@@ -114,17 +195,40 @@ class Plots(GetInputInformation):
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(0, upper),
-                    plot_height=120,
-                    plot_width=700
+                    frame_height=3 * GLANCE_BAR_HEIGHT,
+                    width=GLANCE_PLOT_WIDTH
                 )
 
-                p_ = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
-                       right=source.data['counts'][i * 3: (i + 1) * 3],
+                # slice out this model's three bars into their own source, so
+                # the hover tool has a metric name to show alongside the count
+                legends_ = legends[i * 3: (i + 1) * 3]
+                source_ = ColumnDataSource(data=dict(
+                    y=source.data['y'][i * 3: (i + 1) * 3],
+                    counts=source.data['counts'][i * 3: (i + 1) * 3],
+                    legends=legends_,
+                    metric=Scores))
+
+                p_ = p.hbar(y='y',
+                       right='counts',
+                       source=source_,
                        line_color="white",
                             fill_color=factor_cmap('y', palette=linear_palette(Greys256, len(Scores) + 2)[1:-1],
                                               factors=Scores,
                                               start=1, end=2)
                        )
+
+                utility.add_hover(p, p_, [('', '@metric'), ('', '@legends')])
+
+                legend = Legend(items=[LegendItem(label=legends_[j], renderers=[
+                                p_], index=j) for j in range(len(legends_))],
+                                location='center', orientation='vertical')
+                # bokeh draws the first factor at the bottom, so the legend has
+                # to run the other way to sit alongside the bars it labels
+                legend.items = legend.items[::-1]
+                align_legend_to_bars(legend)
+                p.add_layout(legend, 'right')
+                p.legend.border_line_width = 0
+                utility.clear_legend_background(p)
 
                 # set labels and fonts
                 p.xaxis.axis_label_text_font_size = "14pt"
@@ -146,21 +250,23 @@ class Plots(GetInputInformation):
                 p.background_fill_color = None
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_mp.svg")
+                utility.set_plot_font(p)
                 export_svg(p, filename=fname)
+                utility.strip_bokeh_svg_noise(fname)
 
                 plots.append(p)
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
                             toolbar_location='right')
-            grid.children[1].css_classes = ['scrollable']
-            grid.children[1].sizing_mode = 'fixed'
-            grid.children[1].height = 450
-            grid.children[1].width = 800
+            # grid.children[1].css_classes = ['scrollable']
+            # grid.children[1].sizing_mode = 'fixed'
+            # grid.children[1].height = 450
+            # grid.children[1].width = 800
 
             title = Div(text="<p>Model Quality: Molprobity Analysis</p>",
-                        style={"font-size": "1.5em", "font-weight": "bold",
-                               "text-align": "center", "width": '100%'}, width=800
+                        styles={"font-size": "1.5em", "font-weight": "bold",
+                               "text-align": "center", "width": '100%'}, width=GLANCE_PLOT_WIDTH
                         )
 
             fullplot = column(title, grid)
@@ -199,20 +305,31 @@ class Plots(GetInputInformation):
             lower, upper = 0, 102
 
             for i, name_ in enumerate(Models):
-                p = figure(y_range=FactorRange(factors=source.data['Scores'][i: i + 1]), x_range=(lower, upper), plot_height=90,
-                           plot_width=700)  # , title='Model Quality: Excluded Volume Analysis')
+                p = figure(y_range=FactorRange(factors=source.data['Scores'][i: i + 1]), x_range=(lower, upper), frame_height=GLANCE_BAR_HEIGHT,
+                           width=GLANCE_PLOT_WIDTH)  # , title='Model Quality: Excluded Volume Analysis')
                 # p.xaxis.formatter = BasicTickFormatter(use_scientific=True, power_limit_high=3)
                 p.xaxis.ticker.desired_num_ticks = 3
 
-                p_ = p.hbar(y=source.data['Scores'][i:i + 1], right=source.data['counts'][i: i + 1], color=source.data['color'][i:i + 1], height=1.0,
-                           line_color='white')
+                source_ = ColumnDataSource(data=dict(
+                    Scores=source.data['Scores'][i: i + 1],
+                    counts=source.data['counts'][i: i + 1],
+                    legends=source.data['legends'][i: i + 1],
+                    color=source.data['color'][i: i + 1]))
+
+                p_ = p.hbar(y='Scores', right='counts', color='color', height=1.0,
+                           source=source_, line_color='white')
+
+                utility.add_hover(p, p_, [('', '@Scores'),
+                                          ('Satisfaction rate', '@legends')])
 
                 p.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i:i + 1][j], renderers=[
                     p_], index=j) for j in range(len(legends[i:i + 1]))], location='center',
-                    label_text_font_size='14pt', orientation='vertical')
+                    orientation='vertical')
+                align_legend_to_bars(legend)
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
+                utility.clear_legend_background(p)
                 p.xaxis.major_label_text_font_size = "14pt"
                 p.yaxis.major_label_text_font_size = "14pt"
                 p.xaxis.axis_label_text_font_style = 'normal'
@@ -225,21 +342,23 @@ class Plots(GetInputInformation):
                 p.min_border_top = 20
 
                 fname = Path(self.imageDirName, f"{self.ID_f}_{name_}_quality_at_glance_MQ_exv.svg")
+                utility.set_plot_font(p)
                 export_svg(p, filename=fname)
+                utility.strip_bokeh_svg_noise(fname)
 
                 plots.append(p)
 
             grid = gridplot(plots, ncols=1,
                             merge_tools=True,
                             toolbar_location='right')
-            grid.children[1].css_classes = ['scrollable']
-            grid.children[1].sizing_mode = 'fixed'
-            grid.children[1].height = 450
-            grid.children[1].width = 800
+            # grid.children[1].css_classes = ['scrollable']
+            # grid.children[1].sizing_mode = 'fixed'
+            # grid.children[1].height = 450
+            # grid.children[1].width = 800
 
             title = Div(text='<p>Model Quality: Excluded Volume Analysis</p>',
-                        style={"font-size": "1.5em", "font-weight": "bold",
-                               "text-align": "center", "width": '100%'}, width=800
+                        styles={"font-size": "1.5em", "font-weight": "bold",
+                               "text-align": "center", "width": '100%'}, width=GLANCE_PLOT_WIDTH
                         )
 
             fullplot = column(title, grid)
@@ -255,7 +374,7 @@ class Plots(GetInputInformation):
         #    source = ColumnDataSource(
         #        data=dict(Scores=Scores, counts=counts, legends=legends))
         #    p = figure(y_range=Scores, x_range=(0, 1),
-        #               plot_height=300, plot_width=800)
+        #               height=300, width=800)
         #
         #    p.ygrid.grid_line_color = None
         #    p.xaxis.axis_label_text_font_size = "14pt"
@@ -295,7 +414,9 @@ class Plots(GetInputInformation):
 
         if len(sas_data_quality.keys()) > 0:
             # Don't forget to update palette if adding new metric
-            Rgl = {0: 'P(r)', 1: 'Guinier'}
+            # get_rg_for_plot() reports Guinier first, the order the summary
+            # table states the two in as well
+            Rgl = {0: 'Guinier', 1: 'P(r)'}
             Scores = [Rgl[m] + ' ('+i+')' for i, j in sas_data_quality.items()
                       for m, n in enumerate(j)]
             counts = [float(n)for i, j in sas_data_quality.items()
@@ -307,20 +428,22 @@ class Plots(GetInputInformation):
                       for m, n in enumerate(j)]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=colors))
-            pd = figure(y_range=Scores, x_range=(0, max(
-                counts)+1), plot_height=90 + len(counts) * 20, plot_width=800, title="Data Quality for SAS: Rg Analysis",)
+            pd = figure(y_range=top_down(Scores), x_range=(0, max(
+                counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT, width=GLANCE_PLOT_WIDTH, title="Data Quality for SAS: Rg Analysis",)
             rd = pd.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
+            utility.add_hover(pd, rd, [('', '@Scores'), ('Rg', '@legends')])
+
             pd.ygrid.grid_line_color = None
             pd.xaxis.axis_label = 'Distance [nm]'
             pd.title.text_font_size = '14pt'
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rd], index=i) for i in range(len(legends))], location='center',
-                            orientation='vertical', label_text_font_size="14pt")
+                            orientation='vertical')
+            align_legend_to_bars(legend)
             pd.add_layout(legend, 'right')
-            pd.legend.items.reverse()
             pd.legend.border_line_width = 0
-            pd.legend.label_text_font_size = "14pt"
+            utility.clear_legend_background(pd)
             pd.xaxis.axis_label_text_font_size = "14pt"
             pd.yaxis.axis_label_text_font_size = "14pt"
             pd.xaxis.major_label_text_font_size = "14pt"
@@ -369,7 +492,7 @@ class Plots(GetInputInformation):
 
                 title_txt = "Crosslinking-MS Data Quality"
                 title = Div(text=f"<p>{title_txt}</p>",
-                            style={"font-size": "1.5em", "font-weight": "bold",
+                            styles={"font-size": "1.5em", "font-weight": "bold",
                                    "text-align": "center"}
                             )
 
@@ -378,26 +501,39 @@ class Plots(GetInputInformation):
                     y_range=FactorRange(*y[i * 3: (i + 1) * 3]),
                     # Force left limit at zero
                     x_range=(lower, upper),
-                    plot_height=95 + 3 * 20,
-                    plot_width=700,
+                    frame_height=3 * GLANCE_BAR_HEIGHT,
+                    width=GLANCE_PLOT_WIDTH,
                     title=title_txt
                 )
                 p.xaxis.ticker.desired_num_ticks = 3
 
-                rd = p.hbar(y=source.data['y'][i * 3: (i + 1) * 3],
-                       right=source.data['counts'][i * 3: (i + 1) * 3],
+                legends_ = source.data['legends'][i * 3: (i + 1) * 3]
+
+                source_ = ColumnDataSource(data=dict(
+                    y=source.data['y'][i * 3: (i + 1) * 3],
+                    counts=source.data['counts'][i * 3: (i + 1) * 3],
+                    legends=legends_,
+                    metric=Scores))
+
+                rd = p.hbar(y='y',
+                       right='counts',
+                       source=source_,
                        line_color="white",
                         fill_color=factor_cmap('y', palette=linear_palette(Oranges256, len(Scores) + 2)[1:-1],
                                               factors=Scores,
                                               start=1, end=2)
                        )
-                legends_ = source.data['legends'][i * 3: (i + 1) * 3]
+
+                utility.add_hover(p, rd, [('', '@metric'),
+                                          ('Residue pairs', '@legends')])
                 legend = Legend(items=[LegendItem(label=legends_[j], renderers=[
                             rd], index=j) for j in range(len(legends_))], location='center',
-                            orientation='vertical', label_text_font_size="14pt")
+                            orientation='vertical')
                 legend.items = legend.items[::-1]
+                align_legend_to_bars(legend)
                 p.add_layout(legend, 'right')
                 p.legend.border_line_width = 0
+                utility.clear_legend_background(p)
                 # set labels and fonts
                 p.xaxis.axis_label_text_font_size = "14pt"
                 p.yaxis.axis_label_text_font_size = "14pt"
@@ -407,7 +543,11 @@ class Plots(GetInputInformation):
                 p.yaxis.axis_label_text_font_style = 'normal'
                 p.yaxis.major_label_text_align='right'
                 p.xaxis.axis_label = 'Residue pairs'
-                p.left[0].group_text_font_size = '14px'
+                # match the major labels beside it, as the other grouped plots
+                # do; the default group text is smaller and greyer
+                p.left[0].group_text_color = p.left[0].major_label_text_color
+                p.left[0].group_text_font_style = p.left[0].major_label_text_font_style
+                p.left[0].group_text_font_size = p.left[0].major_label_text_font_size
                 p.left[0].group_label_orientation = 'horizontal'
                 p.title.text_font_size = '14pt'
                 p.title.vertical_align = 'top'
@@ -447,25 +587,27 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.2f} Å' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 80), plot_height=95 + len(counts) * 20,
-                            plot_width=800, title="3DEM resolution")
+                pf = figure(y_range=top_down(Scores), x_range=(0, 80), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH, title="3DEM resolution")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
+                utility.add_hover(pf, rf, [('', '@Scores'), ('Resolution', '@legends')])
+
                 pf.ygrid.grid_line_color = None
                 pf.title.text_font_size = '14pt'
                 pf.xaxis.axis_label = 'Resolution [Å]'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="14pt")
+                                orientation='vertical')
+                align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
-                pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
                 pf.border_fill_color = None
                 pf.background_fill_color = None
-                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
                 pf.yaxis.axis_label_text_font_size = "14pt"
                 pf.xaxis.major_label_text_font_size = "14pt"
@@ -497,25 +639,27 @@ class Plots(GetInputInformation):
             legends = [str(i) for i in counts]
             source = ColumnDataSource(data=dict(
                 Scores=Scores, counts=counts, legends=legends, color=linear_palette(Blues256, len(legends) + 2)[1:-1]))
-            pf = figure(y_range=Scores, x_range=(0, max(counts)+1), plot_height=100 + len(counts) * 20,
-                        plot_width=800, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
+            pf = figure(y_range=top_down(Scores), x_range=(0, max(counts)+1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                        width=GLANCE_PLOT_WIDTH, title="Fit to SAS Data:  \u03C7\u00b2 Fit")
             rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                          source=source, line_color='white')
+            utility.add_hover(pf, rf, [('', '@Scores'), ('χ² fit', '@legends')])
+
             pf.ygrid.grid_line_color = None
             pf.xaxis.axis_label = 'Fit value'
             legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                             rf], index=i) for i in range(len(legends))], location="center",
-                            orientation='vertical', label_text_font_size="14pt")
+                            orientation='vertical')
+            align_legend_to_bars(legend)
             pf.add_layout(legend, 'right')
-            pf.legend.items.reverse()
             pf.legend.border_line_width = 0
+            utility.clear_legend_background(pf)
             pf.title.vertical_align = 'top'
             pf.title.align = "center"
             pf.output_backend = "svg"
             pf.border_fill_color = None
             pf.background_fill_color = None
             pf.title.text_font_size = '14pt'
-            pf.legend.label_text_font_size = "14pt"
             pf.xaxis.axis_label_text_font_size = "14pt"
             pf.yaxis.axis_label_text_font_size = "14pt"
             pf.xaxis.major_label_text_font_size = "14pt"
@@ -545,25 +689,27 @@ class Plots(GetInputInformation):
                 # identical in all plots because they're separated
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Oranges256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(0, 102), plot_height=95 + len(counts) * 20,
-                            plot_width=800, title="Crosslink satisfaction")
+                pf = figure(y_range=top_down(Scores), x_range=(0, 102), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH, title="Crosslink satisfaction")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
+                utility.add_hover(pf, rf, [('', '@Scores'), ('Satisfaction rate', '@legends')])
+
                 pf.ygrid.grid_line_color = None
                 pf.xaxis.axis_label = 'Satisfaction rate [%]'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="14pt")
+                                orientation='vertical')
+                align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
-                pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
                 pf.border_fill_color = None
                 pf.background_fill_color = None
                 pf.title.text_font_size = '14pt'
-                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
                 pf.yaxis.axis_label_text_font_size = "14pt"
                 pf.xaxis.major_label_text_font_size = "14pt"
@@ -589,31 +735,120 @@ class Plots(GetInputInformation):
                 legends = [f'{i:.3f}' for i in counts]
                 source = ColumnDataSource(data=dict(
                     Scores=Scores, counts=counts, legends=legends, color=linear_palette(Greens256, len(legends) + 2)[1:-1]))
-                pf = figure(y_range=Scores, x_range=(-1, 1), plot_height=95 + len(counts) * 20,
-                            plot_width=800, title="Q-score")
+                pf = figure(y_range=top_down(Scores), x_range=(-1, 1), frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH, title="Q-score")
                 rf = pf.hbar(y='Scores', right='counts', color='color', height=1.0,
                              source=source, line_color='white')
+                utility.add_hover(pf, rf, [('', '@Scores'), ('Q-score', '@legends')])
+
                 pf.ygrid.grid_line_color = None
                 pf.xaxis.axis_label = 'Q-score'
                 legend = Legend(items=[LegendItem(label=legends[i], renderers=[
                                 rf], index=i) for i in range(len(legends))], location="center",
-                                orientation='vertical', label_text_font_size="14pt")
+                                orientation='vertical')
+                align_legend_to_bars(legend)
                 pf.add_layout(legend, 'right')
-                pf.legend.items.reverse()
                 pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
                 pf.title.vertical_align = 'top'
                 pf.title.align = "center"
                 pf.output_backend = "svg"
                 pf.border_fill_color = None
                 pf.background_fill_color = None
                 pf.title.text_font_size = '14pt'
-                pf.legend.label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_size = "14pt"
                 pf.yaxis.axis_label_text_font_size = "14pt"
                 pf.xaxis.major_label_text_font_size = "14pt"
                 pf.yaxis.major_label_text_font_size = "14pt"
                 pf.xaxis.axis_label_text_font_style = 'normal'
                 pf.yaxis.axis_label_text_font_style = 'normal'
+                fq_plots.append(pf)
+
+        if em_fit is not None and len(em_fit) > 0:
+            # Where each model's Q-score sits in the EMDB archive. VA gives the
+            # fraction of entries scoring at or below it, once against the whole
+            # archive and once against entries of comparable resolution, so
+            # higher is better on both bars.
+            Scores = ['Similar resolution', 'All EMDB entries']
+            entries = []
+
+            for dataset in em_fit:
+                emdbid = dataset['emdbid']
+                for mid, data_ in dataset['fit_stats'].items():
+                    pct = data_['q_score'].get('percentile')
+
+                    if pct is None or pct['whole'] is None or pct['relative'] is None:
+                        continue
+
+                    entries.append((f'Model {mid}/{emdbid}', pct))
+
+            # One plot per map, as the MolProbity and crosslinking plots do per
+            # model and per dataset. Grouping every map into a single plot
+            # instead would make bokeh insert a gap between the groups that a
+            # legend cannot reproduce, drifting a bar-width out of step with its
+            # bars for every map after the first.
+            # the maps stack in the same order as the Q-score plot above
+            for i, (model, pct) in enumerate(entries):
+                y = [(model, score) for score in Scores]
+                counts = [pct['relative'] * 100, pct['whole'] * 100]
+                legends = [f"{c:.1f} %" for c in counts]
+                tooltips = [
+                    f"{pct['relative_counts']} entries, "
+                    f"{pct['relative_res_high']}-{pct['relative_res_low']} \u00C5",
+                    f"{pct['whole_counts']} entries, "
+                    f"{pct['whole_res_high']}-{pct['whole_res_low']} \u00C5",
+                ]
+
+                source = ColumnDataSource(data=dict(
+                    y=y, counts=counts, legends=legends,
+                    tooltips=tooltips, metric=Scores))
+
+                pf = figure(y_range=FactorRange(*y), x_range=(0, 100),
+                            frame_height=len(counts) * GLANCE_BAR_HEIGHT,
+                            width=GLANCE_PLOT_WIDTH,
+                            # only the first plot carries the heading
+                            title="Q-score percentile" if i == 0 else None)
+                rf = pf.hbar(y='y', right='counts', source=source, line_color='white',
+                             fill_color=factor_cmap(
+                                 'y',
+                                 palette=linear_palette(Greens256, len(Scores) + 2)[1:-1],
+                                 factors=Scores, start=1, end=2))
+
+                utility.add_hover(pf, rf, [('', '@metric'),
+                                           ('Percentile', '@legends'),
+                                           ('Compared against', '@tooltips')])
+
+                pf.ygrid.grid_line_color = None
+                pf.xaxis.axis_label = 'Percentile'
+                legend = Legend(items=[LegendItem(label=legends[j], renderers=[
+                                rf], index=j) for j in range(len(legends))], location="center",
+                                orientation='vertical')
+                legend.items = legend.items[::-1]
+                align_legend_to_bars(legend)
+                pf.add_layout(legend, 'right')
+                pf.legend.border_line_width = 0
+                utility.clear_legend_background(pf)
+                pf.output_backend = "svg"
+                pf.border_fill_color = None
+                pf.background_fill_color = None
+                pf.xaxis.axis_label_text_font_size = "14pt"
+                pf.yaxis.axis_label_text_font_size = "14pt"
+                pf.xaxis.major_label_text_font_size = "14pt"
+                pf.yaxis.major_label_text_font_size = "14pt"
+                pf.xaxis.axis_label_text_font_style = 'normal'
+                pf.yaxis.axis_label_text_font_style = 'normal'
+
+                if pf.title is not None:
+                    pf.title.text_font_size = '14pt'
+                    pf.title.vertical_align = 'top'
+                    pf.title.align = "center"
+
+                # After the major label styling, not before: these copy from it,
+                # and bokeh's default group text is far smaller than 14pt.
+                pf.left[0].group_text_color = pf.left[0].major_label_text_color
+                pf.left[0].group_text_font_style = pf.left[0].major_label_text_font_style
+                pf.left[0].group_text_font_size = pf.left[0].major_label_text_font_size
+                pf.left[0].group_label_orientation = 'horizontal'
                 fq_plots.append(pf)
 
         if len(fq_plots) > 0:
@@ -629,12 +864,14 @@ class Plots(GetInputInformation):
 
     def save_plots(self, p, plot_name: str) -> dict:
         """Save html and svg plots"""
+        utility.set_plot_font(p)
         fname_html = Path(self.imageDirName, f"{self.ID_f}_{plot_name}.html")
         fname_svg = fname_html.with_suffix('.svg')
         fname_json = fname_html.with_suffix('.json')
         # output_file(filename=fname_html, mode='inline')
         # save(p)
         export_svg(p, filename=fname_svg)
+        utility.strip_bokeh_svg_noise(fname_svg)
 
         with open(fname_json, 'w') as f:
             json.dump(json_item(p), f)
