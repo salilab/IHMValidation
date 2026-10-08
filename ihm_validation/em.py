@@ -326,9 +326,21 @@ class EMValidation(GetInputInformation):
         r = requests.get(f'https://www.ebi.ac.uk/emdb/api/analysis/{code_}?information=all')
         out = {}
         if r.status_code == 200:
-            out = r.json()[code_]
+            out = self.unwrap_emdb_analysis(r.json(), code_)
         else:
             logging.error(f"Couldn't get data quality from EMDB for {code}")
+        return out
+
+    @staticmethod
+    def unwrap_emdb_analysis(response: dict, code: str) -> dict:
+        '''extract the map analysis from an EMDB analysis API response'''
+        out = response[code]
+        # VA 0.0.1.dev151 moves the analysis one level down, under the EMDB
+        # ID, and wraps it in its own version, audit and map-map CC entries
+        inner = out.get(code)
+        if isinstance(inner, dict):
+            outer = {k: v for k, v in out.items() if k != code}
+            out = {**outer, **inner}
         return out
 
     def get_emdb_ids(self) -> list:
