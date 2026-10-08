@@ -35,8 +35,7 @@ import numpy as np
 from pathlib import Path
 from bokeh.plotting import save
 from bokeh.layouts import gridplot
-from bokeh.models import Range1d
-from bokeh.models.widgets import Panel, Tabs
+from bokeh.models import Range1d, Tabs, TabPanel, ColumnDataSource, Scatter
 from bokeh.resources import CDN
 import iqplot
 import json
@@ -773,6 +772,16 @@ class CxValidation(GetInputInformation):
             p.yaxis.subgroup_text_align = 'right'
             p.min_border_bottom = 75
 
+            # iqplot builds the figure itself, so pick the per-model points out
+            # of its renderers rather than the box and whisker glyphs. It keeps
+            # the q and cats columns of the dataframe we passed in, which is
+            # exactly what is worth showing.
+            points = [r for r in p.renderers if isinstance(r.glyph, Scatter)]
+            if points:
+                utility.add_hover(p, points,
+                                  [('', '@Category'),
+                                   ('Satisfaction rate [%]', '@Satisfaction{0.00}')])
+
             return p
 
         gistg = 0
@@ -824,7 +833,7 @@ class CxValidation(GetInputInformation):
                         [p], ncols=1, toolbar_location='right',
                         # sizing_mode='scale_width'
                     )
-                    tab = Panel(child=col, title=f'Model Group {gimg}')
+                    tab = TabPanel(child=col, title=f'Model Group {gimg}')
                     tabs_.append(tab)
 
         tabs = Tabs(tabs=tabs_)
@@ -857,7 +866,7 @@ class CxValidation(GetInputInformation):
                     data=data_, q='Crosslinks', density=False,
                     bins=bins,
                     style="step_filled",
-                    frame_width=500, frame_height=100,
+                    frame_width=510, frame_height=100,
                     # sizing_mode='scale_width',
                 )
                 p.yaxis.ticker.desired_num_ticks = 3
@@ -878,6 +887,26 @@ class CxValidation(GetInputInformation):
 
                 p.yaxis.major_label_text_align = 'right'
 
+                # iqplot draws the histogram as a single staircase glyph, which
+                # can only report the whole outline on hover. Overlay one
+                # transparent quad per bin so the tooltip can name the bin and
+                # its count. We already know the bin edges, so this is just the
+                # same histogram computed again.
+                if len(dists) > 0:
+                    edges = np.histogram_bin_edges(dists, bins=bins)
+                    heights, _ = np.histogram(dists, bins=edges)
+                    bin_src = ColumnDataSource(dict(
+                        left=edges[:-1], right=edges[1:],
+                        top=heights, bottom=np.zeros_like(heights),
+                        label=[f'{lo:.1f} - {hi:.1f}'
+                               for lo, hi in zip(edges[:-1], edges[1:])]))
+                    bin_r = p.quad(left='left', right='right',
+                                   top='top', bottom='bottom',
+                                   source=bin_src, alpha=0, line_alpha=0)
+                    utility.add_hover(p, bin_r,
+                                      [('Distance [Å]', '@label'),
+                                       ('Crosslinks', '@top')])
+
                 p.ray(
                     x=d, y=0,
                     line_color='black', angle=np.pi / 2,
@@ -893,7 +922,7 @@ class CxValidation(GetInputInformation):
                 plots, ncols=1, toolbar_location='right',
                 # sizing_mode='scale_width'
             )
-            tab = Panel(
+            tab = TabPanel(
                 child=col, title=f'Model Group {gimg}',)
             tabs_.append(tab)
 
@@ -905,6 +934,7 @@ class CxValidation(GetInputInformation):
         return self.save_plots(tabs, title, imgDirname)
 
     def save_plots(self, plot, title, imgDirname='.'):
+        utility.set_plot_font(plot)
         stem = f'{self.ID_f}_{title}'
 
         imgpath = Path(
@@ -928,6 +958,9 @@ class CxValidation(GetInputInformation):
             f'{stem}.svg')
 
         svgs = export_svgs(plot, filename=imgpath_svg, timeout=15)
+
+        for svg in svgs:
+            utility.strip_bokeh_svg_noise(svg)
 
         svgs = [Path(x).name for x in svgs]
 
@@ -990,11 +1023,12 @@ class CxValidation(GetInputInformation):
         data = None
 
         # Check if we already requested the data
-        if Path(cache_fn).is_file():
-            logging.info(f'Found {code} in cache! {cache_fn}')
+        if Path(cache_fn).is_file() and not self.nocache:
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
-        elif not Path(cache_fn).is_file():
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found {code} in cache! {cache_fn} '
+                         f'({utility.describe_cache(meta)})')
+        elif not Path(cache_fn).is_file() or self.nocache:
             ms_seqs = self.get_sequences_pride(code)
             ms_res_pairs = self.get_residue_pairs_pride(code)
 
@@ -1006,7 +1040,7 @@ class CxValidation(GetInputInformation):
                 }
 
                 with open(cache_fn, 'wb') as f:
-                    pickle.dump(data, f)
+                    pickle.dump(utility.wrap_cache(data), f)
 
             else:
                 logging.info(f'PRIDE data for {code} is incomplete')

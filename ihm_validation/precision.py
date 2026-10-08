@@ -62,16 +62,19 @@ class PRISM(GetInputInformation):
 
         # Check if we already requested the data
         if Path(cache_fn).is_file() and not self.nocache:
-            logging.info(f'Found {self.stem} in cache: {cache_fn}')
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found {self.stem} in cache: {cache_fn} '
+                         f'({utility.describe_cache(meta)})')
 
         elif not Path(cache_fn).is_file() or self.nocache:
             logging.info("PrISM analysis is being calculated...")
             data = self._get_data()
 
             with open(cache_fn, 'wb') as f:
-                pickle.dump(data, f)
+                pickle.dump(utility.wrap_cache(
+                    data, {'PrISM': self.prism_version,
+                           'PyMOL': self.pymol_version}), f)
 
         self.data = data
 

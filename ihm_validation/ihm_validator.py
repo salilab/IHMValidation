@@ -36,7 +36,7 @@ import argparse
 from multiprocessing import Manager
 import pdfkit
 import jinja2
-import pytz
+import zoneinfo
 import sys
 import logging
 from pathlib import Path
@@ -166,7 +166,7 @@ template_flask = [
 # Get the UTC time from user
 d = datetime.datetime.now(datetime.timezone.utc)
 # Set UCSF's timezone
-timezone = pytz.timezone("America/Los_Angeles")
+timezone = zoneinfo.ZoneInfo("America/Los_Angeles")
 d_format = d.astimezone(timezone)
 timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
 
@@ -174,6 +174,7 @@ timestamp = d_format.strftime("%B %d, %Y - %I:%M %p %Z")
 template_path = Path(Path(__file__).parent.parent.resolve(), 'templates')
 templateLoader = jinja2.FileSystemLoader(searchpath=template_path)
 templateEnv = jinja2.Environment(loader=templateLoader)
+templateEnv.globals['bokeh_version'] = utility.BOKEH_VERSION
 template_pdf = "full_validation_pdf.html"
 template_file_supp = "summary_validation_pdf.html"
 Template_Dict = {}
@@ -262,6 +263,15 @@ if __name__ == "__main__":
         physics = ['Information about physical principles was not provided']
 
     logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
+
+    # --nocache does not turn the cache off, it stops us reading from it:
+    # every assessment still writes its result back for the next run.
+    cache_root = Path(args.cache_root).resolve()
+    if args.nocache:
+        logging.info(f'Cache is disabled: results in {cache_root} '
+                     'will be ignored and overwritten')
+    else:
+        logging.info(f'Cache is enabled: {cache_root}')
 
     logging.info("Clean up temporary files")
     utility.clean_all()

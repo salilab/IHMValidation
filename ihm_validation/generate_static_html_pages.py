@@ -119,6 +119,7 @@ if __name__ == "__main__":
     template_path = Path(Path(__file__).parent.parent.resolve(), 'templates')
     templateLoader = jinja2.FileSystemLoader(searchpath=template_path)
     templateEnv = jinja2.Environment(loader=templateLoader)
+    templateEnv.globals['bokeh_version'] = utility.BOKEH_VERSION
     Template_Dict = {}
     Template_Dict['version'] = REPORT_VERSION
     Template_Dict['html_mode'] = 'pdb-ihm'
