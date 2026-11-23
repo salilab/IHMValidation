@@ -33,16 +33,213 @@ from collections import Counter, defaultdict
 from multiprocessing import Process
 import numpy as np
 import logging
-import ihm, ihm.reader, ihm.model
+import ihm, ihm.reader, ihm.model, ihm.restraint
 import itertools
 import time
 import signal
 import re
 import requests
 import base64
+import json
 import pypdf
+import bokeh
+from datetime import datetime, timezone
+from bokeh.models import HoverTool
 
 NA = 'Not available'
+
+# Version of IHMValidation itself. It lives here rather than in report.py so
+# that the assessment modules can stamp it into their caches without importing
+# report, which imports them.
+IHMV_VERSION = '3.3'
+
+# Bump when the shape of a cache entry changes in a way older readers cannot
+# understand.
+CACHE_FORMAT = 1
+
+
+# Directory caches cannot be wrapped the way a pickle can, so they carry their
+# provenance in a sidecar of this name instead.
+CACHE_METADATA_FILE = 'ihmv_cache.json'
+
+
+def cache_metadata(software: dict = None) -> dict:
+    """
+    Provenance for a cache entry.
+
+    Records when it was written, which IHMValidation wrote it, and the versions
+    of any external tool whose output is baked into it - a MolProbity result is
+    only meaningful next to the MolProbity that produced it.
+    """
+    return {
+        'cache_format': CACHE_FORMAT,
+        'created': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'ihmv_version': IHMV_VERSION,
+        'software': dict(software or {}),
+    }
+
+
+def wrap_cache(data, software: dict = None) -> dict:
+    """Bundle cached data together with its provenance, ready to pickle."""
+    return {**cache_metadata(software), 'data': data}
+
+
+def write_cache_metadata(dirname, software: dict = None) -> None:
+    """Record provenance for a cache that is a directory rather than a pickle."""
+    try:
+        with open(Path(dirname, CACHE_METADATA_FILE), 'w') as f:
+            json.dump(cache_metadata(software), f, indent=2)
+    except OSError as e:
+        logging.error(f'Could not write cache metadata to {dirname}: {e}')
+
+
+def read_cache_metadata(dirname) -> dict:
+    """Provenance for a directory cache, or None if it predates this."""
+    path = Path(dirname, CACHE_METADATA_FILE)
+
+    if not path.is_file():
+        return None
+
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except (OSError, ValueError) as e:
+        logging.error(f'Could not read cache metadata from {path}: {e}')
+        return None
+
+
+def unwrap_cache(raw):
+    """
+    Split a loaded cache entry into (data, metadata).
+
+    Entries written before this metadata existed are bare payloads. They are
+    still good data - some cost a 280 MB download or a long MolProbity run -
+    so they come back with metadata None instead of being thrown away.
+    """
+    if isinstance(raw, dict) and 'cache_format' in raw and 'data' in raw:
+        return raw['data'], {k: v for k, v in raw.items() if k != 'data'}
+
+    return raw, None
+
+
+def describe_cache(meta: dict) -> str:
+    """One line of provenance for logging a cache hit."""
+    if not meta:
+        return 'no metadata, written before it was recorded'
+
+    bits = [f"IHMValidation {meta.get('ihmv_version', NA)}",
+            meta.get('created', NA)]
+    bits += [f'{k} {v}' for k, v in sorted((meta.get('software') or {}).items())]
+
+    return ', '.join(bits)
+
+# The HTML report embeds plots as bokeh JSON and hands them to BokehJS loaded
+# from the CDN, so the two have to be the same version - a 3.x document is not
+# readable by 2.x BokehJS, and the plots silently come out blank. Take the
+# version from the installed package rather than pinning it in the template,
+# which is how they drifted apart in the first place.
+BOKEH_VERSION = bokeh.__version__
+
+
+def add_hover(plot, renderers, tooltips, mode: str = 'mouse') -> None:
+    """
+    Attach a HoverTool to `plot` showing `tooltips` for `renderers` only.
+
+    `tooltips` is the usual bokeh list of (label, field) pairs, e.g.
+    ``[('q', '@Q{0.0000}'), ('Log I(q)', '@logI{0.000}')]``.
+
+    The tool is always tied to explicit renderers, because most plots in the
+    report carry helper glyphs - error bars, fit lines, threshold markers -
+    that have no values worth showing and would otherwise steal the hover.
+
+    Use ``mode='vline'`` for line plots, where the pointer is rarely close
+    enough to a vertex for the default 'mouse' mode to trigger.
+
+    Tooltips only ever reach the HTML report; the PDF embeds SVG exports, and
+    a HoverTool leaves those byte-for-byte identical.
+    """
+    if not isinstance(renderers, (list, tuple)):
+        renderers = [renderers]
+
+    plot.add_tools(HoverTool(renderers=list(renderers),
+                             tooltips=list(tooltips),
+                             mode=mode))
+
+
+# Bokeh labels plots with font-family="helvetica", which is an alias rather than
+# an installed font. The browser that measures the text to lay an axis out and
+# the wkhtmltopdf that finally renders it resolve that alias independently, so
+# text ends up narrower than the space reserved for it and right-aligned labels
+# come out ragged. Name the font helvetica resolves to anyway: same typeface,
+# but both sides now agree.
+PLOT_FONT = 'Arial'
+
+
+def set_plot_font(root, font: str = PLOT_FONT) -> None:
+    """
+    Name the font explicitly on every piece of text in a plot or layout.
+
+    Walks the model tree rather than the caller listing properties, so it
+    catches titles, axis and tick labels, legends, categorical group labels and
+    anything iqplot built for us. Properties ending in `text_font_size` or
+    `text_font_style` do not match and are left alone.
+    """
+    for obj in root.references():
+        for prop in obj.properties():
+            if prop.endswith('text_font'):
+                try:
+                    setattr(obj, prop, font)
+                except (ValueError, AttributeError) as e:
+                    logging.error(f'Could not set {prop} on {obj}: {e}')
+
+
+def clear_legend_background(plot) -> None:
+    """
+    Stop a plot's legend painting itself onto an opaque panel.
+
+    Every figure in the report is given a transparent background so the PDF
+    watermark shows through, but a bokeh legend is not covered by that: it
+    defaults to a white fill at 0.95 alpha and punches a white rectangle back
+    through the page.
+
+    Takes the plot rather than the legend so it also covers the plots that
+    build their legend implicitly from `legend_label`. Safe on a plot with no
+    legend at all - bokeh's splattable accessor makes it a no-op.
+    """
+    plot.legend.background_fill_color = None
+
+# Bokeh 3.x emits a duplicate <text> element per label with stroke-opacity="0"
+# (intended as an invisible outline). wkhtmltopdf ignores stroke-opacity and
+# renders these as solid black outlines around every plot label.
+_BOKEH_INVISIBLE_STROKE_TEXT_RE = re.compile(
+    r'<text [^>]*stroke-opacity="0"[^>]*>[^<]*</text>'
+)
+
+# Fully transparent glyphs - we use them as invisible hover targets - are still
+# exported, one empty <path> each. They have no geometry to draw, so they only
+# add bulk to the SVG that ends up in the PDF.
+_BOKEH_EMPTY_PATH_RE = re.compile(
+    r'<path fill="none" stroke="none"/>'
+)
+
+
+def strip_bokeh_svg_noise(svg_path) -> None:
+    """
+    Drop elements bokeh's SVG export emits that cannot draw anything.
+
+    Two kinds: the ghost text bokeh writes behind every label (which
+    wkhtmltopdf turns into a black outline because it ignores stroke-opacity),
+    and the empty paths left behind by fully transparent glyphs.
+    """
+    path = Path(svg_path)
+    if not path.is_file():
+        return
+    text = path.read_text(encoding='utf-8')
+    cleaned = _BOKEH_INVISIBLE_STROKE_TEXT_RE.sub('', text)
+    cleaned = _BOKEH_EMPTY_PATH_RE.sub('', cleaned)
+    if cleaned != text:
+        path.write_text(cleaned, encoding='utf-8')
+
 
 def dict_to_JSlist(d: dict) -> list:
     '''
@@ -380,26 +577,272 @@ def get_method_type(sample_dict: dict) -> str:
     return datastr.replace('monte carlo', 'Monte Carlo')
 
 
-def get_restraints_info(restraints: dict) -> list:
+def count_noun(count, noun: str) -> str:
+    '''
+    minor func: '1 restraint', but '2 restraints'
+
+    The count is printed as given, so that a malformed entry that hands us
+    something other than a number is described rather than crashed on.
+    '''
+    return '%s %s' % (count, noun) if count == 1 else '%s %ss' % (count, noun)
+
+
+# Readable names for the shapes a GeometricRestraint can restrain against
+GEOMETRIC_OBJECT_NAMES = {
+    'Axis': 'axis',
+    'HalfTorus': 'half torus',
+    'Plane': 'plane',
+    'Sphere': 'sphere',
+    'Torus': 'torus',
+    'XAxis': 'X axis',
+    'XYPlane': 'XY plane',
+    'XZPlane': 'XZ plane',
+    'YAxis': 'Y axis',
+    'YZPlane': 'YZ plane',
+    'ZAxis': 'Z axis',
+}
+
+
+def join_description(*parts) -> str:
+    """Join the parts of a description that the entry actually provides"""
+    kept = [part for part in parts if part]
+    return ', '.join(kept) if kept else NA
+
+
+def format_multi_state(multi_state) -> str:
+    """Say whether a fit is multi-state, but only if the entry says so"""
+    if multi_state is None:
+        return None
+    return 'multi-state' if multi_state else 'single-state'
+
+
+def format_distance_restraint(distance) -> str:
+    """Describe an ihm.restraint.DistanceRestraint of any flavour
+
+    The same distance can be a lower bound, an upper bound, both, or
+    harmonic, and saying which is the whole point of the description.
+    """
+    if isinstance(distance, ihm.restraint.LowerUpperBoundDistanceRestraint):
+        return ('lower/upper bound distance: %s-%s Å'
+                % (distance.distance_lower_limit, distance.distance_upper_limit))
+    if isinstance(distance, ihm.restraint.LowerBoundDistanceRestraint):
+        return 'lower bound distance: %s Å' % distance.distance
+    if isinstance(distance, ihm.restraint.UpperBoundDistanceRestraint):
+        return 'upper bound distance: %s Å' % distance.distance
+    if isinstance(distance, ihm.restraint.HarmonicDistanceRestraint):
+        return 'harmonic distance: %s Å' % distance.distance
+
+    value = getattr(distance, 'distance', None)
+    return 'distance: %s Å' % value if value is not None else NA
+
+
+def format_geometric_object(obj) -> str:
+    """Name the object a GeometricRestraint restrains against
+
+    The distance is deliberately left out: an entry can carry dozens of
+    geometric restraints, and it is the object that tells them apart.
+    """
+    name = GEOMETRIC_OBJECT_NAMES.get(type(obj).__name__, 'geometric object')
+    if getattr(obj, 'name', None):
+        name += ' "%s"' % obj.name
+    return name
+
+
+def count_crosslinks(restraint) -> int:
+    """Count the crosslinks one CrossLinkRestraint was built from
+
+    experimental_cross_links is a list of *lists*: each sublist holds the
+    alternatives of one ambiguous identification. The crosslinks are the
+    entries, not the sublists.
+    """
+    return sum(len(group) for group in restraint.experimental_cross_links)
+
+
+def format_crosslink_info(restraint) -> str:
+    """Name the linker of one CrossLinkRestraint and count its crosslinks"""
+    linker = getattr(restraint.linker, 'auth_name', None) or NA
+    return '%s, %s' % (linker, count_noun(count_crosslinks(restraint),
+                                          'crosslink'))
+
+
+def format_restraint_info(restraint) -> str:
+    """Describe a single restraint in one line
+
+    Every restraint gets a description, including one of a type we have
+    nothing specific to say about, so that the columns of the restraints
+    table stay in step with each other.
+    """
+    if isinstance(restraint, ihm.restraint.CrossLinkRestraint):
+        return format_crosslink_info(restraint)
+
+    if isinstance(restraint, ihm.restraint.EM3DRestraint):
+        return join_description(restraint.fitting_method)
+
+    if isinstance(restraint, ihm.restraint.EM2DRestraint):
+        micrographs = restraint.number_raw_micrographs
+        resolution = restraint.image_resolution
+        return join_description(
+            count_noun(micrographs, 'micrograph') if micrographs else None,
+            'image resolution: %s Å' % resolution if resolution else None)
+
+    if isinstance(restraint, ihm.restraint.SASRestraint):
+        return join_description(
+            'assembly: %s' % restraint.assembly.name
+            if getattr(restraint.assembly, 'name', None) else None,
+            'fitting method: %s' % restraint.fitting_method
+            if restraint.fitting_method else None,
+            format_multi_state(restraint.multi_state))
+
+    if isinstance(restraint, ihm.restraint.EPRRestraint):
+        return join_description(
+            'fitting method: %s' % restraint.fitting_method
+            if restraint.fitting_method else None,
+            format_multi_state(restraint.multi_state))
+
+    if isinstance(restraint, ihm.restraint.GeometricRestraint):
+        return format_geometric_object(restraint.geometric_object)
+
+    if isinstance(restraint, (ihm.restraint.PredictedContactRestraint,
+                              ihm.restraint.DerivedDistanceRestraint)):
+        return format_distance_restraint(restraint.distance)
+
+    details = getattr(restraint, 'details', None)
+    return str(details) if details else NA
+
+
+def name_dataset(dataset) -> str:
+    '''
+    name a dataset by its accession where it has one, by its id otherwise
+    '''
+    code = getattr(dataset.location, 'access_code', None)
+    return str(code) if code else 'Dataset %s' % dataset._id
+
+
+def format_radius_of_gyration(radius) -> str:
+    '''
+    report a deposited radius of gyration in the units the rest of the row uses
+
+    The mmCIF value is in Angstroms, while the Rg the report derives from
+    SASBDB data is in nanometres, and the two are there to be compared.
+    '''
+    try:
+        return 'deposited Rg is %.2f nm' % (float(radius) / 10)
+    except (TypeError, ValueError):
+        return NA
+
+
+def describe_crosslinks(restraints: list) -> str:
+    '''
+    count the crosslinks of one dataset, broken down by linker
+
+    A dataset can be a mixture of crosslinkers, which python-ihm splits into
+    a restraint per linker, so add them back up.
+    '''
+    per_linker = defaultdict(int)
+    for restraint in restraints:
+        linker = getattr(restraint.linker, 'auth_name', None) or NA
+        per_linker[linker] += count_crosslinks(restraint)
+
+    breakdown = ', '.join('%d %s' % (num, linker)
+                          for linker, num in per_linker.items())
+    return '%s (%s)' % (count_noun(sum(per_linker.values()), 'crosslink'),
+                        breakdown)
+
+
+def describe_dataset_content(restraints: list) -> str:
+    '''
+    describe the experimental data one dataset holds
+
+    What characterises the data - the crosslinker it was made with, the
+    resolution of a class average - is recorded on the restraints derived
+    from the dataset rather than on the dataset itself, so read it off those.
+    How the data was then fitted belongs with the restraints, not here.
+    '''
+    described = []
+
+    crosslinks = [r for r in restraints
+                  if isinstance(r, ihm.restraint.CrossLinkRestraint)]
+    if crosslinks:
+        described.append(describe_crosslinks(crosslinks))
+
+    for restraint in restraints:
+        if isinstance(restraint, ihm.restraint.EM2DRestraint):
+            micrographs = restraint.number_raw_micrographs
+            resolution = restraint.image_resolution
+            described.append(join_description(
+                count_noun(micrographs, 'micrograph') if micrographs else None,
+                'image resolution is %s Å' % resolution if resolution else None))
+
+        elif isinstance(restraint, ihm.restraint.SASRestraint):
+            described.append(
+                format_radius_of_gyration(restraint.radius_of_gyration))
+
+    distinct = [d for d in dict.fromkeys(described) if d != NA]
+    return '; '.join(distinct) if distinct else NA
+
+
+# Human-readable names for the restraint classes of python-ihm. A class that
+# is missing here falls back to its own name, so a restraint type we haven't
+# met yet still shows up in the report instead of disappearing from it.
+RESTRAINT_TYPE_NAMES = {
+    'CrossLinkRestraint': 'Crosslinking-MS',
+    'DerivedDistanceRestraint': 'Derived distance',
+    'EM2DRestraint': '2DEM',
+    'EM3DRestraint': '3DEM',
+    'EPRRestraint': 'EPR',
+    'GeometricRestraint': 'Geometric',
+    'HDXRestraint': 'HDX',
+    'HydroxylRadicalFPRestraint': 'Hydroxyl radical footprinting',
+    'InnerSurfaceGeometricRestraint': 'Geometric, inner surface',
+    'OuterSurfaceGeometricRestraint': 'Geometric, outer surface',
+    'PredictedContactRestraint': 'Predicted contacts',
+    'SASRestraint': 'SAS',
+}
+
+def count_crosslink_groups(restraints: list) -> int:
+    '''
+    count the experimental identifications a set of crosslinks rests on
+
+    One identification can be turned into several modelling restraints; the
+    report calls the restraints that share an identification a restraint
+    group.
+    '''
+    return len({crosslink.experimental_cross_link._id
+                for restraint in restraints
+                for crosslink in restraint.cross_links
+                if crosslink.experimental_cross_link is not None})
+
+
+def summarize_restraint_group(restraints: list) -> str:
+    '''
+    count off one restraint type
+    '''
+    if isinstance(restraints[0], ihm.restraint.CrossLinkRestraint):
+        # Crosslinks are counted twice over: the experimental identifications
+        # behind them, and the restraints they were turned into
+        return '%s, %s' % (
+            count_noun(count_crosslink_groups(restraints), 'group'),
+            count_noun(sum(len(r.cross_links) for r in restraints), 'restraint'))
+
+    return count_noun(len(restraints), 'restraint')
+
+
+def get_restraints_info(restraints: list) -> list:
     '''
     format restraints info for supplementary/summary table
-    '''
 
-    restraints_num = len(restraints['Restraint type'])
-    datalist = []
-    try:
-        dataset = [(restraints['Restraint info'][i], restraints['Restraint type'][i])
-                   for i in range(restraints_num)]
-    except (ValueError, TypeError, IndexError):
-        new_restraints = {key: list(set(val))
-                          for key, val in restraints.items()}
-        restraints_num = min(len(new_restraints['Restraint info']), len(
-            new_restraints['Restraint type']))
-        dataset = [(new_restraints['Restraint info'][i], new_restraints['Restraint type'][i])
-                   for i in range(restraints_num)]
-    for i, j in Counter(dataset).items():
-        datalist.append(['%s unique %s: %s' % (j, i[1], i[0])])
-    return datalist
+    One line per restraint type, carrying its totals and nothing else. What
+    a restraint was derived from - crosslinker chemistry, image resolution -
+    describes the data rather than the restraint, and belongs with the
+    datasets instead.
+    '''
+    grouped = defaultdict(list)
+    for restraint in restraints:
+        grouped[type(restraint).__name__].append(restraint)
+
+    return ['%s (%s)' % (RESTRAINT_TYPE_NAMES.get(restraint_type, restraint_type),
+                         summarize_restraint_group(group))
+            for restraint_type, group in grouped.items()]
 
 
 def format_list_text(sublist: list) -> str:

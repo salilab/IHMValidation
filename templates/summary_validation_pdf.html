@@ -169,9 +169,7 @@ SOFTWARE.
          <tr>
             <td><i><a href="https://pdb-ihm.org/validation_help.html#sumtabresexp">3.2. Experimental data</a></i></td>
             <td>
-              {% for i in range(restraint_info|length) %}
-                - {{ restraint_info[i][0] }} <br>
-              {% endfor %}
+              {{ write_bullet(restraint_info) }}
             </td>
          </tr>
          <tr>

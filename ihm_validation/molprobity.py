@@ -170,9 +170,10 @@ class GetMolprobityInformation(GetInputInformation):
         cache_fn = Path(self.cache, self.stem + '.mp.pkl')
 
         if cache_fn.is_file() and not self.nocache:
-            logging.info(f'Found MolProbity data {cache_fn} in cache')
             with open(cache_fn, 'rb') as f:
-                data = pickle.load(f)
+                data, meta = utility.unwrap_cache(pickle.load(f))
+            logging.info(f'Found MolProbity data {cache_fn} in cache '
+                         f'({utility.describe_cache(meta)})')
 
         else:
 
@@ -205,7 +206,8 @@ class GetMolprobityInformation(GetInputInformation):
             os.remove(outfn)
 
             with open(cache_fn, 'wb') as f:
-                pickle.dump(data, f)
+                pickle.dump(utility.wrap_cache(
+                    data, {'MolProbity': self.molprobity_version}), f)
 
         if len(data) == 0:
             logging.warning('Empty MolProbity data')
@@ -477,7 +479,14 @@ class GetMolprobityInformation(GetInputInformation):
                 r_ = {
                     'Clashscore': clashscore_,
                     'Ramachandran outliers': rama_,
-                    'Sidechain outliers': rota_
+                    'Sidechain outliers': rota_,
+                    # What the outlier counts are out of, so the plot can show
+                    # them as a proportion too. A clashscore is already a rate
+                    # (clashes per 1000 atoms) and has nothing to divide by.
+                    'totals': {
+                        'Ramachandran outliers': v['rama']['total'],
+                        'Sidechain outliers': v['rota']['total'],
+                    },
                 }
                 stats[k] = r_
 
